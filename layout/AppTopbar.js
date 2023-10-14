@@ -32,7 +32,7 @@ const AppTopbar = forwardRef((props, ref) => {
     return (
         <React.Fragment>
             <div className="layout-topbar">
-                <Link href="/">
+                <Link legacyBehavior href="/">
                     <a className="layout-topbar-logo">
                         <>
                             <img src={`${contextPath}/layout/images/Seattle_Humane_logo.png`} alt="logo" />

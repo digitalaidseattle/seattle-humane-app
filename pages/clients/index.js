@@ -149,11 +149,11 @@ const Clients = () => {
     );
 
     return (
-        <div className="grid crud-demo">
+        <div className="grid flex">
             <div className="col-12">
                 <div className="card">
                     <Toast ref={toast} />
-                    <Toolbar className="mb-4" left={leftToolbarTemplate} right={rightToolbarTemplate}></Toolbar>
+                    <Toolbar className="mb-4" start={leftToolbarTemplate} end={rightToolbarTemplate}></Toolbar>
 
                     <DataTable
                         ref={dt}

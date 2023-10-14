@@ -72,7 +72,7 @@ const AppMenuitem = (props) => {
             ) : null}
 
             {item.to && !item.items && item.visible !== false ? (
-                <Link href={item.to} replace={item.replaceUrl} target={item.target}>
+                <Link legacyBehavior href={item.to} replace={item.replaceUrl} target={item.target}>
                     <a onClick={(e) => itemClick(e)} className={classNames(item.class, 'p-ripple', { 'active-route': isActiveRoute })} target={item.target} tabIndex="0">
                         <i className={classNames('layout-menuitem-icon', item.icon)}></i>
                         <span className="layout-menuitem-text">{item.label}</span>
