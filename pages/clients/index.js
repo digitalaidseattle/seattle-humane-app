@@ -24,12 +24,7 @@ const Clients = () => {
     };
 
     const [tickets, setTickets] = useState([]);
-    const [productDialog, setProductDialog] = useState(false);
-    const [deleteProductDialog, setDeleteProductDialog] = useState(false);
-    const [deleteProductsDialog, setDeleteProductsDialog] = useState(false);
-    const [product, setProduct] = useState(emptyProduct);
     const [selectedTickets, setSelectedTickets] = useState(null);
-    const [submitted, setSubmitted] = useState(false);
     const [globalFilter, setGlobalFilter] = useState(null);
     const toast = useRef(null);
     const dt = useRef(null);
@@ -46,8 +41,9 @@ const Clients = () => {
     };
 
     const closeClientDialog = (item) => {
-        console.log(item);
         setClientDialog(false);
+        // clientService.getTickets()
+        //     .then(t => setTickets(t));
     }
 
     const leftToolbarTemplate = () => {

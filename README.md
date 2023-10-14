@@ -1,34 +1,81 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+<p align='center'>
+    <a href='https://www.digitalaidseattle.org'>
+        <img src='https://avatars.githubusercontent.com/u/3466034?s=200&v=4' height='128'>
+    </a>
+    <h1 align='center'>Digital Aid Seattle Website</h1>
+</p>
+<p align='center'>
+    <img alt="GitHub commit activity (main)" src="https://img.shields.io/github/commit-activity/m/openseattle/open-seattle-website/main">
+</p>
 
-## Getting Started
+## Introduction
 
-First, run the development server:
+Digital Aid Seattle aims to amplify community impact with technology by connecting organizations who need technical solutions with skilled volunteers.
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+People across thousands of Seattle civic and nonprofit organizations have dedicated their lives to making the world safer, more equitable, and more sustainable. This work is responsible for so much good in the world, and we owe them a huge debt of gratitude.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Unfortunately, many of these organizations lack access to digital tools that are vital to success in the modern age. Nonprofits struggle to create and scale their impact without the resources they need.
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+Just outside their doors is a fleet of experts and technologists with the talent, capacity, and drive to build.
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+Seattle is world-renowned as a hub for technology talent, full of motivated builders, designers, and creators that want to use their skills for good. Digital Aid Seattle is bringing these communities together to create a sum greater than its parts.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+This website is for organizations that want to [learn more about partnering with Digital Aid Seattle](https://www.digitalaidseattle.org/partner) and for passionate, skilled Seattlites who want to [learn more about volunteering!](https://www.digitalaidseattle.org/volunteer)
 
-## Learn More
+## Technology Stack
 
-To learn more about Next.js, take a look at the following resources:
+The website is built using **Next.js**, a React-based framework for server-side rendering and static site generation. Learn more about Next.js [here](https://nextjs.org/docs/getting-started).
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+**Vercel** is used for deployment, providing a fast and scalable hosting environment for the website. Once a pull request is made, Vercel will automatically deploy a staged version of the website for final approval prior to deploying these changes to the public-facing website. Learn more about Vercel [here](https://vercel.com/docs).
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+## System Requirements
 
-## Deploy on Vercel
+1. [Node.js](https://nodejs.org/en/)
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+## Local Environment Setup
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+1. Setup the frontend environment
+
+   ```bash
+   git clone https://github.com/openseattle/seattle-humane-app
+   cd seattle-humane-app
+   git checkout main
+   npm install
+   ```
+
+2. Setup VSCode for auto formatting
+
+- Install extensions: ESLint and Prettier
+- Go to VSCode setting `Settings` > `Text Editor` > `Formatting` > `Format On Save`
+- In the same setting window, look up `Default Formatter` and set to Prettier.
+
+### Configure Environmental Variables
+
+1. Create .env.local file:
+
+   ```bash
+   touch .env.local
+   ```
+
+2. Paste the following into this file and save:
+
+   ```.env
+   # Defaults, used by ./intro-template and can be deleted if the component is removed
+   NEXT_PUBLIC_VERCEL_GIT_PROVIDER="github"
+   NEXT_PUBLIC_VERCEL_GIT_REPO_SLUG="template-nextjs-clean"
+
+   ```
+
+### Run locally
+
+1. Start development server
+
+   ```bash
+   yarn dev
+   ```
+
+2. Open local instance in browser: <http://localhost:3000>. Note: Pages populated by Sanity.io will return 404 until Sanity is properly configured.
+
+3. In order to work on Sanity components, request to be added to Sanity.io as an administrator, and then populate the respective fields in the .env.local file.
+
+4. In order to work on Airtable forms, request access to Airtable and create a personal access token
