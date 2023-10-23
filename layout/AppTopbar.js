@@ -35,7 +35,7 @@ const AppTopbar = forwardRef((props, ref) => {
                 <Link legacyBehavior href="/">
                     <a className="layout-topbar-logo">
                         <>
-                            <img src={`${contextPath}/layout/images/Seattle_Humane_logo.png`} alt="logo" />
+                            <img src={`${contextPath}/images/Seattle_Humane_logo.png`} alt="logo" />
                             <span>Seattle Humane</span>
                         </>
                     </a>
