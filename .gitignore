@@ -27,3 +27,7 @@ yarn-error.log*
 .env
 .env.build
 .vercel
+
+# generated
+.next
+.vscode
