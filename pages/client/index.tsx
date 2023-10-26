@@ -1,22 +1,47 @@
+import { useRouter } from 'next/navigation';
+import { BreadCrumb } from 'primereact/breadcrumb';
+import { Button } from 'primereact/button';
+import { InputMask } from 'primereact/inputmask';
+import { InputText } from 'primereact/inputtext';
+import { InputTextarea } from 'primereact/inputtextarea';
+import { Rating } from 'primereact/rating';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
 import React, { useEffect, useRef, useState } from 'react';
 import { ClientTicket, clientService } from '../../client/service/ClientService';
-import { Panel } from 'primereact/panel';
-import { InputText } from 'primereact/inputtext';
-import { InputTextarea } from 'primereact/inputtextarea';
-import { Button } from 'primereact/button';
+
+
+import { Dropdown } from 'primereact/dropdown';
 
 const Client = () => {
+    const { push } = useRouter();
 
     const [ticket, setTicket] = useState<ClientTicket>();
     const toast = useRef(null);
+
+    const home = { icon: 'pi pi-home', url: '/' };
+    const statuses = [
+        { label: 'New', code: 'new' },
+        { label: 'In-progress', code: 'update' },
+        { label: 'Close', code: 'closed' },
+        { label: 'Blocked', code: 'blocked' }
+    ];
 
     useEffect(() => {
         const params = new URLSearchParams(window.location.search);
         clientService.getTicket(params.get('ticketNo'))
             .then(data => setTicket(data));
     }, []);
+
+    const crumbs = [
+        {
+            label: 'Clients', template: <a onClick={() => push(`/clients`)} >
+                <span>Clients</span>
+            </a>
+        }, {
+            template: <span >Request: {ticket ? ticket.ticketNo : 'New Request'}</span>
+        }
+    ];
 
 
     const leftToolbarTemplate = () => {
@@ -54,7 +79,7 @@ const Client = () => {
     return (
         <div className="grid flex">
             <div className="col-12">
-                <div>bread crumbs </div>
+                <BreadCrumb model={crumbs} home={home} />
 
                 <div className="card">
                     <Toast ref={toast} />
@@ -82,11 +107,13 @@ const Client = () => {
                                         </li>
                                         <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
                                             <div className="text-500 w-6 md:w-2 font-medium">Urgency</div>
-                                            {/* <InputText id="status" type="text" value={ticket.summary} onBlur={() => update()} onChange={(e) => changeProp('summary', e.target.value)} /> */}
-                                        </li>
+                                            <Rating value={ticket.urgency} onChange={(e) => changeProp('urgency', e.value)} />
+                                            \                                        </li>
                                         <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
                                             <div className="text-500 w-6 md:w-2 font-medium">Status</div>
-                                            {/* <InputText id="status" type="text" value={ticket.summary} onBlur={() => update()} onChange={(e) => changeProp('summary', e.target.value)} /> */}
+                                            <Dropdown value={ticket.status} onChange={(e) => changeProp('status', e.value)}
+                                                options={statuses} optionLabel="label" className="w-full md:w-14rem" />
+
                                         </li>
                                     </ul>
                                 </div>
@@ -113,7 +140,8 @@ const Client = () => {
                                         <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
                                             <div className="text-500 w-6 md:w-2 font-medium">Phone</div>
                                             <div className="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
-                                                <InputText id="name" type="text" value={ticket.phone} onBlur={() => update()} onChange={(e) => changeProp('phone', e.target.value)} />
+                                                <InputMask id="name" type="text" mask="(999) 999-9999"
+                                                    value={ticket.phone} onBlur={() => update()} onChange={(e) => changeProp('phone', e.target.value)} />
                                             </div>
                                         </li>
                                         <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">

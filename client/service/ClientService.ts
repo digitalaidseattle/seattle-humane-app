@@ -77,6 +77,7 @@ class ClientTicket {
   phone: string;
   summary: string;
   description: string;
+  urgency: number;
   changeLog: ChangeLog[] = [];
 
   constructor(data: any) {
@@ -84,6 +85,7 @@ class ClientTicket {
     this.type = data.type;
     this.name = data.name;
     this.status = data.status;
+    this.urgency = data.urgency;
     this.email = data.email;
     this.phone = data.phone;
     this.summary = data.summary;
