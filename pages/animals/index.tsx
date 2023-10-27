@@ -6,11 +6,11 @@ import { InputText } from 'primereact/inputtext';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
 import React, { useEffect, useRef, useState } from 'react';
-import ClientDialog from '../../client/components/ClientDialog';
+import AnimalDialog from '../../animal/components/AnimalDialog';
 import { ClientTicket, clientService } from '../../client/service/ClientService';
 import { useRouter } from 'next/navigation';
 
-const Clients = () => {
+const Animals = () => {
 
     const { push } = useRouter();
 
@@ -120,7 +120,7 @@ const Clients = () => {
 
     const header = (
         <div className="flex flex-column md:flex-row md:justify-content-between md:align-items-center">
-            <h5 className="m-0">Manage Client Tickets</h5>
+            <h5 className="m-0">Manage Animal Records</h5>
             <span className="block mt-2 md:mt-0 p-input-icon-left">
                 <i className="pi pi-search" />
                 <InputText type="search" onInput={(e) => setGlobalFilter(e.target)} placeholder="Search..." />
@@ -148,7 +148,7 @@ const Clients = () => {
                         paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
                         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} tickets"
                         globalFilter={globalFilter}
-                        emptyMessage="No tickets found."
+                        emptyMessage="No records found."
                         header={header}
                     >
                         <Column selectionMode="multiple" headerStyle={{ width: '4rem' }}></Column>
@@ -161,7 +161,7 @@ const Clients = () => {
                     </DataTable>
 
 
-                    <ClientDialog
+                    <AnimalDialog
                         visible={clientDialog}
                         onClose={closeClientDialog} />
                 </div>
@@ -170,4 +170,4 @@ const Clients = () => {
     );
 };
 
-export default Clients;
+export default Animals;
