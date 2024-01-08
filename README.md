@@ -2,7 +2,7 @@
     <a href='https://www.digitalaidseattle.org'>
         <img src='https://avatars.githubusercontent.com/u/3466034?s=200&v=4' height='128'>
     </a>
-    <h1 align='center'>Digital Aid Seattle Website</h1>
+    <h1 align='center'>Digital Aid Seattle/Seattle Humane Website</h1>
 </p>
 <p align='center'>
     <img alt="GitHub commit activity (main)" src="https://img.shields.io/github/commit-activity/m/openseattle/open-seattle-website/main">
