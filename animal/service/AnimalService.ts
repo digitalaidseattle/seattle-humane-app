@@ -1,6 +1,7 @@
 
 import getConfig from 'next/config';
 import { v4 as uuidv4 } from 'uuid';
+import { NewClientRequest } from '../../client/service/ClientService';
 
 enum RequestType {
   clientNew = 'client-new',
