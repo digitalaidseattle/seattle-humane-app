@@ -18,9 +18,11 @@
         "primereact": "^9.2.0",
         "react": "18.2.0",
         "react-dom": "18.2.0",
-        "react-transition-group": "^4.4.5"
+        "react-transition-group": "^4.4.5",
+        "uuid": "^9.0.1"
     },
     "devDependencies": {
+        "@types/node": "20.8.6",
         "eslint": "8.35.0",
         "eslint-config-next": "13.2.4",
         "prettier": "2.8.4",

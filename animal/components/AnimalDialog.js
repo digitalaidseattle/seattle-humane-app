@@ -1,5 +1,5 @@
 /**
-* ClientDialog.js
+* AnimalDialog.js
 *
 * @2023 Digital Aid Seattle
 */
@@ -7,54 +7,42 @@
 import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
-import { RadioButton } from 'primereact/radiobutton';
 import { InputTextarea } from 'primereact/inputtextarea';
 
 import { useEffect, useState } from "react";
-import { NewClientRequest, TicketType, clientService } from "../service/ClientService";
+import { NewAnimalRecord, animalService } from "../service/AnimalService";
 
-const ClientDialog = (props) => {
+const AnimalDialog = (props) => {
 
-  const [clientDialog, setClientDialog] = useState(false);
-  const [type, setType] = useState(TicketType.email);
-  const [request, setRequest] = useState(new NewClientRequest({}));
+  const [showDialog, setShowDialog] = useState(false);
+  const [record, setRecord] = useState(new NewAnimalRecord({}));
 
   useEffect(() => {
-    setClientDialog(props.visible)
+    setShowDialog(props.visible)
   }, [props])
 
-  const hideClientDialog = () => {
+  const hideDialog = () => {
     props.onClose(undefined);
   };
 
-  const saveClientDialog = () => {
-    // type handle separate to support RadioButton
-    request.type = type;
-    clientService.newRequest(request)
-      .then(ticket => props.onClose(ticket))
+  const saveDialog = () => {
+    animalService.newRecord(record)
+      .then(rec => props.onClose(rec))
       .catch(err => props.onClose(null))
   };
 
-  const clientDialogFooter = (
+  const dialogFooter = (
     <>
-      <Button label="Cancel" icon="pi pi-times" className="p-button-text" onClick={hideClientDialog} />
-      <Button label="Save" icon="pi pi-check" className="p-button-text" onClick={saveClientDialog} />
+      <Button label="Cancel" icon="pi pi-times" className="p-button-text" onClick={hideDialog} />
+      <Button label="Save" icon="pi pi-check" className="p-button-text" onClick={saveDialog} />
     </>
   );
 
-  return <Dialog visible={clientDialog} style={{ width: '650px' }} header="Client Request" modal className="p-fluid"
-    footer={clientDialogFooter}
-    onHide={hideClientDialog}>
+  return <Dialog visible={showDialog} style={{ width: '650px' }} header="Animal Record" modal className="p-fluid"
+    footer={dialogFooter}
+    onHide={hideDialog}>
     <div className="col-12 md:col-12">
       <div className="card p-fluid">
-        <div className="field grid flex flex-wrap gap-3">
-          {Object.keys(TicketType).map((t, index) =>
-            <div key={index} className="flex align-items-center">
-              <RadioButton inputId={`t${index}`} name={t} value={t} onChange={(e) => setType(e.value)} checked={type === t} />
-              <label htmlFor={`t${index}`} className="ml-2">{t}</label>
-            </div>
-          )}
-        </div>
 
         <div className="field grid">
           <label htmlFor="name" className="col-12 mb-2 md:col-2 md:mb-0">
@@ -102,4 +90,4 @@ const ClientDialog = (props) => {
   </Dialog>
 }
 
-export default ClientDialog;
+export default AnimalDialog;

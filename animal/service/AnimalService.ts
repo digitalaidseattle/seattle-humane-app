@@ -1,6 +1,7 @@
 
 import getConfig from 'next/config';
 import { v4 as uuidv4 } from 'uuid';
+import { NewClientRequest } from '../../client/service/ClientService';
 
 enum RequestType {
   clientNew = 'client-new',
@@ -16,7 +17,7 @@ enum TicketType {
   other = 'other'
 }
 
-class NewClientRequest {
+class NewAnimalRecord {
   requestType: RequestType = RequestType.clientNew;
   ticketNo: string;
   type: TicketType;
@@ -93,7 +94,7 @@ class ClientTicket {
   }
 }
 
-class ClientService {
+class AnimalService {
   contextPath: string;
 
   // TODO remove when in prod
@@ -136,5 +137,5 @@ class ClientService {
   }
 }
 
-const clientService = new ClientService();
-export { NewClientRequest, ClientTicket, TicketType, clientService };
+const animalService = new AnimalService();
+export { NewAnimalRecord, ClientTicket, TicketType, animalService };

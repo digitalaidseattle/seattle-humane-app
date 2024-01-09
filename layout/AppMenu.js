@@ -3,6 +3,7 @@ import React, { useContext } from 'react';
 import AppMenuitem from './AppMenuitem';
 import { LayoutContext } from './context/layoutcontext';
 import { MenuProvider } from './context/menucontext';
+// import pawIcon from '/images/paw.svg';
 
 const AppMenu = () => {
     const { layoutConfig } = useContext(LayoutContext);
@@ -13,7 +14,7 @@ const AppMenu = () => {
             items: [
                 { label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/' },
                 { label: 'Clients', icon: 'pi pi-fw pi-users', to: '/clients' },
-                { label: 'Animals', icon: 'pi pi-fw pi-github', to: '/animals' },
+                { label: 'Animals', iconSrc: `${contextPath}/images/paw.svg`, to: '/animals' },
                 { label: 'Reports', icon: 'pi pi-fw pi-book', to: '/reports' }
             ]
         }

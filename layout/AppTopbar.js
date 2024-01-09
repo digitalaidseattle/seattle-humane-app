@@ -35,7 +35,7 @@ const AppTopbar = forwardRef((props, ref) => {
                 <Link legacyBehavior href="/">
                     <a className="layout-topbar-logo">
                         <>
-                            <img src={`${contextPath}/layout/images/Seattle_Humane_logo.png`} alt="logo" />
+                            <img src={`${contextPath}/images/Seattle_Humane_Logo.png`} alt="logo" />
                             <span>Seattle Humane</span>
                         </>
                     </a>
@@ -51,8 +51,8 @@ const AppTopbar = forwardRef((props, ref) => {
 
                 <div ref={topbarmenuRef} className={classNames('layout-topbar-menu', { 'layout-topbar-menu-mobile-active': layoutState.profileSidebarVisible })}>
                     <button type="button" className="p-link layout-topbar-button" onClick={openClientDialog}>
-                        <i className="pi pi-calendar"></i>
-                        <span>Calendar</span>
+                        <i className="pi pi-ticket"></i>
+                        <span>Ticket</span>
                     </button>
                     <button type="button" className="p-link layout-topbar-button">
                         <i className="pi pi-user"></i>
