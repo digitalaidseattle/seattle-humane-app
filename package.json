@@ -11,6 +11,8 @@
         "format": "prettier --write \"**/**/*.{js,ts,tsx}\""
     },
     "dependencies": {
+        "@supabase/auth-helpers-nextjs": "^0.8.7",
+        "@supabase/supabase-js": "^2.39.3",
         "chart.js": "^4.2.1",
         "next": "^13.5.4",
         "primeflex": "^3.3.0",
@@ -26,6 +28,7 @@
         "eslint": "8.35.0",
         "eslint-config-next": "13.2.4",
         "prettier": "2.8.4",
-        "sass": "^1.58.3"
+        "sass": "^1.58.3",
+        "typescript": "5.3.3"
     }
 }

@@ -63,7 +63,6 @@ The website is built using **Next.js**, a React-based framework for server-side 
    # Defaults, used by ./intro-template and can be deleted if the component is removed
    NEXT_PUBLIC_VERCEL_GIT_PROVIDER="github"
    NEXT_PUBLIC_VERCEL_GIT_REPO_SLUG="template-nextjs-clean"
-
    ```
 
 ### Run locally
@@ -79,3 +78,12 @@ The website is built using **Next.js**, a React-based framework for server-side 
 3. In order to work on Sanity components, request to be added to Sanity.io as an administrator, and then populate the respective fields in the .env.local file.
 
 4. In order to work on Airtable forms, request access to Airtable and create a personal access token
+
+5. In order to connect to supabase need to add these two environmental variables in your .env.local
+
+   ```.env
+   # You can find the values for these two variables in your settings > api from supabase dashboard.
+   NEXT_PUBLIC_SUPABASE_URL="supabaseurl"
+   NEXT_PUBLIC_SUPABASE_ANON_KEY="supabase_anon_key"
+   ```
+
