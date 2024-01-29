@@ -79,11 +79,5 @@ The website is built using **Next.js**, a React-based framework for server-side 
 
 4. In order to work on Airtable forms, request access to Airtable and create a personal access token
 
-5. In order to connect to supabase need to add these two environmental variables in your .env.local
-
-   ```.env
-   # You can find the values for these two variables in your settings > api from supabase dashboard.
-   NEXT_PUBLIC_SUPABASE_URL="supabaseurl"
-   NEXT_PUBLIC_SUPABASE_ANON_KEY="supabase_anon_key"
-   ```
+5. Look into .env.local.example file, it should have the necessary environmental variables needed for this project.
 
