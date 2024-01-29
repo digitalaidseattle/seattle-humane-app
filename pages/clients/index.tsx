@@ -9,10 +9,12 @@ import React, { useEffect, useRef, useState } from 'react';
 import ClientDialog from '../../client/components/ClientDialog';
 import { ClientTicket, clientService } from '../../client/service/ClientService';
 import { useRouter } from 'next/navigation';
+import useAuth from '../../hooks/useAuth';
 
 const Clients = () => {
 
     const { push } = useRouter();
+    const { loading, authenticated, role } = useAuth();
 
     const [tickets, setTickets] = useState([]);
     const [selectedTickets, setSelectedTickets] = useState(null);
@@ -21,6 +23,10 @@ const Clients = () => {
     const dt = useRef(null);
 
     const [clientDialog, setClientDialog] = useState(false);
+
+    if (loading) {
+        return <p>Loading...</p>;
+    }
 
     useEffect(() => {
         clientService.getTickets().then((data) => setTickets(data));
