@@ -24,13 +24,19 @@ const Clients = () => {
 
     const [clientDialog, setClientDialog] = useState(false);
 
-    if (loading) {
-        return <p>Loading...</p>;
-    }
-
+    
     useEffect(() => {
         clientService.getTickets().then((data) => setTickets(data));
     }, []);
+
+    if (loading) {
+        return <p>Retrieving authentication...</p>;
+    }
+
+    //TEMP for testing - clients page will be accessible to all authenticated users
+    if (!authenticated || role !== 'user') {
+        return <p>Unauthorized SEND ME TO LOGIN PLZ</p>;
+    }
 
     const openClientDialog = () => {
         setClientDialog(true);

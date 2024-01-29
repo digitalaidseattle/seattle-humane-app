@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { getSession } from '../user/service/UserService';
+import { userService } from '../user/service/UserService';
 
 function useAuth() {
   const [loading, setLoading] = useState(true);
@@ -9,7 +9,7 @@ function useAuth() {
   const router = useRouter();
 
   useEffect(() => {
-    getSession().then(session => {
+    userService.getSession().then(session => {
       if (!session) {
         router.push('/login');
       } else {
