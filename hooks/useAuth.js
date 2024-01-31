@@ -10,13 +10,14 @@ function useAuth() {
 
   useEffect(() => {
     userService.getSession().then(session => {
-      if (!session) {
+      if (session.authenticated === false) {
         router.push('/login');
       } else {
         setAuthenticated(true);
         setRole(session.role);
       }
       setLoading(false);
+      // throw in catch
     });
   }, [router]);
 

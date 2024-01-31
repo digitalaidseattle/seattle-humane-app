@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
+import useAuth from '../../hooks/useAuth';
 
 export const LayoutContext = React.createContext();
 
 export const LayoutProvider = (props) => {
+    const { loading, authenticated, role } = useAuth();
+
     const [layoutConfig, setLayoutConfig] = useState({
         ripple: false,
         inputStyle: 'outlined',
@@ -51,7 +54,10 @@ export const LayoutProvider = (props) => {
         layoutState,
         setLayoutState,
         onMenuToggle,
-        showProfileSidebar
+        showProfileSidebar,
+        loading,
+        authenticated,
+        role
     };
 
     return <LayoutContext.Provider value={value}>{props.children}</LayoutContext.Provider>;

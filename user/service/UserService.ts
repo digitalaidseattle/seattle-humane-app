@@ -1,6 +1,8 @@
 
 type Session = {
   role: string;
+  authenticated: boolean;
+  //Probably some other stuff
 }
 
 
@@ -13,7 +15,7 @@ class UserService {
   getSession(): Promise<Session> {
 
     // dummy return until it gets set up
-    return Promise.resolve({role: 'admin'});
+    return Promise.resolve({role: 'user', authenticated: true});
   }
 
 }
