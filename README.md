@@ -81,3 +81,7 @@ The website is built using **Next.js**, a React-based framework for server-side 
 
 5. Look into .env.local.example file, it should have the necessary environmental variables needed for this project.
 
+## Testing
+
+1. 
+
