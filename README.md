@@ -83,5 +83,6 @@ The website is built using **Next.js**, a React-based framework for server-side 
 
 ## Testing
 
-1. 
+- To run all tests: yarn test.
+- To exclude tests while running your own, you may temporarily put 'x' in front of 'describe' or 'it'. However, DO NOT exclude tests on a PR to a sprint branch.
 
