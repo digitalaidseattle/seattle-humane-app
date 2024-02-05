@@ -81,3 +81,8 @@ The website is built using **Next.js**, a React-based framework for server-side 
 
 5. Look into .env.local.example file, it should have the necessary environmental variables needed for this project.
 
+## Testing
+
+- To run all tests: yarn test.
+- To exclude tests while running your own, you may temporarily put 'x' in front of 'describe' or 'it'. However, DO NOT exclude tests on a PR to a sprint branch.
+
