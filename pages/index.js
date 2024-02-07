@@ -7,7 +7,7 @@ import { Menu } from 'primereact/menu';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { LayoutContext } from '../layout/context/layoutcontext';
 import Link from 'next/link';
-import { clientService } from '../client/service/ClientService';
+import { clientService } from '../services/ClientService';
 const lineData = {
     labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
     datasets: [

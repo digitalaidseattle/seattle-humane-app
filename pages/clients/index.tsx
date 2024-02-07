@@ -6,8 +6,8 @@ import { InputText } from 'primereact/inputtext';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
 import React, { useEffect, useRef, useState } from 'react';
-import ClientDialog from '../../client/components/ClientDialog';
-import { ClientTicket, clientService } from '../../client/service/ClientService';
+import ClientDialog from '../../components/ClientDialog';
+import { ClientTicket, clientService } from '../../services/ClientService';
 import { useRouter } from 'next/navigation';
 
 const Clients = () => {

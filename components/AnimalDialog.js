@@ -10,7 +10,7 @@ import { InputText } from "primereact/inputtext";
 import { InputTextarea } from 'primereact/inputtextarea';
 
 import { useEffect, useState } from "react";
-import { NewAnimalRecord, animalService } from "../service/AnimalService";
+import { NewAnimalRecord, animalService } from "../services/AnimalService";
 
 const AnimalDialog = (props) => {
 

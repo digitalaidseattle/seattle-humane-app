@@ -2,7 +2,7 @@ import getConfig from 'next/config';
 import Link from 'next/link';
 import { classNames } from 'primereact/utils';
 import React, { forwardRef, useContext, useImperativeHandle, useRef, useState } from 'react';
-import ClientDialog from '../client/components/ClientDialog';
+import ClientDialog from '../components/ClientDialog';
 import { LayoutContext } from './context/layoutcontext';
 
 const AppTopbar = forwardRef((props, ref) => {

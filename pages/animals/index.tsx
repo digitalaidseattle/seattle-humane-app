@@ -6,8 +6,8 @@ import { InputText } from 'primereact/inputtext';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
 import React, { useEffect, useRef, useState } from 'react';
-import AnimalDialog from '../../animal/components/AnimalDialog';
-import { ClientTicket, clientService } from '../../client/service/ClientService';
+import AnimalDialog from '../../components/AnimalDialog';
+import { ClientTicket, clientService } from '../../services/ClientService';
 import { useRouter } from 'next/navigation';
 
 const Animals = () => {
