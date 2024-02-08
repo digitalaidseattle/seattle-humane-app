@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { classNames } from 'primereact/utils';
 import React, { forwardRef, useContext, useEffect, useImperativeHandle, useRef, useState } from 'react';
-import ClientDialog from '../client/components/ClientDialog';
+import ClientDialog from '../src/components/ClientDialog';
 import { authService } from '../src/services/authService';
 import { LayoutContext } from './context/layoutcontext';
 import { UserContext } from '../src/context/usercontext';
@@ -48,7 +48,7 @@ const AppTopbar = forwardRef((props, ref) => {
                 <Link legacyBehavior href="/">
                     <a className="layout-topbar-logo">
                         <>
-                            <img src={`${contextPath}/images/Seattle_Humane_Logo.png`} alt="logo" />
+                            <img src={`${contextPath}/images/shs-favicon.png`} alt="logo" />
                             <span>Seattle Humane</span>
                         </>
                     </a>
