@@ -1,13 +1,20 @@
+/**
+ *  index.tsx
+ *
+ *  @copyright 2024 Digital Aid Seattle
+ *
+ */
+import React, { useState } from 'react';
+import { authService } from '../src/services/authService';
+
 import getConfig from 'next/config';
+import { useRouter } from 'next/navigation';
 import { Button } from 'primereact/button';
 import { Chart } from 'primereact/chart';
-import { Column } from 'primereact/column';
-import { DataTable } from 'primereact/datatable';
 import { Menu } from 'primereact/menu';
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useRef } from 'react';
 import { LayoutContext } from '../layout/context/layoutcontext';
-import Link from 'next/link';
-import { clientService } from '../client/service/ClientService';
+
 const lineData = {
     labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
     datasets: [
@@ -30,7 +37,8 @@ const lineData = {
     ]
 };
 
-const Dashboard = () => {
+
+const Dashboard: React.FC = () => {
     const [tickets, setTickets] = useState([]);
     const menu1 = useRef(null);
     const menu2 = useRef(null);
@@ -101,10 +109,6 @@ const Dashboard = () => {
 
         setLineOptions(lineOptions);
     };
-
-    useEffect(() => {
-        clientService.getTickets().then((data) => setTickets(data));
-    }, []);
 
     useEffect(() => {
         if (layoutConfig.colorScheme === 'light') {
@@ -354,4 +358,4 @@ const Dashboard = () => {
     );
 };
 
-export default Dashboard;
+export default Dashboard
