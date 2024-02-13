@@ -36,5 +36,5 @@ class AuthService {
 
 
 const authService = new AuthService()
-export { authService }
+export { authService, AuthService }
 export type { AuthProps }
