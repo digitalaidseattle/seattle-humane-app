@@ -8,7 +8,7 @@ import { Rating } from 'primereact/rating';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
 import React, { useEffect, useRef, useState } from 'react';
-import { ClientTicket, clientService } from '../../client/service/ClientService';
+import { ClientTicket, clientService } from '../../src/services/ClientService'
 
 
 import { Dropdown } from 'primereact/dropdown';

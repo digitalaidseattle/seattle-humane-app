@@ -11,7 +11,7 @@ import { RadioButton } from 'primereact/radiobutton';
 import { InputTextarea } from 'primereact/inputtextarea';
 
 import { useEffect, useState } from "react";
-import { NewClientRequest, TicketType, clientService } from "../service/ClientService";
+import { NewClientRequest, TicketType, clientService } from "../services/ClientService";
 
 const ClientDialog = (props) => {
 
