@@ -5,10 +5,8 @@
  *
  */
 import React, { useState } from 'react';
-import { authService } from '../src/services/authService';
 
 import getConfig from 'next/config';
-import { useRouter } from 'next/navigation';
 import { Button } from 'primereact/button';
 import { Chart } from 'primereact/chart';
 import { Menu } from 'primereact/menu';
