@@ -17,6 +17,13 @@ jest.mock('next/config', () => () => ({
   },
 }));
 
+jest.mock('../utils/supabaseClient', () => ({
+  auth: {
+    onAuthStateChange: jest.fn(),
+    getUser: jest.fn(),
+  },
+}));
+
 describe('LoginPage', () => {
   it('renders without crashing', () => {
     useRouter.mockImplementation(() => ({
