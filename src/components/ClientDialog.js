@@ -29,7 +29,7 @@ const ClientDialog = (props) => {
 
   const saveClientDialog = () => {
     // type handle separate to support RadioButton
-    request.type = type;
+    setRequest(prevRequest => ({...prevRequest, type: type}));
     clientService.newRequest(request)
       .then(ticket => props.onClose(ticket))
       .catch(err => props.onClose(null))
@@ -58,10 +58,26 @@ const ClientDialog = (props) => {
 
         <div className="field grid">
           <label htmlFor="name" className="col-12 mb-2 md:col-2 md:mb-0">
-            Name
+            First name
           </label>
           <div className="col-12 md:col-10">
-            <InputText id="name" type="text" onChange={(e) => request.name = e.target.value} />
+            <InputText id="firstName" type="text" 
+              onChange={(e) => {
+                setRequest(prevRequest => ({...prevRequest, firstName: e.target.value}))
+              }} 
+            />
+          </div>
+        </div>
+        <div className="field grid">
+          <label htmlFor="name" className="col-12 mb-2 md:col-2 md:mb-0">
+            Last name
+          </label>
+          <div className="col-12 md:col-10">
+            <InputText id="lastName" type="text" 
+              onChange={(e) => {
+                setRequest(prevRequest => ({...prevRequest, lastName: e.target.value}))
+              }} 
+            />
           </div>
         </div>
         <div className="field grid">
@@ -69,7 +85,11 @@ const ClientDialog = (props) => {
             Email
           </label>
           <div className="col-12 md:col-10">
-            <InputText id="email" type="text" onChange={(e) => request.email = e.target.value} />
+            <InputText id="email" type="text" 
+              onChange={(e) => {
+                setRequest(prevRequest => ({...prevRequest, email: e.target.value}))
+              }} 
+            />
           </div>
         </div>
         <div className="field grid">
@@ -77,7 +97,11 @@ const ClientDialog = (props) => {
             Phone
           </label>
           <div className="col-12 md:col-10">
-            <InputText id="phone" type="text" onChange={(e) => request.phone = e.target.value} />
+            <InputText id="phone" type="text" 
+              onChange={(e) => {
+                setRequest(prevRequest => ({...prevRequest, phone: e.target.value}))
+              }} 
+            />
           </div>
         </div>
 
@@ -86,7 +110,11 @@ const ClientDialog = (props) => {
             Summary
           </label>
           <div className="col-12 md:col-10">
-            <InputText id="summary" type="text" onChange={(e) => request.summary = e.target.value} />
+            <InputText id="summary" type="text" 
+              onChange={(e) => {
+                setRequest(prevRequest => ({...prevRequest, summary: e.target.value}))
+              }} 
+            />
           </div>
         </div>
         <div className="field grid">
@@ -94,7 +122,11 @@ const ClientDialog = (props) => {
             Description
           </label>
           <div className="col-12 md:col-10">
-            <InputTextarea id="description" type="text" onChange={(e) => request.description = e.target.value} />
+            <InputTextarea id="description" type="text" 
+              onChange={(e) => {
+                setRequest(prevRequest => ({...prevRequest, description: e.target.value}))
+              }} 
+            />
           </div>
         </div>
       </div>

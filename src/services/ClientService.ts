@@ -1,6 +1,7 @@
 
 import getConfig from 'next/config';
 import { v4 as uuidv4 } from 'uuid';
+import supabaseClient from '../../utils/supabaseClient';
 
 enum RequestType {
   clientNew = 'client-new',
@@ -20,7 +21,8 @@ class NewClientRequest {
   requestType: RequestType = RequestType.clientNew;
   ticketNo: string;
   type: TicketType;
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   phone: string;
   summary: string;
@@ -31,7 +33,8 @@ class NewClientRequest {
   constructor(data: any) {
     this.ticketNo = data.ticketNo;
     this.type = data.type;
-    this.name = data.name;
+    this.firstName = data.firstName;
+    this.lastName = data.lastName;
     this.email = data.email;
     this.phone = data.phone;
     this.summary = data.summary;
@@ -72,7 +75,8 @@ class ClientTicket {
   ticketNo: string;
   type: TicketType;
   status: string;
-  name: string;
+  firstName: string;
+  lastName: string;
   email: string;
   phone: string;
   summary: string;
@@ -83,7 +87,8 @@ class ClientTicket {
   constructor(data: any) {
     this.ticketNo = data.ticketNo;
     this.type = data.type;
-    this.name = data.name;
+    this.firstName = data.firstName;
+    this.lastName = data.lastName;
     this.status = data.status;
     this.urgency = data.urgency;
     this.email = data.email;
@@ -103,8 +108,17 @@ class ClientService {
     this.contextPath = getConfig().publicRuntimeConfig.contextPath;
   }
 
-  newRequest(request: NewClientRequest): Promise<ClientTicket> {
-    // TODO post request
+  async newRequest(request: NewClientRequest): Promise<ClientTicket> {
+    // Post Request to supabase
+    try {
+      const { data, error } = await supabaseClient
+        .from('clients')
+        .insert([{ 
+          first_name: request.firstName, 
+          last_name: request.lastName
+        }])
+      if (error) throw error;
+    } catch (error) { console.log('ERROR AT NEW CLIENT REQUEST:', error) }
     // For now...
     const ticket = new ClientTicket(request)
     ticket.ticketNo = uuidv4();
