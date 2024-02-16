@@ -17,6 +17,15 @@ enum TicketType {
   other = 'other'
 }
 
+// This should reflect the shape of our client data
+export type ClientType = {
+  id?: BigInteger;
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone: string;
+}
+
 class NewClientRequest {
   requestType: RequestType = RequestType.clientNew;
   ticketNo: string;
@@ -115,10 +124,14 @@ class ClientService {
         .from('clients')
         .insert([{ 
           first_name: request.firstName, 
-          last_name: request.lastName
+          last_name: request.lastName,
+          email: request.email,
         }])
       if (error) throw error;
-    } catch (error) { console.log('ERROR AT NEW CLIENT REQUEST:', error) }
+    } catch (error) { 
+      console.log('ERROR AT NEW CLIENT REQUEST:', error);
+      throw error;
+    }
     // For now...
     const ticket = new ClientTicket(request)
     ticket.ticketNo = uuidv4();
@@ -131,6 +144,27 @@ class ClientService {
 
     this.tickets.push(ticket);
     return Promise.resolve(ticket);
+  }
+
+  async getClientByEmail(email: string): Promise<ClientType> {
+    try {
+      const { data, error } = await supabaseClient
+        .from('clients')
+        .select('*')
+        .eq('email', email)
+        .single();
+
+      if (error) {
+        console.log('ERROR IN GET CLIENT BY EMAIL:', error)
+        throw error;
+      }
+
+      if (!data) throw new Error('No client found with this email')
+      
+      return data;
+    } catch (error) {
+      throw error;
+    }
   }
 
   getTicket(id: string): Promise<ClientTicket> {

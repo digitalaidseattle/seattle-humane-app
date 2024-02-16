@@ -10,14 +10,16 @@ import { InputText } from "primereact/inputtext";
 import { RadioButton } from 'primereact/radiobutton';
 import { InputTextarea } from 'primereact/inputtextarea';
 
-import { useEffect, useState } from "react";
-import { NewClientRequest, TicketType, clientService } from "../services/ClientService";
+import { useEffect, useState, useRef} from "react";
+import { NewClientRequest, TicketType, clientService, ClientType } from "../services/ClientService";
 
 const ClientDialog = (props) => {
 
   const [clientDialog, setClientDialog] = useState(false);
   const [type, setType] = useState(TicketType.email);
   const [request, setRequest] = useState(new NewClientRequest({}));
+
+  const timeoutId = useRef(null);
 
   useEffect(() => {
     setClientDialog(props.visible)
@@ -33,6 +35,34 @@ const ClientDialog = (props) => {
     clientService.newRequest(request)
       .then(ticket => props.onClose(ticket))
       .catch(err => props.onClose(null))
+    setRequest(new NewClientRequest({}));
+  };
+
+  const updateField = (field, value) => {
+    setRequest(prevRequest => ({...prevRequest, [field]: value}))
+
+    if (field === 'email') {
+      if (timeoutId.current) {
+        clearTimeout(timeoutId.current);
+      }
+
+      timeoutId.current = setTimeout(async () => {
+        try {
+          const client = await clientService.getClientByEmail(value)
+          console.log(client)
+          setRequest(prevRequest => {
+            return {
+              ...prevRequest,
+              firstName: client.first_name,
+              lastName: client.last_name,
+              phone: client.phone,
+            }
+          })
+          // setFirstName(client.first_name)
+        } catch (error) {}
+      }, 1000);
+
+    }
   };
 
   const clientDialogFooter = (
@@ -62,9 +92,8 @@ const ClientDialog = (props) => {
           </label>
           <div className="col-12 md:col-10">
             <InputText id="firstName" type="text" 
-              onChange={(e) => {
-                setRequest(prevRequest => ({...prevRequest, firstName: e.target.value}))
-              }} 
+              value={request.firstName}
+              onChange={(e) => updateField('firstName', e.target.value)} 
             />
           </div>
         </div>
@@ -74,9 +103,8 @@ const ClientDialog = (props) => {
           </label>
           <div className="col-12 md:col-10">
             <InputText id="lastName" type="text" 
-              onChange={(e) => {
-                setRequest(prevRequest => ({...prevRequest, lastName: e.target.value}))
-              }} 
+              value={request.lastName}
+              onChange={(e) => updateField('lastName', e.target.value)} 
             />
           </div>
         </div>
@@ -86,9 +114,7 @@ const ClientDialog = (props) => {
           </label>
           <div className="col-12 md:col-10">
             <InputText id="email" type="text" 
-              onChange={(e) => {
-                setRequest(prevRequest => ({...prevRequest, email: e.target.value}))
-              }} 
+              onChange={(e) => updateField('email', e.target.value)} 
             />
           </div>
         </div>
@@ -98,9 +124,7 @@ const ClientDialog = (props) => {
           </label>
           <div className="col-12 md:col-10">
             <InputText id="phone" type="text" 
-              onChange={(e) => {
-                setRequest(prevRequest => ({...prevRequest, phone: e.target.value}))
-              }} 
+              onChange={(e) => updateField('phone', e.target.value)} 
             />
           </div>
         </div>
@@ -111,9 +135,7 @@ const ClientDialog = (props) => {
           </label>
           <div className="col-12 md:col-10">
             <InputText id="summary" type="text" 
-              onChange={(e) => {
-                setRequest(prevRequest => ({...prevRequest, summary: e.target.value}))
-              }} 
+              onChange={(e) => updateField('summary', e.target.value)} 
             />
           </div>
         </div>
@@ -123,9 +145,7 @@ const ClientDialog = (props) => {
           </label>
           <div className="col-12 md:col-10">
             <InputTextarea id="description" type="text" 
-              onChange={(e) => {
-                setRequest(prevRequest => ({...prevRequest, description: e.target.value}))
-              }} 
+              onChange={(e) => updateField('description', e.target.value)} 
             />
           </div>
         </div>
