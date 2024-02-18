@@ -22,11 +22,12 @@ enum TicketType {
   other = 'other'
 }
 
-// This should reflect the shape of our client data
+// This should reflect the shape of our client data. In this case I've chosen
+// to keep naming conventions to SQL standards. Could add data mapper instead.
 export type ClientType = {
   id?: BigInteger;
-  firstName: string;
-  lastName: string;
+  first_name: string;
+  last_name: string;
   email: string;
   phone: string;
 }
