@@ -1,9 +1,13 @@
 import getConfig from 'next/config';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { classNames } from 'primereact/utils';
-import React, { forwardRef, useContext, useImperativeHandle, useRef, useState } from 'react';
-import ClientDialog from '../client/components/ClientDialog';
+import React, { forwardRef, useContext, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import ClientDialog from '../src/components/ClientDialog';
+import { authService } from '../src/services/authService';
 import { LayoutContext } from './context/layoutcontext';
+import { UserContext } from '../src/context/usercontext';
+import { User } from '@supabase/supabase-js';
 
 const AppTopbar = forwardRef((props, ref) => {
     const { layoutConfig, layoutState, onMenuToggle, showProfileSidebar } = useContext(LayoutContext);
@@ -13,6 +17,8 @@ const AppTopbar = forwardRef((props, ref) => {
     const contextPath = getConfig().publicRuntimeConfig.contextPath;
 
     const [clientDialog, setClientDialog] = useState(false);
+    const { user } = useContext(UserContext);
+    const router = useRouter();
 
     useImperativeHandle(ref, () => ({
         menubutton: menubuttonRef.current,
@@ -29,13 +35,20 @@ const AppTopbar = forwardRef((props, ref) => {
         setClientDialog(false);
     }
 
+    const signOut = (item) => {
+        authService.signOut().then(() => {
+            router.push("/auth/login")
+        })
+    }
+
+
     return (
         <React.Fragment>
             <div className="layout-topbar">
                 <Link legacyBehavior href="/">
                     <a className="layout-topbar-logo">
                         <>
-                            <img src={`${contextPath}/images/Seattle_Humane_Logo.png`} alt="logo" />
+                            <img src={`${contextPath}/images/shs-favicon.png`} alt="logo" />
                             <span>Seattle Humane</span>
                         </>
                     </a>
@@ -54,9 +67,9 @@ const AppTopbar = forwardRef((props, ref) => {
                         <i className="pi pi-ticket"></i>
                         <span>Ticket</span>
                     </button>
-                    <button type="button" className="p-link layout-topbar-button">
+                    <button type="button" title={user ? user.email : "user"} className="p-link layout-topbar-button" onClick={signOut}>
                         <i className="pi pi-user"></i>
-                        <span>Profile</span>
+                        <span>profile</span>
                     </button>
                 </div>
             </div>
