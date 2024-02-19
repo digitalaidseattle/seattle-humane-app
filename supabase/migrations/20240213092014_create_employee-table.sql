@@ -22,46 +22,15 @@ alter table "public"."Employee" add constraint "Employee_id_fkey" FOREIGN KEY (i
 
 alter table "public"."Employee" validate constraint "Employee_id_fkey";
 
-grant delete on table "public"."Employee" to "anon";
+grant select, insert, update, delete on table "public"."Employee" to "anon";
 
-grant insert on table "public"."Employee" to "anon";
+grant references, trigger, truncate on table "public"."Employee" to "anon";
 
-grant references on table "public"."Employee" to "anon";
+grant  select, insert, update, delete on table "public"."Employee" to "authenticated";
 
-grant select on table "public"."Employee" to "anon";
+grant references, trigger, truncate on table "public"."Employee" to "authenticated";
 
-grant trigger on table "public"."Employee" to "anon";
+grant select, insert, update, delete on table "public"."Employee" to "service_role";
 
-grant truncate on table "public"."Employee" to "anon";
-
-grant update on table "public"."Employee" to "anon";
-
-grant delete on table "public"."Employee" to "authenticated";
-
-grant insert on table "public"."Employee" to "authenticated";
-
-grant references on table "public"."Employee" to "authenticated";
-
-grant select on table "public"."Employee" to "authenticated";
-
-grant trigger on table "public"."Employee" to "authenticated";
-
-grant truncate on table "public"."Employee" to "authenticated";
-
-grant update on table "public"."Employee" to "authenticated";
-
-grant delete on table "public"."Employee" to "service_role";
-
-grant insert on table "public"."Employee" to "service_role";
-
-grant references on table "public"."Employee" to "service_role";
-
-grant select on table "public"."Employee" to "service_role";
-
-grant trigger on table "public"."Employee" to "service_role";
-
-grant truncate on table "public"."Employee" to "service_role";
-
-grant update on table "public"."Employee" to "service_role";
-
+grant references, trigger, truncate, on table "public"."Employee" to "service_role";
 
