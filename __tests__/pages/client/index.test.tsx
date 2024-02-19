@@ -47,17 +47,6 @@ describe('Client', () => {
     expect(push).toHaveBeenCalledWith('/clients')
   });
 
-  it('click breadcrumb', () => {
-    const push = jest.fn();
-    (useRouter as jest.Mock).mockImplementation(() => ({
-      push
-    }));
-
-    render(<Client />);
-    screen.getByText('Clients').click();
-    expect(push).toHaveBeenCalledWith('/clients')
-  });
-
   it('render category drop down', async () => {
     Object.defineProperty(window, 'location', {
       writable: true,
