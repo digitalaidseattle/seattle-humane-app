@@ -1,8 +1,8 @@
 // client/index.test.js
 import '@testing-library/jest-dom';
 import { render, screen, waitFor, within } from '@testing-library/react';
-import Client from '../../pages/client';
-import { ClientTicket, ServiceCategory, clientService } from '../../src/services/ClientService';
+import Client from '../../../pages/client';
+import { ClientTicket, ServiceCategory, clientService } from '../../../src/services/ClientService';
 import { useRouter } from 'next/navigation';
 
 jest.mock('next/navigation', () => ({

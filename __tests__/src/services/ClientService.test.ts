@@ -5,8 +5,8 @@
  *
  */
 
-import supabaseClient from '../../utils/supabaseClient';
-import { ServiceCategory, clientService } from './ClientService';
+import { ServiceCategory, clientService } from '../../../src/services/ClientService';
+import supabaseClient from '../../../utils/supabaseClient';
 describe('ClientService', () => {
 
   it('should get service categories', async () => {
