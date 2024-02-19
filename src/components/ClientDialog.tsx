@@ -11,7 +11,8 @@ import { RadioButton } from 'primereact/radiobutton';
 import { InputTextarea } from 'primereact/inputtextarea';
 
 import React, { useEffect, useState, useRef} from "react";
-import { NewClientRequest, TicketType, clientService, ClientType } from "../services/ClientService";
+import { NewClientRequest, TicketType, clientService } from "../services/ClientService";
+import { AnimalType, ClientType } from "../types";
 
 const ClientDialog = (props) => {
 
@@ -23,37 +24,45 @@ const ClientDialog = (props) => {
     phone: '',
   }
 
+  const defaultAnimal: AnimalType = {
+    id: null,
+    name: '',
+    species: '',
+    client_id: null,
+  }
+
   const [clientDialog, setClientDialog] = useState(false);
   const [type, setType] = useState(TicketType.email);
   const [request, setRequest] = useState(new NewClientRequest({}));
   const [client, setClient] = useState<ClientType>(defaultClient);
-
-  const timeoutId = useRef(null);
+  const [animal, setAnimal] = useState<AnimalType>(defaultAnimal);
 
   useEffect(() => {
     setClientDialog(props.visible)
   }, [props])
-
+  
   const hideClientDialog = () => {
     props.onClose(undefined);
+    setClient(defaultClient);
   };
-
+  
   const saveClientDialog = () => {
     // type handle separate to support RadioButton
     setRequest(prevRequest => ({...prevRequest, type: type}));
     clientService.newRequest(request)
-      .then(ticket => props.onClose(ticket))
-      .catch(err => props.onClose(null))
+    .then(ticket => props.onClose(ticket))
+    .catch(err => props.onClose(null))
     setRequest(new NewClientRequest({}));
     setClient(defaultClient);
   };
 
-  const updateClientField = (field: string, value: string) => {
-    setClient(prevClient => ({...prevClient, [field]: value}))
+  const timeoutId = useRef(null);
+
+  const autoFillClient = (type: string, value: string) => {
 
     // REVIEW: This could also be solved with an onBlur call, so that the check
     // against the DB only happens when user leaves the email field.
-    if (field === 'email') {
+    if (type === 'email') {
       if (timeoutId.current) {
         clearTimeout(timeoutId.current);
       }
@@ -110,7 +119,7 @@ const ClientDialog = (props) => {
             <div className="col-12 md:col-10">
               <InputText id="firstName" type="text" 
                 value={client.first_name}
-                onChange={(e) => updateClientField('firstName', e.target.value)} 
+                onChange={(e) => setClient(prevClient => ({...prevClient, first_name: e.target.value}))}
               />
             </div>
           </div>
@@ -121,7 +130,7 @@ const ClientDialog = (props) => {
             <div className="col-12 md:col-10">
               <InputText id="lastName" type="text" 
                 value={client.last_name}
-                onChange={(e) => updateClientField('lastName', e.target.value)} 
+                onChange={(e) => setClient(prevClient => ({...prevClient, last_name: e.target.value}))} 
               />
             </div>
           </div>
@@ -130,8 +139,11 @@ const ClientDialog = (props) => {
               Email
             </label>
             <div className="col-12 md:col-10">
-              <InputText id="email" type="text" 
-                onChange={(e) => updateClientField('email', e.target.value)} 
+              <InputText id="email" type="text"
+                onChange={(e) => {
+                  setClient(prevClient => ({...prevClient, email: e.target.value}));
+                  autoFillClient('email', e.target.value);
+                }} 
               />
             </div>
           </div>
@@ -141,7 +153,7 @@ const ClientDialog = (props) => {
             </label>
             <div className="col-12 md:col-10">
               <InputText id="phone" type="text" 
-                onChange={(e) => updateClientField('phone', e.target.value)} 
+                onChange={(e) => setClient(prevClient => ({...prevClient, phone: e.target.value}))} 
               />
             </div>
           </div>
@@ -151,21 +163,21 @@ const ClientDialog = (props) => {
             </label>
             <div className="col-12 md:col-10">
               <InputText id="summary" type="text" 
-                onChange={(e) => updateClientField('summary', e.target.value)} 
+                onChange={(e) => setAnimal(prevAnimal => ({...prevAnimal, name: e.target.value}))}
               />
             </div>
           </div>
           <div className="field grid">
             <label htmlFor="summary" className="col-12 mb-2 md:col-2 md:mb-0">
-              Summary
+              Service Category
             </label>
             <div className="col-12 md:col-10">
               <InputText id="summary" type="text" 
-                onChange={(e) => updateClientField('summary', e.target.value)} 
+                onChange={(e) => setRequest(prevRequest => ({...prevRequest, serviceCategory: e.target.value}))}
               />
             </div>
           </div>
-          <div className="field grid">
+          {/* <div className="field grid">
             <label htmlFor="description" className="col-12 mb-2 md:col-2 md:mb-0">
               Description
             </label>
@@ -174,7 +186,7 @@ const ClientDialog = (props) => {
                 onChange={(e) => updateClientField('description', e.target.value)} 
               />
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </Dialog>

@@ -7,6 +7,7 @@
  */
 import { v4 as uuidv4 } from 'uuid';
 import supabaseClient from '../../utils/supabaseClient';
+import { ClientType } from '../types';
 
 enum RequestType {
   clientNew = 'client-new',
@@ -22,15 +23,6 @@ enum TicketType {
   other = 'other'
 }
 
-// This should reflect the shape of our client data. In this case I've chosen
-// to keep naming conventions to SQL standards. Could add data mapper instead.
-export type ClientType = {
-  id?: BigInteger;
-  first_name: string;
-  last_name: string;
-  email: string;
-  phone: string;
-}
 
 class ServiceCategory {
   id: string
