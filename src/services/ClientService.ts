@@ -195,5 +195,10 @@ class ClientService {
 
 const clientService = new ClientService();
 export {
-  ClientTicket, NewClientRequest, ServiceCategory, TicketType, clientService
+  ClientTicket,
+  NewClientRequest,
+  ServiceCategory,
+  ServiceStatus,
+  TicketType,
+  clientService
 };
