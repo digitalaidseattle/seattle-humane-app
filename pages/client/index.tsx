@@ -13,7 +13,12 @@ import { Rating } from 'primereact/rating';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
 import React, { useEffect, useRef, useState } from 'react';
-import { ClientTicket, ServiceCategory, clientService } from '../../src/services/ClientService';
+import {
+    ClientTicket,
+    ServiceCategory,
+    ServiceStatus,
+    clientService
+} from '../../src/services/ClientService';
 import { Dropdown } from 'primereact/dropdown';
 
 const Client = () => {
@@ -22,7 +27,7 @@ const Client = () => {
     const [_loading, setLoading] = useState(false);
     // TODO create customHook for serviceCategories
     const [categories, setCategories] = useState<ServiceCategory[]>();
-    const [statuses, setStatuses] = useState<ServiceCategory[]>();
+    const [statuses, setStatuses] = useState<ServiceStatus[]>();
 
     const [ticket, setTicket] = useState<ClientTicket>();
     const toast = useRef(null);
@@ -130,6 +135,7 @@ const Client = () => {
                                         <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
                                             <div className="text-500 w-6 md:w-2 font-medium">Service Category</div>
                                             <Dropdown value={ticket.serviceCategoryId}
+                                                title="Service category options"
                                                 className="w-full md:w-14rem"
                                                 // Note: we're updating onBlur.  we may have to change to a "save" button because of performance
                                                 onBlur={() => update()}
@@ -165,14 +171,14 @@ const Client = () => {
                                         <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
                                             <div className="text-500 w-6 md:w-2 font-medium">Phone</div>
                                             <div className="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
-                                                <InputMask id="name" type="text" mask="(999) 999-9999"
+                                                <InputMask id="phone" type="text" mask="(999) 999-9999"
                                                     value={ticket.phone} onBlur={() => update()} onChange={(e) => changeProp('phone', e.target.value)} />
                                             </div>
                                         </li>
                                         <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
                                             <div className="text-500 w-6 md:w-2 font-medium">Email</div>
                                             <div className="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
-                                                <InputText id="name" type="text" value={ticket.email} onBlur={() => update()} onChange={(e) => changeProp('email', e.target.value)} />
+                                                <InputText id="email" type="text" value={ticket.email} onBlur={() => update()} onChange={(e) => changeProp('email', e.target.value)} />
                                             </div>
                                         </li>
                                     </ul>
