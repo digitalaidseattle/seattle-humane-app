@@ -1,6 +1,12 @@
 
-import getConfig from 'next/config';
+/**
+ *  ClientService.ts
+ *
+ *  @copyright 2024 Digital Aid Seattle
+ *
+ */
 import { v4 as uuidv4 } from 'uuid';
+import supabaseClient from '../../utils/supabaseClient';
 
 enum RequestType {
   clientNew = 'client-new',
@@ -15,6 +21,34 @@ enum TicketType {
   phone = 'phone',
   other = 'other'
 }
+
+class ServiceCategory {
+  id: string
+  name: string
+
+  constructor(input: any) {
+    this.id = input.id;
+    this.name = input.name;
+  }
+}
+
+class ServiceStatus {
+  id: string
+  code: string
+  name: string
+
+  constructor(input: any) {
+    this.id = input.id;
+    this.code = input.code;
+    this.name = input.name;
+  }
+}
+const statuses: ServiceStatus[] = [
+  new ServiceStatus({ name: 'New', code: 'new' }),
+  new ServiceStatus({ name: 'In-progress', code: 'update' }),
+  new ServiceStatus({ name: 'Close', code: 'closed' }),
+  new ServiceStatus({ name: 'Blocked', code: 'blocked' })
+];
 
 class NewClientRequest {
   requestType: RequestType = RequestType.clientNew;
@@ -79,6 +113,7 @@ class ClientTicket {
   description: string;
   urgency: number;
   changeLog: ChangeLog[] = [];
+  serviceCategoryId: string;
 
   constructor(data: any) {
     this.ticketNo = data.ticketNo;
@@ -90,18 +125,17 @@ class ClientTicket {
     this.phone = data.phone;
     this.summary = data.summary;
     this.description = data.description;
+    this.serviceCategoryId = data.serviceCategoryId;
   }
 }
 
 class ClientService {
-  contextPath: string;
+  // constructor(private supabaseClient: SupabaseClient) { }
 
   // TODO remove when in prod
-  tickets: ClientTicket[] = [];
-
-  constructor() {
-    this.contextPath = getConfig().publicRuntimeConfig.contextPath;
-  }
+  tickets: ClientTicket[] = [
+    new ClientTicket({ ticketNo: '1234', type: 'email', name: 'John Doe' })
+  ];
 
   newRequest(request: NewClientRequest): Promise<ClientTicket> {
     // TODO post request
@@ -134,7 +168,37 @@ class ClientService {
     this.tickets = this.tickets.map(obj => ticket.ticketNo === obj.ticketNo ? ticket : obj);
     return Promise.resolve(this.tickets.find(t => t.ticketNo == ticket.ticketNo));
   }
+
+
+
+  async getServiceStatuses(): Promise<ServiceStatus[]> {
+    // REVIEW: Could be from DB
+    return Promise.resolve(statuses)
+  }
+
+  async getServiceCategories(): Promise<ServiceCategory[]> {
+    // For Testing without DB
+    // const tempCategories: ServiceCategory[] = [
+    //   new ServiceCategory({ id: 'id_1', name: 'Cat One' }),
+    //   new ServiceCategory({ id: 'id_2', name: 'Cat Two' }),
+    //   new ServiceCategory({ id: 'id_3', name: 'Dog Adoption' }),
+    //   new ServiceCategory({ id: 'id_4', name: 'Pet Fostering' })
+    // ]
+    // return Promise.resolve(tempCategories);
+
+    const response = await supabaseClient
+      .from('service_category')
+      .select('*')
+    return response.data
+  }
 }
 
 const clientService = new ClientService();
-export { NewClientRequest, ClientTicket, TicketType, clientService };
+export {
+  ClientTicket,
+  NewClientRequest,
+  ServiceCategory,
+  ServiceStatus,
+  TicketType,
+  clientService
+};
