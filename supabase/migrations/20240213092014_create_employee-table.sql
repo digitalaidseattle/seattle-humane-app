@@ -32,5 +32,5 @@ grant references, trigger, truncate on table "public"."Employee" to "authenticat
 
 grant select, insert, update, delete on table "public"."Employee" to "service_role";
 
-grant references, trigger, truncate, on table "public"."Employee" to "service_role";
+grant references, trigger, truncate on table "public"."Employee" to "service_role";
 
