@@ -12,28 +12,37 @@ import { InputTextarea } from 'primereact/inputtextarea';
 
 import React, { useEffect, useState, useRef} from "react";
 import { NewClientRequest, TicketType, clientService } from "../services/ClientService";
-import { AnimalType, ClientType } from "../types";
+import { AnimalType, ClientType, RequestType } from "../types";
+
+const defaultClient: ClientType = {
+  id: null,
+  first_name: '',
+  last_name: '',
+  email: '',
+  phone: '',
+}
+
+const defaultAnimal: AnimalType = {
+  id: null,
+  name: '',
+  species: '',
+  client_id: null,
+}
+
+const defaultRequest: RequestType = {
+  id: null,
+  client_id: null,
+  animal_id: null,
+  service_category: '',
+  source: '',
+  staff_id: null,
+}
 
 const ClientDialog = (props) => {
 
-  const defaultClient: ClientType = {
-    id: null,
-    first_name: '',
-    last_name: '',
-    email: '',
-    phone: '',
-  }
-
-  const defaultAnimal: AnimalType = {
-    id: null,
-    name: '',
-    species: '',
-    client_id: null,
-  }
-
   const [clientDialog, setClientDialog] = useState(false);
-  const [type, setType] = useState(TicketType.email);
-  const [request, setRequest] = useState(new NewClientRequest({}));
+  const [source, setSource] = useState(TicketType.email);
+  const [request, setRequest] = useState<RequestType>(defaultRequest);
   const [client, setClient] = useState<ClientType>(defaultClient);
   const [animal, setAnimal] = useState<AnimalType>(defaultAnimal);
 
@@ -48,12 +57,15 @@ const ClientDialog = (props) => {
   
   const saveClientDialog = () => {
     // type handle separate to support RadioButton
-    setRequest(prevRequest => ({...prevRequest, type: type}));
-    clientService.newRequest(request)
-    .then(ticket => props.onClose(ticket))
-    .catch(err => props.onClose(null))
-    setRequest(new NewClientRequest({}));
+
+    setRequest(prevRequest => ({...prevRequest, source: source}));
+    clientService.newRequest(request, client, animal)
+      .then(requestResponse => props.onClose(requestResponse))
+      // TODO - handle all sorts of errors: client exists, animal exists, request exists, etc.
+      .catch(err => props.onClose(null))
+    setRequest(defaultRequest);
     setClient(defaultClient);
+    setAnimal(defaultAnimal);
   };
 
   const timeoutId = useRef(null);
@@ -106,7 +118,7 @@ const ClientDialog = (props) => {
           <div className="field grid flex flex-wrap gap-3">
             {Object.keys(TicketType).map((t, index) =>
               <div key={index} className="flex align-items-center">
-                <RadioButton inputId={`t${index}`} name={t} value={t} onChange={(e) => setType(e.value)} checked={type === t} />
+                <RadioButton inputId={`t${index}`} name={t} value={t} onChange={(e) => setSource(e.value)} checked={source === t} />
                 <label htmlFor={`t${index}`} className="ml-2">{t}</label>
               </div>
             )}
@@ -159,11 +171,21 @@ const ClientDialog = (props) => {
           </div>
           <div className="field grid">
             <label htmlFor="summary" className="col-12 mb-2 md:col-2 md:mb-0">
-              Pet Name
+              Animal Name
             </label>
             <div className="col-12 md:col-10">
               <InputText id="summary" type="text" 
                 onChange={(e) => setAnimal(prevAnimal => ({...prevAnimal, name: e.target.value}))}
+              />
+            </div>
+          </div>
+          <div className="field grid">
+            <label htmlFor="summary" className="col-12 mb-2 md:col-2 md:mb-0">
+              Animal Species
+            </label>
+            <div className="col-12 md:col-10">
+              <InputText id="summary" type="text" 
+                onChange={(e) => setAnimal(prevAnimal => ({...prevAnimal, species: e.target.value}))}
               />
             </div>
           </div>
@@ -177,16 +199,6 @@ const ClientDialog = (props) => {
               />
             </div>
           </div>
-          {/* <div className="field grid">
-            <label htmlFor="description" className="col-12 mb-2 md:col-2 md:mb-0">
-              Description
-            </label>
-            <div className="col-12 md:col-10">
-              <InputTextarea id="description" type="text" 
-                onChange={(e) => updateClientField('description', e.target.value)} 
-              />
-            </div>
-          </div> */}
         </div>
       </div>
     </Dialog>

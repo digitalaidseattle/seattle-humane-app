@@ -7,7 +7,8 @@
  */
 import { v4 as uuidv4 } from 'uuid';
 import supabaseClient from '../../utils/supabaseClient';
-import { ClientType } from '../types';
+import { ClientType, RequestType as ServiceRequestType , AnimalType } from '../types';
+import { create } from 'domain';
 
 enum RequestType {
   clientNew = 'client-new',
@@ -143,33 +144,87 @@ class ClientService {
     new ClientTicket({ ticketNo: '1234', type: 'email', name: 'John Doe' })
   ];
 
-  async newRequest(request: NewClientRequest): Promise<ClientTicket> {
+  async newRequest(
+      request: ServiceRequestType, 
+      client: ClientType, 
+      animal: AnimalType)
+    : Promise<ServiceRequestType> {
     // Post Request to supabase
+    
+    let createdRequest: ServiceRequestType;
+
     try {
-      const { data, error } = await supabaseClient
+      let animalId: BigInteger;
+      let clientId: BigInteger;
+
+      // Check if client exists and create one if not
+      // No Upsert operations currently in the supabaseClient library AFAIK
+      let { data: existingClient, error: clientError } = await supabaseClient
         .from('clients')
+        .select('*')
+        // Here assumes that email is unique and required; may need to also check phone
+        .eq('email', client.email)
+        .single() as { data: ClientType | null, error: Error };
+
+      if (clientError) throw new Error(`Client retrieval failed: ${clientError.message}`);
+
+      // TODO: Deal with modifying client information if it already exists
+      if (!existingClient) {
+        const { data: newClient, error } = await supabaseClient
+          .from('clients')
+          .insert([{ 
+            first_name: client.first_name, 
+            last_name: client.last_name,
+            email: client.email,
+            phone: client.phone,
+          }]) as { data: ClientType | null, error: Error };
+        if (error) throw new Error(`Client creation failed: ${error.message}`);
+        if (newClient) clientId = newClient.id;
+      } else clientId = existingClient.id;
+
+      // Check if animal exists and create one if not
+      // TODO: HOW TO IDENTIFY UNIQUE ANIMAL? NAME / SPECIES / CLIENT_ID?
+      let { data: existingAnimal, error: animalError } = await supabaseClient
+        .from('animals')
+        .select('*')
+        .eq('name', animal.name)
+        .eq('species', animal.species)
+        .eq('client_id', clientId)
+        .maybeSingle() as { data: AnimalType | null, error: Error };
+
+        if (animalError) throw new Error(`Animal retrieval failed: ${animalError.message}`);
+
+      if (!existingAnimal) { 
+        const { data: newAnimal, error } = await supabaseClient
+          .from('animals')
+          .insert([{ 
+            name: animal.name, 
+            species: animal.species,
+            client_id: clientId,
+          }]) as { data: AnimalType | null, error: Error };
+        if (error) throw new Error(`Animal creation failed: ${error.message}`);
+        if (newAnimal) animalId = newAnimal.id;
+      } else animalId = existingAnimal.id;
+
+      // Create new request
+      const { data: newRequest, error } = await supabaseClient
+        .from('requests')
         .insert([{ 
-          first_name: request.firstName, 
-          last_name: request.lastName,
-          email: request.email,
-        }])
-      if (error) throw error;
+          client_id: clientId,
+          animal_id: animalId,
+          service_category: request.service_category,
+          source: request.source,
+          staff_id: request.staff_id,
+        }]) as { data: ServiceRequestType | null, error: Error };
+      if (error) throw new Error (`Request creation failed: ${error.message}`);
+      else createdRequest = newRequest;
+
     } catch (error) { 
-      console.log('ERROR AT NEW CLIENT REQUEST:', error);
+      console.log('ERROR AT NEW REQUEST CREATION:', error);
       throw error;
     }
-    // For now...
-    const ticket = new ClientTicket(request)
-    ticket.ticketNo = uuidv4();
-    ticket.status = RequestType.clientNew;
-    ticket.changeLog.push(new ChangeLog({
-      date: request.date,
-      representative: 'FIXME',
-      description: 'New Request'
-    }));
-
-    this.tickets.push(ticket);
-    return Promise.resolve(ticket);
+    // TODO: ChangeLog not currently implemented
+    return Promise.resolve(createdRequest);
   }
 
   async getClientByEmail(email: string): Promise<ClientType> {
@@ -178,7 +233,7 @@ class ClientService {
         .from('clients')
         .select('*')
         .eq('email', email)
-        .single();
+        .maybeSingle();
 
       if (error) {
         console.log('ERROR IN GET CLIENT BY EMAIL:', error)
