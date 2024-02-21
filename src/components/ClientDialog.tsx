@@ -37,7 +37,12 @@ const defaultRequest: RequestType = {
   staff_id: null,
 }
 
-const ClientDialog = (props) => {
+interface ClientDialogProps {
+  visible: boolean;
+  onClose: (request: RequestType) => void;
+}
+
+const ClientDialog = (props: ClientDialogProps) => {
 
   const [clientDialog, setClientDialog] = useState(false);
   const [source, setSource] = useState(TicketType.email);
@@ -82,21 +87,24 @@ const ClientDialog = (props) => {
       timeoutId.current = setTimeout(async () => {
         try {
           const clientResponse = await clientService.getClientByEmail(value)
-          console.log(clientResponse)
-          setClient(prevClient => {
-            return {
-              ...prevClient,
-              first_name: clientResponse.first_name || client.first_name,
-              last_name: clientResponse.last_name || client.last_name,
-              phone: clientResponse.phone || client.phone,
-            }
-          })
-        } catch (error) {}
+
+          if (clientResponse !== null) {
+            setClient(prevClient => {
+              return {
+                ...prevClient,
+                first_name: clientResponse.first_name,
+                last_name: clientResponse.last_name,
+                phone: clientResponse.phone,
+              }
+            })
+          }
+        } catch (error) { console.log(error) }
       }, 1000);
 
     }
   };
 
+  // TODO: check for existing pet and fill out fields
   const updatePetField = (field, value) => {
     setRequest
   }
