@@ -8,10 +8,9 @@ import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
 import { InputText } from "primereact/inputtext";
 import { RadioButton } from 'primereact/radiobutton';
-import { InputTextarea } from 'primereact/inputtextarea';
 
 import React, { useEffect, useState, useRef} from "react";
-import { NewClientRequest, TicketType, clientService } from "../services/ClientService";
+import { TicketType, clientService } from "../services/ClientService";
 import { AnimalType, ClientType, RequestType } from "../types";
 
 const defaultClient: ClientType = {

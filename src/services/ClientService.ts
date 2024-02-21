@@ -5,10 +5,8 @@
  *  @copyright 2024 Digital Aid Seattle
  *
  */
-import { v4 as uuidv4 } from 'uuid';
 import supabaseClient from '../../utils/supabaseClient';
 import { ClientType, RequestType as ServiceRequestType , AnimalType } from '../types';
-import { create } from 'domain';
 
 enum RequestType {
   clientNew = 'client-new',
@@ -57,8 +55,7 @@ class NewClientRequest {
   requestType: RequestType = RequestType.clientNew;
   ticketNo: string;
   type: TicketType;
-  firstName: string;
-  lastName: string;
+  name: string;
   email: string;
   phone: string;
   summary: string;
@@ -69,8 +66,7 @@ class NewClientRequest {
   constructor(data: any) {
     this.ticketNo = data.ticketNo;
     this.type = data.type;
-    this.firstName = data.firstName;
-    this.lastName = data.lastName;
+    this.name = data.name;
     this.email = data.email;
     this.phone = data.phone;
     this.summary = data.summary;
@@ -111,8 +107,7 @@ class ClientTicket {
   ticketNo: string;
   type: TicketType;
   status: string;
-  firstName: string;
-  lastName: string;
+  name: string;
   email: string;
   phone: string;
   summary: string;
@@ -124,8 +119,7 @@ class ClientTicket {
   constructor(data: any) {
     this.ticketNo = data.ticketNo;
     this.type = data.type;
-    this.firstName = data.firstName;
-    this.lastName = data.lastName;
+    this.name = data.name;
     this.status = data.status;
     this.urgency = data.urgency;
     this.email = data.email;
