@@ -32,6 +32,13 @@ class AuthService {
         return resp
       })
   }
+  
+  signInWithAzure = async () => {
+    return supabaseClient.auth.signInWithOAuth({ provider: 'azure' })
+      .then(resp => {
+        return resp
+      })
+  }
 }
 
 

@@ -38,6 +38,23 @@ describe('LoginPage', () => {
       </LayoutProvider>
     );
     
-    expect(screen.getByText('Welcome, Isabel!')).toBeInTheDocument();
+    expect(screen.getByText('Pet Assistance and Welfare System')).toBeInTheDocument();
   });
+  it('renders Sign-in Microsoft Button', () => {
+    useRouter.mockImplementation(() => ({
+      push: jest.fn(),
+    }));
+
+    render(
+      <LayoutProvider>
+        <UserContext.Provider value={{ user: null, setUser: jest.fn() }}>
+          <LoginPage />
+        </UserContext.Provider>
+      </LayoutProvider>
+    );
+    
+    expect(screen.getByLabelText('Sign in with Microsoft')).toBeInTheDocument();
+  });
+
 });
+
