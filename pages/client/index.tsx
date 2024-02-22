@@ -1,3 +1,8 @@
+/**
+* client/index.tsx
+*
+* @2024 Digital Aid Seattle
+*/
 import { useRouter } from 'next/navigation';
 import { BreadCrumb } from 'primereact/breadcrumb';
 import { Button } from 'primereact/button';
@@ -8,29 +13,42 @@ import { Rating } from 'primereact/rating';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
 import React, { useEffect, useRef, useState } from 'react';
-import { ClientTicket, clientService } from '../../src/services/ClientService'
-
-
+import {
+    ClientTicket,
+    ServiceCategory,
+    ServiceStatus,
+    clientService
+} from '../../src/services/ClientService';
 import { Dropdown } from 'primereact/dropdown';
 
 const Client = () => {
     const { push } = useRouter();
+    // TODO create LoadingContext & Loading Indicator in layout
+    const [_loading, setLoading] = useState(false);
+    // TODO create customHook for serviceCategories
+    const [categories, setCategories] = useState<ServiceCategory[]>();
+    const [statuses, setStatuses] = useState<ServiceStatus[]>();
 
     const [ticket, setTicket] = useState<ClientTicket>();
     const toast = useRef(null);
 
     const home = { icon: 'pi pi-home', url: '/' };
-    const statuses = [
-        { label: 'New', code: 'new' },
-        { label: 'In-progress', code: 'update' },
-        { label: 'Close', code: 'closed' },
-        { label: 'Blocked', code: 'blocked' }
-    ];
 
     useEffect(() => {
-        const params = new URLSearchParams(window.location.search);
-        clientService.getTicket(params.get('ticketNo'))
-            .then(data => setTicket(data));
+        const ticketNo = new URLSearchParams(window.location.search).get('ticketNo');
+        Promise
+            .all([
+                clientService.getTicket(ticketNo),
+                clientService.getServiceCategories(),
+                clientService.getServiceStatuses()
+            ])
+            .then(resps => {
+                setTicket(resps[0]);
+                setCategories(resps[1]);
+                setStatuses(resps[2]);
+            })
+            .catch(err => console.error(err))
+            .finally(() => setLoading(false));
     }, []);
 
     const crumbs = [
@@ -102,18 +120,31 @@ const Client = () => {
                                             <InputText id="summary" type="text" value={ticket.summary} onBlur={() => update()} onChange={(e) => changeProp('summary', e.target.value)} />
                                         </li>
                                         <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
-                                            <div className="text-500 w-6 md:w-2 font-medium">Description</div>
-                                            <InputTextarea id="description" onChange={(e) => changeProp('description', e.target.value)} />
-                                        </li>
-                                        <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
                                             <div className="text-500 w-6 md:w-2 font-medium">Urgency</div>
                                             <Rating value={ticket.urgency} onChange={(e) => changeProp('urgency', e.value)} />
                                             \                                        </li>
                                         <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
                                             <div className="text-500 w-6 md:w-2 font-medium">Status</div>
-                                            <Dropdown value={ticket.status} onChange={(e) => changeProp('status', e.value)}
-                                                options={statuses} optionLabel="label" className="w-full md:w-14rem" />
-
+                                            <Dropdown value={ticket.status}
+                                                className="w-full md:w-14rem"
+                                                // Note: we're updating onBlur.  we may have to change to a "save" button because of performance
+                                                onBlur={() => update()}
+                                                onChange={(e) => changeProp('status', e.value)}
+                                                options={statuses} optionLabel="name" optionValue="code" />
+                                        </li>
+                                        <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
+                                            <div className="text-500 w-6 md:w-2 font-medium">Service Category</div>
+                                            <Dropdown value={ticket.serviceCategoryId}
+                                                title="Service category options"
+                                                className="w-full md:w-14rem"
+                                                // Note: we're updating onBlur.  we may have to change to a "save" button because of performance
+                                                onBlur={() => update()}
+                                                onChange={(e) => changeProp('serviceCategoryId', e.value)}
+                                                options={categories} optionLabel="name" optionValue="id" />
+                                        </li>
+                                        <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
+                                            <div className="text-500 w-6 md:w-2 font-medium">Description</div>
+                                            <InputTextarea id="description" onChange={(e) => changeProp('description', e.target.value)} />
                                         </li>
                                     </ul>
                                 </div>
@@ -140,14 +171,14 @@ const Client = () => {
                                         <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
                                             <div className="text-500 w-6 md:w-2 font-medium">Phone</div>
                                             <div className="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
-                                                <InputMask id="name" type="text" mask="(999) 999-9999"
+                                                <InputMask id="phone" type="text" mask="(999) 999-9999"
                                                     value={ticket.phone} onBlur={() => update()} onChange={(e) => changeProp('phone', e.target.value)} />
                                             </div>
                                         </li>
                                         <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
                                             <div className="text-500 w-6 md:w-2 font-medium">Email</div>
                                             <div className="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
-                                                <InputText id="name" type="text" value={ticket.email} onBlur={() => update()} onChange={(e) => changeProp('email', e.target.value)} />
+                                                <InputText id="email" type="text" value={ticket.email} onBlur={() => update()} onChange={(e) => changeProp('email', e.target.value)} />
                                             </div>
                                         </li>
                                     </ul>
