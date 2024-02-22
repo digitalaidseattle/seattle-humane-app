@@ -31,13 +31,6 @@ const LoginPage = () => {
     });
   }, [router]);
 
-  const signInWithGoogle = async () => {
-    authService.signInWithGoogle();
-  };
-
-  const signInWithAzure = async () => {
-    authService.signInWithAzure();
-  };
 
   return (
     <div className={containerClassName}>
@@ -72,6 +65,14 @@ const LoginPage = () => {
               style={{ position: "relative", zIndex: "11", bottom: "2rem" }}
             >
               <Button
+                label="Sign in with Google"
+                icon={<GoogleIcon />}
+                className="w-full text-sm mr-3 bg-white border-gray-900 text-gray-900"
+                onClick={() => {
+                  authService.signInWithGoogle();
+                }}
+              />
+              <Button
                 icon={
                   <img
                     src={`${contextPath}/images/MicrosoftIcon.svg`}
@@ -81,17 +82,12 @@ const LoginPage = () => {
                   />
                 }
                 label="Sign in with Microsoft"
-                className="w-full text-sm bg-white border-gray-900 text-gray-900 mr-2 pl-3 pr-5"
-                onClick={signInWithAzure}
+                className="w-full text-sm bg-white border-gray-900 text-gray-900 ml-2 pl-3 pr-5"
+                onClick={() => {
+                  authService.signInWithAzure();
+                }}
                 style={{ whiteSpace: "nowrap" }}
               ></Button>
-
-              <Button
-                label="Sign in with Google"
-                icon={<GoogleIcon />}
-                className="w-full text-sm ml-3 bg-white border-gray-900 text-gray-900"
-                onClick={signInWithGoogle}
-              />
             </div>
           </div>
         </div>
