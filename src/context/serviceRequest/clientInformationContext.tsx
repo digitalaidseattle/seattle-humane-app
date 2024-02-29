@@ -6,7 +6,7 @@ export const defaultClientInformation: EdiableClientInfo = {
   last_name: '',
   email: '',
   phone: '',
-  postalCode: '',
+  postal_code: '',
   previously_used: '',
 }
 

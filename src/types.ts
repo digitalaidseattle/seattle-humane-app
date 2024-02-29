@@ -11,7 +11,7 @@ export type ClientType = {
   last_name: string;
   email: string;
   phone: string;
-  postalCode: string;
+  postal_code: string;
   previously_used: string;
 }
 export type EdiableClientInfo = Omit<ClientType, 'id'>
@@ -39,6 +39,6 @@ export type RequestType = {
   status: string;
   staff_id: BigInteger;
 }
-// TODO use lookup with assignedTo
-export type EditableRequestType = Omit<RequestType, 'id'|'animal_id'|'staff_id'> & { assignedTo: string }
+// TODO use lookup with assigned_to
+export type EditableRequestType = Omit<RequestType, 'id'|'animal_id'|'staff_id'> & { assigned_to: string }
 

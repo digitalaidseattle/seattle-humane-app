@@ -22,7 +22,7 @@ const defaultClient: ClientType = {
   last_name: '',
   email: '',
   phone: '',
-  postalCode: '',
+  postal_code: '',
   previously_used: ''
 }
 

@@ -13,8 +13,8 @@ export const clientInformationLabels = {
   EmailPlaceholder: 'Email@email.com',
   PhoneNumber: 'Phone Number',
   PhoneNumberPlaceholder: '000-000-0000',
-  postalCode: 'Zip Code',
-  postalCodePlaceholder: '00000',
+  PostalCode: 'Zip Code',
+  PostalCodePlaceholder: '00000',
   PreviouslyUsed: 'Previous Services Used?',
 }
 
@@ -37,7 +37,7 @@ interface ClientInformationSectionProps {
 export default function ClientInformationSection(props: ClientInformationSectionProps) {
   const {
     disabled,
-    show = ['first_name', 'last_name', 'email', 'phone', 'postalCode', 'previously_used']
+    show = ['first_name', 'last_name', 'email', 'phone', 'postal_code', 'previously_used']
   } = props
 
   const visibleFields = new Set<keyof EdiableClientInfo>(show)
@@ -52,7 +52,7 @@ export default function ClientInformationSection(props: ClientInformationSection
   const setLastName = (last_name: EdiableClientInfo['last_name']) => (setFormData({last_name}))
   const setEmail = (email: EdiableClientInfo['email']) => (setFormData({email}))
   const setPhone = (phone: EdiableClientInfo['phone']) => (setFormData({phone}))
-  const setPostalCode = (postalCode: EdiableClientInfo['postalCode']) => (setFormData({postalCode}))
+  const setPostalCode = (postal_code: EdiableClientInfo['postal_code']) => (setFormData({postal_code}))
   const setPreviouslyUsed = (previously_used: EdiableClientInfo['previously_used']) => (setFormData({previously_used}))
 
   return (
@@ -104,14 +104,14 @@ export default function ClientInformationSection(props: ClientInformationSection
                 onChange={(e) => setPhone(e.target.value)}
               />
             </div>}
-          {visibleFields.has('postalCode')
+          {visibleFields.has('postal_code')
             && <div className="col-6">
               <InputText
-                id="postal"
-                value={`${formData.postalCode}`}
+                id="postal_code"
+                value={`${formData.postal_code}`}
                 disabled={disabled}
-                label={clientInformationLabels.postalCode}
-                placeholder={clientInformationLabels.postalCodePlaceholder}
+                label={clientInformationLabels.PostalCode}
+                placeholder={clientInformationLabels.PostalCodePlaceholder}
                 onChange={(e) => setPostalCode(e.target.value)}
               />
             </div>}
