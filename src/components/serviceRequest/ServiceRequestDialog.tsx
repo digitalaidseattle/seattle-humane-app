@@ -12,8 +12,6 @@ import ServiceInformationSection from "./ServiceInformationSection";
 // TODO externalize to localization file
 export const serviceRequestLabels = {
   FormHeader: 'SPS Internal Form',
-  Cancel: 'Cancel',
-  Save: 'Save',
 }
 
 /** Props for the ServiceRequestDialog */
@@ -71,9 +69,7 @@ function ServiceRequestDialog(props: ServiceRequestDialogProps) {
 
   const dialogFooter = <FormConfirmationButtons
     disabled={busy}
-    cancelLabel={serviceRequestLabels.Cancel}
     onCancelClicked={cancel}
-    saveLabel={serviceRequestLabels.Save}
     onSaveClicked={save}
     saving={busy}
   />

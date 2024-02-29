@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import { EdiableClientInfo } from "../../types";
+import { EdiableClientInfo } from "@types";
 
 export const defaultClientInformation: EdiableClientInfo = {
   first_name: '',
@@ -10,7 +10,7 @@ export const defaultClientInformation: EdiableClientInfo = {
   previously_used: '',
 }
 
-export enum ClientInfoActionType { Clear = 'clear', Update = 'upate'}
+export enum ClientInfoActionType { Clear = 'clear', Update = 'update'}
 export type ClientInfoAction = { type: ClientInfoActionType.Clear } | { type: ClientInfoActionType.Update, partialStateUpdate: Partial<EdiableClientInfo>}
 
 export const clientInfoReducer = (state: EdiableClientInfo, action: ClientInfoAction) => {

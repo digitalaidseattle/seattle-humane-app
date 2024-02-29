@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import { EditableRequestType } from "../../types";
+import { EditableRequestType } from "@types";
 
 export const defaultServiceInformation: EditableRequestType = {
   service_category: '',
@@ -10,7 +10,7 @@ export const defaultServiceInformation: EditableRequestType = {
   assingedTo: ''
 }
 
-export enum ServiceInfoActionType { Clear = 'clear', Update = 'upate'}
+export enum ServiceInfoActionType { Clear = 'clear', Update = 'update'}
 type ServiceInfoAction = { type: ServiceInfoActionType.Clear } | { type: ServiceInfoActionType.Update, partialStateUpdate: Partial<EditableRequestType>}
 
 export const serviceInfoReducer = (state: EditableRequestType, action: ServiceInfoAction) => {

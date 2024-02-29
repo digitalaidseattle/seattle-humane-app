@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import { EditableAnimalType } from "../../types";
+import { EditableAnimalType } from "@types";
 
 export const defaultPetInformation: EditableAnimalType = {
   name: '',
@@ -8,7 +8,7 @@ export const defaultPetInformation: EditableAnimalType = {
   weight: '',
 }
 
-export enum PetInfoActionType { Clear = 'clear', Update = 'upate'}
+export enum PetInfoActionType { Clear = 'clear', Update = 'update'}
 type AnimalInfoAction = { type: PetInfoActionType.Clear } | { type: PetInfoActionType.Update, partialStateUpdate: Partial<EditableAnimalType>}
 
 export const petInfoReducer = (state: EditableAnimalType, action: AnimalInfoAction) => {
