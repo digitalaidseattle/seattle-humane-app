@@ -25,6 +25,8 @@ const previouslyUsedOptions = ['Yes', 'No', 'Unsure']
 interface ClientInformationSectionProps {
   /** Flag to disable/enable the controls */
   disabled: boolean
+  /** Fields to show on the form */
+  show?: (keyof EdiableClientInfo)[]
 }
 
 /**
@@ -33,7 +35,12 @@ interface ClientInformationSectionProps {
  * @returns A controlled form for creating a service request.  
  */
 export default function ClientInformationSection(props: ClientInformationSectionProps) {
-  const { disabled } = props
+  const {
+    disabled,
+    show = ['first_name', 'last_name', 'email', 'phone', 'postalCode', 'previously_used']
+  } = props
+
+  const visibleFields = new Set<keyof EdiableClientInfo>(show)
 
   //* Retrieve form state from the context
   const formData = useContext(ClientInformationContext)
@@ -47,78 +54,84 @@ export default function ClientInformationSection(props: ClientInformationSection
   const setPhone = (phone: EdiableClientInfo['phone']) => (setFormData({phone}))
   const setPostalCode = (postalCode: EdiableClientInfo['postalCode']) => (setFormData({postalCode}))
   const setPreviouslyUsed = (previously_used: EdiableClientInfo['previously_used']) => (setFormData({previously_used}))
-  
+
   return (
     <>
       <div className="grid">
         <div className="col-12"><h3>{clientInformationLabels.ClientInformation}:</h3></div>
         <div className="col-12 grid row-gap-3 pl-5">
-          <div className="col-6">
-            <InputText
-              id="firstName"
-              value={formData.first_name}
-              disabled={disabled}
-              label={clientInformationLabels.FirstName}
-              placeholder={clientInformationLabels.FirstName}
-              onChange={(e) => setFirstName(e.target.value)}
-            />
-          </div>
-          <div className="col-6">
-            <InputText
-              id="lastName"
-              value={formData.last_name}
-              disabled={disabled}
-              label={clientInformationLabels.LastName}
-              placeholder={clientInformationLabels.LastName}
-              onChange={(e) => setLastName(e.target.value)}
-            />
-          </div>
-          <div className="col-6">
-            <InputText
-              id="email"
-              value={formData.email}
-              disabled={disabled}
-              label={clientInformationLabels.Email}
-              placeholder={clientInformationLabels.EmailPlaceholder}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </div>
-          <div className="col-6">
-            <InputText
-              id="phone"
-              value={formData.phone}
-              disabled={disabled}
-              label={clientInformationLabels.PhoneNumber}
-              placeholder={clientInformationLabels.PhoneNumberPlaceholder}
-              onChange={(e) => setPhone(e.target.value)}
-            />
-          </div>
-          <div className="col-6">
-            <InputText
-              id="postal"
-              value={`${formData.postalCode}`}
-              disabled={disabled}
-              label={clientInformationLabels.postalCode}
-              placeholder={clientInformationLabels.postalCodePlaceholder}
-              onChange={(e) => setPostalCode(e.target.value)}
-            />
-          </div>
-          <div className="grid col-12">
-            <div className="col-fixed mr-3">{clientInformationLabels.PreviouslyUsed}</div>
-            <div className="flex flex-wrap gap-3">
-              {previouslyUsedOptions.map((val, i) => (
-                <InputRadio
-                  key={i}
-                  label={val}
-                  value={val}
-                  disabled={disabled}
-                  name={`previouslyUsed-${val}`}
-                  onChange={(e) => setPreviouslyUsed(e.target.value)}
-                  checked={formData.previously_used === val}
-                />
-              ))}
-            </div>
-          </div>
+          {visibleFields.has('first_name')
+            && <div className="col-6">
+              <InputText
+                id="firstName"
+                value={formData.first_name}
+                disabled={disabled}
+                label={clientInformationLabels.FirstName}
+                placeholder={clientInformationLabels.FirstName}
+                onChange={(e) => setFirstName(e.target.value)}
+              />
+            </div>}
+          {visibleFields.has('last_name')
+            && <div className="col-6">
+              <InputText
+                id="lastName"
+                value={formData.last_name}
+                disabled={disabled}
+                label={clientInformationLabels.LastName}
+                placeholder={clientInformationLabels.LastName}
+                onChange={(e) => setLastName(e.target.value)}
+              />
+            </div>}
+          {visibleFields.has('email')
+            && <div className="col-6">
+              <InputText
+                id="email"
+                value={formData.email}
+                disabled={disabled}
+                label={clientInformationLabels.Email}
+                placeholder={clientInformationLabels.EmailPlaceholder}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>}
+          {visibleFields.has('phone')
+            && <div className="col-6">
+              <InputText
+                id="phone"
+                value={formData.phone}
+                disabled={disabled}
+                label={clientInformationLabels.PhoneNumber}
+                placeholder={clientInformationLabels.PhoneNumberPlaceholder}
+                onChange={(e) => setPhone(e.target.value)}
+              />
+            </div>}
+          {visibleFields.has('postalCode')
+            && <div className="col-6">
+              <InputText
+                id="postal"
+                value={`${formData.postalCode}`}
+                disabled={disabled}
+                label={clientInformationLabels.postalCode}
+                placeholder={clientInformationLabels.postalCodePlaceholder}
+                onChange={(e) => setPostalCode(e.target.value)}
+              />
+            </div>}
+          {visibleFields.has('previously_used')
+            && <div className="grid col-12">
+              <div className="col-fixed mr-3">{clientInformationLabels.PreviouslyUsed}</div>
+              <div className="flex flex-wrap gap-3">
+                {previouslyUsedOptions.map((val, i) => (
+                  <InputRadio
+                    key={i}
+                    label={val}
+                    value={val}
+                    disabled={disabled}
+                    name={`previouslyUsed-${val}`}
+                    onChange={(e) => setPreviouslyUsed(e.target.value)}
+                    checked={formData.previously_used === val}
+                  />
+                ))}
+              </div>
+            </div>}
         </div>
       </div>
     </>
