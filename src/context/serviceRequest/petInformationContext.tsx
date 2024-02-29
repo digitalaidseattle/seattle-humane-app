@@ -1,4 +1,4 @@
-import { createContext } from "react";
+import React, { createContext } from "react";
 import { EditableAnimalType } from "@types";
 
 export const defaultPetInformation: EditableAnimalType = {
@@ -18,6 +18,10 @@ export const petInfoReducer = (state: EditableAnimalType, action: AnimalInfoActi
 
 export const PetInformationContext = createContext<EditableAnimalType>(null)
 export const PetInformationDispatchContext = createContext<React.Dispatch<AnimalInfoAction>>(null)
+interface PetInformationProviderProps extends React.PropsWithChildren {
+  state: EditableAnimalType,
+  dispatch: React.Dispatch<AnimalInfoAction>
+}
 export function PetInformationProvider({children, state, dispatch}) {
   return <PetInformationContext.Provider value={state}>
     <PetInformationDispatchContext.Provider value={dispatch}>

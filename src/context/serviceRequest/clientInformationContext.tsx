@@ -1,4 +1,4 @@
-import { createContext } from "react";
+import React, { createContext } from "react";
 import { EdiableClientInfo } from "@types";
 
 export const defaultClientInformation: EdiableClientInfo = {
@@ -20,7 +20,11 @@ export const clientInfoReducer = (state: EdiableClientInfo, action: ClientInfoAc
 
 export const ClientInformationContext = createContext<EdiableClientInfo>(null)
 export const ClientInformationDispatchContext = createContext<React.Dispatch<ClientInfoAction>>(null)
-export function ClientInformationProvider({children, state, dispatch}) {
+interface ClientInformationProviderProps extends React.PropsWithChildren {
+  state: EdiableClientInfo,
+  dispatch: React.Dispatch<ClientInfoAction>
+}
+export function ClientInformationProvider({children, state, dispatch}: ClientInformationProviderProps) {
   return <ClientInformationContext.Provider value={state}>
     <ClientInformationDispatchContext.Provider value={dispatch}>
       {children}
