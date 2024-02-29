@@ -56,7 +56,7 @@ interface ServiceInformationSectionProps {
 export default function ServiceInformationSection(props: ServiceInformationSectionProps) {
   const {
     disabled,
-    show = ['service_category', 'priority', 'source', 'description', 'status', 'assingedTo']
+    show = ['service_category', 'priority', 'source', 'description', 'status', 'assignedTo']
   } = props
 
   const visibleFields = new Set<keyof EditableRequestType>(show)
@@ -72,7 +72,7 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
   const setSource = (source: EditableRequestType['source']) => setFormData({source})
   const setServiceDescription = (description: EditableRequestType['description']) => setFormData({description})
   const setStatus = (status: EditableRequestType['status']) => setFormData({status})
-  const setAssignedTo = (assingedTo: EditableRequestType['assingedTo']) => setFormData({assingedTo})
+  const setAssignedTo = (assignedTo: EditableRequestType['assignedTo']) => setFormData({assignedTo})
 
   return (
     <>
@@ -153,12 +153,12 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
                 ))}
               </div>
             </div>}
-          {visibleFields.has('assingedTo')
+          {visibleFields.has('assignedTo')
             && <div className="col-6">
               {/* TODO change to <select> element when options are known */}
               <InputText
                 id="assignedTo"
-                value={formData.assingedTo}
+                value={formData.assignedTo}
                 disabled={disabled}
                 label={serviceInformationLabels.AssignTo}
                 placeholder={serviceInformationLabels.AssignTo}

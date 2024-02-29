@@ -7,7 +7,7 @@ export const defaultServiceInformation: EditableRequestType = {
   source: '',
   description: '',
   status: '',
-  assingedTo: ''
+  assignedTo: ''
 }
 
 export enum ServiceInfoActionType { Clear = 'clear', Update = 'update'}

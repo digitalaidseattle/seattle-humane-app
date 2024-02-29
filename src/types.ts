@@ -40,5 +40,5 @@ export type RequestType = {
   staff_id: BigInteger;
 }
 // TODO use lookup with assignedTo
-export type EditableRequestType = Omit<RequestType, 'id'|'animal_id'|'staff_id'> & { assingedTo: string }
+export type EditableRequestType = Omit<RequestType, 'id'|'animal_id'|'staff_id'> & { assignedTo: string }
 
