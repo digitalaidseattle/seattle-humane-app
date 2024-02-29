@@ -4,14 +4,17 @@
 * @2023 Digital Aid Seattle
 */
 
-import { Button } from "primereact/button";
 import { Dialog } from "primereact/dialog";
-import { InputText } from "primereact/inputtext";
-import { RadioButton } from 'primereact/radiobutton';
-
-import React, { useEffect, useState, useRef} from "react";
-import { TicketType, clientService } from "../services/ClientService";
+import React, { useEffect, useState, useRef, useReducer} from "react";
+import { clientService } from "../services/ClientService";
 import { AnimalType, ClientType, RequestType } from "../types";
+import FormConfirmationButtons from "./FormConfirmationButtons";
+import ClientInformationSection from "./serviceRequest/ClientInformationSection";
+import { ClientInfoActionType, ClientInformationProvider, clientInfoReducer, defaultClientInformation } from "@context/serviceRequest/clientInformationContext";
+import { PetInfoActionType, PetInformationProvider, defaultPetInformation, petInfoReducer } from "@context/serviceRequest/petInformationContext";
+import PetInformationSection from "./serviceRequest/PetInformationSection";
+import { ServiceInfoActionType, ServiceInformationProvider, defaultServiceInformation, serviceInfoReducer } from "@context/serviceRequest/serviceInformationContext";
+import ServiceInformationSection from "./serviceRequest/ServiceInformationSection";
 
 const defaultClient: ClientType = {
   id: null,
@@ -50,12 +53,19 @@ interface ClientDialogProps {
 }
 
 const ClientDialog = (props: ClientDialogProps) => {
-
+  const [busy, setBusy] = useState(false)
   const [clientDialog, setClientDialog] = useState(false);
-  const [source, setSource] = useState(TicketType.email);
-  const [request, setRequest] = useState<RequestType>(defaultRequest);
-  const [client, setClient] = useState<ClientType>(defaultClient);
-  const [animal, setAnimal] = useState<AnimalType>(defaultAnimal);
+
+  //* Get state and dispatchers for the from sections
+  const [request, requestDispatch] = useReducer(
+    serviceInfoReducer, defaultServiceInformation
+  )
+  const [client, clientDispatch] = useReducer(
+    clientInfoReducer, defaultClientInformation
+  )
+  const [animal, animalDispatch] = useReducer(
+    petInfoReducer, defaultPetInformation
+  );
 
   useEffect(() => {
     setClientDialog(props.visible)
@@ -63,20 +73,26 @@ const ClientDialog = (props: ClientDialogProps) => {
   
   const hideClientDialog = () => {
     props.onClose(undefined);
-    setClient(defaultClient);
+    clientDispatch({ type: ClientInfoActionType.Clear });
   };
   
   const saveClientDialog = () => {
+    setBusy(true)
     // type handle separate to support RadioButton
 
-    setRequest(prevRequest => ({...prevRequest, source: source}));
-    clientService.newRequest(request, client, animal)
+    clientService.newRequest({
+      ...request,
+      // TODO not sure how we want to handle these ids, needs lookup control?
+      animal_id: null,
+      staff_id: null
+    }, client, animal)
       .then(requestResponse => props.onClose(requestResponse))
       // TODO - handle all sorts of errors: client exists, animal exists, request exists, etc.
       .catch(err => props.onClose(null))
-    setRequest(defaultRequest);
-    setClient(defaultClient);
-    setAnimal(defaultAnimal);
+      .finally(() => setBusy(false))
+    requestDispatch({ type: ServiceInfoActionType.Clear});
+    clientDispatch({ type: ClientInfoActionType.Clear });
+    animalDispatch({type: PetInfoActionType.Clear });
   };
 
   const timeoutId = useRef(null);
@@ -96,12 +112,12 @@ const ClientDialog = (props: ClientDialogProps) => {
           const clientResponse = await clientService.getClientByEmail(value)
 
           if (clientResponse !== null) {
-            setClient(prevClient => {
-              return {
-                ...prevClient,
+            clientDispatch({ type: ClientInfoActionType.Update,
+                partialStateUpdate: {
                 first_name: clientResponse.first_name,
                 last_name: clientResponse.last_name,
                 phone: clientResponse.phone,
+                email: clientResponse.email
               }
             })
           }
@@ -113,14 +129,16 @@ const ClientDialog = (props: ClientDialogProps) => {
 
   // TODO: check for existing pet and fill out fields
   const updatePetField = (field, value) => {
-    setRequest
+    // setRequest
   }
 
   const clientDialogFooter = (
-    <React.Fragment>
-      <Button label="Cancel" icon="pi pi-times" className="p-button-text" onClick={hideClientDialog} />
-      <Button label="Save" icon="pi pi-check" className="p-button-text" onClick={saveClientDialog} />
-    </React.Fragment>
+    <FormConfirmationButtons 
+      disabled={busy}
+      saving={busy}
+      onCancelClicked={hideClientDialog}
+      onSaveClicked={saveClientDialog}
+    />
   );
 
   return (
@@ -129,90 +147,32 @@ const ClientDialog = (props: ClientDialogProps) => {
     onHide={hideClientDialog}>
       <div className="col-12 md:col-12">
         <div className="card p-fluid">
-          <div className="field grid flex flex-wrap gap-3">
-            {Object.keys(TicketType).map((t, index) =>
-              <div key={index} className="flex align-items-center">
-                <RadioButton inputId={`t${index}`} name={t} value={t} onChange={(e) => setSource(e.value)} checked={source === t} />
-                <label htmlFor={`t${index}`} className="ml-2">{t}</label>
-              </div>
-            )}
-          </div>
-
-          <div className="field grid">
-            <label htmlFor="name" className="col-12 mb-2 md:col-2 md:mb-0">
-              First name
-            </label>
-            <div className="col-12 md:col-10">
-              <InputText id="firstName" type="text" 
-                value={client.first_name}
-                onChange={(e) => setClient(prevClient => ({...prevClient, first_name: e.target.value}))}
-              />
-            </div>
-          </div>
-          <div className="field grid">
-            <label htmlFor="name" className="col-12 mb-2 md:col-2 md:mb-0">
-              Last name
-            </label>
-            <div className="col-12 md:col-10">
-              <InputText id="lastName" type="text" 
-                value={client.last_name}
-                onChange={(e) => setClient(prevClient => ({...prevClient, last_name: e.target.value}))} 
-              />
-            </div>
-          </div>
-          <div className="field grid">
-            <label htmlFor="email" className="col-12 mb-2 md:col-2 md:mb-0">
-              Email
-            </label>
-            <div className="col-12 md:col-10">
-              <InputText id="email" type="text"
-                onChange={(e) => {
-                  setClient(prevClient => ({...prevClient, email: e.target.value}));
-                  autoFillClient('email', e.target.value);
-                }} 
-              />
-            </div>
-          </div>
-          <div className="field grid">
-            <label htmlFor="phone" className="col-12 mb-2 md:col-2 md:mb-0">
-              Phone
-            </label>
-            <div className="col-12 md:col-10">
-              <InputText id="phone" type="text" 
-                onChange={(e) => setClient(prevClient => ({...prevClient, phone: e.target.value}))} 
-              />
-            </div>
-          </div>
-          <div className="field grid">
-            <label htmlFor="summary" className="col-12 mb-2 md:col-2 md:mb-0">
-              Animal Name
-            </label>
-            <div className="col-12 md:col-10">
-              <InputText id="summary" type="text" 
-                onChange={(e) => setAnimal(prevAnimal => ({...prevAnimal, name: e.target.value}))}
-              />
-            </div>
-          </div>
-          <div className="field grid">
-            <label htmlFor="summary" className="col-12 mb-2 md:col-2 md:mb-0">
-              Animal Species
-            </label>
-            <div className="col-12 md:col-10">
-              <InputText id="summary" type="text" 
-                onChange={(e) => setAnimal(prevAnimal => ({...prevAnimal, species: e.target.value}))}
-              />
-            </div>
-          </div>
-          <div className="field grid">
-            <label htmlFor="summary" className="col-12 mb-2 md:col-2 md:mb-0">
-              Service Category
-            </label>
-            <div className="col-12 md:col-10">
-              <InputText id="summary" type="text" 
-                onChange={(e) => setRequest(prevRequest => ({...prevRequest, serviceCategory: e.target.value}))}
-              />
-            </div>
-          </div>
+          <ClientInformationProvider
+            state={client} dispatch={clientDispatch}
+          >
+            <ClientInformationSection 
+              disabled={busy} 
+              show={['first_name', 'last_name', 'email', 'phone']} 
+            />
+          </ClientInformationProvider>
+          <PetInformationProvider
+            state={animal}
+            dispatch={animalDispatch}
+          >
+            <PetInformationSection 
+              disabled={busy}  
+              show={['name', 'species']}
+            />
+          </PetInformationProvider>
+          <ServiceInformationProvider
+            state={request}
+            dispatch={requestDispatch}
+          >
+            <ServiceInformationSection 
+              disabled={busy}
+              show={['service_category']}
+            />
+          </ServiceInformationProvider>
         </div>
       </div>
     </Dialog>
