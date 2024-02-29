@@ -1,8 +1,8 @@
 import React, { useContext } from "react";
-import InputRadio from "../InputRadio";
-import InputText from "../InputText";
-import { ClientInfoActionType, ClientInformationContext, ClientInformationDispatchContext } from "../../context/serviceRequest/clientInformationContext";
-import { EdiableClientInfo } from "../../types";
+import InputRadio from "@components/InputRadio";
+import InputText from "@components//InputText";
+import { ClientInfoActionType, ClientInformationContext, ClientInformationDispatchContext } from "@context/serviceRequest/clientInformationContext";
+import { EdiableClientInfo } from "@types";
 
 // TODO externalize to localization file
 export const clientInformationLabels = {
@@ -53,7 +53,7 @@ export default function ClientInformationSection(props: ClientInformationSection
       <div className="grid">
         <div className="col-12"><h3>{clientInformationLabels.ClientInformation}:</h3></div>
         <div className="col-12 grid row-gap-3 pl-5">
-          <div className="col-6 pr-8">
+          <div className="col-6">
             <InputText
               id="firstName"
               value={formData.first_name}
@@ -63,7 +63,7 @@ export default function ClientInformationSection(props: ClientInformationSection
               onChange={(e) => setFirstName(e.target.value)}
             />
           </div>
-          <div className="col-6 pr-8">
+          <div className="col-6">
             <InputText
               id="lastName"
               value={formData.last_name}
@@ -73,7 +73,7 @@ export default function ClientInformationSection(props: ClientInformationSection
               onChange={(e) => setLastName(e.target.value)}
             />
           </div>
-          <div className="col-6 pr-8">
+          <div className="col-6">
             <InputText
               id="email"
               value={formData.email}
@@ -83,7 +83,7 @@ export default function ClientInformationSection(props: ClientInformationSection
               onChange={(e) => setEmail(e.target.value)}
             />
           </div>
-          <div className="col-6 pr-8">
+          <div className="col-6">
             <InputText
               id="phone"
               value={formData.phone}
@@ -93,7 +93,7 @@ export default function ClientInformationSection(props: ClientInformationSection
               onChange={(e) => setPhone(e.target.value)}
             />
           </div>
-          <div className="col-6 pr-8">
+          <div className="col-6">
             <InputText
               id="postal"
               value={`${formData.postalCode}`}

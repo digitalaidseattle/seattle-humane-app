@@ -1,8 +1,8 @@
 import React, { useContext } from "react";
-import InputRadio from "../InputRadio";
-import InputText from "../InputText";
-import { PetInfoActionType, PetInformationContext, PetInformationDispatchContext } from "../../context/serviceRequest/petInformationContext";
-import { EditableAnimalType } from "../../types";
+import InputRadio from "@components/InputRadio";
+import InputText from "@components/InputText";
+import { PetInfoActionType, PetInformationContext, PetInformationDispatchContext } from "@context/serviceRequest/petInformationContext";
+import { EditableAnimalType } from "@types";
 
 // TODO externalize to localization file
 export const petInformationLabels = {
@@ -51,7 +51,7 @@ export default function PetInformationSection(props: PetInformationSectionProps)
       <div className="grid">
         <div className="col-12"><h3>{petInformationLabels.PetInformation}:</h3></div>
         <div className="col-12 grid row-gap-3 pl-5">
-          <div className="col-6 pr-8">
+          <div className="col-6">
             <InputText
               id="petName"
               value={formData.name}
@@ -78,7 +78,7 @@ export default function PetInformationSection(props: PetInformationSectionProps)
             </div>
           </div>
           <div className="col-12 p-0">
-            <div className="col-6 pr-8">
+            <div className="col-6">
               <InputText
                 id="petBreeds"
                 value={formData.breed}
@@ -90,7 +90,7 @@ export default function PetInformationSection(props: PetInformationSectionProps)
             </div>
           </div>
           <div className="col-12 p-0">
-            <div className="col-6 pr-8">
+            <div className="col-6">
               <InputText
                 id="petWeight"
                 value={`${formData.weight}`}

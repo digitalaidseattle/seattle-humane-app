@@ -1,9 +1,9 @@
 import React, { useContext } from "react";
-import InputRadio from "../InputRadio";
-import InputText from "../InputText";
-import { EditableRequestType } from "../../types";
-import { ServiceInfoActionType, ServiceInformationContext, ServiceInformationDispatchContext } from "../../context/serviceRequest/serviceInformationContext";
-import InputTextArea from "../InputTextArea";
+import InputRadio from "@components/InputRadio";
+import InputText from "@components/InputText";
+import InputTextArea from "@components/InputTextArea";
+import { ServiceInfoActionType, ServiceInformationContext, ServiceInformationDispatchContext } from "@context/serviceRequest/serviceInformationContext";
+import { EditableRequestType } from "@types";
 
 // TODO externalize to localization file
 export const serviceInformationLabels = {
@@ -71,7 +71,7 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
       <div className="grid">
         <div className="col-12"><h3>{serviceInformationLabels.ServiceDetails}:</h3></div>
         <div className="col-12 grid row-gap-3 pl-5">
-          <div className="col-6 pr-8">
+          <div className="col-6">
             {/* TODO change to <select> element when options are known */}
             <InputText
               id="serviceCategory"
@@ -82,7 +82,7 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
               onChange={(e) => setCategory(e.target.value)}
             />
           </div>
-          <div className="grid col-6">
+          <div className="grid col-6 justify-content-end">
             <div className="flex flex-wrap gap-3">
               {priorityOptions.map((val, i) => (
                 <InputRadio
@@ -113,7 +113,7 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
               ))}
             </div>
           </div>
-          <div className="col-6 pr-8">
+          <div className="col-12">
             <InputTextArea
               id="description"
               value={formData.description}
@@ -124,7 +124,7 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
               rows={5}
             />
           </div>
-          <div className="grid col-12">
+          <div className="grid col-6 pr-3">
             <div className="col-fixed mr-3">{serviceInformationLabels.Status}</div>
             <div className="flex flex-wrap gap-3">
               {statusOptions.map((val, i) => (
@@ -140,7 +140,7 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
               ))}
             </div>
           </div>
-          <div className="col-6 pr-8">
+          <div className="col-6">
             {/* TODO change to <select> element when options are known */}
             <InputText
               id="assignedTo"
