@@ -19,12 +19,16 @@ const defaultClient: ClientType = {
   last_name: '',
   email: '',
   phone: '',
+  postalCode: '',
+  previously_used: ''
 }
 
 const defaultAnimal: AnimalType = {
   id: null,
   name: '',
   species: '',
+  breed: '',
+  weight: '',
   client_id: null,
 }
 
@@ -33,7 +37,10 @@ const defaultRequest: RequestType = {
   client_id: null,
   animal_id: null,
   service_category: '',
+  priority: '',
   source: '',
+  description: '',
+  status: '',
   staff_id: null,
 }
 

@@ -15,7 +15,8 @@ const AppMenu = () => {
                 { label: 'Dashboard', icon: 'pi pi-fw pi-home', to: '/' },
                 { label: 'Clients', icon: 'pi pi-fw pi-users', to: '/clients' },
                 { label: 'Animals', iconSrc: `${contextPath}/images/paw.svg`, to: '/animals' },
-                { label: 'Reports', icon: 'pi pi-fw pi-book', to: '/reports' }
+                { label: 'Reports', icon: 'pi pi-fw pi-book', to: '/reports' },
+                { label: 'New Request', iconSrc: `${contextPath}/images/pawClipboard.svg`, to: '/serviceRequest/create' }
             ]
         }
     ];
