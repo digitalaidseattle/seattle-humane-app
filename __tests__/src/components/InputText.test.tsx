@@ -60,18 +60,18 @@ describe('InputText', () => {
 
   it('should call onChange with the target element when the value is changed', () => {
     //* Arrange
-    const propsOnChange = jest.fn()
+    const onChangeProp = jest.fn()
     render(<InputText
       id={fakeId}
       value={defaultValue}
       label={labelText}
-      onChange={propsOnChange}
+      onChange={onChangeProp}
     />)
     //* Act
     let inputText = screen.getByLabelText(labelText)
     fireEvent.change(inputText, { target: { value: newValue } })
     //* Assert
-    expect(propsOnChange).toHaveBeenCalledWith(
+    expect(onChangeProp).toHaveBeenCalledWith(
       expect.objectContaining({
         target: inputText
       })
