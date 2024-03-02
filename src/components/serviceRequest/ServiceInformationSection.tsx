@@ -25,16 +25,16 @@ export const serviceInformationLabels = {
 }
 
 //* Options for multi-choice controls
-const priorityOptions = [
+export const priorityOptions = [
   serviceInformationLabels['Urgent'],
   serviceInformationLabels['NonUrgent']
 ]
-const sourceOptions = {
-  [TicketType.email]: serviceInformationLabels['Email'],
-  [TicketType.phone]: serviceInformationLabels['Phone'],
-  [TicketType.walkin]: serviceInformationLabels['InPerson']
+export const sourceOptions = {
+  [serviceInformationLabels['Email']]: TicketType.email,
+  [serviceInformationLabels['Phone']]: TicketType.phone,
+  [serviceInformationLabels['InPerson']]: TicketType.walkin
 }
-const statusOptions = [
+export const statusOptions = [
   serviceInformationLabels['Hold'],
   serviceInformationLabels['InProgress'],
   serviceInformationLabels['Others']
@@ -83,7 +83,7 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
             && <div className="col-6">
               {/* TODO change to <select> element when options are known */}
               <InputText
-                id="serviceCategory"
+                id="service_category"
                 value={formData.service_category}
                 disabled={disabled}
                 label={serviceInformationLabels.Category}
@@ -96,6 +96,7 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
               <div className="flex flex-wrap gap-3">
                 {priorityOptions.map((val, i) => (
                   <InputRadio
+                    id={`priority-${val}`}
                     key={i}
                     label={val}
                     value={val}
@@ -111,15 +112,16 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
             && <div className="grid col-12">
               <div className="col-fixed mr-3">{serviceInformationLabels.Source}</div>
               <div className="flex flex-wrap gap-3">
-                {Object.keys(sourceOptions).map((key, i) => (
+                {Object.keys(sourceOptions).map((label, i) => (
                   <InputRadio
-                    key={key}
-                    label={sourceOptions[key]}
-                    value={key}
+                    id={`source-${label}`}
+                    key={label}
+                    label={label}
+                    value={sourceOptions[label]}
                     disabled={disabled}
-                    name={`source-${key}`}
+                    name={`source-${label}`}
                     onChange={(e) => setSource(e.target.value)}
-                    checked={formData.source === key}
+                    checked={formData.source === sourceOptions[label]}
                   />
                 ))}
               </div>
@@ -142,6 +144,7 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
               <div className="flex flex-wrap gap-3">
                 {statusOptions.map((val, i) => (
                   <InputRadio
+                    id={`status-${val}`}
                     key={i}
                     label={val}
                     value={val}
@@ -157,7 +160,7 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
             && <div className="col-6">
               {/* TODO change to <select> element when options are known */}
               <InputText
-                id="assignedTo"
+                id="assigned_to"
                 value={formData.assigned_to}
                 disabled={disabled}
                 label={serviceInformationLabels.AssignTo}

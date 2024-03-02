@@ -5,6 +5,7 @@
       "dom.iterable",
       "esnext"
     ],
+    "target": "ES6",
     "allowJs": true,
     "skipLibCheck": true,
     "strict": false,
