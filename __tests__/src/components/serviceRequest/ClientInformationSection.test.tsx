@@ -5,7 +5,7 @@ import ClientInformationSection, { clientInformationLabels as labels, previously
 import { ClientInformationProvider, clientInfoReducer, defaultClientInformation } from "@context/serviceRequest/clientInformationContext";
 import { EdiableClientInfo } from '@types';
 
-//* Mocking the client information context to isolate the test
+//* Mocking the client information context module to isolate the test
 jest.mock('@context/serviceRequest/clientInformationContext', () => {
   const ClientInformationContext = createContext(null)
   const ClientInformationDispatchContext = createContext(null)
@@ -135,7 +135,7 @@ describe('ClientInformationSection', () => {
     //* Assert
     textInputs.forEach((field, i) => {
       expect(clientInfoReducer).toHaveBeenNthCalledWith(i+1,
-        expect.anything(),
+        expect.anything(), // We are only concerned with the action, not the previous state
         expect.objectContaining({
           type: 'Update',
           partialStateUpdate: { [field.id]: newValue + i }
@@ -152,7 +152,7 @@ describe('ClientInformationSection', () => {
     fireEvent.click(radioButton)
     //* Assert
     expect(clientInfoReducer).toHaveBeenNthCalledWith(1,
-      expect.anything(),
+      expect.anything(), // We are only concerned with the action, not the previous state
       expect.objectContaining({
         type: 'Update',
         partialStateUpdate: { 'previously_used': label }
