@@ -12,24 +12,20 @@ export interface InputTextProps extends PrimeReactInputTextProps {
  * @returns A controlled input element
  */
 export default function InputText(props: InputTextProps) {
-  const { id, value, onChange, disabled, label, placeholder } = props
-  const type = props.type ?? 'text'
+  const { id, value, type, onChange, disabled, label, placeholder } = props
   return (
-    <>
-      <div className="mb-2"><label htmlFor={id}>
+    <div className="flex flex-column gap-2">
+      <label htmlFor={id}>
         {label}
-      </label></div>
-      <div>
-        <PrimeReactInputText
-          id={id}
-          className="w-full"
-          placeholder={placeholder}
-          value={value}
-          disabled={disabled}
-          type={type}
-          onChange={(...args) => !disabled && onChange(...args)}
-        />
-      </div>
-    </>
+      </label>
+      <PrimeReactInputText
+        id={id}
+        placeholder={placeholder}
+        value={value}
+        disabled={disabled}
+        type={type}
+        onChange={(...args) => !disabled && onChange(...args)}
+      />
+    </div>
   )
 }
