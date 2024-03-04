@@ -19,7 +19,7 @@ const AppMenu = () => {
                 { label: 'Clients', icon: 'pi pi-fw pi-users', to: '/clients' },
                 { label: 'Animals', iconSrc: `${contextPath}/images/paw.svg`, to: '/animals' },
                 { label: 'Reports', icon: 'pi pi-fw pi-book', to: '/reports' },
-                { separator: true },
+                { label: 'separator_1', separator: true },
                 { 
                   label: 'New Request', 
                   iconSrc: `${contextPath}/images/pawClipboard.svg`, 
@@ -35,7 +35,7 @@ const AppMenu = () => {
         <MenuProvider>
             <ul className="layout-menu">
                 {model.map((item, i) => {
-                    return !item.separator ? <AppMenuitem item={item} root={true} index={i} key={item.label} /> : <li className="menu-separator"></li>;
+                    return !item.separator ? <AppMenuitem item={item} root={true} index={i} key={item.label} /> : <li className="menu-separator" key={item.label}></li>;
                 })}
             </ul>
         </MenuProvider>
