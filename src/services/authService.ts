@@ -40,9 +40,9 @@ class AuthService {
         scopes: 'email',
       },
     })
-      .then(resp => {
-        return resp
-      })
+    .then(resp => {
+      return resp
+    })
   }
 }
 
