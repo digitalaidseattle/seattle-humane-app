@@ -1,5 +1,5 @@
 {
-  "extends": ["airbnb", "airbnb-typescript", "next/core-web-vitals"],
+  "extends": ["airbnb", "airbnb-typescript", "next", "next/core-web-vitals"],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
     "project": "./tsconfig.json"
@@ -7,5 +7,6 @@
   "plugins": ["@typescript-eslint"],
   "rules": {
     "react/require-default-props": "off" // Since we do not use prop-types
-  }
+  },
+  "ignorePatterns": ["**/*.js", "**/*.jsx"]
 }
