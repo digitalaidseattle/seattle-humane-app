@@ -1,0 +1,28 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`InputRadio should render a checked radio button when the checked prop is true 1`] = `
+<div
+  class="p-hidden-accessible"
+  data-pc-section="hiddeninputwrapper"
+>
+  <input
+    checked=""
+    data-pc-section="hiddeninput"
+    id="fake-id"
+    type="radio"
+  />
+</div>
+`;
+
+exports[`InputRadio should render a unchecked radio button when the checked prop is false 1`] = `
+<div
+  class="p-hidden-accessible"
+  data-pc-section="hiddeninputwrapper"
+>
+  <input
+    data-pc-section="hiddeninput"
+    id="fake-id"
+    type="radio"
+  />
+</div>
+`;
