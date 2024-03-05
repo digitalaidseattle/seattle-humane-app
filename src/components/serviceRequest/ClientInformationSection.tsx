@@ -1,8 +1,8 @@
-import React, { useContext } from "react";
-import InputRadio from "@components/InputRadio";
-import InputText from "@components//InputText";
-import { ClientInfoActionType, ClientInformationContext, ClientInformationDispatchContext } from "@context/serviceRequest/clientInformationContext";
-import { EdiableClientInfo } from "@types";
+import React, { useContext } from 'react';
+import InputRadio from '@components/InputRadio';
+import InputText from '@components//InputText';
+import { ClientInfoActionType, ClientInformationContext, ClientInformationDispatchContext } from '@context/serviceRequest/clientInformationContext';
+import { EdiableClientInfo } from '@types';
 
 // TODO externalize to localization file
 export const clientInformationLabels = {
@@ -16,10 +16,10 @@ export const clientInformationLabels = {
   PostalCode: 'Zip Code',
   PostalCodePlaceholder: '00000',
   PreviouslyUsed: 'Previous Services Used?',
-}
+};
 
 //* Options for multi-choice controls
-const previouslyUsedOptions = ['Yes', 'No', 'Unsure']
+const previouslyUsedOptions = ['Yes', 'No', 'Unsure'];
 
 /** Props for the ClientInformationSection */
 interface ClientInformationSectionProps {
@@ -30,38 +30,45 @@ interface ClientInformationSectionProps {
 }
 
 /**
- * 
+ *
  * @param props {@link ClientInformationSectionProps}
- * @returns A controlled form for creating a service request.  
+ * @returns A controlled form for creating a service request.
  */
 export default function ClientInformationSection(props: ClientInformationSectionProps) {
   const {
     disabled,
-    show = ['first_name', 'last_name', 'email', 'phone', 'postal_code', 'previously_used']
-  } = props
+    show = ['first_name', 'last_name', 'email', 'phone', 'postal_code', 'previously_used'],
+  } = props;
 
-  const visibleFields = new Set<keyof EdiableClientInfo>(show)
+  const visibleFields = new Set<keyof EdiableClientInfo>(show);
 
   //* Retrieve form state from the context
-  const formData = useContext(ClientInformationContext)
-  const dispatch = useContext(ClientInformationDispatchContext)
+  const formData = useContext(ClientInformationContext);
+  const dispatch = useContext(ClientInformationDispatchContext);
 
   //* Map onChange handlers to dispatch
-  const setFormData = (partialStateUpdate: Partial<EdiableClientInfo>) => dispatch({type: ClientInfoActionType.Update, partialStateUpdate})
-  const setFirstName = (first_name: EdiableClientInfo['first_name']) => (setFormData({first_name}))
-  const setLastName = (last_name: EdiableClientInfo['last_name']) => (setFormData({last_name}))
-  const setEmail = (email: EdiableClientInfo['email']) => (setFormData({email}))
-  const setPhone = (phone: EdiableClientInfo['phone']) => (setFormData({phone}))
-  const setPostalCode = (postal_code: EdiableClientInfo['postal_code']) => (setFormData({postal_code}))
-  const setPreviouslyUsed = (previously_used: EdiableClientInfo['previously_used']) => (setFormData({previously_used}))
+  const setFormData = (partialStateUpdate: Partial<EdiableClientInfo>) => dispatch(
+    { type: ClientInfoActionType.Update, partialStateUpdate },
+  );
+  const setFirstName = (first_name: EdiableClientInfo['first_name']) => (setFormData({ first_name }));
+  const setLastName = (last_name: EdiableClientInfo['last_name']) => (setFormData({ last_name }));
+  const setEmail = (email: EdiableClientInfo['email']) => (setFormData({ email }));
+  const setPhone = (phone: EdiableClientInfo['phone']) => (setFormData({ phone }));
+  const setPostalCode = (postal_code: EdiableClientInfo['postal_code']) => (setFormData({ postal_code }));
+  const setPreviouslyUsed = (previously_used: EdiableClientInfo['previously_used']) => (setFormData({ previously_used }));
 
   return (
-    <>
-      <div className="grid">
-        <div className="col-12"><h3>{clientInformationLabels.ClientInformation}:</h3></div>
-        <div className="col-12 grid row-gap-3 pl-5">
-          {visibleFields.has('first_name')
-            && <div className="col-6">
+    <div className="grid">
+      <div className="col-12">
+        <h3>
+          {clientInformationLabels.ClientInformation}
+          :
+        </h3>
+      </div>
+      <div className="col-12 grid row-gap-3 pl-5">
+        {visibleFields.has('first_name')
+            && (
+            <div className="col-6">
               <InputText
                 id="firstName"
                 value={formData.first_name}
@@ -70,9 +77,11 @@ export default function ClientInformationSection(props: ClientInformationSection
                 placeholder={clientInformationLabels.FirstName}
                 onChange={(e) => setFirstName(e.target.value)}
               />
-            </div>}
-          {visibleFields.has('last_name')
-            && <div className="col-6">
+            </div>
+            )}
+        {visibleFields.has('last_name')
+            && (
+            <div className="col-6">
               <InputText
                 id="lastName"
                 value={formData.last_name}
@@ -81,9 +90,11 @@ export default function ClientInformationSection(props: ClientInformationSection
                 placeholder={clientInformationLabels.LastName}
                 onChange={(e) => setLastName(e.target.value)}
               />
-            </div>}
-          {visibleFields.has('email')
-            && <div className="col-6">
+            </div>
+            )}
+        {visibleFields.has('email')
+            && (
+            <div className="col-6">
               <InputText
                 id="email"
                 value={formData.email}
@@ -92,9 +103,11 @@ export default function ClientInformationSection(props: ClientInformationSection
                 placeholder={clientInformationLabels.EmailPlaceholder}
                 onChange={(e) => setEmail(e.target.value)}
               />
-            </div>}
-          {visibleFields.has('phone')
-            && <div className="col-6">
+            </div>
+            )}
+        {visibleFields.has('phone')
+            && (
+            <div className="col-6">
               <InputText
                 id="phone"
                 value={formData.phone}
@@ -103,9 +116,11 @@ export default function ClientInformationSection(props: ClientInformationSection
                 placeholder={clientInformationLabels.PhoneNumberPlaceholder}
                 onChange={(e) => setPhone(e.target.value)}
               />
-            </div>}
-          {visibleFields.has('postal_code')
-            && <div className="col-6">
+            </div>
+            )}
+        {visibleFields.has('postal_code')
+            && (
+            <div className="col-6">
               <InputText
                 id="postal_code"
                 value={`${formData.postal_code}`}
@@ -114,14 +129,16 @@ export default function ClientInformationSection(props: ClientInformationSection
                 placeholder={clientInformationLabels.PostalCodePlaceholder}
                 onChange={(e) => setPostalCode(e.target.value)}
               />
-            </div>}
-          {visibleFields.has('previously_used')
-            && <div className="grid col-12">
+            </div>
+            )}
+        {visibleFields.has('previously_used')
+            && (
+            <div className="grid col-12">
               <div className="col-fixed mr-3">{clientInformationLabels.PreviouslyUsed}</div>
               <div className="flex flex-wrap gap-3">
-                {previouslyUsedOptions.map((val, i) => (
+                {previouslyUsedOptions.map((val) => (
                   <InputRadio
-                    key={i}
+                    key={val}
                     label={val}
                     value={val}
                     disabled={disabled}
@@ -131,9 +148,9 @@ export default function ClientInformationSection(props: ClientInformationSection
                   />
                 ))}
               </div>
-            </div>}
-        </div>
+            </div>
+            )}
       </div>
-    </>
-  )
+    </div>
+  );
 }

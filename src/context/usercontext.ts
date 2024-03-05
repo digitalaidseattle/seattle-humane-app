@@ -9,6 +9,6 @@ import React from 'react';
 
 // FIXME change type from supabase to SH Employee
 export const UserContext = React.createContext({
-    user: null as unknown as User,
-    setUser: (u: User) => { },
+  user: null as unknown as User,
+  setUser: (u: User) => { },
 });

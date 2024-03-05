@@ -4,44 +4,31 @@
  *  @copyright 2024 Digital Aid Seattle
  *
  */
-import { GetServerSideProps } from 'next'
-import supabaseClient from '../../utils/supabaseClient'
-import { User } from '@supabase/supabase-js'
+import { GetServerSideProps } from 'next';
+import { User } from '@supabase/supabase-js';
+import supabaseClient from '../../utils/supabaseClient';
 
 interface AuthProps {
   initialUser: User
 }
 class AuthService {
-
   async signOut() {
-    return supabaseClient.auth.signOut()
+    return supabaseClient.auth.signOut();
   }
 
   hasUser() {
-    return supabaseClient.auth.getUser() != null
+    return supabaseClient.auth.getUser() != null;
   }
 
-  getUser = (async () => {
-    return supabaseClient.auth.getUser()
-  })
+  getUser = (async () => supabaseClient.auth.getUser());
 
+  signInWithGoogle = async () => supabaseClient.auth.signInWithOAuth({ provider: 'google' })
+    .then((resp) => resp);
 
-  signInWithGoogle = async () => {
-    return supabaseClient.auth.signInWithOAuth({ provider: 'google' })
-      .then(resp => {
-        return resp
-      })
-  }
-  
-  signInWithAzure = async () => {
-    return supabaseClient.auth.signInWithOAuth({ provider: 'azure' })
-      .then(resp => {
-        return resp
-      })
-  }
+  signInWithAzure = async () => supabaseClient.auth.signInWithOAuth({ provider: 'azure' })
+    .then((resp) => resp);
 }
 
-
-const authService = new AuthService()
-export { authService, AuthService }
-export type { AuthProps }
+const authService = new AuthService();
+export { authService, AuthService };
+export type { AuthProps };
