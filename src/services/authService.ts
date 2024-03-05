@@ -25,21 +25,20 @@ class AuthService {
   };
 
   signInWithGoogle = async () => {
-    return supabaseClient.auth
-      .signInWithOAuth({ provider: "google" })
-      .then((resp) => {
-        return resp;
-      });
-  };
-
+    return supabaseClient.auth.signInWithOAuth({ provider: 'google' })
+      .then(resp => {
+        return resp
+      })
+  }
+  
   signInWithAzure = async () => {
-    return supabaseClient.auth
-      .signInWithOAuth({ provider: "azure" })
-      .then((resp) => {
-        return resp;
-      });
-  };
+    return supabaseClient.auth.signInWithOAuth({ provider: 'azure' })
+      .then(resp => {
+        return resp
+      })
+  }
 }
+
 
 const authService = new AuthService();
 export { authService, AuthService };

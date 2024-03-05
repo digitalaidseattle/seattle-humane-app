@@ -1,0 +1,20 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`InputText should render a text input with the provided value prop 1`] = `
+<div
+  class="flex flex-column gap-2"
+>
+  <label
+    for="fake-id"
+  >
+    fake-label
+  </label>
+  <input
+    class="p-inputtext p-component p-filled"
+    data-pc-name="inputtext"
+    data-pc-section="root"
+    id="fake-id"
+    value="fake-value"
+  />
+</div>
+`;
