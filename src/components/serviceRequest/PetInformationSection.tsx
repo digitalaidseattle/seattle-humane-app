@@ -3,6 +3,7 @@ import InputRadio from "@components/InputRadio";
 import InputText from "@components/InputText";
 import { PetInfoActionType, PetInformationContext, PetInformationDispatchContext } from "@context/serviceRequest/petInformationContext";
 import { EditableAnimalType } from "@types";
+import { useAppConstants } from "../../services/useAppConstants";
 
 // TODO externalize to localization file
 export const petInformationLabels = {
@@ -26,8 +27,6 @@ interface PetInformationSectionProps {
 }
 
 
-//* Options for multi-choice controls
-const speciesOptions = ['Dog', 'Cat', 'Small mammal', 'Bird']
 
 /**
  * 
@@ -40,6 +39,8 @@ export default function PetInformationSection(props: PetInformationSectionProps)
     show = ['name', 'breed', 'species', 'weight']
   } = props
 
+  const { data: species } = useAppConstants('species');
+
   const visibleFields = new Set<keyof EditableAnimalType>(show)
 
   //* Retrieve form state from the context
@@ -47,11 +48,11 @@ export default function PetInformationSection(props: PetInformationSectionProps)
   const dispatch = useContext(PetInformationDispatchContext)
 
   //* Map onChange handlers to dispatch
-  const setFormData = (partialStateUpdate: Partial<EditableAnimalType>) => dispatch({type: PetInfoActionType.Update, partialStateUpdate})
-  const setName = (name: EditableAnimalType['name']) => setFormData({name})
-  const setSpecies = (species: EditableAnimalType['species']) => setFormData({species})
-  const setBreed = (breed: EditableAnimalType['breed']) => setFormData({breed})
-  const setWeight = (weight: EditableAnimalType['weight']) => setFormData({weight})
+  const setFormData = (partialStateUpdate: Partial<EditableAnimalType>) => dispatch({ type: PetInfoActionType.Update, partialStateUpdate })
+  const setName = (name: EditableAnimalType['name']) => setFormData({ name })
+  const setSpecies = (species: EditableAnimalType['species']) => setFormData({ species })
+  const setBreed = (breed: EditableAnimalType['breed']) => setFormData({ breed })
+  const setWeight = (weight: EditableAnimalType['weight']) => setFormData({ weight })
 
   return (
     <>
@@ -73,15 +74,15 @@ export default function PetInformationSection(props: PetInformationSectionProps)
             && <div className="grid col-12">
               <div className="col-fixed mr-3">{petInformationLabels.Species}</div>
               <div className="flex flex-wrap gap-3">
-                {speciesOptions.map((val, i) => (
+                {species.map((s, i) => (
                   <InputRadio
                     key={i}
-                    label={val}
-                    value={val}
+                    label={s.label}
+                    value={s.value}
                     disabled={disabled}
-                    name={`petSpecies-${val}`}
+                    name={`petSpecies-${s.value}`}
                     onChange={(e) => setSpecies(e.target.value)}
-                    checked={formData.species === val}
+                    checked={formData.species === s.value}
                   />
                 ))}
               </div>
