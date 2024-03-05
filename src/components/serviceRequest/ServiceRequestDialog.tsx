@@ -32,24 +32,30 @@ interface ServiceRequestDialogProps {
  * @returns A dialog with a controlled form for creating a service request.
  */
 function ServiceRequestDialog(props: ServiceRequestDialogProps) {
+  const { visible, onClose } = props;
   const [showDialog, setShowDialog] = useState(false);
   const [busy, setBusy] = useState(false);
 
   useEffect(() => {
-    setShowDialog(props.visible);
-  }, [props]);
+    setShowDialog(visible);
+  }, [visible]);
 
   const hideDialog = () => {
-    props.onClose();
+    onClose();
   };
 
   //* Get state and dispatchers for the from sections
-  const [clientInformationState, clientInformationDispatch] = useReducer(clientInfoReducer, defaultClientInformation);
-  const [petInformationState, petInformationDispatch] = useReducer(petInfoReducer, defaultPetInformation);
-  const [serviceInformationState, serviceInformationDispatch] = useReducer(
-    serviceInfoReducer,
-    defaultServiceInformation,
-  );
+  const [
+    clientInformationState, clientInformationDispatch,
+  ] = useReducer(clientInfoReducer, defaultClientInformation);
+
+  const [
+    petInformationState, petInformationDispatch,
+  ] = useReducer(petInfoReducer, defaultPetInformation);
+
+  const [
+    serviceInformationState, serviceInformationDispatch,
+  ] = useReducer(serviceInfoReducer, defaultServiceInformation);
 
   const cancel = () => {
     //* Clear form data
@@ -63,7 +69,7 @@ function ServiceRequestDialog(props: ServiceRequestDialogProps) {
     if (busy) return;
     setBusy(true);
     // TODO add error handling scenario
-    await new Promise<void>((resolve) => setTimeout(() => resolve(), 3000));
+    await new Promise<void>((resolve) => { setTimeout(() => resolve(), 3000); });
     setBusy(false);
   };
 
@@ -87,13 +93,19 @@ function ServiceRequestDialog(props: ServiceRequestDialogProps) {
     >
       <div className="col-12 md:col-12">
         <div className="card">
-          <ClientInformationProvider state={clientInformationState} dispatch={clientInformationDispatch}>
+          <ClientInformationProvider
+            state={clientInformationState}
+            dispatch={clientInformationDispatch}
+          >
             <ClientInformationSection disabled={busy} />
           </ClientInformationProvider>
           <PetInformationProvider state={petInformationState} dispatch={petInformationDispatch}>
             <PetInformationSection disabled={busy} />
           </PetInformationProvider>
-          <ServiceInformationProvider state={serviceInformationState} dispatch={serviceInformationDispatch}>
+          <ServiceInformationProvider
+            state={serviceInformationState}
+            dispatch={serviceInformationDispatch}
+          >
             <ServiceInformationSection disabled={busy} />
           </ServiceInformationProvider>
         </div>

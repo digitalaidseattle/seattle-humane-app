@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import InputRadio from '@components/InputRadio';
 import InputText from '@components//InputText';
 import { ClientInfoActionType, ClientInformationContext, ClientInformationDispatchContext } from '@context/serviceRequest/clientInformationContext';
-import { EdiableClientInfo } from '@types';
+import { EditableClientInfo } from '@types';
 
 // TODO externalize to localization file
 export const clientInformationLabels = {
@@ -26,7 +26,7 @@ interface ClientInformationSectionProps {
   /** Flag to disable/enable the controls */
   disabled: boolean
   /** Fields to show on the form */
-  show?: (keyof EdiableClientInfo)[]
+  show?: (keyof EditableClientInfo)[]
 }
 
 /**
@@ -40,22 +40,22 @@ export default function ClientInformationSection(props: ClientInformationSection
     show = ['first_name', 'last_name', 'email', 'phone', 'postal_code', 'previously_used'],
   } = props;
 
-  const visibleFields = new Set<keyof EdiableClientInfo>(show);
+  const visibleFields = new Set<keyof EditableClientInfo>(show);
 
   //* Retrieve form state from the context
   const formData = useContext(ClientInformationContext);
   const dispatch = useContext(ClientInformationDispatchContext);
 
   //* Map onChange handlers to dispatch
-  const setFormData = (partialStateUpdate: Partial<EdiableClientInfo>) => dispatch(
+  const setFormData = (partialStateUpdate: Partial<EditableClientInfo>) => dispatch(
     { type: ClientInfoActionType.Update, partialStateUpdate },
   );
-  const setFirstName = (first_name: EdiableClientInfo['first_name']) => (setFormData({ first_name }));
-  const setLastName = (last_name: EdiableClientInfo['last_name']) => (setFormData({ last_name }));
-  const setEmail = (email: EdiableClientInfo['email']) => (setFormData({ email }));
-  const setPhone = (phone: EdiableClientInfo['phone']) => (setFormData({ phone }));
-  const setPostalCode = (postal_code: EdiableClientInfo['postal_code']) => (setFormData({ postal_code }));
-  const setPreviouslyUsed = (previously_used: EdiableClientInfo['previously_used']) => (setFormData({ previously_used }));
+  const setFirstName = (first_name: EditableClientInfo['first_name']) => (setFormData({ first_name }));
+  const setLastName = (last_name: EditableClientInfo['last_name']) => (setFormData({ last_name }));
+  const setEmail = (email: EditableClientInfo['email']) => (setFormData({ email }));
+  const setPhone = (phone: EditableClientInfo['phone']) => (setFormData({ phone }));
+  const setPostalCode = (postal_code: EditableClientInfo['postal_code']) => (setFormData({ postal_code }));
+  const setPreviouslyUsed = (previously_used: EditableClientInfo['previously_used']) => (setFormData({ previously_used }));
 
   return (
     <div className="grid">

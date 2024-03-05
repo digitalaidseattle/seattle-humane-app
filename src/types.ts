@@ -13,7 +13,7 @@ export type ClientType = {
   postal_code: string;
   previously_used: string;
 };
-export type EdiableClientInfo = Omit<ClientType, 'id'>;
+export type EditableClientInfo = Omit<ClientType, 'id'>;
 
 // INCOMPLETE: more fields to be added when confirmed as required
 export type AnimalType = {

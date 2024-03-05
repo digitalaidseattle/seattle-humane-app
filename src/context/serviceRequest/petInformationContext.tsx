@@ -9,19 +9,17 @@ export const defaultPetInformation: EditableAnimalType = {
 };
 
 export enum PetInfoActionType { Clear = 'clear', Update = 'update'}
-type AnimalInfoAction = { type: PetInfoActionType.Clear } | { type: PetInfoActionType.Update, partialStateUpdate: Partial<EditableAnimalType> };
+type AnimalInfoAction = { type: PetInfoActionType.Clear }
+| { type: PetInfoActionType.Update, partialStateUpdate: Partial<EditableAnimalType> };
 
 export const petInfoReducer = (state: EditableAnimalType, action: AnimalInfoAction) => {
   if (action.type === PetInfoActionType.Update) return { ...state, ...action.partialStateUpdate };
-  if (action.type === PetInfoActionType.Clear) return { ...defaultPetInformation };
+  return { ...defaultPetInformation };
 };
 
 export const PetInformationContext = createContext<EditableAnimalType>(null);
 export const PetInformationDispatchContext = createContext<React.Dispatch<AnimalInfoAction>>(null);
-interface PetInformationProviderProps extends React.PropsWithChildren {
-  state: EditableAnimalType,
-  dispatch: React.Dispatch<AnimalInfoAction>
-}
+
 export function PetInformationProvider({ children, state, dispatch }) {
   return (
     <PetInformationContext.Provider value={state}>

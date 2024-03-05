@@ -1,7 +1,7 @@
 import React, { createContext } from 'react';
-import { EdiableClientInfo } from '@types';
+import { EditableClientInfo } from '@types';
 
-export const defaultClientInformation: EdiableClientInfo = {
+export const defaultClientInformation: EditableClientInfo = {
   first_name: '',
   last_name: '',
   email: '',
@@ -11,20 +11,27 @@ export const defaultClientInformation: EdiableClientInfo = {
 };
 
 export enum ClientInfoActionType { Clear = 'clear', Update = 'update'}
-export type ClientInfoAction = { type: ClientInfoActionType.Clear } | { type: ClientInfoActionType.Update, partialStateUpdate: Partial<EdiableClientInfo> };
+export type ClientInfoAction =
+{ type: ClientInfoActionType.Clear }
+| { type: ClientInfoActionType.Update, partialStateUpdate: Partial<EditableClientInfo> };
 
-export const clientInfoReducer = (state: EdiableClientInfo, action: ClientInfoAction) => {
-  if (action.type === ClientInfoActionType.Update) return { ...state, ...action.partialStateUpdate };
-  if (action.type === ClientInfoActionType.Clear) return { ...defaultClientInformation };
+export const clientInfoReducer = (state: EditableClientInfo, action: ClientInfoAction) => {
+  if (action.type === ClientInfoActionType.Update) {
+    return { ...state, ...action.partialStateUpdate };
+  }
+  return { ...defaultClientInformation };
 };
 
-export const ClientInformationContext = createContext<EdiableClientInfo>(null);
-export const ClientInformationDispatchContext = createContext<React.Dispatch<ClientInfoAction>>(null);
+export const ClientInformationContext = createContext<EditableClientInfo>(null);
+export const ClientInformationDispatchContext = createContext<React.Dispatch<
+ClientInfoAction>>(null);
 interface ClientInformationProviderProps extends React.PropsWithChildren {
-  state: EdiableClientInfo,
+  state: EditableClientInfo,
   dispatch: React.Dispatch<ClientInfoAction>
 }
-export function ClientInformationProvider({ children, state, dispatch }: ClientInformationProviderProps) {
+export function ClientInformationProvider({
+  children, state, dispatch,
+}: ClientInformationProviderProps) {
   return (
     <ClientInformationContext.Provider value={state}>
       <ClientInformationDispatchContext.Provider value={dispatch}>
