@@ -63,7 +63,6 @@ The website is built using **Next.js**, a React-based framework for server-side 
    # Defaults, used by ./intro-template and can be deleted if the component is removed
    NEXT_PUBLIC_VERCEL_GIT_PROVIDER="github"
    NEXT_PUBLIC_VERCEL_GIT_REPO_SLUG="template-nextjs-clean"
-
    ```
 
 ### Run locally
@@ -79,3 +78,11 @@ The website is built using **Next.js**, a React-based framework for server-side 
 3. In order to work on Sanity components, request to be added to Sanity.io as an administrator, and then populate the respective fields in the .env.local file.
 
 4. In order to work on Airtable forms, request access to Airtable and create a personal access token
+
+5. Look into .env.local.example file, it should have the necessary environmental variables needed for this project.
+
+## Testing
+
+- To run all tests: yarn test.
+- To exclude tests while running your own, you may temporarily put 'x' in front of 'describe' or 'it'. However, DO NOT exclude tests on a PR to a sprint branch.
+
