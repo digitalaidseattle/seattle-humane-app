@@ -11,42 +11,43 @@ import { User } from '@supabase/supabase-js'
 interface AuthProps {
   initialUser: User
 }
-class AuthService {
 
-  async signOut() {
-    return supabaseClient.auth.signOut()
-  }
-
-  hasUser() {
-    return supabaseClient.auth.getUser() != null
-  }
-
-  getUser = (async () => {
-    return supabaseClient.auth.getUser()
-  })
-
-
-  signInWithGoogle = async () => {
-    return supabaseClient.auth.signInWithOAuth({ provider: 'google' })
-      .then(resp => {
-        return resp
-      })
-  }
-  
-  signInWithAzure = async () => {
-    return supabaseClient.auth.signInWithOAuth({
-      provider: 'azure',
-      options: {
-        scopes: 'email',
-      },
-    })
-    .then(resp => {
-      return resp
-    })
-  }
+export function signOut() {
+  return supabaseClient.auth.signOut()
 }
 
 
-const authService = new AuthService()
+// class AuthService {
+
+//   async signOut() {
+//     return supabaseClient.auth.signOut()
+//   }
+
+//   hasUser() {
+//     return supabaseClient.auth.getUser() != null
+//   }
+
+//   getUser = (async () => {
+//     return supabaseClient.auth.getUser()
+//   })
+
+//   signInWithGoogle = () => {
+//     supabaseClient.auth.signInWithOAuth({ provider: 'google' })
+//   }
+  
+//   signInWithAzure = async () => {
+//     return supabaseClient.auth.signInWithOAuth({
+//       provider: 'azure',
+//       options: {
+//         scopes: 'email',
+//       },
+//     })
+//     .then(resp => {
+//       return resp
+//     })
+//   }
+// }
+
+
 export { authService, AuthService }
 export type { AuthProps }
