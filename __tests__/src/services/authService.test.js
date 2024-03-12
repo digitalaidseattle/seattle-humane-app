@@ -1,5 +1,5 @@
 // authService.test.js
-import { signOut, hasUser } from '../../../src/services/authService'
+import { authService } from '../../../src/services/authService'
 import supabaseClient from '../../../utils/supabaseClient';
 
 jest.mock('../../../utils/supabaseClient', () => ({
@@ -14,39 +14,39 @@ jest.mock('../../../utils/supabaseClient', () => ({
 // E2E tests in order to actually test supabase connection
 describe('AuthService', () => {
   it('should sign out', async () => {
-    await signOut()
+    await authService.signOut();
     expect(supabaseClient.auth.signOut).toHaveBeenCalled()
   })
 
   it('should check if user exists', () => {
     supabaseClient.auth.getUser.mockReturnValueOnce(null)
-    expect(hasUser()).toBe(false)
+    expect(authService.hasUser()).toBe(false)
 
     supabaseClient.auth.getUser.mockReturnValueOnce({})
-    expect(hasUser()).toBe(true)
+    expect(authService.hasUser()).toBe(true)
   })
 
-  // it('should get user', async () => {
-  //   const mockUser = { id: '1', email: 'test@test.com' }
-  //   supabaseClient.auth.getUser.mockResolvedValueOnce(mockUser)
+  it('should get user', async () => {
+    const mockUser = { id: '1', email: 'test@test.com' }
+    supabaseClient.auth.getUser.mockResolvedValueOnce(mockUser)
 
-  //   const user = await authService.getUser()
-  //   expect(user).toEqual(mockUser)
-  // })
+    const user = await authService.getUser()
+    expect(user).toEqual(mockUser)
+  })
 
-  // it('should sign in with Google', async () => {
-  //   const mockResponse = { user: { id: '1', email: 'test@test.com' }, session: {} }
-  //   supabaseClient.auth.signInWithOAuth.mockResolvedValueOnce(mockResponse)
+  it('should sign in with Google', async () => {
+    const mockResponse = { user: { id: '1', email: 'test@test.com' }, session: {} }
+    supabaseClient.auth.signInWithOAuth.mockResolvedValueOnce(mockResponse)
 
-  //   const response = await authService.signInWithGoogle()
-  //   expect(response).toEqual(mockResponse)
-  // })
+    const response = await authService.signInWithGoogle()
+    expect(response).toEqual(mockResponse)
+  })
 
-  // it('should sign in with Azure', async () => {
-  //   const mockResponse = { user: { id: '1', email: 'test@test.com' }, session: {} }
-  //   supabaseClient.auth.signInWithOAuth.mockResolvedValueOnce(mockResponse)
+  it('should sign in with Azure', async () => {
+    const mockResponse = { user: { id: '1', email: 'test@test.com' }, session: {} }
+    supabaseClient.auth.signInWithOAuth.mockResolvedValueOnce(mockResponse)
 
-  //   const response = await authService.signInWithAzure()
-  //   expect(response).toEqual(mockResponse)
-  // })
+    const response = await authService.signInWithAzure()
+    expect(response).toEqual(mockResponse)
+  })
 })
