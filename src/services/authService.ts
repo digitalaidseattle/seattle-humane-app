@@ -13,7 +13,11 @@ interface AuthProps {
 }
 
 export function signOut() {
-  return supabaseClient.auth.signOut()
+  return supabaseClient.auth.signOut();
+}
+
+export function hasUser() {
+  return supabaseClient.auth.getUser() != null;
 }
 
 
@@ -48,6 +52,4 @@ export function signOut() {
 //   }
 // }
 
-
-export { authService, AuthService }
 export type { AuthProps }

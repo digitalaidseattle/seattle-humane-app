@@ -1,5 +1,5 @@
 // authService.test.js
-import { signOut } from '../../../src/services/authService'
+import { signOut, hasUser } from '../../../src/services/authService'
 import supabaseClient from '../../../utils/supabaseClient';
 
 jest.mock('../../../utils/supabaseClient', () => ({
@@ -18,13 +18,13 @@ describe('AuthService', () => {
     expect(supabaseClient.auth.signOut).toHaveBeenCalled()
   })
 
-  // it('should check if user exists', () => {
-  //   supabaseClient.auth.getUser.mockReturnValueOnce(null)
-  //   expect(authService.hasUser()).toBe(false)
+  it('should check if user exists', () => {
+    supabaseClient.auth.getUser.mockReturnValueOnce(null)
+    expect(hasUser()).toBe(false)
 
-  //   supabaseClient.auth.getUser.mockReturnValueOnce({})
-  //   expect(authService.hasUser()).toBe(true)
-  // })
+    supabaseClient.auth.getUser.mockReturnValueOnce({})
+    expect(hasUser()).toBe(true)
+  })
 
   // it('should get user', async () => {
   //   const mockUser = { id: '1', email: 'test@test.com' }
