@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import { classNames } from 'primereact/utils';
 import React, { forwardRef, useContext, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import ClientDialog from '../src/components/ClientDialog';
-import { authService } from '../src/services/authService';
+import authService from '../src/services/authService';
 import { LayoutContext } from './context/layoutcontext';
 import { UserContext } from '../src/context/usercontext';
 import { User } from '@supabase/supabase-js';
