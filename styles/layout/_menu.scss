@@ -47,20 +47,24 @@
     }
 
     ul {
-        margin: 0;
+        margin-bottom: 1rem;
         padding: 0;
         list-style-type: none;
+        display: flex; 
+        place-items: end;
 
         a {
             display: flex;
             align-items: center;
             position: relative;
             outline: 0 none;
-            color: var(--text-color);
+            color: #00728E;
             cursor: pointer;
             padding: .75rem 1rem;
             border-radius: $borderRadius;
             transition: background-color $transitionDuration, box-shadow $transitionDuration;
+            flex-direction: column;
+
 
             .layout-menuitem-icon {
                 margin-right: .5rem;
@@ -80,7 +84,7 @@
 
             &.active-route {
                 font-weight: 700;
-                color: var(--primary-color);
+                color:#F03826;
             }
 
             &:hover {
