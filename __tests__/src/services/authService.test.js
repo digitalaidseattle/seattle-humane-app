@@ -1,5 +1,5 @@
 // authService.test.js
-import { authService } from '../../../src/services/authService'
+import authService from '../../../src/services/authService'
 import supabaseClient from '../../../utils/supabaseClient';
 
 jest.mock('../../../utils/supabaseClient', () => ({

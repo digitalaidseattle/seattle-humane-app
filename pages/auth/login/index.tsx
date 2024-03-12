@@ -5,7 +5,7 @@ import AppConfig from "../../../layout/AppConfig";
 import { Button } from "primereact/button";
 import { LayoutContext } from "../../../layout/context/layoutcontext";
 import { classNames } from "primereact/utils";
-import { authService } from "../../../src/services/authService";
+import authService from "../../../src/services/authService";
 import { GetServerSideProps } from "next";
 import supabaseClient from "../../../utils/supabaseClient";
 import GoogleIcon from "../../../src/components/GoogleIcon";

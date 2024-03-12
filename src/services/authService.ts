@@ -36,7 +36,7 @@ function signInWithAzure() {
   })
 }
 
-export const authService = {
+export default {
   signOut,
   hasUser,
   getUser,
