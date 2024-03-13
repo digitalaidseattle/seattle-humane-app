@@ -8,7 +8,7 @@ import '../styles/layout/layout.scss';
 import { UserContext } from '../src/context/usercontext';
 import { User } from '@supabase/supabase-js';
 import { useRouter } from 'next/navigation';
-import { authService } from '../src/services/authService';
+import authService from '../src/services/authService';
 
 export default function MyApp({ Component, pageProps }) {
     const router = useRouter();
