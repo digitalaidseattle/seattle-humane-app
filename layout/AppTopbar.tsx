@@ -14,6 +14,7 @@ import ClientDialog from "../src/components/ClientDialog";
 import { LayoutContext } from "./context/layoutcontext";
 import { UserContext } from "../src/context/usercontext";
 import AppMenu from "./AppMenu";
+import Image from "next/image";
 
 // eslint-disable-next-line react/display-name
 const AppTopbar = forwardRef((_props, ref) => {
@@ -43,7 +44,12 @@ const AppTopbar = forwardRef((_props, ref) => {
         <Link legacyBehavior href="/">
           <a className="layout-topbar-log">
             <div className="flex">
-              <img src={`${contextPath}/images/shs-favicon.png`} alt="logo" />
+              <Image
+                src={`${contextPath}/images/shs-favicon.png`}
+                width="38"
+                height="33"
+                alt="logo"
+              />
               <div>
                 <div className="text-cyan-700 font-semibold">Seattle</div>
                 <div
