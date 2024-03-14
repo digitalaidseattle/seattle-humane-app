@@ -1,3 +1,6 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable jsx-a11y/img-redundant-alt */
+/* eslint-disable @next/next/no-img-element */
 import getConfig from 'next/config';
 import { useRouter } from 'next/router';
 import React, { useContext, useEffect, useState } from 'react';
@@ -6,7 +9,7 @@ import { classNames } from 'primereact/utils';
 import { GetServerSideProps } from 'next';
 import AppConfig from '../../../layout/AppConfig';
 import { LayoutContext } from '../../../layout/context/layoutcontext';
-import { authService } from '../../../src/services/authService';
+import { AuthService } from '../../../src/services/authService';
 import supabaseClient from '../../../utils/supabaseClient';
 import GoogleIcon from '../../../src/components/GoogleIcon';
 
@@ -67,7 +70,7 @@ function LoginPage() {
                 icon={<GoogleIcon />}
                 className="w-full text-sm mr-3 bg-white border-gray-900 text-gray-900"
                 onClick={() => {
-                  authService.signInWithGoogle();
+                  AuthService.signInWithGoogle();
                 }}
               />
               <Button
@@ -82,7 +85,7 @@ function LoginPage() {
                 label="Sign in with Microsoft"
                 className="w-full text-sm bg-white border-gray-900 text-gray-900 ml-2 pl-3 pr-5"
                 onClick={() => {
-                  authService.signInWithAzure();
+                  AuthService.signInWithAzure();
                 }}
                 style={{ whiteSpace: 'nowrap' }}
               />

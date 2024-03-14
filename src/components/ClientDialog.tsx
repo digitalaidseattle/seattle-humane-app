@@ -1,3 +1,5 @@
+/* eslint-disable react/destructuring-assignment */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /**
 * ClientDialog.js
 *

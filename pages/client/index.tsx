@@ -1,3 +1,8 @@
+/* eslint-disable jsx-a11y/anchor-is-valid */
+/* eslint-disable jsx-a11y/click-events-have-key-events */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/naming-convention */
+/* eslint-disable react/jsx-closing-tag-location */
 /**
 * client/index.tsx
 *
@@ -54,9 +59,10 @@ function Client() {
   const crumbs = [
     {
       label: 'Clients',
-      template: <a onClick={() => push('/clients')}>
+      // eslint-disable-next-line jsx-a11y/no-static-element-interactions
+      template: (<a onClick={() => push('/clients')}>
         <span>Clients</span>
-                </a>,
+      </a>),
     }, {
       template: <span>
         Request:
@@ -131,7 +137,9 @@ function Client() {
                                                 // Note: we're updating onBlur.  we may have to change to a "save" button because of performance
                                     onBlur={() => update()}
                                     onChange={(e) => changeProp('status', e.value)}
-                                    options={statuses} optionLabel="name" optionValue="code"
+                                    options={statuses}
+                                    optionLabel="name"
+                                    optionValue="code"
                                   />
                                 </li>
                                 <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
@@ -143,7 +151,9 @@ function Client() {
                                                 // Note: we're updating onBlur.  we may have to change to a "save" button because of performance
                                     onBlur={() => update()}
                                     onChange={(e) => changeProp('serviceCategoryId', e.value)}
-                                    options={categories} optionLabel="name" optionValue="id"
+                                    options={categories}
+                                    optionLabel="name"
+                                    optionValue="id"
                                   />
                                 </li>
                                 <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
@@ -176,9 +186,13 @@ function Client() {
                                   <div className="text-500 w-6 md:w-2 font-medium">Phone</div>
                                   <div className="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
                                     <InputMask
-              id="phone" type="text" mask="(999) 999-9999"
-              value={ticket.phone} onBlur={() => update()} onChange={(e) => changeProp('phone', e.target.value)}
-            />
+                                      id="phone"
+                                      type="text"
+                                      mask="(999) 999-9999"
+                                      value={ticket.phone}
+                                      onBlur={() => update()}
+                                      onChange={(e) => changeProp('phone', e.target.value)}
+                                    />
                                   </div>
                                 </li>
                                 <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">

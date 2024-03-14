@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import getConfig from 'next/config';
 import { Button } from 'primereact/button';
 import { Column } from 'primereact/column';

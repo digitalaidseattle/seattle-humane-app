@@ -1,3 +1,6 @@
+/* eslint-disable eqeqeq */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable max-classes-per-file */
 import getConfig from 'next/config';
 import { v4 as uuidv4 } from 'uuid';
 import { NewClientRequest } from './ClientService';

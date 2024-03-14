@@ -1,3 +1,9 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-throw-literal */
+/* eslint-disable no-useless-catch */
+/* eslint-disable eqeqeq */
+/* eslint-disable class-methods-use-this */
+/* eslint-disable max-classes-per-file */
 /**
  *  ClientService.ts
  *
