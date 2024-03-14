@@ -10,23 +10,38 @@ import supabaseClient from '../../utils/supabaseClient';
 interface AuthProps {
   initialUser: User
 }
-class AuthService {
-  static async signOut() {
-    return supabaseClient.auth.signOut();
-  }
 
-  static hasUser() {
-    return supabaseClient.auth.getUser() != null;
-  }
-
-  static getUser = (async () => supabaseClient.auth.getUser());
-
-  static signInWithGoogle = async () => supabaseClient.auth.signInWithOAuth({ provider: 'google' })
-    .then((resp) => resp);
-
-  static signInWithAzure = async () => supabaseClient.auth.signInWithOAuth({ provider: 'azure' })
-    .then((resp) => resp);
+function signOut() {
+  return supabaseClient.auth.signOut();
 }
 
-export { AuthService };
+function hasUser() {
+  return supabaseClient.auth.getUser() != null;
+}
+
+function getUser() {
+  return supabaseClient.auth.getUser();
+}
+
+function signInWithGoogle() {
+  return supabaseClient.auth.signInWithOAuth({ provider: 'google' });
+}
+
+function signInWithAzure() {
+  return supabaseClient.auth.signInWithOAuth({
+    provider: 'azure',
+    options: {
+      scopes: 'email',
+    },
+  });
+}
+
+export default {
+  signOut,
+  hasUser,
+  getUser,
+  signInWithGoogle,
+  signInWithAzure,
+};
+
 export type { AuthProps };

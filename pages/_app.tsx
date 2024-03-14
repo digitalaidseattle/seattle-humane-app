@@ -8,7 +8,7 @@ import 'primeflex/primeflex.css';
 import 'primeicons/primeicons.css';
 import '../styles/layout/layout.scss';
 import { UserContext } from '../src/context/usercontext';
-import { AuthService } from '../src/services/authService';
+import authService from '../src/services/authService';
 
 export default function MyApp({ Component, pageProps }) {
   const router = useRouter();
@@ -18,7 +18,7 @@ export default function MyApp({ Component, pageProps }) {
   }), [user]);
 
   useEffect(() => {
-    AuthService.getUser()
+    authService.getUser()
       .then((resp: any) => {
         if (resp.data.user) {
           setUser(resp.data.user);

@@ -6,7 +6,7 @@ import React, {
   forwardRef, useContext, useImperativeHandle, useRef, useState,
 } from 'react';
 import ClientDialog from '../src/components/ClientDialog';
-import { AuthService } from '../src/services/authService';
+import authService from '../src/services/authService';
 import { LayoutContext } from './context/layoutcontext';
 import { UserContext } from '../src/context/usercontext';
 
