@@ -7,6 +7,7 @@
   "plugins": ["@typescript-eslint"],
   "rules": {
     "react/require-default-props": "off", // Since we do not use prop-types
+    "react/jsx-max-props-per-line": "warn",
     // copy max-len from airbnb-base and override ignoreComments
     "max-len": ["error", 100, 2, {
       "ignoreUrls": true,
