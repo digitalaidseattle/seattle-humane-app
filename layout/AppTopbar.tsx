@@ -39,7 +39,7 @@ const AppTopbar = forwardRef((props, ref) => {
   };
 
   const signOut = () => {
-    AuthService.signOut().then(() => {
+    authService.signOut().then(() => {
       router.push('/auth/login');
     });
   };
