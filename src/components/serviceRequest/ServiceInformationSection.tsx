@@ -5,6 +5,8 @@ import InputTextArea from "@components/InputTextArea";
 import { ServiceInfoActionType, ServiceInformationContext, ServiceInformationDispatchContext } from "@context/serviceRequest/serviceInformationContext";
 import { EditableRequestType } from "@types";
 import { TicketType } from "../../services/ClientService";
+import { Dropdown } from "primereact/dropdown";
+import { useAppConstants } from "../../services/useAppConstants";
 
 // TODO externalize to localization file
 export const serviceInformationLabels = {
@@ -28,16 +30,6 @@ export const serviceInformationLabels = {
 const priorityOptions = [
   serviceInformationLabels['Urgent'],
   serviceInformationLabels['NonUrgent']
-]
-const sourceOptions = {
-  [TicketType.email]: serviceInformationLabels['Email'],
-  [TicketType.phone]: serviceInformationLabels['Phone'],
-  [TicketType.walkin]: serviceInformationLabels['InPerson']
-}
-const statusOptions = [
-  serviceInformationLabels['Hold'],
-  serviceInformationLabels['InProgress'],
-  serviceInformationLabels['Others']
 ]
 
 /** Props for the ServiceInformationSection */
@@ -64,15 +56,18 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
   //* Retrieve form state from the context
   const formData = useContext(ServiceInformationContext)
   const dispatch = useContext(ServiceInformationDispatchContext)
+  const { data: categories } = useAppConstants('category');
+  const { data: sources } = useAppConstants('source');
+  const { data: statuses } = useAppConstants('status');
 
   //* Map onChange handlers to dispatch
-  const setFormData = (partialStateUpdate: Partial<EditableRequestType>) => dispatch({type: ServiceInfoActionType.Update, partialStateUpdate})
-  const setCategory = (service_category: EditableRequestType['service_category']) => setFormData({service_category})
-  const setPriority = (priority: EditableRequestType['priority']) => setFormData({priority})
-  const setSource = (source: EditableRequestType['source']) => setFormData({source})
-  const setServiceDescription = (description: EditableRequestType['description']) => setFormData({description})
-  const setStatus = (status: EditableRequestType['status']) => setFormData({status})
-  const setAssignedTo = (assigned_to: EditableRequestType['assigned_to']) => setFormData({assigned_to})
+  const setFormData = (partialStateUpdate: Partial<EditableRequestType>) => dispatch({ type: ServiceInfoActionType.Update, partialStateUpdate })
+  const setCategory = (service_category: EditableRequestType['service_category']) => setFormData({ service_category })
+  const setPriority = (priority: EditableRequestType['priority']) => setFormData({ priority })
+  const setSource = (source: EditableRequestType['source']) => setFormData({ source })
+  const setServiceDescription = (description: EditableRequestType['description']) => setFormData({ description })
+  const setStatus = (status: EditableRequestType['status']) => setFormData({ status })
+  const setAssignedTo = (assigned_to: EditableRequestType['assigned_to']) => setFormData({ assigned_to })
 
   return (
     <>
@@ -81,15 +76,13 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
         <div className="col-12 grid row-gap-3 pl-5">
           {visibleFields.has('service_category')
             && <div className="col-6">
-              {/* TODO change to <select> element when options are known */}
-              <InputText
+              <Dropdown
                 id="serviceCategory"
                 value={formData.service_category}
-                disabled={disabled}
-                label={serviceInformationLabels.Category}
-                placeholder={serviceInformationLabels.Category}
-                onChange={(e) => setCategory(e.target.value)}
-              />
+                onChange={(e) => setCategory(e.value)}
+                options={categories}
+                optionLabel="label"
+                placeholder={serviceInformationLabels.Category} />
             </div>}
           {visibleFields.has('priority')
             && <div className="grid col-6 justify-content-end">
@@ -111,15 +104,15 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
             && <div className="grid col-12">
               <div className="col-fixed mr-3">{serviceInformationLabels.Source}</div>
               <div className="flex flex-wrap gap-3">
-                {Object.keys(sourceOptions).map((key, i) => (
+                {sources.map((source, i) => (
                   <InputRadio
-                    key={key}
-                    label={sourceOptions[key]}
-                    value={key}
+                    key={source.value}
+                    label={source.label}
+                    value={source.value}
                     disabled={disabled}
-                    name={`source-${key}`}
+                    name={`source-${source.value}`}
                     onChange={(e) => setSource(e.target.value)}
-                    checked={formData.source === key}
+                    checked={formData.source === source.value}
                   />
                 ))}
               </div>
@@ -140,15 +133,15 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
             && <div className="grid col-6 pr-3">
               <div className="col-fixed mr-3">{serviceInformationLabels.Status}</div>
               <div className="flex flex-wrap gap-3">
-                {statusOptions.map((val, i) => (
+                {statuses.map((status, i) => (
                   <InputRadio
                     key={i}
-                    label={val}
-                    value={val}
+                    label={status.label}
+                    value={status.value}
                     disabled={disabled}
-                    name={`status-${val}`}
+                    name={`status-${status.value}`}
                     onChange={(e) => setStatus(e.target.value)}
-                    checked={formData.status === val}
+                    checked={formData.status === status.value}
                   />
                 ))}
               </div>
