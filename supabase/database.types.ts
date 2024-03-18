@@ -1,7 +1,3 @@
-// To update file after modifying DB use command 
-// 'supabase gen types typescript --project-id liuebfxbxugpfsfwbkks > supabase/database.types.ts' 
-// after logging in to supabase CLI
-
 export type Json =
   | string
   | number
@@ -15,25 +11,34 @@ export type Database = {
     Tables: {
       app_constants: {
         Row: {
+          active: boolean
+          changed_at: string
+          changed_by: string
           created_at: string
           id: string
-          label: string | null
-          type: string | null
-          value: string | null
+          label: string
+          type: string
+          value: string
         }
         Insert: {
+          active?: boolean
+          changed_at: string
+          changed_by?: string
           created_at?: string
           id?: string
-          label?: string | null
-          type?: string | null
-          value?: string | null
+          label: string
+          type: string
+          value: string
         }
         Update: {
+          active?: boolean
+          changed_at?: string
+          changed_by?: string
           created_at?: string
           id?: string
-          label?: string | null
-          type?: string | null
-          value?: string | null
+          label?: string
+          type?: string
+          value?: string
         }
         Relationships: []
       }
@@ -101,7 +106,7 @@ export type Database = {
             foreignKeyName: "public_pets_species_id_fkey"
             columns: ["species_id"]
             isOneToOne: false
-            referencedRelation: "species"
+            referencedRelation: "app_constants"
             referencedColumns: ["id"]
           }
         ]
@@ -216,14 +221,14 @@ export type Database = {
             foreignKeyName: "public_service_requests_request_source_id_fkey"
             columns: ["request_source_id"]
             isOneToOne: false
-            referencedRelation: "request_sources"
+            referencedRelation: "app_constants"
             referencedColumns: ["id"]
           },
           {
             foreignKeyName: "public_service_requests_service_category_id_fkey"
             columns: ["service_category_id"]
             isOneToOne: false
-            referencedRelation: "service_categories"
+            referencedRelation: "app_constants"
             referencedColumns: ["id"]
           },
           {
