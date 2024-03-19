@@ -36,7 +36,7 @@ class AppService {
           return this.cache.get(type);
         })
     } else {
-      return Promise.resolve(this.cache.get(type));
+      return this.cache.get(type);
     }
   }
 
