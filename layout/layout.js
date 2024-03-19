@@ -5,7 +5,6 @@ import { useEventListener, useUnmountEffect } from 'primereact/hooks';
 import { classNames, DomHandler } from 'primereact/utils';
 import React, { useContext, useEffect, useRef } from 'react';
 import AppFooter from './AppFooter';
-import AppSidebar from './AppSidebar';
 import AppTopbar from './AppTopbar';
 import AppConfig from './AppConfig';
 import { LayoutContext } from './context/layoutcontext';
@@ -120,9 +119,6 @@ const Layout = (props) => {
 
             <div className={containerClass}>
                 <AppTopbar ref={topbarRef} />
-                <div ref={sidebarRef} className="layout-sidebar">
-                    <AppSidebar />
-                </div>
                 <div className="layout-main-container">
                     <div className="layout-main">{props.children}</div>
                     <AppFooter />

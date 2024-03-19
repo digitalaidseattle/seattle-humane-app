@@ -1,7 +1,7 @@
-import AppMenu from './AppMenu';
+// import AppMenu from './AppMenu';
 
-const AppSidebar = () => {
-    return <AppMenu></AppMenu>;
-};
+// const AppSidebar = () => {
+//     return <AppMenu></AppMenu>;
+// };
 
-export default AppSidebar;
+// export default AppSidebar;
