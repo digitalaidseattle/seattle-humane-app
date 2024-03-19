@@ -53,7 +53,7 @@ const AppMenuitem = (props) => {
         <CSSTransition timeout={{ enter: 1000, exit: 450 }} classNames="layout-submenu" in={props.root ? true : active} key={item.label}>
             <ul>
                 {item.items.map((child, i) => {
-                    return <AppMenuitem item={child} index={i} className={child.badgeClass} parentKey={key} key={child.label} />;
+                    return <AppMenuitem item={child} index={i} className={child.badgeClass} parentKey={key} key={i} />;
                 })}
             </ul>
         </CSSTransition>

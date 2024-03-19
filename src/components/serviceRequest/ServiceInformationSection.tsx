@@ -4,7 +4,6 @@ import InputText from "@components/InputText";
 import InputTextArea from "@components/InputTextArea";
 import { ServiceInfoActionType, ServiceInformationContext, ServiceInformationDispatchContext } from "@context/serviceRequest/serviceInformationContext";
 import { EditableRequestType } from "@types";
-import { TicketType } from "../../services/ClientService";
 import { Dropdown } from "primereact/dropdown";
 import { useAppConstants } from "../../services/useAppConstants";
 
