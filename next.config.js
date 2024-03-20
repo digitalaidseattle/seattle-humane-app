@@ -6,7 +6,7 @@ const nextConfig = {
     publicRuntimeConfig: {
         contextPath: process.env.NODE_ENV === 'production' ? '' : '',
         uploadPath: process.env.NODE_ENV === 'production' ? '/upload.php' : '/api/upload'
-    }
+    }, 
 };
 
 module.exports = nextConfig;
