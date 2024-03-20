@@ -10,6 +10,7 @@ import {
 import {
   serviceInfoReducer, defaultServiceInformation, ServiceInfoActionType, ServiceInformationProvider,
 } from '@context/serviceRequest/serviceInformationContext';
+import { clientService } from 'src/services/ClientService';
 import ClientInformationSection from './ClientInformationSection';
 import PetInformationSection from './PetInformationSection';
 import ServiceInformationSection from './ServiceInformationSection';
@@ -69,8 +70,22 @@ function ServiceRequestDialog(props: ServiceRequestDialogProps) {
     if (busy) return;
     setBusy(true);
     // TODO add error handling scenario
-    await new Promise<void>((resolve) => { setTimeout(() => resolve(), 3000); });
-    setBusy(false);
+    try {
+      await clientService.newRequest(
+        {
+          ...serviceInformationState,
+          // TODO wire up lookup controls for these fields
+          animal_id: null,
+          staff_id: null,
+        },
+        clientInformationState,
+        petInformationState,
+      );
+    } catch (e) {
+      console.log(e.message);
+    } finally {
+      setBusy(false);
+    }
   };
 
   const dialogFooter = (
@@ -84,6 +99,7 @@ function ServiceRequestDialog(props: ServiceRequestDialogProps) {
 
   return (
     <Dialog
+      data-testid="serviceRequestDialog"
       visible={showDialog}
       style={{ width: '850px' }}
       header={serviceRequestLabels.FormHeader}

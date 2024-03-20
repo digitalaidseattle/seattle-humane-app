@@ -36,12 +36,14 @@ function signInWithAzure() {
   });
 }
 
-export default {
+const authService = {
   signOut,
   hasUser,
   getUser,
   signInWithGoogle,
   signInWithAzure,
 };
+
+export default authService;
 
 export type { AuthProps };

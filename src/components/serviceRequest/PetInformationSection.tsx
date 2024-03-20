@@ -26,7 +26,7 @@ interface PetInformationSectionProps {
 }
 
 //* Options for multi-choice controls
-const speciesOptions = ['Dog', 'Cat', 'Small mammal', 'Bird'];
+export const speciesOptions = ['Dog', 'Cat', 'Small mammal', 'Bird'];
 
 /**
  *
@@ -67,7 +67,7 @@ export default function PetInformationSection(props: PetInformationSectionProps)
             && (
             <div className="col-6">
               <InputText
-                id="petName"
+                id="name"
                 value={formData.name}
                 disabled={disabled}
                 label={petInformationLabels.Name}
@@ -83,11 +83,12 @@ export default function PetInformationSection(props: PetInformationSectionProps)
               <div className="flex flex-wrap gap-3">
                 {speciesOptions.map((val) => (
                   <InputRadio
+                    id={`species-${val}`}
                     key={val}
                     label={val}
                     value={val}
                     disabled={disabled}
-                    name={`petSpecies-${val}`}
+                    name={`species-${val}`}
                     onChange={(e) => setSpecies(e.target.value)}
                     checked={formData.species === val}
                   />
@@ -100,7 +101,7 @@ export default function PetInformationSection(props: PetInformationSectionProps)
             <div className="col-12 p-0">
               <div className="col-6">
                 <InputText
-                  id="petBreeds"
+                  id="breed"
                   value={formData.breed}
                   disabled={disabled}
                   label={petInformationLabels.Breeds}
@@ -115,7 +116,7 @@ export default function PetInformationSection(props: PetInformationSectionProps)
             <div className="col-12 p-0">
               <div className="col-6">
                 <InputText
-                  id="petWeight"
+                  id="weight"
                   value={`${formData.weight}`}
                   disabled={disabled}
                   label={petInformationLabels.Weight}

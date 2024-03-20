@@ -19,7 +19,7 @@ export const clientInformationLabels = {
 };
 
 //* Options for multi-choice controls
-const previouslyUsedOptions = ['Yes', 'No', 'Unsure'];
+export const previouslyUsedOptions = ['Yes', 'No', 'Unsure'];
 
 /** Props for the ClientInformationSection */
 interface ClientInformationSectionProps {
@@ -70,7 +70,7 @@ export default function ClientInformationSection(props: ClientInformationSection
             && (
             <div className="col-6">
               <InputText
-                id="firstName"
+                id="first_name"
                 value={formData.first_name}
                 disabled={disabled}
                 label={clientInformationLabels.FirstName}
@@ -83,7 +83,7 @@ export default function ClientInformationSection(props: ClientInformationSection
             && (
             <div className="col-6">
               <InputText
-                id="lastName"
+                id="last_name"
                 value={formData.last_name}
                 disabled={disabled}
                 label={clientInformationLabels.LastName}
@@ -138,6 +138,7 @@ export default function ClientInformationSection(props: ClientInformationSection
               <div className="flex flex-wrap gap-3">
                 {previouslyUsedOptions.map((val) => (
                   <InputRadio
+                    id={`previously_used-${val}`}
                     key={val}
                     label={val}
                     value={val}

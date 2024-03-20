@@ -19,7 +19,7 @@ export default function InputRadio(props: InputRadioProps) {
   return (
     <div className="flex align-items-center">
       <RadioButton
-        id={id}
+        inputId={id}
         name={name}
         value={value}
         disabled={disabled}
