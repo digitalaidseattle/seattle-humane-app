@@ -3,14 +3,14 @@ import { fireEvent, render, screen } from "@testing-library/react";
 import { createContext, useReducer } from "react";
 import ClientInformationSection, { clientInformationLabels as labels, previouslyUsedOptions } from "@components/serviceRequest/ClientInformationSection";
 import { ClientInformationProvider, clientInfoReducer, defaultClientInformation } from "@context/serviceRequest/clientInformationContext";
-import { EdiableClientInfo } from '@types';
+import { EditableClientInfo } from '@types';
 
 //* Mocking the client information context module to isolate the test
 jest.mock('@context/serviceRequest/clientInformationContext', () => {
   const ClientInformationContext = createContext(null)
   const ClientInformationDispatchContext = createContext(null)
   //* Using type annotation here to force this test to break if the contract changes
-  const defaultClientInformation: EdiableClientInfo = {
+  const defaultClientInformation: EditableClientInfo = {
     first_name: '',
     last_name: '',
     email: '',

@@ -1,4 +1,4 @@
-import { InputTextareaProps as PrimeReactInputTextareaProps, InputTextarea as PrimeReactInputTextArea } from "primereact/inputtextarea";
+import { InputTextareaProps as PrimeReactInputTextareaProps, InputTextarea as PrimeReactInputTextArea } from 'primereact/inputtextarea';
 
 /** The properties for the InputText component */
 export interface SHInputTextAreaProps extends PrimeReactInputTextareaProps {
@@ -7,17 +7,21 @@ export interface SHInputTextAreaProps extends PrimeReactInputTextareaProps {
 }
 
 /**
- * 
+ *
  * @param props {@link SHInputTextAreaProps}
  * @returns A controlled input element
  */
 export default function InputText(props: SHInputTextAreaProps) {
-  const { id, value, onChange, disabled, label, placeholder } = props
+  const {
+    id, value, onChange, disabled, label, placeholder,
+  } = props;
   return (
     <>
-      <div className="mb-2"><label htmlFor={id}>
-        {label}
-      </label></div>
+      <div className="mb-2">
+        <label htmlFor={id}>
+          {label}
+        </label>
+      </div>
       <div>
         <PrimeReactInputTextArea
           id={id}
@@ -29,5 +33,5 @@ export default function InputText(props: SHInputTextAreaProps) {
         />
       </div>
     </>
-  )
+  );
 }

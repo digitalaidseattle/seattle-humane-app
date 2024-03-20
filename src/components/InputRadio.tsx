@@ -1,4 +1,4 @@
-import { RadioButton, RadioButtonProps } from "primereact/radiobutton";
+import { RadioButton, RadioButtonProps } from 'primereact/radiobutton';
 
 interface InputRadioProps extends RadioButtonProps {
   /** The label for the element */
@@ -8,12 +8,14 @@ interface InputRadioProps extends RadioButtonProps {
 }
 
 /**
- * 
+ *
  * @param props {@link InputRadioProps}
  * @returns A controlled radio element
  */
 export default function InputRadio(props: InputRadioProps) {
-  const { id, name, value, onChange, disabled, label, checked } = props
+  const {
+    id, name, value, onChange, disabled, label, checked,
+  } = props;
   return (
     <div className="flex align-items-center">
       <RadioButton
@@ -28,5 +30,5 @@ export default function InputRadio(props: InputRadioProps) {
         {label}
       </label>
     </div>
-  )
+  );
 }

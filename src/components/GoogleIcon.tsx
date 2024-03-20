@@ -32,5 +32,5 @@ export default function GoogleIcon() {
         fill="#E94235"
       />
     </svg>
-  )
+  );
 }

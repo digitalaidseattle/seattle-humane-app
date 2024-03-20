@@ -4,8 +4,8 @@
  *  @copyright 2024 Digital Aid Seattle
  *
  */
-import supabaseClient from '../../utils/supabaseClient'
-import { User } from '@supabase/supabase-js'
+import { User } from '@supabase/supabase-js';
+import supabaseClient from '../../utils/supabaseClient';
 
 interface AuthProps {
   initialUser: User
@@ -20,11 +20,11 @@ function hasUser() {
 }
 
 function getUser() {
-    return supabaseClient.auth.getUser()
+  return supabaseClient.auth.getUser();
 }
 
 function signInWithGoogle() {
-  return supabaseClient.auth.signInWithOAuth({ provider: 'google' })
+  return supabaseClient.auth.signInWithOAuth({ provider: 'google' });
 }
 
 function signInWithAzure() {
@@ -33,15 +33,17 @@ function signInWithAzure() {
     options: {
       scopes: 'email',
     },
-  })
+  });
 }
 
-export default {
+const authService = {
   signOut,
   hasUser,
   getUser,
   signInWithGoogle,
-  signInWithAzure
-}
+  signInWithAzure,
+};
 
-export type { AuthProps }
+export default authService;
+
+export type { AuthProps };
