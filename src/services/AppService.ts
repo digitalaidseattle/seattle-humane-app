@@ -6,21 +6,19 @@
  *
  */
 
-import supabaseClient from "../../utils/supabaseClient";
-
+import supabaseClient from '../../utils/supabaseClient';
 
 type AppConstant = {
   value: string,
   label: string
-}
+};
 
 class AppService {
-
   cache: Map<string, AppConstant[]> = null;
 
   // constructor() {
 
-  // We could do this instead of lazy-init in the getAppConstants, 
+  // We could do this instead of lazy-init in the getAppConstants,
   // but testing gets messed up.
 
   // this.lookup()
@@ -31,17 +29,17 @@ class AppService {
   getAppConstants = async (type: string): Promise<AppConstant[]> => {
     if (this.cache === null) {
       return this.lookup()
-        .then(m => {
+        .then((m) => {
           this.cache = m;
           return this.cache.get(type);
-        })
-    } else {
-      return this.cache.get(type);
+        });
     }
-  }
+    return this.cache.get(type);
+  };
 
-  lookup = async () => {
-    const map = new Map();
+  // eslint-disable-next-line class-methods-use-this
+  lookup = async (): Promise<Map<string, AppConstant[]>> => {
+    const map = new Map<string, AppConstant[]>();
     const response = await supabaseClient
       .from('app_constants')
       .select();
@@ -52,7 +50,7 @@ class AppService {
       map.get(c.type).push(c);
     });
     return map;
-  }
+  };
 }
 
 const appService = new AppService();

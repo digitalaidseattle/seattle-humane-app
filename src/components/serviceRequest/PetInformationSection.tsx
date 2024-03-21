@@ -3,7 +3,6 @@ import InputRadio from '@components/InputRadio';
 import InputText from '@components/InputText';
 import { PetInfoActionType, PetInformationContext, PetInformationDispatchContext } from '@context/serviceRequest/petInformationContext';
 import { EditableAnimalType } from '@types';
-import { useAppConstants } from '../../services/useAppConstants';
 
 // TODO externalize to localization file
 export const petInformationLabels = {
@@ -26,6 +25,8 @@ interface PetInformationSectionProps {
   show?: (keyof EditableAnimalType)[]
 }
 
+//* Options for multi-choice controls
+export const speciesOptions = ['Dog', 'Cat', 'Small mammal', 'Bird'];
 
 /**
  *
@@ -37,8 +38,6 @@ export default function PetInformationSection(props: PetInformationSectionProps)
     disabled,
     show = ['name', 'breed', 'species', 'weight'],
   } = props;
-
-  const { data: species } = useAppConstants('species');
 
   const visibleFields = new Set<keyof EditableAnimalType>(show);
 
@@ -82,15 +81,16 @@ export default function PetInformationSection(props: PetInformationSectionProps)
             <div className="grid col-12">
               <div className="col-fixed mr-3">{petInformationLabels.Species}</div>
               <div className="flex flex-wrap gap-3">
-                {species.map((s, i) => (
+                {speciesOptions.map((val) => (
                   <InputRadio
-                    key={i}
-                    label={s.label}
-                    value={s.value}
+                    id={`species-${val}`}
+                    key={val}
+                    label={val}
+                    value={val}
                     disabled={disabled}
-                    name={`petSpecies-${s.value}`}
+                    name={`species-${val}`}
                     onChange={(e) => setSpecies(e.target.value)}
-                    checked={formData.species === s.value}
+                    checked={formData.species === val}
                   />
                 ))}
               </div>
