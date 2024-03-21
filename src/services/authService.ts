@@ -4,44 +4,46 @@
  *  @copyright 2024 Digital Aid Seattle
  *
  */
-import { GetServerSideProps } from 'next'
-import supabaseClient from '../../utils/supabaseClient'
-import { User } from '@supabase/supabase-js'
+import { User } from '@supabase/supabase-js';
+import supabaseClient from '../../utils/supabaseClient';
 
 interface AuthProps {
   initialUser: User
 }
-class AuthService {
 
-  async signOut() {
-    return supabaseClient.auth.signOut()
-  }
-
-  hasUser() {
-    return supabaseClient.auth.getUser() != null
-  }
-
-  getUser = (async () => {
-    return supabaseClient.auth.getUser()
-  })
-
-
-  signInWithGoogle = async () => {
-    return supabaseClient.auth.signInWithOAuth({ provider: 'google' })
-      .then(resp => {
-        return resp
-      })
-  }
-  
-  signInWithAzure = async () => {
-    return supabaseClient.auth.signInWithOAuth({ provider: 'azure' })
-      .then(resp => {
-        return resp
-      })
-  }
+function signOut() {
+  return supabaseClient.auth.signOut();
 }
 
+function hasUser() {
+  return supabaseClient.auth.getUser() != null;
+}
 
-const authService = new AuthService()
-export { authService, AuthService }
-export type { AuthProps }
+function getUser() {
+  return supabaseClient.auth.getUser();
+}
+
+function signInWithGoogle() {
+  return supabaseClient.auth.signInWithOAuth({ provider: 'google' });
+}
+
+function signInWithAzure() {
+  return supabaseClient.auth.signInWithOAuth({
+    provider: 'azure',
+    options: {
+      scopes: 'email',
+    },
+  });
+}
+
+const authService = {
+  signOut,
+  hasUser,
+  getUser,
+  signInWithGoogle,
+  signInWithAzure,
+};
+
+export default authService;
+
+export type { AuthProps };
