@@ -6,19 +6,19 @@
  *
  */
 
-import { useEffect, useState } from "react";
-import { AppConstant, appService } from "./AppService";
+import { useEffect, useState } from 'react';
+import { AppConstant, appService } from './AppService';
 
 const useAppConstants = (type: string) => {
-    const [data, setData] = useState<AppConstant[]>([]);
+  const [data, setData] = useState<AppConstant[]>([]);
 
-    useEffect(() => {
-        appService.getAppConstants(type)
-            .then(resp => setData(resp))
-    }, [type]);
+  useEffect(() => {
+    appService.getAppConstants(type)
+      .then((resp) => setData(resp));
+  }, [type]);
 
-    return { data: data };
+  return { data };
 };
 
+// eslint-disable-next-line import/prefer-default-export
 export { useAppConstants };
-
