@@ -19,12 +19,23 @@ jest.mock('src/services/ClientService', () => {
 })
 
 const species = [{ value: 'bird', label: 'BIRD' }];
+const statuses = [{ value: 'open', label: 'Open' }];
+const sources = [{ value: 'phone', label: 'Phone' }];
 jest.mock('src/services/useAppConstants', () => {
   const orig = jest.requireActual('src/services/useAppConstants')
   return {
     ...orig,
     useAppConstants: (value) => {
-      return { data: species }
+      switch (value) {
+        case 'species':
+          return { data: species }
+        case 'status':
+          return { data: statuses }
+        case 'source':
+          return { data: sources }
+        default:
+          return { data: [] }
+      }
     }
   }
 });
