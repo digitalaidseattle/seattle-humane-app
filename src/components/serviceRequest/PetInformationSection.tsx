@@ -64,7 +64,7 @@ export default function PetInformationSection(props: PetInformationSectionProps)
       </div>
       <div className="col-12 grid row-gap-3 pl-5">
         {visibleFields.has('name')
-            && (
+          && (
             <div className="col-6">
               <InputText
                 id="name"
@@ -75,9 +75,9 @@ export default function PetInformationSection(props: PetInformationSectionProps)
                 onChange={(e) => setName(e.target.value)}
               />
             </div>
-            )}
+          )}
         {visibleFields.has('species')
-            && (
+          && (
             <div className="grid col-12">
               <div className="col-fixed mr-3">{petInformationLabels.Species}</div>
               <div className="flex flex-wrap gap-3">
@@ -95,9 +95,9 @@ export default function PetInformationSection(props: PetInformationSectionProps)
                 ))}
               </div>
             </div>
-            )}
+          )}
         {visibleFields.has('breed')
-            && (
+          && (
             <div className="col-12 p-0">
               <div className="col-6">
                 <InputText
@@ -110,9 +110,9 @@ export default function PetInformationSection(props: PetInformationSectionProps)
                 />
               </div>
             </div>
-            )}
+          )}
         {visibleFields.has('weight')
-            && (
+          && (
             <div className="col-12 p-0">
               <div className="col-6">
                 <InputText
@@ -125,7 +125,7 @@ export default function PetInformationSection(props: PetInformationSectionProps)
                 />
               </div>
             </div>
-            )}
+          )}
       </div>
     </div>
   );
