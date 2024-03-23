@@ -1,11 +1,11 @@
-import '@testing-library/jest-dom';
-import { act, fireEvent, render, screen, waitFor } from "@testing-library/react";
 import ServiceRequestDialog from "@components/serviceRequest/ServiceRequestDialog";
-import { useState } from 'react';
-import { clientService } from 'src/services/ClientService';
-import { defaultServiceInformation } from '@context/serviceRequest/serviceInformationContext';
 import { defaultClientInformation } from '@context/serviceRequest/clientInformationContext';
 import { defaultPetInformation } from '@context/serviceRequest/petInformationContext';
+import { defaultServiceInformation } from '@context/serviceRequest/serviceInformationContext';
+import '@testing-library/jest-dom';
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { useState } from 'react';
+import { clientService } from 'src/services/ClientService';
 
 //* Mock clientService
 jest.mock('src/services/ClientService', () => {
@@ -17,6 +17,28 @@ jest.mock('src/services/ClientService', () => {
     }
   }
 })
+
+const species = [{ value: 'bird', label: 'BIRD' }];
+const statuses = [{ value: 'open', label: 'Open' }];
+const sources = [{ value: 'phone', label: 'Phone' }];
+jest.mock('src/services/useAppConstants', () => {
+  const orig = jest.requireActual('src/services/useAppConstants')
+  return {
+    ...orig,
+    useAppConstants: (value) => {
+      switch (value) {
+        case 'species':
+          return { data: species }
+        case 'status':
+          return { data: statuses }
+        case 'source':
+          return { data: sources }
+        default:
+          return { data: [] }
+      }
+    }
+  }
+});
 
 const SaveCancelLabels = {
   Save: 'Save', Cancel: 'Cancel'

@@ -3,8 +3,6 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { createContext, useReducer } from 'react';
 import ServiceInformationSection, {
   serviceInformationLabels as labels,
-  statusOptions,
-  sourceOptions,
   priorityOptions,
 } from '@components/serviceRequest/ServiceInformationSection';
 import {
@@ -53,6 +51,25 @@ jest.mock('src/services/ClientService', () => ({
   },
 }));
 
+const statuses = [{ value: 'open', label: 'Open' }];
+const sources = [{ value: 'phone', label: 'Phone' }];
+jest.mock('src/services/useAppConstants', () => {
+  const orig = jest.requireActual('src/services/useAppConstants')
+  return {
+    ...orig,
+    useAppConstants: (value) => {
+      switch (value) {
+        case 'status':
+          return { data: statuses }
+        case 'source':
+          return { data: sources }
+        default:
+          return { data: [] }
+      }
+    }
+  }
+});
+
 afterEach(() => {
   // Clear the mock reducer call counts after each test
   jest.clearAllMocks();
@@ -93,17 +110,18 @@ describe('ServiceInformationSection', () => {
       screen.queryByLabelText(labels.AssignTo),
     ];
     radioButtons = [];
-    statusOptions.forEach((label) => {
-      const radioButton = screen.queryByLabelText(label);
-      radioButtons.push([radioButton, 'status', label, label]);
-    });
+
+    statuses.map((opt) => {
+      const radioButton = screen.queryByLabelText(opt.label);
+      radioButtons.push([radioButton, 'status', opt.label, opt.value]);
+    })
     priorityOptions.forEach((label) => {
       const radioButton = screen.queryByLabelText(label);
       radioButtons.push([radioButton, 'priority', label, label]);
     });
-    Object.keys(sourceOptions).map((label) => {
-      const radioButton = screen.queryByLabelText(label);
-      radioButtons.push([radioButton, 'source', label, sourceOptions[label]]);
+    sources.map((opt) => {
+      const radioButton = screen.queryByLabelText(opt.label);
+      radioButtons.push([radioButton, 'source', opt.label, opt.value]);
     });
   }
 
