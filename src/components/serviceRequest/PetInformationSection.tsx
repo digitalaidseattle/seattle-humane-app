@@ -26,9 +26,6 @@ interface PetInformationSectionProps {
   show?: (keyof EditableAnimalType)[]
 }
 
-//* Options for multi-choice controls
-export const speciesOptions = ['Dog', 'Cat', 'Small mammal', 'Bird'];
-
 /**
  *
  * @param props {@link PetInformationSectionProps}
@@ -46,7 +43,7 @@ export default function PetInformationSection(props: PetInformationSectionProps)
   const formData = useContext(PetInformationContext);
   const dispatch = useContext(PetInformationDispatchContext);
   //* Options for multi-choice controls
-  // const { data: speciesOptions } = useAppConstants('species');
+  const { data: speciesOptions } = useAppConstants('species');
 
   //* Map onChange handlers to dispatch
   const setFormData = (partialStateUpdate: Partial<EditableAnimalType>) => dispatch(
@@ -88,7 +85,7 @@ export default function PetInformationSection(props: PetInformationSectionProps)
                   <InputRadio
                     id={`species-${spec.value}`}
                     key={spec.value}
-                    label={spec.value}
+                    label={spec.label}
                     value={spec.value}
                     disabled={disabled}
                     name={`species-${spec.value}`}
