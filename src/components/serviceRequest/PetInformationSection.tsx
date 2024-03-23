@@ -3,6 +3,7 @@ import InputRadio from '@components/InputRadio';
 import InputText from '@components/InputText';
 import { PetInfoActionType, PetInformationContext, PetInformationDispatchContext } from '@context/serviceRequest/petInformationContext';
 import { EditableAnimalType } from '@types';
+import { useAppConstants } from 'src/services/useAppConstants';
 
 // TODO externalize to localization file
 export const petInformationLabels = {
@@ -44,6 +45,8 @@ export default function PetInformationSection(props: PetInformationSectionProps)
   //* Retrieve form state from the context
   const formData = useContext(PetInformationContext);
   const dispatch = useContext(PetInformationDispatchContext);
+  //* Options for multi-choice controls
+  // const { data: speciesOptions } = useAppConstants('species');
 
   //* Map onChange handlers to dispatch
   const setFormData = (partialStateUpdate: Partial<EditableAnimalType>) => dispatch(
@@ -81,16 +84,16 @@ export default function PetInformationSection(props: PetInformationSectionProps)
             <div className="grid col-12">
               <div className="col-fixed mr-3">{petInformationLabels.Species}</div>
               <div className="flex flex-wrap gap-3">
-                {speciesOptions.map((val) => (
+                {speciesOptions.map((spec) => (
                   <InputRadio
-                    id={`species-${val}`}
-                    key={val}
-                    label={val}
-                    value={val}
+                    id={`species-${spec.value}`}
+                    key={spec.value}
+                    label={spec.value}
+                    value={spec.value}
                     disabled={disabled}
-                    name={`species-${val}`}
+                    name={`species-${spec.value}`}
                     onChange={(e) => setSpecies(e.target.value)}
-                    checked={formData.species === val}
+                    checked={formData.species === spec.value}
                   />
                 ))}
               </div>
