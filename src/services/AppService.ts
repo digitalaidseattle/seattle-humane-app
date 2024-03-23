@@ -38,25 +38,22 @@ class AppService {
   };
 
   // eslint-disable-next-line class-methods-use-this
-  lookup = async (): Promise<Map<string, AppConstant[]>> => {
-    return await supabaseClient
-      .from('app_constants')
-      .select()
-      .then((response) => {
-        if (response.data) {
-          const map = new Map<string, AppConstant[]>();
-          response.data.forEach((c) => {
-            if (!map.has(c.type)) {
-              map.set(c.type, []);
-            }
-            map.get(c.type).push(c);
-          });
-          return map;
-        } else {
-          throw new Error('No app constants found.')
-        }
-      })
-  };
+  lookup = async (): Promise<Map<string, AppConstant[]>> => supabaseClient
+    .from('app_constants')
+    .select()
+    .then((response) => {
+      if (response.data) {
+        const map = new Map<string, AppConstant[]>();
+        response.data.forEach((c) => {
+          if (!map.has(c.type)) {
+            map.set(c.type, []);
+          }
+          map.get(c.type).push(c);
+        });
+        return map;
+      }
+      throw new Error('No app constants found.');
+    });
 }
 
 const appService = new AppService();

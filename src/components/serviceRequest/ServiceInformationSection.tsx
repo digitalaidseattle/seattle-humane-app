@@ -1,10 +1,9 @@
-import React, { useContext } from 'react';
 import InputRadio from '@components/InputRadio';
 import InputText from '@components/InputText';
 import InputTextArea from '@components/InputTextArea';
 import { ServiceInfoActionType, ServiceInformationContext, ServiceInformationDispatchContext } from '@context/serviceRequest/serviceInformationContext';
 import { EditableRequestType } from '@types';
-import { TicketType } from '../../services/ClientService';
+import { useContext } from 'react';
 import { useAppConstants } from 'src/services/useAppConstants';
 
 // TODO externalize to localization file
@@ -30,7 +29,6 @@ export const priorityOptions = [
   serviceInformationLabels.Urgent,
   serviceInformationLabels.NonUrgent,
 ];
-
 
 /** Props for the ServiceInformationSection */
 interface ServiceInformationSectionProps {
