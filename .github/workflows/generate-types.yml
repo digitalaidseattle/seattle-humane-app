@@ -6,10 +6,11 @@ jobs:
   build: 
     runs-on: ubuntu-latest
     steps:
+        - name: Checkout the code so it can be tested
+          uses: actions/checkout@v4
         - uses: supabase/setup-cli@v1
           with:
             version: latest
-        - run: supabase init
         - run: supabase db start
         - name: Verify generated types match Postgres schema
           run: |
