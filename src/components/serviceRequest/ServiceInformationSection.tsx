@@ -86,7 +86,7 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
       </div>
       <div className="col-12 grid row-gap-3 pl-5">
         {visibleFields.has('service_category')
-            && (
+          && (
             <div className="col-6">
               {/* TODO change to <select> element when options are known */}
               <InputText
@@ -98,9 +98,9 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
                 onChange={(e) => setCategory(e.target.value)}
               />
             </div>
-            )}
+          )}
         {visibleFields.has('priority')
-            && (
+          && (
             <div className="grid col-6 justify-content-end">
               <div className="flex flex-wrap gap-3">
                 {priorityOptions.map((val) => (
@@ -117,9 +117,9 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
                 ))}
               </div>
             </div>
-            )}
+          )}
         {visibleFields.has('source')
-            && (
+          && (
             <div className="grid col-12">
               <div className="col-fixed mr-3">{serviceInformationLabels.Source}</div>
               <div className="flex flex-wrap gap-3">
@@ -137,9 +137,9 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
                 ))}
               </div>
             </div>
-            )}
+          )}
         {visibleFields.has('description')
-            && (
+          && (
             <div className="col-12">
               <InputTextArea
                 id="description"
@@ -151,9 +151,9 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
                 rows={5}
               />
             </div>
-            )}
+          )}
         {visibleFields.has('status')
-            && (
+          && (
             <div className="grid col-6 pr-3">
               <div className="col-fixed mr-3">{serviceInformationLabels.Status}</div>
               <div className="flex flex-wrap gap-3">
@@ -171,9 +171,9 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
                 ))}
               </div>
             </div>
-            )}
+          )}
         {visibleFields.has('assigned_to')
-            && (
+          && (
             <div className="col-6">
               {/* TODO change to <select> element when options are known */}
               <InputText
@@ -185,7 +185,7 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
                 onChange={(e) => setAssignedTo(e.target.value)}
               />
             </div>
-            )}
+          )}
       </div>
     </div>
   );
