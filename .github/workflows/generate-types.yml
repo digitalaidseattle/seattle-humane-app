@@ -1,0 +1,29 @@
+# If you run into issues with this workflow, make sure
+# that your Supabase CLI is up to date, then run
+# `supabase gen types typescript --local > supabase/database.types.ts`
+# that will create the database types for TypeScript.
+# For more information, check out this link:
+# https://supabase.com/docs/guides/cli/github-action/generating-types
+
+name: 'generate-types'
+on:
+  pull_request:
+
+jobs:
+  build: 
+    runs-on: ubuntu-latest
+    steps:
+        - name: Checkout the code so it can be tested
+          uses: actions/checkout@v4
+        - uses: supabase/setup-cli@v1
+          with:
+            version: latest
+        - run: supabase db start
+        - name: Verify generated types match Postgres schema
+          run: |
+            supabase gen types typescript --local > supabase/database.types.ts
+            if ! git diff --ignore-space-at-eol --exit-code --quiet supabase/database.types.ts; then
+              echo "Detected uncommitted changes after build. See status below:"
+              git diff
+              exit 1
+            fi
