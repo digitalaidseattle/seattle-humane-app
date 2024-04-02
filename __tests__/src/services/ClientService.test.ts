@@ -5,7 +5,7 @@
  *
  */
 
-import { ServiceCategory, clientService, upsertClient } from '../../../src/services/ClientService';
+import { ServiceCategory, clientService, upsertClient, insertPet } from '../../../src/services/ClientService';
 // FIXME this should be mocked! We might need dependency injection
 // It doesn't seem that this is connecting to the database but I'm not sure...
 import supabaseClient from '../../../utils/supabaseClient';
@@ -57,6 +57,30 @@ describe('ClientService', () => {
     expect(fromClientSpy).toHaveBeenCalledWith('clients');
     expect(upsertClientSpy).toHaveBeenCalledWith(client, { onConflict: 'email' });
     expect(upsertResponse.email).toEqual('fake_email@example.com');
+  });
+
+  it('should be able to insert a new pet', async () => {
+    const pet: AnimalType = {
+      name: 'Spike',
+      species: 'dragon',
+      breed: 'Hungarian Horntail',
+      weight: '2 tons',
+    };
+
+    const petTableResponse = { data: pet, error: null };
+    const mockPetQueryBuilder = {
+      insert: jest.fn(() => Promise.resolve(petTableResponse)),
+    };
+    const fromPetSpy = jest.spyOn(supabaseClient, 'from')
+      .mockReturnValue(mockPetQueryBuilder as any);
+    const insertPetSpy = jest.spyOn(mockPetQueryBuilder, 'insert')
+      .mockReturnValue(petTableResponse as any);
+
+    const insertResponse = await insertPet(pet);
+
+    expect(fromPetSpy).toHaveBeenCalledWith('pets');
+    expect(insertPetSpy).toHaveBeenCalledWith(pet);
+    expect(insertResponse.name).toEqual('Spike');
   });
 
   it('should be able to create a request with a new client', async () => {

@@ -180,6 +180,24 @@ export async function upsertClient(client: ClientType) {
   }
 }
 
+export async function insertPet(pet: AnimalType) {
+  try {
+    const { data: petResponse, error } = await supabaseClient
+      .from('pets')
+      .insert({
+        name: pet.name,
+        species: pet.species,
+        breed: pet.breed,
+        weight: pet.weight,
+        client_id: pet.client_id,
+      }) as { data: AnimalType | null, error: Error };
+    return petResponse;
+  } catch (error) {
+    console.log('ERROR AT insert pet:', error);
+    throw error;
+  }
+}
+
 class ClientService {
   // constructor(private supabaseClient: SupabaseClient) { }
 
