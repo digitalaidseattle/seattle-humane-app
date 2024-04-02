@@ -161,6 +161,11 @@ class ClientTicket {
   }
 }
 
+export async function upsertClient(client: ClientType) {
+  throw new Error('Method not implemented.');
+  return { data: [], error: null };
+}
+
 class ClientService {
   // constructor(private supabaseClient: SupabaseClient) { }
 

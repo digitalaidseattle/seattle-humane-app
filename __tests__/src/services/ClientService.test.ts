@@ -5,8 +5,11 @@
  *
  */
 
-import { ServiceCategory, clientService } from '../../../src/services/ClientService';
+import { ServiceCategory, clientService, upsertClient } from '../../../src/services/ClientService';
+// FIXME this should be mocked! We might need dependency injection
+// It doesn't seem that this is connecting to the database but I'm not sure...
 import supabaseClient from '../../../utils/supabaseClient';
+import { ClientType, RequestType as ServiceRequestType, AnimalType } from '../../../src/types';
 
 describe('ClientService', () => {
   it('should get service categories', async () => {
@@ -30,7 +33,43 @@ describe('ClientService', () => {
     expect(stats.length).toBeGreaterThan(1);
   });
 
-  it('should be able to create a request', async () => {
-    throw new Error('not Implemented');
+  it('should be able to upsert new client', async () => {
+    const clientTableResponse = { data: [], error: null };
+    const mockClientQueryBuilder = {
+      upsert: jest.fn(() => Promise.resolve(clientTableResponse)),
+    };
+    const fromClientSpy = jest.spyOn(supabaseClient, 'from')
+      .mockReturnValue(mockClientQueryBuilder as any);
+    const upsertClientSpy = jest.spyOn(mockClientQueryBuilder, 'upsert')
+      .mockReturnValue(clientTableResponse as any);
+
+    const client: ClientType = {
+      email: 'fake_email@example.com',
+      first_name: 'test_first',
+      last_name: 'test_last',
+      phone: '5555555555',
+      postal_code: '12345',
+      previously_used: 'FALSE',
+    };
+
+    const upsertResponse = await upsertClient(client);
+
+    expect(fromClientSpy).toHaveBeenCalledWith('clients');
+    expect(upsertClientSpy).toHaveBeenCalled();
+    expect(upsertResponse.data).toEqual([]);
+  });
+
+  it('should be able to create a request with a new client', async () => {
+    // I am testing to make sure a service request is created
+    // I don't need to test all the private functions, just the
+    // overall system
+
+    // Mock the upsert call for the client table
+    // Mock the insert call for the pet table
+    // Mock the insert call for the request
+
+    // make service call
+
+    // expect the new service request to have been created with the correct data
   });
 });
