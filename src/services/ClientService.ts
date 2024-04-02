@@ -213,6 +213,7 @@ class ClientService {
       // Check if animal exists and create one if not
       // TODO: HOW TO IDENTIFY UNIQUE ANIMAL? NAME / SPECIES / CLIENT_ID?
       // Identify with animal ID - use a lookup if the person can't find it
+      // Until that functionality exists, we just need a way to record it. Let's just always insert a new animal
       const { data: existingAnimal, error: animalError } = await supabaseClient
         .from('animals')
         .select('*')
