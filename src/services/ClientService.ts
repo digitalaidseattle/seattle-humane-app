@@ -162,40 +162,49 @@ class ClientTicket {
 }
 
 export async function upsertClient(client: ClientType) {
-  try {
-    const { data: clientResponse, error: clientError } = await supabaseClient
-      .from('clients')
-      .upsert({
-        email: client.email,
-        first_name: client.first_name,
-        last_name: client.last_name,
-        phone: client.phone,
-        postal_code: client.postal_code,
-        previously_used: client.previously_used,
-      }, { onConflict: 'email' }) as { data: ClientType | null, error: Error };
-    return clientResponse;
-  } catch (error) {
-    console.log('ERROR AT UPSERT CLIENT:', error);
-    throw error;
-  }
+  const { data: clientResponse, error: clientError } = await supabaseClient
+    .from('clients')
+    .upsert({
+      email: client.email,
+      first_name: client.first_name,
+      last_name: client.last_name,
+      phone: client.phone,
+      postal_code: client.postal_code,
+      previously_used: client.previously_used,
+    }, { onConflict: 'email' }) as { data: ClientType | null, error: Error };
+  if (clientError) throw new Error(`Client retrieval failed: ${clientError.message}`);
+  return clientResponse;
 }
 
 export async function insertPet(pet: AnimalType) {
-  try {
-    const { data: petResponse, error } = await supabaseClient
-      .from('pets')
-      .insert({
-        name: pet.name,
-        species: pet.species,
-        breed: pet.breed,
-        weight: pet.weight,
-        client_id: pet.client_id,
-      }) as { data: AnimalType | null, error: Error };
-    return petResponse;
-  } catch (error) {
-    console.log('ERROR AT insert pet:', error);
-    throw error;
-  }
+  const { data: petResponse, error: petError } = await supabaseClient
+    .from('pets')
+    .insert({
+      name: pet.name,
+      species: pet.species,
+      breed: pet.breed,
+      weight: pet.weight,
+      client_id: pet.client_id,
+    }) as { data: AnimalType | null, error: Error };
+  if (petError) throw new Error(`Client retrieval failed: ${petError.message}`);
+  return petResponse;
+}
+
+export async function insertRequest(request: ServiceRequestType) {
+  const { data: requestResponse, error: requestError } = await supabaseClient
+    .from('requests')
+    .insert({
+      client_id: request.client_id,
+      animal_id: request.animal_id,
+      service_category: request.service_category,
+      priority: request.priority,
+      source: request.source,
+      description: request.description,
+      status: request.status,
+      staff_id: request.staff_id,
+    }) as { data: ServiceRequestType | null, error: Error };
+  if (requestError) throw new Error(`Client retrieval failed: ${requestError.message}`);
+  return requestResponse;
 }
 
 class ClientService {
@@ -288,7 +297,7 @@ class ClientService {
       // if (error) throw new Error(`Request creation failed: ${error.message}`);
       // else createdRequest = newRequest;
     } catch (error) {
-      console.log('ERROR AT NEW REQUEST CREATION:', error);
+      console.error('ERROR AT NEW REQUEST CREATION:', error);
       throw error;
     }
     // TODO: ChangeLog not currently implemented

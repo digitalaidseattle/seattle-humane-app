@@ -5,7 +5,9 @@
  *
  */
 
-import { ServiceCategory, clientService, upsertClient, insertPet } from '../../../src/services/ClientService';
+import {
+  ServiceCategory, clientService, upsertClient, insertPet, insertRequest,
+} from '../../../src/services/ClientService';
 // FIXME this should be mocked! We might need dependency injection
 // It doesn't seem that this is connecting to the database but I'm not sure...
 import supabaseClient from '../../../utils/supabaseClient';
@@ -83,17 +85,30 @@ describe('ClientService', () => {
     expect(insertResponse.name).toEqual('Spike');
   });
 
-  it('should be able to create a request with a new client', async () => {
-    // I am testing to make sure a service request is created
-    // I don't need to test all the private functions, just the
-    // overall system
+  it('should be able to insert a request', async () => {
+    const request: ServiceRequestType = {
+      animal_id: new Uint8Array(12345),
+      service_category: 'test',
+      priority: 'low',
+      source: 'hogwarts',
+      description: 'Dragon hurt wing in chase with Harry Potter',
+      status: '',
+      staff_id: new Uint8Array(98765),
+    };
 
-    // Mock the upsert call for the client table
-    // Mock the insert call for the pet table
-    // Mock the insert call for the request
+    const requestTableResponse = { data: request, error: null };
+    const mockRequestQueryBuilder = {
+      insert: jest.fn(() => Promise.resolve(requestTableResponse)),
+    };
+    const fromRequestSpy = jest.spyOn(supabaseClient, 'from')
+      .mockReturnValue(mockRequestQueryBuilder as any);
+    const insertRequestSpy = jest.spyOn(mockRequestQueryBuilder, 'insert')
+      .mockReturnValue(requestTableResponse as any);
 
-    // make service call
+    const insertResponse = await insertRequest(request);
 
-    // expect the new service request to have been created with the correct data
+    expect(fromRequestSpy).toHaveBeenCalledWith('requests');
+    expect(insertRequestSpy).toHaveBeenCalledWith(request);
+    expect(insertResponse.animal_id).toEqual(new Uint8Array(12345));
   });
 });
