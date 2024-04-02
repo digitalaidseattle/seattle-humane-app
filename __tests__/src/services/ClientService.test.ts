@@ -34,7 +34,16 @@ describe('ClientService', () => {
   });
 
   it('should be able to upsert new client', async () => {
-    const clientTableResponse = { data: [], error: null };
+    const client: ClientType = {
+      email: 'fake_email@example.com',
+      first_name: 'test_first',
+      last_name: 'test_last',
+      phone: '5555555555',
+      postal_code: '',
+      previously_used: '',
+    };
+
+    const clientTableResponse = { data: client, error: null };
     const mockClientQueryBuilder = {
       upsert: jest.fn(() => Promise.resolve(clientTableResponse)),
     };
@@ -43,20 +52,11 @@ describe('ClientService', () => {
     const upsertClientSpy = jest.spyOn(mockClientQueryBuilder, 'upsert')
       .mockReturnValue(clientTableResponse as any);
 
-    const client: ClientType = {
-      email: 'fake_email@example.com',
-      first_name: 'test_first',
-      last_name: 'test_last',
-      phone: '5555555555',
-      postal_code: '12345',
-      previously_used: 'FALSE',
-    };
-
     const upsertResponse = await upsertClient(client);
 
     expect(fromClientSpy).toHaveBeenCalledWith('clients');
-    expect(upsertClientSpy).toHaveBeenCalled();
-    expect(upsertResponse.data).toEqual([]);
+    expect(upsertClientSpy).toHaveBeenCalledWith(client, { onConflict: 'email' });
+    expect(upsertResponse.email).toEqual('fake_email@example.com');
   });
 
   it('should be able to create a request with a new client', async () => {
