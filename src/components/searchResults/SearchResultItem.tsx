@@ -10,7 +10,7 @@ const searchResultItemGridLayout = {
 /**
  * The props type for the SearchResultsItem component
  */
-export type ResultProps = {
+export type SearchResultItemProps = {
   id: number
   petName: string
   clientName: string
@@ -22,10 +22,10 @@ export type ResultProps = {
 
 /**
  *
- * @param props {@link ResultProps}
+ * @param props {@link SearchResultItemProps}
  * @returns The component
  */
-export default function SearchResultItem({ result }: { result: ResultProps }) {
+export default function SearchResultItem({ result }: { result: SearchResultItemProps }) {
   const {
     petName, clientName, priority, summary, date, assignedTo,
   } = result;

@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import { Button } from 'primereact/button';
 import { Menu } from 'primereact/menu';
 import SearchResultItem from '@components/searchResults/SearchResultItem';
-import type { ResultProps } from '@components/searchResults/SearchResultItem';
+import type { SearchResultItemProps } from '@components/searchResults/SearchResultItem';
 
 // TODO localize
 const messages = {
@@ -10,7 +10,7 @@ const messages = {
 };
 
 // TODO remove mock data when hooking up to data service
-const mockResults: ResultProps[] = [
+const mockResults: SearchResultItemProps[] = [
   {
     id: Math.random(),
     petName: 'Pet Name',

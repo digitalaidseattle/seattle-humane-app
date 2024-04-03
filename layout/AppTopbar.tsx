@@ -5,6 +5,7 @@ import { classNames } from 'primereact/utils';
 import React, {
   forwardRef, useContext, useImperativeHandle, useRef, useState,
 } from 'react';
+import SearchBar from '@components/searchResults/SearchBar';
 import ClientDialog from '../src/components/ClientDialog';
 import authService from '../src/services/authService';
 import { LayoutContext } from './context/layoutcontext';
@@ -61,8 +62,8 @@ const AppTopbar = forwardRef((props, ref) => {
         <button ref={topbarmenubuttonRef} type="button" className="p-link layout-topbar-menu-button layout-topbar-button" onClick={showProfileSidebar}>
           <i className="pi pi-ellipsis-v" />
         </button>
-
         <div ref={topbarmenuRef} className={classNames('layout-topbar-menu', { 'layout-topbar-menu-mobile-active': layoutState.profileSidebarVisible })}>
+          <SearchBar />
           <button type="button" className="p-link layout-topbar-button" onClick={openClientDialog}>
             <i className="pi pi-ticket" />
             <span>Ticket</span>
