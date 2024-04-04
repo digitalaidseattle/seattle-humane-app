@@ -91,4 +91,6 @@ const AppTopbar = forwardRef((_props, ref) => {
   );
 });
 
+AppTopbar.displayName = 'AppTopbar';
+
 export default AppTopbar;
