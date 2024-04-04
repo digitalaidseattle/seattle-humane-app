@@ -73,24 +73,27 @@ export type Database = {
           first_name: string | null
           id: string
           last_name: string | null
-          phone_number: string | null
-          zip_code: string | null
+          phone: string | null
+          postal_code: string | null
+          previously_used: string | null
         }
         Insert: {
           email?: string | null
           first_name?: string | null
           id?: string
           last_name?: string | null
-          phone_number?: string | null
-          zip_code?: string | null
+          phone?: string | null
+          postal_code?: string | null
+          previously_used?: string | null
         }
         Update: {
           email?: string | null
           first_name?: string | null
           id?: string
           last_name?: string | null
-          phone_number?: string | null
-          zip_code?: string | null
+          phone?: string | null
+          postal_code?: string | null
+          previously_used?: string | null
         }
         Relationships: []
       }
