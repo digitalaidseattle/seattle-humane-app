@@ -1,4 +1,4 @@
-import { InputTextProps as PrimeReactInputTextProps, InputText as PrimeReactInputText } from "primereact/inputtext";
+import { InputTextProps as PrimeReactInputTextProps, InputText as PrimeReactInputText } from 'primereact/inputtext';
 
 /** The properties for the InputText component */
 export interface InputTextProps extends PrimeReactInputTextProps {
@@ -7,12 +7,14 @@ export interface InputTextProps extends PrimeReactInputTextProps {
 }
 
 /**
- * 
+ *
  * @param props {@link SHInputTextProps}
  * @returns A controlled input element
  */
 export default function InputText(props: InputTextProps) {
-  const { id, value, type, onChange, disabled, label, placeholder } = props
+  const {
+    id, value, type, onChange, disabled, label, placeholder,
+  } = props;
   return (
     <div className="flex flex-column gap-2">
       <label htmlFor={id}>
@@ -27,5 +29,5 @@ export default function InputText(props: InputTextProps) {
         onChange={(...args) => !disabled && onChange(...args)}
       />
     </div>
-  )
+  );
 }

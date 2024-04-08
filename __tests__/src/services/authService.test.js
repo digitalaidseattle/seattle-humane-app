@@ -1,5 +1,5 @@
 // authService.test.js
-import { AuthService } from '../../../src/services/authService'
+import authService from '../../../src/services/authService'
 import supabaseClient from '../../../utils/supabaseClient';
 
 jest.mock('../../../utils/supabaseClient', () => ({
@@ -13,14 +13,8 @@ jest.mock('../../../utils/supabaseClient', () => ({
 // NOTE: These test are all fairly 'shallow' and should be augmented by 
 // E2E tests in order to actually test supabase connection
 describe('AuthService', () => {
-  let authService;
-
-  beforeEach(() => {
-    authService = new AuthService()
-  })
-
   it('should sign out', async () => {
-    await authService.signOut()
+    await authService.signOut();
     expect(supabaseClient.auth.signOut).toHaveBeenCalled()
   })
 
@@ -45,6 +39,14 @@ describe('AuthService', () => {
     supabaseClient.auth.signInWithOAuth.mockResolvedValueOnce(mockResponse)
 
     const response = await authService.signInWithGoogle()
+    expect(response).toEqual(mockResponse)
+  })
+
+  it('should sign in with Azure', async () => {
+    const mockResponse = { user: { id: '1', email: 'test@test.com' }, session: {} }
+    supabaseClient.auth.signInWithOAuth.mockResolvedValueOnce(mockResponse)
+
+    const response = await authService.signInWithAzure()
     expect(response).toEqual(mockResponse)
   })
 })

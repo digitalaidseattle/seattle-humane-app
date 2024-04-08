@@ -1,3 +1,22 @@
 {
-  "extends": "next/core-web-vitals"
+  "extends": ["eslint:recommended", "airbnb",  "airbnb-typescript", "airbnb/hooks","next", "next/core-web-vitals"],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "project": "./tsconfig.json"
+  },
+  "plugins": ["@typescript-eslint"],
+  "rules": {
+    "react/require-default-props": "off", // Since we do not use prop-types
+    "react/jsx-max-props-per-line": "warn",
+    // copy max-len from airbnb-base and override ignoreComments
+    "max-len": ["error", 100, 2, {
+      "ignoreUrls": true,
+      "ignoreComments": true, // airbnb-base default is false
+      "ignoreRegExpLiterals": true,
+      "ignoreStrings": true,
+      "ignoreTemplateLiterals": true
+    }]
+  },
+  "ignorePatterns": ["**/*.js", "**/*.jsx"],
+  "reportUnusedDisableDirectives": true
 }
