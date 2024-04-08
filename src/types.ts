@@ -18,6 +18,8 @@ export type AnimalType = {
 };
 export type EditableAnimalType = Omit<AnimalType, 'id' | 'client_id'>;
 
+export type ServiceRequestTypeExample = Database['public']['Tables']['service_requests']['Insert'];
+
 // INCOMPLETE: more fields to be added when confirmed as required
 export type RequestType = {
   id?: BigInteger;
