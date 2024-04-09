@@ -185,8 +185,6 @@ class ClientService {
 
       // Check if client exists and create one if not
       // No Upsert operations currently in the supabaseClient library AFAIK
-      // Yes there is an upsert!!
-      // FIXME would be much better to use dependency injection for Supabase Client
       const { data: existingClient, error: clientError } = await supabaseClient
         .from('clients')
         .select('*')
@@ -212,7 +210,6 @@ class ClientService {
 
       // Check if animal exists and create one if not
       // TODO: HOW TO IDENTIFY UNIQUE ANIMAL? NAME / SPECIES / CLIENT_ID?
-      // Identify with animal ID - use a lookup if the person can't find it
       const { data: existingAnimal, error: animalError } = await supabaseClient
         .from('animals')
         .select('*')

@@ -9,12 +9,11 @@ create table "public"."app_constants" (
 
 create table "public"."clients" (
     "id" uuid not null default uuid_generate_v4(),
-    "email" text,
     "first_name" text,
     "last_name" text,
-    "phone" text,
-    "postal_code" text,
-    "previously_used" text
+    "phone_number" text,
+    "email" text,
+    "zip_code" text
 );
 
 
