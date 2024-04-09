@@ -29,7 +29,4 @@ describe('ClientService', () => {
     const stats = await clientService.getServiceStatuses();
     expect(stats.length).toBeGreaterThan(1);
   });
-
-  // it('should be able to create a request', () => {
-  // });
 });
