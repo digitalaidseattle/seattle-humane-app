@@ -22,12 +22,12 @@ jobs:
             version: latest
         - name: Set up empty env vars
           run: |
-            SUPABASE_AUTH_GOOGLE_CLIENT_ID="Fake data"
-            SUPABASE_AUTH_GOOGLE_SECRET="Fake data"
-            SUPABASE_AUTH_GOOGLE_REDIRECT_URI="Fake data"
-            SUPABASE_AUTH_AZURE_CLIENT_ID="Fake data"
-            SUPABASE_AUTH_AZURE_SECRET="Fake data"
-            SUPABASE_AUTH_AZURE_REDIRECT_URI="Fake data"
+            export SUPABASE_AUTH_GOOGLE_CLIENT_ID="Fake data"
+            export SUPABASE_AUTH_GOOGLE_SECRET="Fake data"
+            export SUPABASE_AUTH_GOOGLE_REDIRECT_URI="Fake data"
+            export SUPABASE_AUTH_AZURE_CLIENT_ID="Fake data"
+            export SUPABASE_AUTH_AZURE_SECRET="Fake data"
+            export SUPABASE_AUTH_AZURE_REDIRECT_URI="Fake data"
         - run: supabase db start
         - name: Verify generated types match Postgres schema
           run: |
