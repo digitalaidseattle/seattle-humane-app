@@ -20,14 +20,14 @@ jobs:
         - uses: supabase/setup-cli@v1
           with:
             version: latest
-        - name: Set up empty env vars
+        - name: Set env vars
           run: |
-            export SUPABASE_AUTH_GOOGLE_CLIENT_ID="Fake data"
-            export SUPABASE_AUTH_GOOGLE_SECRET="Fake data"
-            export SUPABASE_AUTH_GOOGLE_REDIRECT_URI="Fake data"
-            export SUPABASE_AUTH_AZURE_CLIENT_ID="Fake data"
-            export SUPABASE_AUTH_AZURE_SECRET="Fake data"
-            export SUPABASE_AUTH_AZURE_REDIRECT_URI="Fake data"
+            echo "SUPABASE_AUTH_GOOGLE_CLIENT_ID=fake_data" >> "$GITHUB_ENV"
+            echo "SUPABASE_AUTH_GOOGLE_SECRET=fake_data" >> "$GITHUB_ENV"
+            echo "SUPABASE_AUTH_GOOGLE_REDIRECT_URI=fake_data" >> "$GITHUB_ENV"
+            echo "SUPABASE_AUTH_AZURE_CLIENT_ID=fake_data" >> "$GITHUB_ENV"
+            echo "SUPABASE_AUTH_AZURE_SECRET=fake_data" >> "$GITHUB_ENV"
+            echo "SUPABASE_AUTH_AZURE_REDIRECT_URI=fake_data" >> "$GITHUB_ENV"
         - run: supabase db start
         - name: Verify generated types match Postgres schema
           run: |
