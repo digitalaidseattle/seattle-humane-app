@@ -155,22 +155,22 @@ describe('ServiceRequestDialog', () => {
     expect(clientService.newRequest).toHaveBeenCalledTimes(1)
   })
 
-  // it('should log errors to the console', async () => {
-  //   //* Arrange
-  //   let reject
-  //   clientService.newRequest = jest.fn().mockImplementation(async () => {
-  //     return new Promise((undefined, r) => reject = r)
-  //   })
-  //   const testError = 'Test fetch failed'
-  //   console.log = jest.fn()
-  //   setup(true)
+  it('should log errors to the console', async () => {
+    //* Arrange
+    let reject
+    clientService.newRequest = jest.fn().mockImplementation(async () => {
+      return new Promise((undefined, r) => reject = r)
+    })
+    const testError = 'Test fetch failed'
+    console.log = jest.fn()
+    setup(true)
 
-  //   //* Act
-  //   fireEvent.click(screen.queryByLabelText(SaveCancelLabels.Save))
-  //   await waitFor(() => expect(clientService.newRequest).toHaveBeenCalledTimes(1))
+    //* Act
+    fireEvent.click(screen.queryByLabelText(SaveCancelLabels.Save))
+    await waitFor(() => expect(clientService.newRequest).toHaveBeenCalledTimes(1))
 
-  //   //* Assert
-  //   await waitFor(() => reject(new Error(testError)))
-  //   expect(console.log).toHaveBeenCalledWith(testError)
-  // })
+    //* Assert
+    await waitFor(() => reject(new Error(testError)))
+    expect(console.log).toHaveBeenCalledWith(testError)
+  })
 })
