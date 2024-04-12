@@ -24,7 +24,14 @@ function getUser() {
 }
 
 function signInWithGoogle() {
-  return supabaseClient.auth.signInWithOAuth({ provider: 'google' });
+  return supabaseClient.auth.signInWithOAuth(
+    {
+      provider: 'google',
+      options: {
+        redirectTo: process.env.NEXT_PUBLIC_SERVER_HOST
+      }
+    }
+  );
 }
 
 function signInWithAzure() {
@@ -32,6 +39,7 @@ function signInWithAzure() {
     provider: 'azure',
     options: {
       scopes: 'email',
+      redirectTo: process.env.NEXT_PUBLIC_SERVER_HOST
     },
   });
 }
