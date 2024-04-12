@@ -32,17 +32,28 @@ export type AnimalType = {
 };
 export type EditableAnimalType = Omit<AnimalType, 'id' | 'client_id'>;
 
+export type TeamMember = {
+  id: BigInteger;
+  email: string;
+  last_name: string;
+  first_name: string;
+};
+
 // INCOMPLETE: more fields to be added when confirmed as required
 export type RequestType = {
   id?: BigInteger;
   client_id?: BigInteger;
   animal_id: BigInteger;
   service_category: string;
+  service_category_id: string;
   priority: string;
   source: string;
+  request_source_id: string
   description: string;
   status: string;
   staff_id: BigInteger;
+  team_member_id: string;
+  team_members: TeamMember;
 };
 // TODO use lookup with assigned_to
 export type EditableRequestType = Omit<RequestType, 'id' | 'animal_id' | 'staff_id'> & { assigned_to: string };

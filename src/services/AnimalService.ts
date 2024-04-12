@@ -3,7 +3,7 @@
 /* eslint-disable max-classes-per-file */
 import getConfig from 'next/config';
 import { v4 as uuidv4 } from 'uuid';
-import { NewClientRequest } from './ClientService';
+import { ClientType, RequestType as ServiceRequestType, AnimalType } from '../types';
 
 enum RequestType {
   clientNew = 'client-new',
@@ -127,22 +127,6 @@ class AnimalService {
 
   constructor() {
     this.contextPath = getConfig().publicRuntimeConfig.contextPath;
-  }
-
-  newRequest(request: NewClientRequest): Promise<ClientTicket> {
-    // TODO post request
-    // For now...
-    const ticket = new ClientTicket(request);
-    ticket.ticketNo = uuidv4();
-    ticket.status = RequestType.clientNew;
-    ticket.changeLog.push(new ChangeLog({
-      date: request.date,
-      representative: 'FIXME',
-      description: 'New Request',
-    }));
-
-    this.tickets.push(ticket);
-    return Promise.resolve(ticket);
   }
 
   getTicket(id: string): Promise<ClientTicket> {

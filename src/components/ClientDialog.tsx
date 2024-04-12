@@ -50,11 +50,15 @@ const defaultRequest: RequestType = {
   client_id: null,
   animal_id: null,
   service_category: '',
+  service_category_id: '',
   priority: '',
   source: '',
+  request_source_id: '',
   description: '',
   status: '',
   staff_id: null,
+  team_member_id: '',
+  team_members: null,
 };
 
 interface ClientDialogProps {
@@ -125,7 +129,7 @@ function ClientDialog(props: ClientDialogProps) {
               },
             });
           }
-        } catch (error) { console.log(error); }
+        } catch (error) { console.error(error); }
       }, 1000);
     }
   };

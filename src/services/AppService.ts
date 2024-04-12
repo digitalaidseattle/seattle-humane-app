@@ -9,8 +9,11 @@
 import supabaseClient from '../../utils/supabaseClient';
 
 type AppConstant = {
+  id: string,
+  type: string,
   value: string,
-  label: string
+  label: string,
+  active: boolean,
 };
 
 class AppService {

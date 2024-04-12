@@ -162,7 +162,7 @@ describe('ServiceRequestDialog', () => {
       return new Promise((undefined, r) => reject = r)
     })
     const testError = 'Test fetch failed'
-    console.log = jest.fn()
+    console.error = jest.fn()
     setup(true)
 
     //* Act
@@ -171,6 +171,6 @@ describe('ServiceRequestDialog', () => {
 
     //* Assert
     await waitFor(() => reject(new Error(testError)))
-    expect(console.log).toHaveBeenCalledWith(testError)
+    expect(console.error).toHaveBeenCalledWith(testError)
   })
 })
