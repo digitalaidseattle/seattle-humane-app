@@ -51,7 +51,7 @@ The website is built using **Next.js**, a React-based framework for server-side 
 
 ### Configure Environmental Variables
 
-1. Create .env.local file, use .env.local.example as a guide:
+1. Create .env.local file:
 
    ```bash
    touch .env.local

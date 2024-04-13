@@ -28,7 +28,7 @@ function signInWithGoogle() {
     {
       provider: 'google',
       options: {
-        redirectTo: process.env.NEXT_PUBLIC_SERVER_HOST,
+        redirectTo: window.location.origin,
       },
     },
   );
@@ -39,7 +39,7 @@ function signInWithAzure() {
     provider: 'azure',
     options: {
       scopes: 'email',
-      redirectTo: process.env.NEXT_PUBLIC_SERVER_HOST,
+      redirectTo: window.location.origin,
     },
   });
 }
