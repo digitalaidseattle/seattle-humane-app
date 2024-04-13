@@ -19,6 +19,13 @@ enum RequestType {
   animalUpdate = 'animal-update',
 }
 
+type SearchOptions = {
+  first: number,
+  page: number,
+  pageCount: number,
+  rows: number,
+};
+
 class ChangeLog {
   date: Date;
 
@@ -158,12 +165,19 @@ class ClientService {
       .then((resp) => resp.data);
   }
 
-  // FIXME add paging
-  async getServiceRequests(): Promise<ServiceRequestType[]> {
+  async getServiceRequests(opts: SearchOptions): Promise<ServiceRequestType[]> {
     return supabaseClient
       .from('service_requests')
       .select('*, team_members(*)')
+      .range(opts.first, opts.first + opts.rows)
       .then((resp) => resp.data);
+  }
+
+  async getServiceRequestsTotalRecords(): Promise<number> {
+    return supabaseClient
+      .from('service_requests')
+      .select('*, team_members(*)', { count: 'exact', head: true })
+      .then((resp) => resp.count);
   }
 }
 
@@ -172,3 +186,5 @@ export {
   clientService,
   ClientService,
 };
+
+export type { SearchOptions };
