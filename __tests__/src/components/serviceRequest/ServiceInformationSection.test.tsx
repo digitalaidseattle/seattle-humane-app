@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import { createContext, useReducer } from 'react';
 import ServiceInformationSection, {
   serviceInformationLabels as labels,
@@ -53,6 +53,7 @@ jest.mock('src/services/ClientService', () => ({
 
 const statuses = [{ value: 'open', label: 'Open' }];
 const sources = [{ value: 'phone', label: 'Phone' }];
+const categories = [{ value: 'pet_fostering', label: 'Pet Fostering' }];
 jest.mock('src/services/useAppConstants', () => {
   const orig = jest.requireActual('src/services/useAppConstants')
   return {
@@ -63,6 +64,8 @@ jest.mock('src/services/useAppConstants', () => {
           return { data: statuses }
         case 'source':
           return { data: sources }
+        case 'category':
+          return { data: categories }
         default:
           return { data: [] }
       }
@@ -89,6 +92,7 @@ describe('ServiceInformationSection', () => {
   * The field key and value are used to assert the action is dispatched with the right data.
   * */
   let radioButtons: [HTMLElement, keyof EditableRequestType, string, string][] = [];
+  let dropdowns = [];
 
   //* The Section requires a context, so wrap it in a context provider to test
   function PetInfoSectionConsumer({ defaultState, disabled, fields }) {
@@ -105,12 +109,11 @@ describe('ServiceInformationSection', () => {
     render(<PetInfoSectionConsumer defaultState={defaultState} disabled={disabled} fields={fields} />);
     // Putting all inputs in an array for more consice assertions via loops
     textInputs = [
-      screen.queryByLabelText(labels.Category),
       screen.queryByLabelText(labels.ServiceDescription),
       screen.queryByLabelText(labels.AssignTo),
     ];
-    radioButtons = [];
 
+    radioButtons = [];
     statuses.map((opt) => {
       const radioButton = screen.queryByLabelText(opt.label);
       radioButtons.push([radioButton, 'status', opt.label, opt.value]);
@@ -123,6 +126,8 @@ describe('ServiceInformationSection', () => {
       const radioButton = screen.queryByLabelText(opt.label);
       radioButtons.push([radioButton, 'source', opt.label, opt.value]);
     });
+
+    dropdowns = [screen.queryByTitle(labels.Category)];
   }
 
   it('should render an empty form showing all fields by default', () => {
@@ -137,6 +142,9 @@ describe('ServiceInformationSection', () => {
       expect(radioButton).toBeInTheDocument();
       expect(radioButton).not.toBeChecked();
     });
+    dropdowns.forEach((dropdown) => {
+      expect(dropdown).toBeInTheDocument();
+    });
   });
 
   it('should hide fields not configured for visibility', () => {
@@ -149,6 +157,9 @@ describe('ServiceInformationSection', () => {
     radioButtons.forEach(([radioButton]) => {
       expect(radioButton).not.toBeInTheDocument();
     });
+    dropdowns.forEach((dropdown) => {
+      expect(dropdown).not.toBeInTheDocument();
+    });
   });
 
   it('should disable controls when so configured', () => {
@@ -160,6 +171,9 @@ describe('ServiceInformationSection', () => {
     });
     radioButtons.forEach(([radioButton]) => {
       expect(radioButton).toBeDisabled();
+    });
+    dropdowns.forEach((dropdown) => {
+      expect(dropdown).toHaveClass('p-disabled');
     });
   });
 
@@ -201,6 +215,19 @@ describe('ServiceInformationSection', () => {
           partialStateUpdate: { [key]: value },
         }),
       );
+    });
+  });
+
+  it('should dispatch updates when dropdown values are changed', () => {
+    //* Arrange
+    setup();
+    //* Act
+    dropdowns.forEach(async (dropdown) => {
+      fireEvent.click(
+        within(dropdown).getByRole('button')
+      );
+      fireEvent.click(await screen.findByText('Pet Fostering'));
+      expect(screen.getByDisplayValue('Pet Fostering')).toBeInTheDocument();
     });
   });
 });
