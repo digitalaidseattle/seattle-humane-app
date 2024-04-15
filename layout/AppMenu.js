@@ -7,7 +7,7 @@ import ServiceRequestDialog from "@components/serviceRequest/ServiceRequestDialo
 import { UserContext } from '../src/context/usercontext';
 import { User } from '@supabase/supabase-js'
 import { authService } from '../src/services/authService';
-import { useRouter } from 'next/navigation';
+import { useRouter } from 'next/router';
 
 
 
@@ -24,7 +24,7 @@ const AppMenu = () => {
     {
       items: [
         { label: "Dashboard", icon: "pi pi-fw pi-chart-line", to: "/" },
-        { separator: true },
+        {  separator: true },
         { label: "Clients", icon: "pi pi-fw pi-users", to: "/clients"},
         { separator: true },
         {
@@ -33,9 +33,9 @@ const AppMenu = () => {
           to: "/animals",
           class: `animals-icon`,
         },
-        { separator: true },
+        {  separator: true },
         { label: "Reports", icon: "pi pi-fw pi-book", to: "/reports" },
-        { separator: true },
+        {  separator: true },
         {
           label: "New Request",
           iconSrc:`${contextPath}/images/pawClipboard.svg`,
@@ -72,13 +72,14 @@ const AppMenu = () => {
         <ul className="layout-menu">
           {model.map((item, i) => {
             return !item.separator ? (
-              <AppMenuitem item={item} root={true} index={i} key={item.label} />
+              <AppMenuitem item={item} root={true} index={i} key={`${item.label}-${i}`} />
             ) : (
-              <li className="menu-separator"></li>
+              <li className="menu-separator" key={`${item.label}-${i}`}></li>
             );
           })}
         </ul>
       </MenuProvider>
+      {/* Modal opening and closing */}
       <ServiceRequestDialog
         visible={dialog === "newServiceRequest"}
         onClose={onClose}

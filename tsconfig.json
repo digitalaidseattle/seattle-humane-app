@@ -27,6 +27,9 @@
       ],
       "@types": [
         "src/types"
+      ],
+      "@layout/*": [
+        "src/layout/*"
       ]
     }
   },

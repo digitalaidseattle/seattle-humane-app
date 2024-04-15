@@ -1,20 +1,18 @@
-import getConfig from "next/config";
-import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { classNames } from "primereact/utils";
+import getConfig from 'next/config';
+import Link from 'next/link';
+import { classNames } from 'primereact/utils';
 import React, {
   forwardRef,
   useContext,
-  useEffect,
   useImperativeHandle,
   useRef,
   useState,
-} from "react";
-import ClientDialog from "../src/components/ClientDialog";
-import { LayoutContext } from "./context/layoutcontext";
-import { UserContext } from "../src/context/usercontext";
-import AppMenu from "./AppMenu";
-import Image from "next/image";
+} from 'react';
+import Image from 'next/image';
+import ClientDialog from '../src/components/ClientDialog';
+import { LayoutContext } from './context/layoutcontext';
+import { UserContext } from '../src/context/usercontext';
+import AppMenu from './AppMenu';
 
 // eslint-disable-next-line react/display-name
 const AppTopbar = forwardRef((_props, ref) => {
@@ -22,7 +20,7 @@ const AppTopbar = forwardRef((_props, ref) => {
   const menubuttonRef = useRef(null);
   const topbarmenuRef = useRef(null);
   const topbarmenubuttonRef = useRef(null);
-  const contextPath = getConfig().publicRuntimeConfig.contextPath;
+  const { contextPath } = getConfig().publicRuntimeConfig;
 
   const [clientDialog, setClientDialog] = useState(false);
   useContext(UserContext);
@@ -39,9 +37,9 @@ const AppTopbar = forwardRef((_props, ref) => {
   };
 
   return (
-    <React.Fragment>
+    <>
       <div className="layout-topbar">
-        <Link legacyBehavior href="/">
+        <Link href="/" legacyBehavior>
           <a className="layout-topbar-log">
             <div className="flex">
               <Image
@@ -55,8 +53,8 @@ const AppTopbar = forwardRef((_props, ref) => {
                 <div
                   className="text-cyan-700 font-semibold"
                   style={{
-                    textDecoration: "underline",
-                    textDecorationColor: "red",
+                    textDecoration: 'underline',
+                    textDecorationColor: 'red',
                   }}
                 >
                   Humane
@@ -71,14 +69,15 @@ const AppTopbar = forwardRef((_props, ref) => {
           type="button"
           className="p-link layout-topbar-menu-button layout-topbar-button"
           onClick={showProfileSidebar}
+          aria-label="Open profile sidebar"
         >
           <i className="pi pi-ellipsis-v" />
         </button>
 
         <div
           ref={topbarmenuRef}
-          className={classNames("layout-topbar-menu", {
-            "layout-topbar-menu-mobile-active":
+          className={classNames('layout-topbar-menu', {
+            'layout-topbar-menu-mobile-active':
               layoutState.profileSidebarVisible,
           })}
         >
@@ -87,7 +86,7 @@ const AppTopbar = forwardRef((_props, ref) => {
       </div>
 
       <ClientDialog visible={clientDialog} onClose={closeClientDialog} />
-    </React.Fragment>
+    </>
   );
 });
 
