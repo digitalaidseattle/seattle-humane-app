@@ -11,7 +11,12 @@
  *
  */
 import supabaseClient from '../../utils/supabaseClient';
-import { ClientType, RequestType as ServiceRequestType, AnimalType } from '../types';
+import {
+  ClientType,
+  RequestType as ServiceRequestType,
+  AnimalType,
+  SearchOptions,
+} from '../types';
 
 enum RequestType {
   clientNew = 'client-new',
@@ -277,13 +282,6 @@ class ClientService {
     return Promise.resolve(this.tickets.find((t) => t.ticketNo == id));
   }
 
-  getTickets(): Promise<ClientTicket[]> {
-    return Promise.resolve(this.tickets);
-    // return fetch(this.contextPath + '/demo/data/countries.json', { headers: { 'Cache-Control': 'no-cache' } })
-    //   .then((res) => res.json())
-    //   .then((d) => d.data);
-  }
-
   update(ticket: ClientTicket): Promise<ClientTicket> {
     this.tickets = this.tickets.map((obj) => (ticket.ticketNo === obj.ticketNo ? ticket : obj));
     return Promise.resolve(this.tickets.find((t) => t.ticketNo == ticket.ticketNo));
@@ -308,6 +306,21 @@ class ClientService {
       .from('service_category')
       .select('*');
     return response.data;
+  }
+
+  async getServiceRequests(opts: SearchOptions): Promise<ServiceRequestType[]> {
+    return supabaseClient
+      .from('service_requests')
+      .select('*, team_members(*)')
+      .range(opts.first, opts.first + opts.rows)
+      .then((resp) => resp.data);
+  }
+
+  async getServiceRequestsTotalRecords(): Promise<number> {
+    return supabaseClient
+      .from('service_requests')
+      .select('*, team_members(*)', { count: 'exact', head: true })
+      .then((resp) => resp.count);
   }
 }
 

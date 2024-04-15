@@ -43,6 +43,21 @@ export type RequestType = {
   description: string;
   status: string;
   staff_id: BigInteger;
+  team_members: TeamMember;
 };
 // TODO use lookup with assigned_to
 export type EditableRequestType = Omit<RequestType, 'id' | 'animal_id' | 'staff_id'> & { assigned_to: string };
+
+export type SearchOptions = {
+  first: number;
+  page: number;
+  pageCount: number;
+  rows: number;
+};
+
+export type TeamMember = {
+  id: string;
+  email: string;
+  last_name: string;
+  first_name: string;
+};

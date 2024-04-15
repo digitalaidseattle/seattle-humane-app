@@ -5,30 +5,62 @@
  *
  */
 
-import { ServiceCategory, clientService } from '../../../src/services/ClientService';
+import { clientService } from '../../../src/services/ClientService';
 import supabaseClient from '../../../utils/supabaseClient';
+
+// TODO put these in an ObjectMother
+const mockFilterBuilder = {
+  limit: jest.fn(() => Promise.resolve({})),
+  range: jest.fn(() => Promise.resolve({})),
+  order: jest.fn(() => Promise.resolve({}))
+};
+
+const mockQueryBuilder = {
+  insert: jest.fn(() => Promise.resolve({})),
+  update: jest.fn(() => Promise.resolve({})),
+  select: jest.fn(() => Promise.resolve({})),
+  eq: jest.fn(() => Promise.resolve({}))
+};
+
 describe('ClientService', () => {
 
-  it('should get service categories', async () => {
-    const response = { data: [new ServiceCategory({})], error: null }
-    const mockQueryBuilder = {
-      select: jest.fn(() => Promise.resolve(response)),
-    };
-    const fromSpy = jest.spyOn(supabaseClient, "from")
+  it('getServiceRequests', async () => {
+    const searchOptions = {
+      first: 0,
+      page: 0,
+      pageCount: 0,
+      rows: 10,
+    }
+
+    const serviceRequests = [{}];
+    const response = { data: serviceRequests }
+
+    const fromSpy = jest.spyOn(supabaseClient, 'from')
       .mockReturnValue(mockQueryBuilder as any)
-    const selectSpy = jest.spyOn(mockQueryBuilder, "select")
-      .mockReturnValue(response as any)
+    const selectSpy = jest.spyOn(mockQueryBuilder, 'select')
+      .mockReturnValue(mockFilterBuilder as any)
+    const rangeSpy = jest.spyOn(mockFilterBuilder, 'range')
+      .mockResolvedValue(response)
 
-    const cats = await clientService.getServiceCategories()
-    expect(fromSpy).toHaveBeenCalledWith('service_category')
-    expect(selectSpy).toHaveBeenCalledWith('*')
-    expect(cats.length).toEqual(1);
-  })
+    const actual = await clientService.getServiceRequests(searchOptions);
+    expect(fromSpy).toHaveBeenCalledWith('service_requests');
+    expect(selectSpy).toHaveBeenCalledWith('*, team_members(*)');
+    expect(rangeSpy).toHaveBeenCalledWith(0, 10);
+    expect(actual).toEqual(serviceRequests);
+  });
 
-  it('should get service statuses', async () => {
-    const stats = await clientService.getServiceStatuses()
-    expect(stats.length).toBeGreaterThan(1);
-  })
+  it('getServiceRequestsTotalRecords', async () => {
+    const response = { count: 14 }
 
+    const fromSpy = jest.spyOn(supabaseClient, 'from')
+      .mockReturnValue(mockQueryBuilder as any)
+    const selectSpy = jest.spyOn(mockQueryBuilder, 'select')
+      .mockResolvedValue(response)
+
+    const actual = await clientService.getServiceRequestsTotalRecords();
+    expect(fromSpy).toHaveBeenCalledWith('service_requests');
+    expect(selectSpy).toHaveBeenCalledWith('*, team_members(*)');
+    expect(actual).toEqual(14);
+  });
 
 })
