@@ -3,6 +3,7 @@ import InputText from '@components/InputText';
 import InputTextArea from '@components/InputTextArea';
 import { ServiceInfoActionType, ServiceInformationContext, ServiceInformationDispatchContext } from '@context/serviceRequest/serviceInformationContext';
 import { EditableRequestType } from '@types';
+import { Dropdown } from 'primereact/dropdown';
 import { useContext } from 'react';
 import { useAppConstants } from 'src/services/useAppConstants';
 
@@ -57,6 +58,7 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
 
   const { data: sources } = useAppConstants('source');
   const { data: statuses } = useAppConstants('status');
+  const { data: categories } = useAppConstants('category');
 
   //* Map onChange handlers to dispatch
   const setFormData = (partialStateUpdate: Partial<EditableRequestType>) => dispatch(
@@ -81,14 +83,15 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
         {visibleFields.has('service_category')
           && (
             <div className="col-6">
-              {/* TODO change to <select> element when options are known */}
-              <InputText
-                id="service_category"
+              <div className="col-fixed mr-3">{serviceInformationLabels.Category}</div>
+              <Dropdown
+                id="category"
                 value={formData.service_category}
-                disabled={disabled}
-                label={serviceInformationLabels.Category}
-                placeholder={serviceInformationLabels.Category}
+                title={serviceInformationLabels.Category}
+                className="w-full md:w-14rem"
                 onChange={(e) => setCategory(e.target.value)}
+                options={categories}
+                disabled={disabled}
               />
             </div>
           )}
