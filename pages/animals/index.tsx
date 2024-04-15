@@ -22,10 +22,6 @@ function Animals() {
 
   const [clientDialog, setClientDialog] = useState(false);
 
-  useEffect(() => {
-    clientService.getTickets().then((data) => setTickets(data));
-  }, []);
-
   const openClientDialog = () => {
     setClientDialog(true);
   };

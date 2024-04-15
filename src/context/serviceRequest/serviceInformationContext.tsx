@@ -8,11 +8,14 @@ export const defaultServiceInformation: EditableRequestType = {
   description: '',
   status: '',
   assigned_to: '',
+  team_members: null,
 };
 
-export enum ServiceInfoActionType { Clear = 'clear', Update = 'update'}
-type ServiceInfoAction = { type: ServiceInfoActionType.Clear }
-| { type: ServiceInfoActionType.Update, partialStateUpdate: Partial<EditableRequestType> };
+export enum ServiceInfoActionType { Clear = 'clear', Update = 'update' }
+type ServiceInfoAction = { type: ServiceInfoActionType.Clear } | {
+  type: ServiceInfoActionType.Update,
+  partialStateUpdate: Partial<EditableRequestType>
+};
 
 export const serviceInfoReducer = (state: EditableRequestType, action: ServiceInfoAction) => {
   if (action.type === ServiceInfoActionType.Update) {
@@ -22,8 +25,9 @@ export const serviceInfoReducer = (state: EditableRequestType, action: ServiceIn
 };
 
 export const ServiceInformationContext = createContext<EditableRequestType>(null);
+/* eslint-disable @typescript-eslint/indent */
 export const ServiceInformationDispatchContext = createContext<React.Dispatch<
-ServiceInfoAction>>(null);
+  ServiceInfoAction>>(null);
 interface ServiceInformationProviderProps extends React.PropsWithChildren {
   state: EditableRequestType,
   dispatch: React.Dispatch<ServiceInfoAction>

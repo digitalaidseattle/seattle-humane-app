@@ -45,18 +45,6 @@ const defaultAnimal: AnimalType = {
   client_id: null,
 };
 
-const defaultRequest: RequestType = {
-  id: null,
-  client_id: null,
-  animal_id: null,
-  service_category: '',
-  priority: '',
-  source: '',
-  description: '',
-  status: '',
-  staff_id: null,
-};
-
 interface ClientDialogProps {
   visible: boolean;
   onClose: (request: RequestType) => void;
