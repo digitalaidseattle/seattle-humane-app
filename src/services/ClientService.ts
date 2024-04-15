@@ -11,163 +11,10 @@
  *
  */
 import supabaseClient from '../../utils/supabaseClient';
-import { ClientType, RequestType as ServiceRequestType, AnimalType } from '../types';
-
-enum RequestType {
-  clientNew = 'client-new',
-  clientUpdate = 'client-new',
-  animalNew = 'animal-new',
-  animalUpdate = 'animal-update',
-}
-
-enum TicketType {
-  walkin = 'walk-in',
-  email = 'email',
-  phone = 'phone',
-  other = 'other',
-}
-
-class ServiceCategory {
-  id: string;
-
-  name: string;
-
-  constructor(input: any) {
-    this.id = input.id;
-    this.name = input.name;
-  }
-}
-
-class ServiceStatus {
-  id: string;
-
-  code: string;
-
-  name: string;
-
-  constructor(input: any) {
-    this.id = input.id;
-    this.code = input.code;
-    this.name = input.name;
-  }
-}
-const statuses: ServiceStatus[] = [
-  new ServiceStatus({ name: 'New', code: 'new' }),
-  new ServiceStatus({ name: 'In-progress', code: 'update' }),
-  new ServiceStatus({ name: 'Close', code: 'closed' }),
-  new ServiceStatus({ name: 'Blocked', code: 'blocked' }),
-];
-
-class NewClientRequest {
-  requestType: RequestType = RequestType.clientNew;
-
-  ticketNo: string;
-
-  type: TicketType;
-
-  name: string;
-
-  email: string;
-
-  phone: string;
-
-  summary: string;
-
-  description: string;
-
-  date: Date;
-
-  representative: string;
-
-  constructor(data: any) {
-    this.ticketNo = data.ticketNo;
-    this.type = data.type;
-    this.name = data.name;
-    this.email = data.email;
-    this.phone = data.phone;
-    this.summary = data.summary;
-    this.description = data.description;
-    this.representative = data.representative;
-    this.date = data.date ? data.date : new Date();
-  }
-}
-
-class UpdateClientRequest {
-  requestType: RequestType = RequestType.clientUpdate;
-
-  ticketNo: string;
-
-  ticket: ClientTicket;
-
-  date: Date;
-
-  representative: string;
-
-  constructor(ticket: any, date: Date, representative: string) {
-    this.ticketNo = ticket.ticketNo;
-    this.ticket = ticket;
-    this.date = date || new Date();
-  }
-}
-
-class ChangeLog {
-  date: Date;
-
-  representative: string;
-
-  description: string;
-
-  constructor(data: any) {
-    this.date = data.date ? data.date : new Date();
-    this.description = data.description;
-    this.representative = data.representative;
-  }
-}
-
-class ClientTicket {
-  ticketNo: string;
-
-  type: TicketType;
-
-  status: string;
-
-  name: string;
-
-  email: string;
-
-  phone: string;
-
-  summary: string;
-
-  description: string;
-
-  urgency: number;
-
-  changeLog: ChangeLog[] = [];
-
-  serviceCategoryId: string;
-
-  constructor(data: any) {
-    this.ticketNo = data.ticketNo;
-    this.type = data.type;
-    this.name = data.name;
-    this.status = data.status;
-    this.urgency = data.urgency;
-    this.email = data.email;
-    this.phone = data.phone;
-    this.summary = data.summary;
-    this.description = data.description;
-    this.serviceCategoryId = data.serviceCategoryId;
-  }
-}
+import { AnimalType, ClientType, RequestType as ServiceRequestType } from '../types';
 
 class ClientService {
   // constructor(private supabaseClient: SupabaseClient) { }
-
-  // TODO remove when in prod
-  tickets: ClientTicket[] = [
-    new ClientTicket({ ticketNo: '1234', type: 'email', name: 'John Doe' }),
-  ];
 
   async newRequest(
     request: ServiceRequestType,
@@ -273,50 +120,45 @@ class ClientService {
     }
   }
 
-  getTicket(id: string): Promise<ClientTicket> {
-    return Promise.resolve(this.tickets.find((t) => t.ticketNo == id));
+  async getTicket(id: string): Promise<ServiceRequestType> {
+    // FIXME should be replaced with
+    // return supabaseClient
+    //   .from('service_requests')
+    //   .select('*')
+    //   .eq('id', id)
+    //   .single()
+    //   .then((resp) => resp.data);
+
+    // FIXME for now return undefined
+    return undefined;
   }
 
-  getTickets(): Promise<ClientTicket[]> {
-    return Promise.resolve(this.tickets);
-    // return fetch(this.contextPath + '/demo/data/countries.json', { headers: { 'Cache-Control': 'no-cache' } })
-    //   .then((res) => res.json())
-    //   .then((d) => d.data);
+  async getTickets(): Promise<ServiceRequestType[]> {
+    // FIXME should be replaced with
+    // return supabaseClient
+    //    .from('service_requests')
+    //    .select('*')
+    //    .eq('id', id)
+    //    .single()
+    //    .then((resp) => resp.data);
+
+    // FIXME for now return empty array
+    return [];
   }
 
-  update(ticket: ClientTicket): Promise<ClientTicket> {
-    this.tickets = this.tickets.map((obj) => (ticket.ticketNo === obj.ticketNo ? ticket : obj));
-    return Promise.resolve(this.tickets.find((t) => t.ticketNo == ticket.ticketNo));
-  }
+  async update(ticket: ServiceRequestType): Promise<ServiceRequestType> {
+    // FIXME should be replaced with
+    // return supabaseClient
+    //   .from('service_requests')
+    //   .update(ticket)
+    //   .eq('id', ticket.id)
+    //   .single()
+    //   .then((resp) => resp.data);
 
-  async getServiceStatuses(): Promise<ServiceStatus[]> {
-    // REVIEW: Could be from DB
-    return Promise.resolve(statuses);
-  }
-
-  async getServiceCategories(): Promise<ServiceCategory[]> {
-    // For Testing without DB
-    // const tempCategories: ServiceCategory[] = [
-    //   new ServiceCategory({ id: 'id_1', name: 'Cat One' }),
-    //   new ServiceCategory({ id: 'id_2', name: 'Cat Two' }),
-    //   new ServiceCategory({ id: 'id_3', name: 'Dog Adoption' }),
-    //   new ServiceCategory({ id: 'id_4', name: 'Pet Fostering' })
-    // ]
-    // return Promise.resolve(tempCategories);
-
-    const response = await supabaseClient
-      .from('service_category')
-      .select('*');
-    return response.data;
+    // FIXME for now return undefined
+    return undefined;
   }
 }
 
 const clientService = new ClientService();
-export {
-  ClientTicket,
-  NewClientRequest,
-  ServiceCategory,
-  ServiceStatus,
-  TicketType,
-  clientService,
-};
+export { ClientService, clientService };

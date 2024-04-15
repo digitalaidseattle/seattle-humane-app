@@ -9,7 +9,8 @@ import { Toolbar } from 'primereact/toolbar';
 import React, { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import AnimalDialog from '../../src/components/AnimalDialog';
-import { ClientTicket, clientService } from '../../src/services/ClientService';
+import { clientService } from '../../src/services/ClientService';
+import { RequestType as ServiceRequestType } from '../../src/types';
 
 function Animals() {
   const { push } = useRouter();
@@ -36,8 +37,8 @@ function Animals() {
     //     .then(t => setTickets(t));
   };
 
-  const editTicket = (ticket: ClientTicket) => {
-    push(`/client?ticketNo=${ticket.ticketNo}`);
+  const editTicket = (ticket: ServiceRequestType) => {
+    push(`/client?ticketNo=${ticket.id}`);
   };
 
   const confirmDeleteTicket = (ticket) => {
@@ -58,38 +59,38 @@ function Animals() {
     </>
   );
 
-  const codeBodyTemplate = (rowData: ClientTicket) => (
+  const codeBodyTemplate = (rowData: ServiceRequestType) => (
     <>
       <span className="p-column-title">Code</span>
-      {rowData.ticketNo}
+      {rowData.id}
     </>
   );
 
-  const typeBodyTemplate = (rowData: ClientTicket) => (
+  const typeBodyTemplate = (rowData: ServiceRequestType) => (
     <>
       <span className="p-column-title">Type</span>
-      {rowData.type}
+      FIXME Request Type
     </>
   );
 
-  const nameBodyTemplate = (rowData: ClientTicket) => (
+  const nameBodyTemplate = (rowData: ServiceRequestType) => (
     <>
       <span className="p-column-title">Name</span>
-      {rowData.name}
+      FIXME Client Name
     </>
   );
 
-  const statusBodyTemplate = (rowData: ClientTicket) => (
+  const statusBodyTemplate = (rowData: ServiceRequestType) => (
     <>
       <span className="p-column-title">Status</span>
       {rowData.status}
     </>
   );
 
-  const urgencyBodyTemplate = (rowData: ClientTicket) => (
+  const urgencyBodyTemplate = (rowData: ServiceRequestType) => (
     <>
       <span className="p-column-title">Urgency</span>
-      {rowData.urgency}
+      FIXME Urgency
     </>
   );
 
