@@ -6,9 +6,10 @@ import { clientService } from '../../../src/services/ClientService';
 import { useRouter } from 'next/navigation';
 import { RequestType as ServiceRequestType } from '../../../src/types';
 
+const push = jest.fn();
 jest.mock('next/navigation', () => ({
   useRouter: jest.fn().mockImplementation(() => ({
-    push: jest.fn(),
+    push,
   }))
 }));
 
@@ -16,9 +17,7 @@ const statuses = [{ value: 'open', label: 'Open' }];
 const sources = [{ value: 'phone', label: 'Phone' }];
 const categories = [{ value: 'pet_fostering', label: 'Pet Fostering' }];
 jest.mock('src/services/useAppConstants', () => {
-  const orig = jest.requireActual('src/services/useAppConstants')
   return {
-    ...orig,
     useAppConstants: (value) => {
       switch (value) {
         case 'status':
@@ -30,6 +29,14 @@ jest.mock('src/services/useAppConstants', () => {
         default:
           return { data: [] }
       }
+    }
+  }
+});
+
+jest.mock('../../../src/services/ClientService', () => {
+  return {
+    clientService: {
+      getTicket: jest.fn((_ticketNo) => { }),
     }
   }
 });
@@ -56,11 +63,6 @@ describe('Client', () => {
   });
 
   it('click breadcrumb', () => {
-    const push = jest.fn();
-    (useRouter as jest.Mock).mockImplementation(() => ({
-      push
-    }));
-
     render(<Client />);
     screen.getByText('Clients').click();
     expect(push).toHaveBeenCalledWith('/clients')
