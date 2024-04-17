@@ -43,12 +43,14 @@ export default function MyApp({ Component, pageProps }) {
   return (
     <LayoutProvider>
       <UserContext.Provider value={userContext}>
-        <Layout>
-          {
-            // eslint-disable-next-line react/jsx-props-no-spreading
-            <Component {...pageProps} />
-          }
-        </Layout>
+        {user && (
+          <Layout>
+            {
+              // eslint-disable-next-line react/jsx-props-no-spreading
+              <Component {...pageProps} />
+            }
+          </Layout>
+        )}
       </UserContext.Provider>
     </LayoutProvider>
   );

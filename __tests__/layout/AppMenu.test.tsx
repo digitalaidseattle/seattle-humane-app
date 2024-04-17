@@ -18,11 +18,6 @@ interface LayoutContextType {
   showProfileSidebar: () => void;
 }
 
-type AppConstant = {
-  value: string,
-  label: string
-};
-
 jest.mock('../../layout/context/layoutcontext', () => {
   const MockLayoutContext = React.createContext<LayoutContextType>(null);
   return { LayoutContext: MockLayoutContext };

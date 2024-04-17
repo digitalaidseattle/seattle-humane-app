@@ -51,9 +51,7 @@ const AppMenu = () => {
           icon: "pi pi-user",
           to: "/auth/login",
           title: user?.email || "user",
-          command: () => {
-            signOut()
-          },
+          command: () => signOut(),
         },
       ],
     },
