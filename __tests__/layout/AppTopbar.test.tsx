@@ -1,6 +1,5 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
 import { LayoutContext } from '../../layout/context/layoutcontext';
 import AppTopbar from '../../layout/AppTopbar';
 import '@testing-library/jest-dom';
@@ -31,34 +30,80 @@ jest.mock('next/config', () => ({
   }),
 }));
 
+const layoutContextValue: LayoutContextType = {
+  layoutState: {
+    staticMenuDesktopInactive: false,
+    overlayMenuActive: false,
+    profileSidebarVisible: false,
+    configSidebarVisible: false,
+    staticMenuMobileActive: false,
+    menuHoverActive: false,
+  },
+  showProfileSidebar: jest.fn(),
+};
+
 jest.mock('next/router', () => jest.requireActual('next-router-mock'));
 
-test('navigates to "/animals" when Animals button is clicked', () => {
-  const layoutContextValue: LayoutContextType = {
-    layoutState: {
-      staticMenuDesktopInactive: false,
-      overlayMenuActive: false,
-      profileSidebarVisible: false,
-      configSidebarVisible: false,
-      staticMenuMobileActive: false,
-      menuHoverActive: false,
-    },
-    showProfileSidebar: jest.fn(),
-  };
+describe('Navigation/Menu Top Bar - Href Checks', () => {
+  test('Animal button has correct href attribute', () => {
+    render(
+      <LayoutContext.Provider value={layoutContextValue}>
+        <AppTopbar />
+      </LayoutContext.Provider>,
+    );
 
-  render(
-    <LayoutContext.Provider value={layoutContextValue}>
-      <AppTopbar />
-    </LayoutContext.Provider>,
-  );
+    const animalsLink = screen.getByRole('link', { name: /Animals/i });
 
-  const animalsLink = screen.getByRole('link', { name: /Animals/i });
-  userEvent.click(animalsLink);
+    expect(animalsLink.getAttribute('href')).toEqual('/animals');
+  });
 
-  console.log(animalsLink.hasAttribute('href'));
-  console.log(animalsLink.href, ": href of the link");
-  console.log(global.window.location.pathname);
-  console.log(animalsLink.getAttribute('href'), ": href of the link");
-  console.log(animalsLink);
-  expect(animalsLink.getAttribute('href')).toEqual('/animals');
+  test('Dashboard button/link has correct href attribute', () => {
+    render(
+      <LayoutContext.Provider value={layoutContextValue}>
+        <AppTopbar />
+      </LayoutContext.Provider>,
+    );
+
+    const dashboardLink = screen.getByRole('link', { name: /Dashboard/i });
+
+    expect(dashboardLink.getAttribute('href')).toEqual('/');
+  });
+
+  test('Client button/link has correct href attribute', () => {
+    render(
+      <LayoutContext.Provider value={layoutContextValue}>
+        <AppTopbar />
+      </LayoutContext.Provider>,
+    );
+
+    const clientsLink = screen.getByRole('link', { name: /Clients/i });
+
+    expect(clientsLink.getAttribute('href')).toEqual('/clients');
+  });
+
+  test('Client button/link has correct href attribute', () => {
+    render(
+      <LayoutContext.Provider value={layoutContextValue}>
+        <AppTopbar />
+      </LayoutContext.Provider>,
+    );
+
+    const reportsLink = screen.getByRole('link', { name: /Reports/i });
+
+    expect(reportsLink.getAttribute('href')).toEqual('/reports');
+  });
+
+  test('Seattle Human Icon has correct href attribute', () => {
+    render(
+      <LayoutContext.Provider value={layoutContextValue}>
+        <AppTopbar />
+      </LayoutContext.Provider>,
+    );
+
+    const homeLink = screen.getByRole('link', {
+      name: /seattle humane/i,
+    });
+
+    expect(homeLink).toHaveAttribute('href', '/');
+  });
 });

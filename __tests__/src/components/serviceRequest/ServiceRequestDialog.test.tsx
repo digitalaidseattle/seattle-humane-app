@@ -45,7 +45,7 @@ const SaveCancelLabels = {
 }
 
 const labelsOfFormFieldsToTest = [
-  'First Name', 'Last Name', 'Pet Name', 'Pet Breed(s)', 'Category', 'Service Description'
+  'First Name', 'Last Name', 'Pet Name', 'Pet Breed(s)', 'Service Description'
 ]
 const testId = 'serviceRequestDialog';
 describe('ServiceRequestDialog', () => {

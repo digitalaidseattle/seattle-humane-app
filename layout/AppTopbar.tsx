@@ -14,7 +14,6 @@ import { LayoutContext } from './context/layoutcontext';
 import { UserContext } from '../src/context/usercontext';
 import AppMenu from './AppMenu';
 
-// eslint-disable-next-line react/display-name
 const AppTopbar = forwardRef((_props, ref) => {
   const { layoutState, showProfileSidebar } = useContext(LayoutContext);
   const menubuttonRef = useRef(null);
@@ -30,6 +29,11 @@ const AppTopbar = forwardRef((_props, ref) => {
     topbarmenu: topbarmenuRef.current,
     topbarmenubutton: topbarmenubuttonRef.current,
   }));
+  useImperativeHandle(ref, () => ({
+    menubutton: menubuttonRef.current,
+    topbarmenu: topbarmenuRef.current,
+    topbarmenubutton: topbarmenubuttonRef.current,
+  }));
 
   const closeClientDialog = (item: any) => {
     console.log(item);
@@ -38,30 +42,28 @@ const AppTopbar = forwardRef((_props, ref) => {
 
   return (
     <>
-      <div className="layout-topbar">
-        <Link href="/" legacyBehavior>
-          <a className="layout-topbar-log">
-            <div className="flex">
-              <Image
-                src={`${contextPath}/images/shs-favicon.png`}
-                width="38"
-                height="33"
-                alt="logo"
-              />
-              <div>
-                <div className="text-cyan-700 font-semibold">Seattle</div>
-                <div
-                  className="text-cyan-700 font-semibold"
-                  style={{
-                    textDecoration: 'underline',
-                    textDecorationColor: 'red',
-                  }}
-                >
-                  Humane
-                </div>
+      <div className="layout-topbar sh-logo">
+        <Link href="/" className="sh-logo">
+          <div className="flex">
+            <Image
+              src={`${contextPath}/images/shs-favicon.png`}
+              width="38"
+              height="33"
+              alt="logo"
+            />
+            <div>
+              <div className="text-cyan-700 font-semibold">Seattle</div>
+              <div
+                className="text-cyan-700 font-semibold"
+                style={{
+                  textDecoration: 'underline',
+                  textDecorationColor: 'red',
+                }}
+              >
+                Humane
               </div>
             </div>
-          </a>
+          </div>
         </Link>
 
         <button
