@@ -14,6 +14,7 @@
     "dependencies": {
         "@supabase/auth-helpers-nextjs": "^0.8.7",
         "@supabase/supabase-js": "^2.39.6",
+        "@types/uuid": "^9.0.8",
         "chart.js": "^4.2.1",
         "eslint-config-airbnb-typescript": "^17.1.0",
         "next": "^13.5.4",

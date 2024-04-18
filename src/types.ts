@@ -1,4 +1,4 @@
-import { Database } from '../supabase/database.types';
+import { Database, Tables } from '../supabase/database.types';
 
 // MAIN DATA TYPES
 // Current approach is to keep Domain models and Database models the same. If/when
@@ -7,11 +7,14 @@ import { Database } from '../supabase/database.types';
 
 // INCOMPLETE: more fields to be added when confirmed as required
 
+export type AppConstant = Tables<'app_constants'>;
+
 // EXAMPLE of Client type as imported from supabase;
 export type ClientTypeExample = Database['public']['Tables']['clients']['Insert'];
 
+export type Client = Tables<'clients'>;
 export type ClientType = {
-  id?: BigInteger;
+  id?: BigInt;
   first_name: string;
   last_name: string;
   email: string;
@@ -22,8 +25,9 @@ export type ClientType = {
 export type EditableClientInfo = Omit<ClientType, 'id'>;
 
 // INCOMPLETE: more fields to be added when confirmed as required
+export type Animal = Tables<'pets'>;
 export type AnimalType = {
-  id?: BigInteger;
+  id?: BigInt;
   name: string;
   species: string;
   breed: string;
@@ -33,16 +37,17 @@ export type AnimalType = {
 export type EditableAnimalType = Omit<AnimalType, 'id' | 'client_id'>;
 
 // INCOMPLETE: more fields to be added when confirmed as required
+export type ServiceRequest = Tables<'service_requests'>;
 export type RequestType = {
-  id?: BigInteger;
-  client_id?: BigInteger;
-  animal_id: BigInteger;
+  id?: BigInt;
+  client_id?: BigInt;
+  animal_id: BigInt;
   service_category: string;
   priority: string;
   source: string;
   description: string;
   status: string;
-  staff_id: BigInteger;
+  staff_id: BigInt;
 };
 // TODO use lookup with assigned_to
 export type EditableRequestType = Omit<RequestType, 'id' | 'animal_id' | 'staff_id'> & { assigned_to: string };

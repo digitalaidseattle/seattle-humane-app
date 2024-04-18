@@ -1,168 +1,68 @@
-/* eslint-disable eqeqeq */
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable max-classes-per-file */
-import getConfig from 'next/config';
-import { v4 as uuidv4 } from 'uuid';
-import { NewClientRequest } from './ClientService';
+/* eslint-disable @typescript-eslint/naming-convention */
+import {
+  Animal, AppConstant, Client,
+} from '@types';
+import supabaseClient from 'utils/supabaseClient';
+import { AppConstants } from 'src/constants';
 
-enum RequestType {
-  clientNew = 'client-new',
-  clientUpdate = 'client-new',
-  animalNew = 'animal-new',
-  animalUpdate = 'animal-update',
-}
-
-enum TicketType {
-  walkin = 'walk-in',
-  email = 'email',
-  phone = 'phone',
-  other = 'other',
-}
-
-class NewAnimalRecord {
-  requestType: RequestType = RequestType.clientNew;
-
-  ticketNo: string;
-
-  type: TicketType;
-
-  name: string;
-
-  email: string;
-
-  phone: string;
-
-  summary: string;
-
-  description: string;
-
-  date: Date;
-
-  representative: string;
-
-  constructor(data: any) {
-    this.ticketNo = data.ticketNo;
-    this.type = data.type;
-    this.name = data.name;
-    this.email = data.email;
-    this.phone = data.phone;
-    this.summary = data.summary;
-    this.description = data.description;
-    this.representative = data.representative;
-    this.date = data.date ? data.date : new Date();
-  }
-}
-
-class UpdateClientRequest {
-  requestType: RequestType = RequestType.clientUpdate;
-
-  ticketNo: string;
-
-  ticket: ClientTicket;
-
-  date: Date;
-
-  representative: string;
-
-  constructor(ticket: any, date: Date, representative: string) {
-    this.ticketNo = ticket.ticketNo;
-    this.ticket = ticket;
-    this.date = date || new Date();
-  }
-}
-
-class ChangeLog {
-  date: Date;
-
-  representative: string;
-
-  description: string;
-
-  constructor(data: any) {
-    this.date = data.date ? data.date : new Date();
-    this.description = data.description;
-    this.representative = data.representative;
-  }
-}
-
-class ClientTicket {
-  ticketNo: string;
-
-  type: TicketType;
-
-  status: string;
-
-  name: string;
-
-  email: string;
-
-  phone: string;
-
-  summary: string;
-
-  description: string;
-
-  urgency: number;
-
-  changeLog: ChangeLog[] = [];
-
-  constructor(data: any) {
-    this.ticketNo = data.ticketNo;
-    this.type = data.type;
-    this.name = data.name;
-    this.status = data.status;
-    this.urgency = data.urgency;
-    this.email = data.email;
-    this.phone = data.phone;
-    this.summary = data.summary;
-    this.description = data.description;
-  }
-}
-
-class AnimalService {
+export class AnimalService {
   contextPath: string;
 
-  // TODO remove when in prod
-  tickets: ClientTicket[] = [];
-
-  constructor() {
-    this.contextPath = getConfig().publicRuntimeConfig.contextPath;
+  static async createSpecies(speciesInput: Pick<AppConstant, 'type' | 'label' | 'value'>) {
+    const { type, label, value } = speciesInput;
+    const { data: species, error } = await supabaseClient
+      .from('app_constants')
+      .insert({ type, label, value })
+      .select()
+      .maybeSingle();
+    if (error) throw new Error(`Animal species creation failed: ${error.message}`);
+    return species;
   }
 
-  newRequest(request: NewClientRequest): Promise<ClientTicket> {
-    // TODO post request
-    // For now...
-    const ticket = new ClientTicket(request);
-    ticket.ticketNo = uuidv4();
-    ticket.status = RequestType.clientNew;
-    ticket.changeLog.push(new ChangeLog({
-      date: request.date,
-      representative: 'FIXME',
-      description: 'New Request',
-    }));
+  static async findSpecies(value: AppConstant['value']) {
+    const { data: species, error } = await supabaseClient
+      .from('app_constants')
+      .select('*')
+      .eq('species', AppConstants.Species)
+      .eq('value', value)
+      .maybeSingle();
 
-    this.tickets.push(ticket);
-    return Promise.resolve(ticket);
+    if (error) throw new Error(`Animal species retrieval failed: ${error.message}`);
+    return species;
   }
 
-  getTicket(id: string): Promise<ClientTicket> {
-    return Promise.resolve(this.tickets.find((t) => t.ticketNo == id));
+  static async findAnimal(animalInput: Animal, client_id: Client['id']) {
+    const { name, species_id } = animalInput;
+    const { data: animal, error: animalError } = await supabaseClient
+      .from('pets')
+      .select('*')
+      .eq('name', name)
+      .eq('species', species_id)
+      .eq('client_id', client_id)
+      .maybeSingle();
+
+    if (animalError) throw new Error(`Animal retrieval failed: ${animalError.message}`);
+    return animal;
   }
 
-  getTickets(): Promise<ClientTicket[]> {
-    return Promise.resolve(this.tickets);
-    // return fetch(this.contextPath + '/demo/data/countries.json', { headers: { 'Cache-Control': 'no-cache' } })
-    //   .then((res) => res.json())
-    //   .then((d) => d.data);
-  }
+  static async createAnimal(animalInput: Omit<Animal, 'id' | 'client_id'>, client_id: Client['id']) {
+    const { name, species_id } = animalInput;
+    const { data: newAnimal, error } = await supabaseClient
+      .from('pets')
+      .insert({
+        name,
+        species_id,
+        client_id,
+      })
+      .select()
+      .maybeSingle();
 
-  update(ticket: ClientTicket): Promise<ClientTicket> {
-    this.tickets = this.tickets.map((obj) => (ticket.ticketNo === obj.ticketNo ? ticket : obj));
-    return Promise.resolve(this.tickets.find((t) => t.ticketNo == ticket.ticketNo));
+    if (error) throw new Error(`Animal creation failed: ${error.message}`);
+    return newAnimal;
   }
 }
 
 const animalService = new AnimalService();
 export {
-  NewAnimalRecord, ClientTicket, TicketType, animalService,
+  animalService,
 };
