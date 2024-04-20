@@ -20,7 +20,7 @@ import {
   ServiceInfoActionType, ServiceInformationProvider, defaultServiceInformation, serviceInfoReducer,
 } from '@context/serviceRequest/serviceInformationContext';
 import { clientService } from '../services/ClientService';
-import { AnimalType, ClientSchema, ServiceRequestSchema } from '../types';
+import { AnimalSchema, ClientSchema, ServiceRequestSchema } from '../types';
 import FormConfirmationButtons from './FormConfirmationButtons';
 import ClientInformationSection from './serviceRequest/ClientInformationSection';
 import PetInformationSection from './serviceRequest/PetInformationSection';
@@ -36,7 +36,7 @@ const defaultClient: ClientSchema = {
   previously_used: '',
 };
 
-const defaultAnimal: AnimalType = {
+const defaultAnimal: AnimalSchema = {
   id: null,
   name: '',
   species: '',

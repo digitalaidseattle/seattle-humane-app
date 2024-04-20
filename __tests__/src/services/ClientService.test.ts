@@ -6,15 +6,23 @@
  */
 
 import { ServiceCategory } from '@lib';
-import {
-  clientService, upsertClient, insertPet, insertRequest,
-} from '../../../src/services/ClientService';
+import ClientService, {
+  clientService,
+} from '@services/ClientService';
 // FIXME this should be mocked! We might need dependency injection
 // It doesn't seem that this is connecting to the database but I'm not sure...
+import {
+  ServiceRequestSchemaInsert, ClientSchemaInsert,
+  AnimalSchemaInsert,
+} from '@types';
+import { clearPrerequisiteTestData, setupPrerequisiteTestData, testData } from '__tests__/src/services/testSetup';
+import { testAnimalInput } from '__tests__/src/services/testData';
 import supabaseClient from '../../../utils/supabaseClient';
-import { ClientSchema, ServiceRequestSchema as ServiceRequestType, AnimalType } from '../../../src/types';
 
 describe('ClientService', () => {
+  beforeEach(async () => setupPrerequisiteTestData());
+  afterEach(async () => clearPrerequisiteTestData());
+
   it('should get service categories', async () => {
     const response = { data: [new ServiceCategory({})], error: null };
     const mockQueryBuilder = {
@@ -37,7 +45,7 @@ describe('ClientService', () => {
   });
 
   it('should be able to upsert new client', async () => {
-    const client: ClientSchema = {
+    const client: ClientSchemaInsert = {
       email: 'fake_email@example.com',
       first_name: 'test_first',
       last_name: 'test_last',
@@ -55,7 +63,7 @@ describe('ClientService', () => {
     const upsertClientSpy = jest.spyOn(mockClientQueryBuilder, 'upsert')
       .mockReturnValue(clientTableResponse as any);
 
-    const upsertResponse = await upsertClient(client);
+    const upsertResponse = await ClientService.upsertClient(client);
 
     expect(fromClientSpy).toHaveBeenCalledWith('clients');
     expect(upsertClientSpy).toHaveBeenCalledWith(client, { onConflict: 'email' });
@@ -63,11 +71,11 @@ describe('ClientService', () => {
   });
 
   it('should be able to insert a new pet', async () => {
-    const pet: AnimalType = {
+    const pet: AnimalSchemaInsert = {
       name: 'Spike',
-      species: 'dragon',
-      breed: 'Hungarian Horntail',
-      weight: '2 tons',
+      species_id: testData.species[0].id,
+      weight: 2,
+      age: 15,
     };
 
     const petTableResponse = { data: pet, error: null };
@@ -79,7 +87,7 @@ describe('ClientService', () => {
     const insertPetSpy = jest.spyOn(mockPetQueryBuilder, 'insert')
       .mockReturnValue(petTableResponse as any);
 
-    const insertResponse = await insertPet(pet);
+    const insertResponse = await ClientService.insertPet(pet, testData.species[0].id);
 
     expect(fromPetSpy).toHaveBeenCalledWith('pets');
     expect(insertPetSpy).toHaveBeenCalledWith(pet);
@@ -87,14 +95,15 @@ describe('ClientService', () => {
   });
 
   it('should be able to insert a request', async () => {
-    const request: ServiceRequestType = {
-      animal_id: new Uint8Array(12345),
-      service_category: 'test',
-      priority: 'low',
-      source: 'hogwarts',
+    const { data: pet } = await supabaseClient
+      .from('pets').insert(testAnimalInput)
+      .select().maybeSingle();
+    const request: ServiceRequestSchemaInsert = {
+      pet_id: pet.id,
+      service_category_id: testData.categories[0].id,
+      request_source_id: testData.sources[0].id,
       description: 'Dragon hurt wing in chase with Harry Potter',
-      status: '',
-      staff_id: new Uint8Array(98765),
+      team_member_id: testData.teamMembers[0].id,
     };
 
     const requestTableResponse = { data: request, error: null };
@@ -106,7 +115,7 @@ describe('ClientService', () => {
     const insertRequestSpy = jest.spyOn(mockRequestQueryBuilder, 'insert')
       .mockReturnValue(requestTableResponse as any);
 
-    const insertResponse = await insertRequest(request);
+    const insertResponse = await ClientService.insertRequest(request);
 
     expect(fromRequestSpy).toHaveBeenCalledWith('requests');
     expect(insertRequestSpy).toHaveBeenCalledWith(request);

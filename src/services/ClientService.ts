@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable class-methods-use-this */
 
 /**
@@ -7,58 +8,21 @@
  *
  */
 import {
-  ClientTicket, ServiceCategory, ServiceStatus, Statuses,
+  AppConstantTypes,
+  ClientTicket, ServiceStatus, Statuses,
 } from '@lib';
+import {
+  ClientSchema,
+  ServiceRequestSchema,
+  AnimalSchemaInsert,
+  ServiceRequestSchemaInsert,
+  ClientSchemaInsert,
+  AppConstantSchema,
+  TeamMemberSchema,
+} from '@types';
 import supabaseClient from '../../utils/supabaseClient';
-import { ClientSchema, ServiceRequestSchema as ServiceRequestType, AnimalType } from '../types';
 
-export async function upsertClient(client: ClientSchema) {
-  const { data: clientResponse, error: clientError } = await supabaseClient
-    .from('clients')
-    .upsert({
-      email: client.email,
-      first_name: client.first_name,
-      last_name: client.last_name,
-      phone: client.phone,
-      postal_code: client.postal_code,
-      previously_used: client.previously_used,
-    }, { onConflict: 'email' }) as { data: ClientSchema | null, error: Error };
-  if (clientError) throw new Error(`Client retrieval failed: ${clientError.message}`);
-  return clientResponse;
-}
-
-export async function insertPet(pet: AnimalType) {
-  const { data: petResponse, error: petError } = await supabaseClient
-    .from('pets')
-    .insert({
-      name: pet.name,
-      species: pet.species,
-      breed: pet.breed,
-      weight: pet.weight,
-      client_id: pet.client_id,
-    }) as { data: AnimalType | null, error: Error };
-  if (petError) throw new Error(`Client retrieval failed: ${petError.message}`);
-  return petResponse;
-}
-
-export async function insertRequest(request: ServiceRequestType) {
-  const { data: requestResponse, error: requestError } = await supabaseClient
-    .from('requests')
-    .insert({
-      client_id: request.client_id,
-      animal_id: request.animal_id,
-      service_category: request.service_category,
-      priority: request.priority,
-      source: request.source,
-      description: request.description,
-      status: request.status,
-      staff_id: request.staff_id,
-    }) as { data: ServiceRequestType | null, error: Error };
-  if (requestError) throw new Error(`Client retrieval failed: ${requestError.message}`);
-  return requestResponse;
-}
-
-class ClientService {
+export default class ClientService {
   // constructor(private supabaseClient: SupabaseClient) { }
 
   // TODO remove when in prod
@@ -66,21 +30,84 @@ class ClientService {
     new ClientTicket({ ticketNo: '1234', type: 'email', name: 'John Doe' }),
   ];
 
+  static async upsertClient(client: ClientSchemaInsert) {
+    const { data: clientResponse, error: clientError } = await supabaseClient
+      .from('clients')
+      .upsert({
+        email: client.email,
+        first_name: client.first_name,
+        last_name: client.last_name,
+        phone: client.phone,
+        postal_code: client.postal_code,
+        previously_used: client.previously_used,
+      }, { onConflict: 'email' }) as { data: ClientSchema | null, error: Error };
+    if (clientError) throw new Error(`Client retrieval failed: ${clientError.message}`);
+    return clientResponse;
+  }
+
+  static async insertPet(pet: AnimalSchemaInsert, species_id: AnimalSchemaInsert['species_id']) {
+    const { data: petResponse, error: petError } = await supabaseClient
+      .from('pets')
+      .insert({
+        name: pet.name,
+        species_id,
+        weight: pet.weight,
+        client_id: pet.client_id,
+      }).select().maybeSingle();
+    if (petError) throw new Error(`Client retrieval failed: ${petError.message}`);
+    return petResponse;
+  }
+
+  static async insertRequest(
+    request: ServiceRequestSchemaInsert,
+  ) {
+    const {
+      client_id,
+      pet_id,
+      service_category_id,
+      request_source_id,
+      description,
+      team_member_id,
+    } = request;
+    const { data: requestResponse, error: requestError } = await supabaseClient
+      .from('requests')
+      .insert({
+        client_id,
+        pet_id,
+        service_category_id,
+        request_source_id,
+        description,
+        team_member_id,
+      }).select().maybeSingle();
+    if (requestError) throw new Error(`Client retrieval failed: ${requestError.message}`);
+    return requestResponse;
+  }
+
   async newRequest(
-    request: ServiceRequestType,
-    client: ClientSchema,
-    animal: AnimalType,
+    description: ServiceRequestSchemaInsert['description'],
+    species_id: AppConstantSchema['id'],
+    service_category_id: AppConstantSchema['id'],
+    request_source_id: AppConstantSchema['id'],
+    team_member_id: TeamMemberSchema['id'],
+    clientInfo: ClientSchemaInsert,
+    petInfo: AnimalSchemaInsert,
   )
-    : Promise<ServiceRequestType> {
+    : Promise<ServiceRequestSchema> {
     // Post Request to supabase
 
     try {
       // Await both the upsertClient and insertPet
       // so that we can't return from this call until everything is done
-      const clientPromise = upsertClient(client);
-      const petPromise = insertPet(animal);
-      await Promise.all([clientPromise, petPromise]);
-      return await insertRequest(request);
+      const client = await ClientService.upsertClient(clientInfo);
+      const pet = await ClientService.insertPet(petInfo, species_id);
+      return await ClientService.insertRequest({
+        description,
+        service_category_id,
+        request_source_id,
+        team_member_id,
+        pet_id: pet.id,
+        client_id: client.id,
+      });
     } catch (error) {
       console.error('ERROR AT NEW REQUEST CREATION:', error);
       throw error;
@@ -125,7 +152,7 @@ class ClientService {
     return Promise.resolve(Statuses);
   }
 
-  async getServiceCategories(): Promise<ServiceCategory[]> {
+  async getServiceCategories(): Promise<AppConstantSchema[]> {
     // For Testing without DB
     // const tempCategories: ServiceCategory[] = [
     //   new ServiceCategory({ id: 'id_1', name: 'Cat One' }),
@@ -136,8 +163,9 @@ class ClientService {
     // return Promise.resolve(tempCategories);
 
     const response = await supabaseClient
-      .from('service_category')
-      .select('*');
+      .from('app_constants')
+      .select('*')
+      .eq('type', AppConstantTypes.ServiceCategory);
     return response.data;
   }
 }

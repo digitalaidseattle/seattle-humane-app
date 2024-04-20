@@ -25,6 +25,9 @@
       "@context/*": [
         "src/context/*"
       ],
+      "@services/*": [
+        "src/services/*"
+      ],
       "@lib": [
         "src/lib"
       ],
