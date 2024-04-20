@@ -10,3 +10,4 @@ export { default as ServiceStatus, Statuses } from './ServiceStatus';
 export { default as ClientRequest } from './ClientRequest';
 export { default as ClientTicket } from './ClientTicket';
 export { default as ChangeLog } from './ChangeLog';
+export { default as AppConstantTypes } from './AppConstantTypes';
