@@ -4,7 +4,7 @@ import InputText from '@components/InputText';
 import InputTextArea from '@components/InputTextArea';
 import { ServiceInfoActionType, ServiceInformationContext, ServiceInformationDispatchContext } from '@context/serviceRequest/serviceInformationContext';
 import { ServiceRequestSchemaInsert } from '@types';
-import { TicketType } from '../../services/ClientService';
+import { TicketType } from '@lib';
 
 // TODO externalize to localization file
 export const serviceInformationLabels = {

@@ -1,165 +1,16 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-throw-literal */
-/* eslint-disable no-useless-catch */
-/* eslint-disable eqeqeq */
 /* eslint-disable class-methods-use-this */
-/* eslint-disable max-classes-per-file */
+
 /**
  *  ClientService.ts
  *
  *  @copyright 2024 Digital Aid Seattle
  *
  */
+import {
+  ClientTicket, ServiceCategory, ServiceStatus, Statuses,
+} from '@lib';
 import supabaseClient from '../../utils/supabaseClient';
 import { ClientSchema, ServiceRequestSchema as ServiceRequestType, AnimalType } from '../types';
-
-enum RequestType {
-  clientNew = 'client-new',
-  clientUpdate = 'client-new',
-  animalNew = 'animal-new',
-  animalUpdate = 'animal-update',
-}
-
-enum TicketType {
-  walkin = 'walk-in',
-  email = 'email',
-  phone = 'phone',
-  other = 'other',
-}
-
-class ServiceCategory {
-  id: string;
-
-  name: string;
-
-  constructor(input: any) {
-    this.id = input.id;
-    this.name = input.name;
-  }
-}
-
-class ServiceStatus {
-  id: string;
-
-  code: string;
-
-  name: string;
-
-  constructor(input: any) {
-    this.id = input.id;
-    this.code = input.code;
-    this.name = input.name;
-  }
-}
-const statuses: ServiceStatus[] = [
-  new ServiceStatus({ name: 'New', code: 'new' }),
-  new ServiceStatus({ name: 'In-progress', code: 'update' }),
-  new ServiceStatus({ name: 'Close', code: 'closed' }),
-  new ServiceStatus({ name: 'Blocked', code: 'blocked' }),
-];
-
-class NewClientRequest {
-  requestType: RequestType = RequestType.clientNew;
-
-  ticketNo: string;
-
-  type: TicketType;
-
-  name: string;
-
-  email: string;
-
-  phone: string;
-
-  summary: string;
-
-  description: string;
-
-  date: Date;
-
-  representative: string;
-
-  constructor(data: any) {
-    this.ticketNo = data.ticketNo;
-    this.type = data.type;
-    this.name = data.name;
-    this.email = data.email;
-    this.phone = data.phone;
-    this.summary = data.summary;
-    this.description = data.description;
-    this.representative = data.representative;
-    this.date = data.date ? data.date : new Date();
-  }
-}
-
-class UpdateClientRequest {
-  requestType: RequestType = RequestType.clientUpdate;
-
-  ticketNo: string;
-
-  ticket: ClientTicket;
-
-  date: Date;
-
-  representative: string;
-
-  constructor(ticket: any, date: Date, representative: string) {
-    this.ticketNo = ticket.ticketNo;
-    this.ticket = ticket;
-    this.date = date || new Date();
-  }
-}
-
-class ChangeLog {
-  date: Date;
-
-  representative: string;
-
-  description: string;
-
-  constructor(data: any) {
-    this.date = data.date ? data.date : new Date();
-    this.description = data.description;
-    this.representative = data.representative;
-  }
-}
-
-class ClientTicket {
-  ticketNo: string;
-
-  type: TicketType;
-
-  status: string;
-
-  name: string;
-
-  email: string;
-
-  phone: string;
-
-  summary: string;
-
-  description: string;
-
-  urgency: number;
-
-  changeLog: ChangeLog[] = [];
-
-  serviceCategoryId: string;
-
-  constructor(data: any) {
-    this.ticketNo = data.ticketNo;
-    this.type = data.type;
-    this.name = data.name;
-    this.status = data.status;
-    this.urgency = data.urgency;
-    this.email = data.email;
-    this.phone = data.phone;
-    this.summary = data.summary;
-    this.description = data.description;
-    this.serviceCategoryId = data.serviceCategoryId;
-  }
-}
 
 export async function upsertClient(client: ClientSchema) {
   const { data: clientResponse, error: clientError } = await supabaseClient
@@ -223,8 +74,6 @@ class ClientService {
     : Promise<ServiceRequestType> {
     // Post Request to supabase
 
-    let createdRequest: ServiceRequestType;
-
     try {
       // Await both the upsertClient and insertPet
       // so that we can't return from this call until everything is done
@@ -239,28 +88,24 @@ class ClientService {
   }
 
   async getClientByEmail(email: string): Promise<ClientSchema> {
-    try {
-      const { data, error } = await supabaseClient
-        .from('clients')
-        .select('*')
-        .eq('email', email)
-        .maybeSingle();
+    const { data, error } = await supabaseClient
+      .from('clients')
+      .select('*')
+      .eq('email', email)
+      .maybeSingle();
 
-      if (error) {
-        console.log('ERROR IN GET CLIENT BY EMAIL:', error);
-        throw error;
-      }
-
-      if (!data) throw new Error('No client found with this email');
-
-      return data;
-    } catch (error) {
-      throw error;
+    if (error) {
+      console.log('ERROR IN GET CLIENT BY EMAIL:', error);
+      throw new Error(error.message);
     }
+
+    if (!data) throw new Error('No client found with this email');
+
+    return data;
   }
 
   getTicket(id: string): Promise<ClientTicket> {
-    return Promise.resolve(this.tickets.find((t) => t.ticketNo == id));
+    return Promise.resolve(this.tickets.find((t) => t.ticketNo === id));
   }
 
   getTickets(): Promise<ClientTicket[]> {
@@ -272,12 +117,12 @@ class ClientService {
 
   update(ticket: ClientTicket): Promise<ClientTicket> {
     this.tickets = this.tickets.map((obj) => (ticket.ticketNo === obj.ticketNo ? ticket : obj));
-    return Promise.resolve(this.tickets.find((t) => t.ticketNo == ticket.ticketNo));
+    return Promise.resolve(this.tickets.find((t) => t.ticketNo === ticket.ticketNo));
   }
 
   async getServiceStatuses(): Promise<ServiceStatus[]> {
     // REVIEW: Could be from DB
-    return Promise.resolve(statuses);
+    return Promise.resolve(Statuses);
   }
 
   async getServiceCategories(): Promise<ServiceCategory[]> {
@@ -300,9 +145,5 @@ class ClientService {
 const clientService = new ClientService();
 export {
   ClientTicket,
-  NewClientRequest,
-  ServiceCategory,
-  ServiceStatus,
-  TicketType,
   clientService,
 };

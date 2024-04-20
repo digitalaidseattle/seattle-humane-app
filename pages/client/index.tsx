@@ -19,10 +19,8 @@ import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
 import React, { useEffect, useRef, useState } from 'react';
 import { Dropdown } from 'primereact/dropdown';
+import { ServiceCategory, ServiceStatus, ClientTicket } from '@lib';
 import {
-  ClientTicket,
-  ServiceCategory,
-  ServiceStatus,
   clientService,
 } from '../../src/services/ClientService';
 
@@ -106,127 +104,127 @@ function Client() {
           <Toast ref={toast} />
           <Toolbar className="mb-4" start={leftToolbarTemplate} end={rightToolbarTemplate} />
           {ticket
-                        && (
-                        <div className="grid">
-                          <div className="col-12 lg:col-6 xl:col-6">
-                            <div className="card mb-0">
-                              <div className="flex justify-content-between mb-3">
-                                <div>
-                                  <span className="block text-500 font-medium mb-3">Info</span>
-                                </div>
-                                <div className="flex align-items-center justify-content-center bg-blue-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
-                                  <i className="pi pi-upload text-blue-500 text-xl" />
-                                </div>
-                              </div>
-                              <ul className="list-none p-0 m-0">
-                                <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
-                                  <div className="text-500 w-6 md:w-2 font-medium">Summary</div>
-                                  <InputText id="summary" type="text" value={ticket.summary} onBlur={() => update()} onChange={(e) => changeProp('summary', e.target.value)} />
-                                </li>
-                                <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
-                                  <div className="text-500 w-6 md:w-2 font-medium">Urgency</div>
-                                  <Rating value={ticket.urgency} onChange={(e) => changeProp('urgency', e.value)} />
-                                  \
-                                  {' '}
-                                </li>
-                                <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
-                                  <div className="text-500 w-6 md:w-2 font-medium">Status</div>
-                                  <Dropdown
-                                    value={ticket.status}
-                                    className="w-full md:w-14rem"
-                                                // Note: we're updating onBlur.  we may have to change to a "save" button because of performance
-                                    onBlur={() => update()}
-                                    onChange={(e) => changeProp('status', e.value)}
-                                    options={statuses}
-                                    optionLabel="name"
-                                    optionValue="code"
-                                  />
-                                </li>
-                                <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
-                                  <div className="text-500 w-6 md:w-2 font-medium">Service Category</div>
-                                  <Dropdown
-                                    value={ticket.serviceCategoryId}
-                                    title="Service category options"
-                                    className="w-full md:w-14rem"
-                                                // Note: we're updating onBlur.  we may have to change to a "save" button because of performance
-                                    onBlur={() => update()}
-                                    onChange={(e) => changeProp('serviceCategoryId', e.value)}
-                                    options={categories}
-                                    optionLabel="name"
-                                    optionValue="id"
-                                  />
-                                </li>
-                                <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
-                                  <div className="text-500 w-6 md:w-2 font-medium">Description</div>
-                                  <InputTextarea id="description" onChange={(e) => changeProp('description', e.target.value)} />
-                                </li>
-                              </ul>
-                            </div>
+            && (
+              <div className="grid">
+                <div className="col-12 lg:col-6 xl:col-6">
+                  <div className="card mb-0">
+                    <div className="flex justify-content-between mb-3">
+                      <div>
+                        <span className="block text-500 font-medium mb-3">Info</span>
+                      </div>
+                      <div className="flex align-items-center justify-content-center bg-blue-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
+                        <i className="pi pi-upload text-blue-500 text-xl" />
+                      </div>
+                    </div>
+                    <ul className="list-none p-0 m-0">
+                      <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
+                        <div className="text-500 w-6 md:w-2 font-medium">Summary</div>
+                        <InputText id="summary" type="text" value={ticket.summary} onBlur={() => update()} onChange={(e) => changeProp('summary', e.target.value)} />
+                      </li>
+                      <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
+                        <div className="text-500 w-6 md:w-2 font-medium">Urgency</div>
+                        <Rating value={ticket.urgency} onChange={(e) => changeProp('urgency', e.value)} />
+                        \
+                        {' '}
+                      </li>
+                      <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
+                        <div className="text-500 w-6 md:w-2 font-medium">Status</div>
+                        <Dropdown
+                          value={ticket.status}
+                          className="w-full md:w-14rem"
+                          // Note: we're updating onBlur.  we may have to change to a "save" button because of performance
+                          onBlur={() => update()}
+                          onChange={(e) => changeProp('status', e.value)}
+                          options={statuses}
+                          optionLabel="name"
+                          optionValue="code"
+                        />
+                      </li>
+                      <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
+                        <div className="text-500 w-6 md:w-2 font-medium">Service Category</div>
+                        <Dropdown
+                          value={ticket.serviceCategoryId}
+                          title="Service category options"
+                          className="w-full md:w-14rem"
+                          // Note: we're updating onBlur.  we may have to change to a "save" button because of performance
+                          onBlur={() => update()}
+                          onChange={(e) => changeProp('serviceCategoryId', e.value)}
+                          options={categories}
+                          optionLabel="name"
+                          optionValue="id"
+                        />
+                      </li>
+                      <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
+                        <div className="text-500 w-6 md:w-2 font-medium">Description</div>
+                        <InputTextarea id="description" onChange={(e) => changeProp('description', e.target.value)} />
+                      </li>
+                    </ul>
+                  </div>
 
-                          </div>
+                </div>
 
-                          <div className="col-12 lg:col-6 xl:col-6">
-                            <div className="card mb-0">
-                              <div className="flex justify-content-between mb-3">
-                                <div>
-                                  <span className="block text-500 font-medium mb-3">Contact</span>
-                                </div>
-                                <div className="flex align-items-center justify-content-center bg-blue-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
-                                  <i className="pi pi-send text-blue-500 text-xl" />
-                                </div>
-                              </div>
-                              <ul className="list-none p-0 m-0">
-                                <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
-                                  <div className="text-500 w-6 md:w-2 font-medium">Name</div>
-                                  <div className="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
-                                    <InputText id="name" type="text" value={ticket.name} onBlur={() => update()} onChange={(e) => changeProp('name', e.target.value)} />
-                                  </div>
-                                </li>
-                                <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
-                                  <div className="text-500 w-6 md:w-2 font-medium">Phone</div>
-                                  <div className="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
-                                    <InputMask
-                                      id="phone"
-                                      type="text"
-                                      mask="(999) 999-9999"
-                                      value={ticket.phone}
-                                      onBlur={() => update()}
-                                      onChange={(e) => changeProp('phone', e.target.value)}
-                                    />
-                                  </div>
-                                </li>
-                                <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
-                                  <div className="text-500 w-6 md:w-2 font-medium">Email</div>
-                                  <div className="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
-                                    <InputText id="email" type="text" value={ticket.email} onBlur={() => update()} onChange={(e) => changeProp('email', e.target.value)} />
-                                  </div>
-                                </li>
-                              </ul>
-                            </div>
-                          </div>
-
-                          <div className="col-12 lg:col-12 xl:col-12">
-                            <div className="card mb-0">
-                              <div className="flex justify-content-between mb-3">
-                                <div>
-                                  <span className="block text-500 font-medium mb-3">History</span>
-                                </div>
-                                <div className="flex align-items-center justify-content-center bg-blue-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
-                                  <i className="pi pi-upload text-blue-500 text-xl" />
-                                </div>
-                              </div>
-                              <ul className="list-none p-0 m-0">
-                                <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
-                                  <div className="text-500 w-6 md:w-6 font-medium">* date/time * rep * Stuff happened </div>
-                                </li>
-                                <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
-                                  <div className="text-500 w-6 md:w-6 font-medium">Stuff happened again</div>
-                                </li>
-                              </ul>
-                            </div>
-                          </div>
+                <div className="col-12 lg:col-6 xl:col-6">
+                  <div className="card mb-0">
+                    <div className="flex justify-content-between mb-3">
+                      <div>
+                        <span className="block text-500 font-medium mb-3">Contact</span>
+                      </div>
+                      <div className="flex align-items-center justify-content-center bg-blue-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
+                        <i className="pi pi-send text-blue-500 text-xl" />
+                      </div>
+                    </div>
+                    <ul className="list-none p-0 m-0">
+                      <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
+                        <div className="text-500 w-6 md:w-2 font-medium">Name</div>
+                        <div className="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
+                          <InputText id="name" type="text" value={ticket.name} onBlur={() => update()} onChange={(e) => changeProp('name', e.target.value)} />
                         </div>
-                        )}
+                      </li>
+                      <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
+                        <div className="text-500 w-6 md:w-2 font-medium">Phone</div>
+                        <div className="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
+                          <InputMask
+                            id="phone"
+                            type="text"
+                            mask="(999) 999-9999"
+                            value={ticket.phone}
+                            onBlur={() => update()}
+                            onChange={(e) => changeProp('phone', e.target.value)}
+                          />
+                        </div>
+                      </li>
+                      <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
+                        <div className="text-500 w-6 md:w-2 font-medium">Email</div>
+                        <div className="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
+                          <InputText id="email" type="text" value={ticket.email} onBlur={() => update()} onChange={(e) => changeProp('email', e.target.value)} />
+                        </div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+
+                <div className="col-12 lg:col-12 xl:col-12">
+                  <div className="card mb-0">
+                    <div className="flex justify-content-between mb-3">
+                      <div>
+                        <span className="block text-500 font-medium mb-3">History</span>
+                      </div>
+                      <div className="flex align-items-center justify-content-center bg-blue-100 border-round" style={{ width: '2.5rem', height: '2.5rem' }}>
+                        <i className="pi pi-upload text-blue-500 text-xl" />
+                      </div>
+                    </div>
+                    <ul className="list-none p-0 m-0">
+                      <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
+                        <div className="text-500 w-6 md:w-6 font-medium">* date/time * rep * Stuff happened </div>
+                      </li>
+                      <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
+                        <div className="text-500 w-6 md:w-6 font-medium">Stuff happened again</div>
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            )}
         </div>
       </div>
     </div>

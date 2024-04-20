@@ -8,8 +8,9 @@ import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
 import React, { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { ClientTicket } from '@lib';
 import AnimalDialog from '../../src/components/AnimalDialog';
-import { ClientTicket, clientService } from '../../src/services/ClientService';
+import { clientService } from '../../src/services/ClientService';
 
 function Animals() {
   const { push } = useRouter();

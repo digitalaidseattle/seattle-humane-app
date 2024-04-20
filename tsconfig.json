@@ -25,6 +25,9 @@
       "@context/*": [
         "src/context/*"
       ],
+      "@lib": [
+        "src/lib"
+      ],
       "@types": [
         "src/types"
       ]

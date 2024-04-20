@@ -5,8 +5,9 @@
  *
  */
 
+import { ServiceCategory } from '@lib';
 import {
-  ServiceCategory, clientService, upsertClient, insertPet, insertRequest,
+  clientService, upsertClient, insertPet, insertRequest,
 } from '../../../src/services/ClientService';
 // FIXME this should be mocked! We might need dependency injection
 // It doesn't seem that this is connecting to the database but I'm not sure...
