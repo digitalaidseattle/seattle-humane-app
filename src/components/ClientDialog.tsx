@@ -20,13 +20,13 @@ import {
   ServiceInfoActionType, ServiceInformationProvider, defaultServiceInformation, serviceInfoReducer,
 } from '@context/serviceRequest/serviceInformationContext';
 import { clientService } from '../services/ClientService';
-import { AnimalType, ClientType, RequestType } from '../types';
+import { AnimalType, ClientSchema, ServiceRequestSchema } from '../types';
 import FormConfirmationButtons from './FormConfirmationButtons';
 import ClientInformationSection from './serviceRequest/ClientInformationSection';
 import PetInformationSection from './serviceRequest/PetInformationSection';
 import ServiceInformationSection from './serviceRequest/ServiceInformationSection';
 
-const defaultClient: ClientType = {
+const defaultClient: ClientSchema = {
   id: null,
   first_name: '',
   last_name: '',
@@ -45,7 +45,7 @@ const defaultAnimal: AnimalType = {
   client_id: null,
 };
 
-const defaultRequest: RequestType = {
+const defaultRequest: ServiceRequestSchema = {
   id: null,
   client_id: null,
   animal_id: null,
@@ -59,7 +59,7 @@ const defaultRequest: RequestType = {
 
 interface ClientDialogProps {
   visible: boolean;
-  onClose: (request: RequestType) => void;
+  onClose: (request: ServiceRequestSchema) => void;
 }
 
 function ClientDialog(props: ClientDialogProps) {

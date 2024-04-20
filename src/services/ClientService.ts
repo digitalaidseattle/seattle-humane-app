@@ -11,7 +11,7 @@
  *
  */
 import supabaseClient from '../../utils/supabaseClient';
-import { ClientType, RequestType as ServiceRequestType, AnimalType } from '../types';
+import { ClientSchema, ServiceRequestSchema as ServiceRequestType, AnimalType } from '../types';
 
 enum RequestType {
   clientNew = 'client-new',
@@ -161,7 +161,7 @@ class ClientTicket {
   }
 }
 
-export async function upsertClient(client: ClientType) {
+export async function upsertClient(client: ClientSchema) {
   const { data: clientResponse, error: clientError } = await supabaseClient
     .from('clients')
     .upsert({
@@ -171,7 +171,7 @@ export async function upsertClient(client: ClientType) {
       phone: client.phone,
       postal_code: client.postal_code,
       previously_used: client.previously_used,
-    }, { onConflict: 'email' }) as { data: ClientType | null, error: Error };
+    }, { onConflict: 'email' }) as { data: ClientSchema | null, error: Error };
   if (clientError) throw new Error(`Client retrieval failed: ${clientError.message}`);
   return clientResponse;
 }
@@ -217,7 +217,7 @@ class ClientService {
 
   async newRequest(
     request: ServiceRequestType,
-    client: ClientType,
+    client: ClientSchema,
     animal: AnimalType,
   )
     : Promise<ServiceRequestType> {
@@ -238,7 +238,7 @@ class ClientService {
     }
   }
 
-  async getClientByEmail(email: string): Promise<ClientType> {
+  async getClientByEmail(email: string): Promise<ClientSchema> {
     try {
       const { data, error } = await supabaseClient
         .from('clients')

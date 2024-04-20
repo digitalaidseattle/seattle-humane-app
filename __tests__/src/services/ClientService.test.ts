@@ -11,7 +11,7 @@ import {
 // FIXME this should be mocked! We might need dependency injection
 // It doesn't seem that this is connecting to the database but I'm not sure...
 import supabaseClient from '../../../utils/supabaseClient';
-import { ClientType, RequestType as ServiceRequestType, AnimalType } from '../../../src/types';
+import { ClientSchema, ServiceRequestSchema as ServiceRequestType, AnimalType } from '../../../src/types';
 
 describe('ClientService', () => {
   it('should get service categories', async () => {
@@ -36,7 +36,7 @@ describe('ClientService', () => {
   });
 
   it('should be able to upsert new client', async () => {
-    const client: ClientType = {
+    const client: ClientSchema = {
       email: 'fake_email@example.com',
       first_name: 'test_first',
       last_name: 'test_last',

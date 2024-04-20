@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import InputRadio from '@components/InputRadio';
 import InputText from '@components/InputText';
 import { PetInfoActionType, PetInformationContext, PetInformationDispatchContext } from '@context/serviceRequest/petInformationContext';
-import { EditableAnimalType } from '@types';
+import { AnimalSchemaInsert } from '@types';
 
 // TODO externalize to localization file
 export const petInformationLabels = {
@@ -22,7 +22,7 @@ interface PetInformationSectionProps {
   /** Flag to disable/enable the controls */
   disabled: boolean
   /** Fields to show on the form */
-  show?: (keyof EditableAnimalType)[]
+  show?: (keyof AnimalSchemaInsert)[]
 }
 
 //* Options for multi-choice controls
@@ -39,20 +39,20 @@ export default function PetInformationSection(props: PetInformationSectionProps)
     show = ['name', 'breed', 'species', 'weight'],
   } = props;
 
-  const visibleFields = new Set<keyof EditableAnimalType>(show);
+  const visibleFields = new Set<keyof AnimalSchemaInsert>(show);
 
   //* Retrieve form state from the context
   const formData = useContext(PetInformationContext);
   const dispatch = useContext(PetInformationDispatchContext);
 
   //* Map onChange handlers to dispatch
-  const setFormData = (partialStateUpdate: Partial<EditableAnimalType>) => dispatch(
+  const setFormData = (partialStateUpdate: Partial<AnimalSchemaInsert>) => dispatch(
     { type: PetInfoActionType.Update, partialStateUpdate },
   );
-  const setName = (name: EditableAnimalType['name']) => setFormData({ name });
-  const setSpecies = (species: EditableAnimalType['species']) => setFormData({ species });
-  const setBreed = (breed: EditableAnimalType['breed']) => setFormData({ breed });
-  const setWeight = (weight: EditableAnimalType['weight']) => setFormData({ weight });
+  const setName = (name: AnimalSchemaInsert['name']) => setFormData({ name });
+  const setSpecies = (species: AnimalSchemaInsert['species']) => setFormData({ species });
+  const setBreed = (breed: AnimalSchemaInsert['breed']) => setFormData({ breed });
+  const setWeight = (weight: AnimalSchemaInsert['weight']) => setFormData({ weight });
 
   return (
     <div className="grid">

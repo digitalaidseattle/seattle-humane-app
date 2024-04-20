@@ -1,7 +1,7 @@
 import React, { createContext } from 'react';
-import { EditableRequestType } from '@types';
+import { ServiceRequestSchemaInsert } from '@types';
 
-export const defaultServiceInformation: EditableRequestType = {
+export const defaultServiceInformation: ServiceRequestSchemaInsert = {
   service_category: '',
   priority: '',
   source: '',
@@ -10,22 +10,22 @@ export const defaultServiceInformation: EditableRequestType = {
   assigned_to: '',
 };
 
-export enum ServiceInfoActionType { Clear = 'clear', Update = 'update'}
+export enum ServiceInfoActionType { Clear = 'clear', Update = 'update' }
 type ServiceInfoAction = { type: ServiceInfoActionType.Clear }
-| { type: ServiceInfoActionType.Update, partialStateUpdate: Partial<EditableRequestType> };
+  | { type: ServiceInfoActionType.Update, partialStateUpdate: Partial<ServiceRequestSchemaInsert> };
 
-export const serviceInfoReducer = (state: EditableRequestType, action: ServiceInfoAction) => {
+export const serviceInfoReducer = (state: ServiceRequestSchemaInsert, action: ServiceInfoAction) => {
   if (action.type === ServiceInfoActionType.Update) {
     return { ...state, ...action.partialStateUpdate };
   }
   return { ...defaultServiceInformation };
 };
 
-export const ServiceInformationContext = createContext<EditableRequestType>(null);
+export const ServiceInformationContext = createContext<ServiceRequestSchemaInsert>(null);
 export const ServiceInformationDispatchContext = createContext<React.Dispatch<
-ServiceInfoAction>>(null);
+  ServiceInfoAction>>(null);
 interface ServiceInformationProviderProps extends React.PropsWithChildren {
-  state: EditableRequestType,
+  state: ServiceRequestSchemaInsert,
   dispatch: React.Dispatch<ServiceInfoAction>
 }
 export function ServiceInformationProvider({

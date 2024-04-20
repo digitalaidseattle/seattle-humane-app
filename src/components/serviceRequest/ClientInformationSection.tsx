@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 import InputRadio from '@components/InputRadio';
 import InputText from '@components//InputText';
 import { ClientInfoActionType, ClientInformationContext, ClientInformationDispatchContext } from '@context/serviceRequest/clientInformationContext';
-import { EditableClientInfo } from '@types';
+import { ClientSchemaInsert } from '@types';
 
 // TODO externalize to localization file
 export const clientInformationLabels = {
@@ -26,7 +26,7 @@ interface ClientInformationSectionProps {
   /** Flag to disable/enable the controls */
   disabled: boolean
   /** Fields to show on the form */
-  show?: (keyof EditableClientInfo)[]
+  show?: (keyof ClientSchemaInsert)[]
 }
 
 /**
@@ -40,22 +40,22 @@ export default function ClientInformationSection(props: ClientInformationSection
     show = ['first_name', 'last_name', 'email', 'phone', 'postal_code', 'previously_used'],
   } = props;
 
-  const visibleFields = new Set<keyof EditableClientInfo>(show);
+  const visibleFields = new Set<keyof ClientSchemaInsert>(show);
 
   //* Retrieve form state from the context
   const formData = useContext(ClientInformationContext);
   const dispatch = useContext(ClientInformationDispatchContext);
 
   //* Map onChange handlers to dispatch
-  const setFormData = (partialStateUpdate: Partial<EditableClientInfo>) => dispatch(
+  const setFormData = (partialStateUpdate: Partial<ClientSchemaInsert>) => dispatch(
     { type: ClientInfoActionType.Update, partialStateUpdate },
   );
-  const setFirstName = (first_name: EditableClientInfo['first_name']) => (setFormData({ first_name }));
-  const setLastName = (last_name: EditableClientInfo['last_name']) => (setFormData({ last_name }));
-  const setEmail = (email: EditableClientInfo['email']) => (setFormData({ email }));
-  const setPhone = (phone: EditableClientInfo['phone']) => (setFormData({ phone }));
-  const setPostalCode = (postal_code: EditableClientInfo['postal_code']) => (setFormData({ postal_code }));
-  const setPreviouslyUsed = (previously_used: EditableClientInfo['previously_used']) => (setFormData({ previously_used }));
+  const setFirstName = (first_name: ClientSchemaInsert['first_name']) => (setFormData({ first_name }));
+  const setLastName = (last_name: ClientSchemaInsert['last_name']) => (setFormData({ last_name }));
+  const setEmail = (email: ClientSchemaInsert['email']) => (setFormData({ email }));
+  const setPhone = (phone: ClientSchemaInsert['phone']) => (setFormData({ phone }));
+  const setPostalCode = (postal_code: ClientSchemaInsert['postal_code']) => (setFormData({ postal_code }));
+  const setPreviouslyUsed = (previously_used: ClientSchemaInsert['previously_used']) => (setFormData({ previously_used }));
 
   return (
     <div className="grid">
@@ -67,7 +67,7 @@ export default function ClientInformationSection(props: ClientInformationSection
       </div>
       <div className="col-12 grid row-gap-3 pl-5">
         {visibleFields.has('first_name')
-            && (
+          && (
             <div className="col-6">
               <InputText
                 id="first_name"
@@ -78,9 +78,9 @@ export default function ClientInformationSection(props: ClientInformationSection
                 onChange={(e) => setFirstName(e.target.value)}
               />
             </div>
-            )}
+          )}
         {visibleFields.has('last_name')
-            && (
+          && (
             <div className="col-6">
               <InputText
                 id="last_name"
@@ -91,9 +91,9 @@ export default function ClientInformationSection(props: ClientInformationSection
                 onChange={(e) => setLastName(e.target.value)}
               />
             </div>
-            )}
+          )}
         {visibleFields.has('email')
-            && (
+          && (
             <div className="col-6">
               <InputText
                 id="email"
@@ -104,9 +104,9 @@ export default function ClientInformationSection(props: ClientInformationSection
                 onChange={(e) => setEmail(e.target.value)}
               />
             </div>
-            )}
+          )}
         {visibleFields.has('phone')
-            && (
+          && (
             <div className="col-6">
               <InputText
                 id="phone"
@@ -117,9 +117,9 @@ export default function ClientInformationSection(props: ClientInformationSection
                 onChange={(e) => setPhone(e.target.value)}
               />
             </div>
-            )}
+          )}
         {visibleFields.has('postal_code')
-            && (
+          && (
             <div className="col-6">
               <InputText
                 id="postal_code"
@@ -130,9 +130,9 @@ export default function ClientInformationSection(props: ClientInformationSection
                 onChange={(e) => setPostalCode(e.target.value)}
               />
             </div>
-            )}
+          )}
         {visibleFields.has('previously_used')
-            && (
+          && (
             <div className="grid col-12">
               <div className="col-fixed mr-3">{clientInformationLabels.PreviouslyUsed}</div>
               <div className="flex flex-wrap gap-3">
@@ -150,7 +150,7 @@ export default function ClientInformationSection(props: ClientInformationSection
                 ))}
               </div>
             </div>
-            )}
+          )}
       </div>
     </div>
   );

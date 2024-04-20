@@ -12,14 +12,14 @@ import {
   serviceInfoReducer,
   defaultServiceInformation,
 } from '@context/serviceRequest/serviceInformationContext';
-import { EditableRequestType } from '@types';
+import { ServiceRequestSchemaInsert } from '@types';
 
 //* Mocking the service information context module to isolate the test
 jest.mock('@context/serviceRequest/serviceInformationContext', () => {
   const ServiceInformationContext = createContext(null);
   const ServiceInformationDispatchContext = createContext(null);
   //* Using type annotation here to force this test to break if the contract changes
-  const defaultServiceInformation: EditableRequestType = {
+  const defaultServiceInformation: ServiceRequestSchemaInsert = {
     service_category: '',
     priority: '',
     source: '',
@@ -71,7 +71,7 @@ describe('ServiceInformationSection', () => {
   * The label is used to query the DOM for the element.
   * The field key and value are used to assert the action is dispatched with the right data.
   * */
-  let radioButtons: [HTMLElement, keyof EditableRequestType, string, string][] = [];
+  let radioButtons: [HTMLElement, keyof ServiceRequestSchemaInsert, string, string][] = [];
 
   //* The Section requires a context, so wrap it in a context provider to test
   function PetInfoSectionConsumer({ defaultState, disabled, fields }) {

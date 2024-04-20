@@ -3,7 +3,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { createContext, useReducer } from 'react';
 import PetInformationSection, { petInformationLabels as labels, speciesOptions } from '@components/serviceRequest/PetInformationSection';
 import { PetInformationProvider, petInfoReducer, defaultPetInformation } from '@context/serviceRequest/petInformationContext';
-import { EditableAnimalType } from '@types';
+import { AnimalSchemaInsert } from '@types';
 
 //* Mocking the pet information context module to isolate the test
 jest.mock('@context/serviceRequest/petInformationContext', () => {
@@ -11,7 +11,7 @@ jest.mock('@context/serviceRequest/petInformationContext', () => {
   const PetInformationDispatchContext = createContext(null);
   //* Using type annotation here to force this test to break if the contract changes
   // eslint-disable-next-line @typescript-eslint/no-shadow
-  const defaultPetInformation: EditableAnimalType = {
+  const defaultPetInformation: AnimalSchemaInsert = {
     name: '',
     species: '',
     breed: '',

@@ -1,7 +1,7 @@
 import React, { createContext } from 'react';
-import { EditableClientInfo } from '@types';
+import { ClientSchemaInsert } from '@types';
 
-export const defaultClientInformation: EditableClientInfo = {
+export const defaultClientInformation: ClientSchemaInsert = {
   first_name: '',
   last_name: '',
   email: '',
@@ -10,23 +10,23 @@ export const defaultClientInformation: EditableClientInfo = {
   previously_used: '',
 };
 
-export enum ClientInfoActionType { Clear = 'clear', Update = 'update'}
+export enum ClientInfoActionType { Clear = 'clear', Update = 'update' }
 export type ClientInfoAction =
-{ type: ClientInfoActionType.Clear }
-| { type: ClientInfoActionType.Update, partialStateUpdate: Partial<EditableClientInfo> };
+  { type: ClientInfoActionType.Clear }
+  | { type: ClientInfoActionType.Update, partialStateUpdate: Partial<ClientSchemaInsert> };
 
-export const clientInfoReducer = (state: EditableClientInfo, action: ClientInfoAction) => {
+export const clientInfoReducer = (state: ClientSchemaInsert, action: ClientInfoAction) => {
   if (action.type === ClientInfoActionType.Update) {
     return { ...state, ...action.partialStateUpdate };
   }
   return { ...defaultClientInformation };
 };
 
-export const ClientInformationContext = createContext<EditableClientInfo>(null);
+export const ClientInformationContext = createContext<ClientSchemaInsert>(null);
 export const ClientInformationDispatchContext = createContext<React.Dispatch<
-ClientInfoAction>>(null);
+  ClientInfoAction>>(null);
 interface ClientInformationProviderProps extends React.PropsWithChildren {
-  state: EditableClientInfo,
+  state: ClientSchemaInsert,
   dispatch: React.Dispatch<ClientInfoAction>
 }
 export function ClientInformationProvider({

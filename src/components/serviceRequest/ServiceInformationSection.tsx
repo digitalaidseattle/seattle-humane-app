@@ -3,7 +3,7 @@ import InputRadio from '@components/InputRadio';
 import InputText from '@components/InputText';
 import InputTextArea from '@components/InputTextArea';
 import { ServiceInfoActionType, ServiceInformationContext, ServiceInformationDispatchContext } from '@context/serviceRequest/serviceInformationContext';
-import { EditableRequestType } from '@types';
+import { ServiceRequestSchemaInsert } from '@types';
 import { TicketType } from '../../services/ClientService';
 
 // TODO externalize to localization file
@@ -45,7 +45,7 @@ interface ServiceInformationSectionProps {
   /** Flag to disable/enable the controls */
   disabled: boolean
   /** Fields to show on the form */
-  show?: (keyof EditableRequestType)[]
+  show?: (keyof ServiceRequestSchemaInsert)[]
 }
 
 /**
@@ -59,22 +59,22 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
     show = ['service_category', 'priority', 'source', 'description', 'status', 'assigned_to'],
   } = props;
 
-  const visibleFields = new Set<keyof EditableRequestType>(show);
+  const visibleFields = new Set<keyof ServiceRequestSchemaInsert>(show);
 
   //* Retrieve form state from the context
   const formData = useContext(ServiceInformationContext);
   const dispatch = useContext(ServiceInformationDispatchContext);
 
   //* Map onChange handlers to dispatch
-  const setFormData = (partialStateUpdate: Partial<EditableRequestType>) => dispatch(
+  const setFormData = (partialStateUpdate: Partial<ServiceRequestSchemaInsert>) => dispatch(
     { type: ServiceInfoActionType.Update, partialStateUpdate },
   );
-  const setCategory = (service_category: EditableRequestType['service_category']) => setFormData({ service_category });
-  const setPriority = (priority: EditableRequestType['priority']) => setFormData({ priority });
-  const setSource = (source: EditableRequestType['source']) => setFormData({ source });
-  const setServiceDescription = (description: EditableRequestType['description']) => setFormData({ description });
-  const setStatus = (status: EditableRequestType['status']) => setFormData({ status });
-  const setAssignedTo = (assigned_to: EditableRequestType['assigned_to']) => setFormData({ assigned_to });
+  const setCategory = (service_category: ServiceRequestSchemaInsert['service_category']) => setFormData({ service_category });
+  const setPriority = (priority: ServiceRequestSchemaInsert['priority']) => setFormData({ priority });
+  const setSource = (source: ServiceRequestSchemaInsert['source']) => setFormData({ source });
+  const setServiceDescription = (description: ServiceRequestSchemaInsert['description']) => setFormData({ description });
+  const setStatus = (status: ServiceRequestSchemaInsert['status']) => setFormData({ status });
+  const setAssignedTo = (assigned_to: ServiceRequestSchemaInsert['assigned_to']) => setFormData({ assigned_to });
 
   return (
     <div className="grid">
