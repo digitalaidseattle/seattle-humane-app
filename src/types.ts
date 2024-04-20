@@ -8,7 +8,7 @@ export type ClientSchemaInsert = Database['public']['Tables']['clients']['Insert
 export type TeamMemberSchema = Tables<'team_members'>;
 export type TeamMemberSchemaInsert = Database['public']['Tables']['team_members']['Insert'];
 
-export type AnimalType = Tables<'pets'>;
+export type AnimalSchema = Tables<'pets'>;
 export type AnimalSchemaInsert = Database['public']['Tables']['pets']['Insert'];
 
 export type ServiceRequestSchema = Tables<'service_requests'>;
