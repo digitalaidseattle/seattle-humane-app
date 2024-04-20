@@ -158,15 +158,9 @@ The only way to access the web app locally right now is via Google OAuth
    1. Be aware that the supabase commands need to be run on the host machine,
       not in a terminal in your dev container.
 
-1. From the repository:
-   1. run `npm run supa-edge` to start the edge function server, and keep the
-      command running in the terminal
-
-   In a new terminal
-
-   1. run `npm run supa-start` (if you didn't already have this running from
-      previous setup)
-   1. run `npm run dev` to start the website.
+1. run `npm run supa-start` (if you didn't already have this running from
+   previous setup)
+1. run `npm run dev` to start the website.
 
 ## Testing
 
