@@ -4,10 +4,10 @@ import { Database } from 'supabase/database.types';
 import supabaseClient from 'utils/supabaseClient';
 import { v4 } from 'uuid';
 
-const categories: AppConstantSchema[] = [];
-const sources: AppConstantSchema[] = [];
-const species: AppConstantSchema[] = [];
-const teamMembers: TeamMemberSchema[] = [];
+let categories: AppConstantSchema[] = [];
+let sources: AppConstantSchema[] = [];
+let species: AppConstantSchema[] = [];
+let teamMembers: TeamMemberSchema[] = [];
 export const testData = {
   categories, sources, species, teamMembers,
 };
@@ -26,7 +26,8 @@ export async function setupPrerequisiteTestData() {
 
   // Create sources
   await Promise.all(['Phone', 'Walk-in', 'Email'].map(async (label) => {
-    const { data: source } = await supabaseClient.from('app_constants')
+    const { data: source } = await supabaseClient
+      .from('app_constants')
       .insert({
         type: AppConstantTypes.ServiceSource,
         label,
@@ -37,7 +38,8 @@ export async function setupPrerequisiteTestData() {
 
   // Create species
   await Promise.all(['Dog', 'Cat', 'Bird'].map(async (label) => {
-    const { data } = await supabaseClient.from('app_constants')
+    const { data } = await supabaseClient
+      .from('app_constants')
       .insert({
         type: AppConstantTypes.Species,
         label,
@@ -53,13 +55,17 @@ export async function setupPrerequisiteTestData() {
   teamMembers.push(teamMember);
 }
 
-export async function clearPrerequisiteTestData() {
+export async function clearTables() {
   // Order of deletion is important
   const tables: (keyof Database['public']['Tables'])[] = ['service_requests', 'pets', 'clients', 'team_members', 'app_constants'];
   // eslint-disable-next-line no-restricted-syntax
   for (const table of tables) {
     // eslint-disable-next-line no-await-in-loop
     const { error } = await supabaseClient.from(table).delete().neq('id', v4());
-    if (error) throw new Error(error.message);
+    if (error) throw new Error(`Error clearing table ${table}: ${error.message}`);
   }
+  categories = [];
+  sources = [];
+  species = [];
+  teamMembers = [];
 }

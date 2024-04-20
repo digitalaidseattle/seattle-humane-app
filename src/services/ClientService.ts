@@ -19,6 +19,7 @@ import {
   ClientSchemaInsert,
   AppConstantSchema,
   TeamMemberSchema,
+  AnimalSchema,
 } from '@types';
 import supabaseClient from '../../utils/supabaseClient';
 
@@ -30,7 +31,7 @@ export default class ClientService {
     new ClientTicket({ ticketNo: '1234', type: 'email', name: 'John Doe' }),
   ];
 
-  static async upsertClient(client: ClientSchemaInsert) {
+  static async upsertClient(client: ClientSchemaInsert): Promise<ClientSchema> {
     const { data: clientResponse, error: clientError } = await supabaseClient
       .from('clients')
       .upsert({
@@ -40,13 +41,14 @@ export default class ClientService {
         phone: client.phone,
         postal_code: client.postal_code,
         previously_used: client.previously_used,
-      }, { onConflict: 'email' }) as { data: ClientSchema | null, error: Error };
-    if (clientError) throw new Error(`Client retrieval failed: ${clientError.message}`);
+      }, { onConflict: 'email' })
+      .select().maybeSingle();
+    if (clientError) throw new Error(`Client upsert failed: ${clientError.message}`);
     return clientResponse;
   }
 
-  static async insertPet(pet: AnimalSchemaInsert, species_id: AnimalSchemaInsert['species_id']) {
-    const { data: petResponse, error: petError } = await supabaseClient
+  static async insertPet(pet: AnimalSchemaInsert, species_id: AnimalSchemaInsert['species_id']): Promise<AnimalSchema> {
+    const { data: petResponse, error } = await supabaseClient
       .from('pets')
       .insert({
         name: pet.name,
@@ -54,13 +56,13 @@ export default class ClientService {
         weight: pet.weight,
         client_id: pet.client_id,
       }).select().maybeSingle();
-    if (petError) throw new Error(`Client retrieval failed: ${petError.message}`);
+    if (error) throw new Error(`Pet insertion failed: ${error.message}`);
     return petResponse;
   }
 
   static async insertRequest(
     request: ServiceRequestSchemaInsert,
-  ) {
+  ): Promise<ServiceRequestSchema> {
     const {
       client_id,
       pet_id,
@@ -69,8 +71,8 @@ export default class ClientService {
       description,
       team_member_id,
     } = request;
-    const { data: requestResponse, error: requestError } = await supabaseClient
-      .from('requests')
+    const { data: requestResponse, error } = await supabaseClient
+      .from('service_requests')
       .insert({
         client_id,
         pet_id,
@@ -79,7 +81,7 @@ export default class ClientService {
         description,
         team_member_id,
       }).select().maybeSingle();
-    if (requestError) throw new Error(`Client retrieval failed: ${requestError.message}`);
+    if (error) throw new Error(`Request insertion failed: ${error.message}`);
     return requestResponse;
   }
 
@@ -96,8 +98,6 @@ export default class ClientService {
     // Post Request to supabase
 
     try {
-      // Await both the upsertClient and insertPet
-      // so that we can't return from this call until everything is done
       const client = await ClientService.upsertClient(clientInfo);
       const pet = await ClientService.insertPet(petInfo, species_id);
       return await ClientService.insertRequest({

@@ -7,7 +7,7 @@ const testTimeStamp = (new Date()).toISOString();
 export const testRequestInput: ServiceRequestSchemaInsert = {
   client_id: '',
   created_at: testTimeStamp,
-  description: '',
+  description: 'Request description',
   log_id: '',
   pet_id: '',
   request_source_id: '',
