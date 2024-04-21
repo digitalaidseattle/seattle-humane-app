@@ -31,6 +31,14 @@ export default class ClientService {
     new ClientTicket({ ticketNo: '1234', type: 'email', name: 'John Doe' }),
   ];
 
+  static async getClients(): Promise<ClientSchema[]> {
+    const { data: clients, error: clientError } = await supabaseClient
+      .from('clients')
+      .select();
+    if (clientError) throw new Error(`Client upsert failed: ${clientError.message}`);
+    return clients;
+  }
+
   static async upsertClient(client: ClientSchemaInsert): Promise<ClientSchema> {
     const { data: clientResponse, error: clientError } = await supabaseClient
       .from('clients')
@@ -64,11 +72,11 @@ export default class ClientService {
     request: ServiceRequestSchemaInsert,
   ): Promise<ServiceRequestSchema> {
     const {
+      description,
       client_id,
       pet_id,
       service_category_id,
       request_source_id,
-      description,
       team_member_id,
     } = request;
     const { data: requestResponse, error } = await supabaseClient
