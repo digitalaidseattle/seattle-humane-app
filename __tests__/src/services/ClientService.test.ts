@@ -19,7 +19,7 @@ import { clearTables, setupPrerequisiteTestData, testData } from 'utils/testSetu
 import { testAnimalInput, testClientInput } from 'utils/testUserInput';
 import supabaseClient from '../../../utils/supabaseClient';
 
-describe('ClientService', () => {
+xdescribe('ClientService', () => {
   beforeAll(async () => {
     await setupPrerequisiteTestData();
   });

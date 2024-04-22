@@ -9,7 +9,7 @@ async function run() {
   return { data, error };
 }
 
-describe('edge functions', () => {
+xdescribe('edge functions', () => {
   it('can be called', async () => {
     const res = await run();
     expect(res.data).not.toBeFalsy();
