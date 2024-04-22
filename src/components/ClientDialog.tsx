@@ -26,37 +26,6 @@ import ClientInformationSection from './serviceRequest/ClientInformationSection'
 import PetInformationSection from './serviceRequest/PetInformationSection';
 import ServiceInformationSection from './serviceRequest/ServiceInformationSection';
 
-const defaultClient: ClientSchema = {
-  id: null,
-  first_name: '',
-  last_name: '',
-  email: '',
-  phone: '',
-  postal_code: '',
-  previously_used: '',
-};
-
-const defaultAnimal: AnimalSchema = {
-  id: null,
-  name: '',
-  species: '',
-  breed: '',
-  weight: '',
-  client_id: null,
-};
-
-const defaultRequest: ServiceRequestSchema = {
-  id: null,
-  client_id: null,
-  animal_id: null,
-  service_category: '',
-  priority: '',
-  source: '',
-  description: '',
-  status: '',
-  staff_id: null,
-};
-
 interface ClientDialogProps {
   visible: boolean;
   onClose: (request: ServiceRequestSchema) => void;
@@ -87,8 +56,8 @@ function ClientDialog(props: ClientDialogProps) {
     clientService.newRequest({
       ...request,
       // TODO not sure how we want to handle these ids, needs lookup control?
-      animal_id: null,
-      staff_id: null,
+      client_id: null,
+      pet_id: null,
     }, client, animal)
       .then((requestResponse) => props.onClose(requestResponse))
       // TODO - handle all sorts of errors: client exists, animal exists, request exists, etc.

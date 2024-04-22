@@ -8,6 +8,7 @@ export const defaultClientInformation: ClientSchemaInsert = {
   phone: '',
   postal_code: '',
   previously_used: '',
+  id: null,
 };
 
 export enum ClientInfoActionType { Clear = 'clear', Update = 'update' }
@@ -24,7 +25,8 @@ export const clientInfoReducer = (state: ClientSchemaInsert, action: ClientInfoA
 
 export const ClientInformationContext = createContext<ClientSchemaInsert>(null);
 export const ClientInformationDispatchContext = createContext<React.Dispatch<
-  ClientInfoAction>>(null);
+ClientInfoAction>>(null);
+
 interface ClientInformationProviderProps extends React.PropsWithChildren {
   state: ClientSchemaInsert,
   dispatch: React.Dispatch<ClientInfoAction>

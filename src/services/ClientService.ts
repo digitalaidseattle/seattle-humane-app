@@ -18,7 +18,6 @@ import {
   ServiceRequestSchemaInsert,
   ClientSchemaInsert,
   AppConstantSchema,
-  TeamMemberSchema,
   AnimalSchema,
 } from '@types';
 import supabaseClient from '../../utils/supabaseClient';
@@ -55,12 +54,12 @@ export default class ClientService {
     return clientResponse;
   }
 
-  static async insertPet(pet: AnimalSchemaInsert, species_id: AnimalSchemaInsert['species_id']): Promise<AnimalSchema> {
+  static async insertPet(pet: AnimalSchemaInsert): Promise<AnimalSchema> {
     const { data: petResponse, error } = await supabaseClient
       .from('pets')
       .insert({
         name: pet.name,
-        species_id,
+        species_id: pet.species_id,
         weight: pet.weight,
         client_id: pet.client_id,
       }).select().maybeSingle();
@@ -94,11 +93,7 @@ export default class ClientService {
   }
 
   async newRequest(
-    description: ServiceRequestSchemaInsert['description'],
-    species_id: AppConstantSchema['id'],
-    service_category_id: AppConstantSchema['id'],
-    request_source_id: AppConstantSchema['id'],
-    team_member_id: TeamMemberSchema['id'],
+    serviceInfo: ServiceRequestSchemaInsert,
     clientInfo: ClientSchemaInsert,
     petInfo: AnimalSchemaInsert,
   )
@@ -107,18 +102,20 @@ export default class ClientService {
 
     try {
       const client = await ClientService.upsertClient(clientInfo);
-      const pet = await ClientService.insertPet(petInfo, species_id);
+      const pet = await ClientService.insertPet({
+        ...petInfo,
+        client_id: client.id,
+      });
       return await ClientService.insertRequest({
-        description,
-        service_category_id,
-        request_source_id,
-        team_member_id,
+        description: serviceInfo.description,
+        service_category_id: serviceInfo.service_category_id,
+        request_source_id: serviceInfo.request_source_id,
+        team_member_id: serviceInfo.team_member_id,
         pet_id: pet.id,
         client_id: client.id,
       });
     } catch (error) {
-      console.error('ERROR AT NEW REQUEST CREATION:', error);
-      throw error;
+      throw new Error(`New Request creation failed: ${error.message}`);
     }
   }
 
@@ -130,8 +127,7 @@ export default class ClientService {
       .maybeSingle();
 
     if (error) {
-      console.log('ERROR IN GET CLIENT BY EMAIL:', error);
-      throw new Error(error.message);
+      throw new Error(`Error retrieving client by email: ${error.message}`);
     }
 
     if (!data) throw new Error('No client found with this email');
