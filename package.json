@@ -12,7 +12,8 @@
         "test": "jest",
         "gen-types": "npx supabase gen types typescript --local > supabase/database.types.ts",
         "supa-start": "npx supabase start",
-        "supa-stop": "npx supabase stop"
+        "supa-stop": "npx supabase stop",
+        "supa-login": "npx supabase login"
     },
     "dependencies": {
         "@supabase/auth-helpers-nextjs": "^0.8.7",

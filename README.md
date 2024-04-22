@@ -92,9 +92,14 @@ deploying these changes to the public-facing website. Learn more about Vercel
 
 1. Install Docker desktop. The local Supabase services run in containers.
 
-1. Start the Supabase services. From inside the repository directory:
+1. Login to the supabase project:
    ```bash
-   npm run supabase-start
+   npm run supa-login
+   ```
+
+1. Start the local Supabase services. From inside the repository directory:
+   ```bash
+   npm run supa-start
    ```
 1. Copy the `anon key` output in the terminal and update the env variable
    `NEXT_PUBLIC_SUPABASE_ANON_KEY`
