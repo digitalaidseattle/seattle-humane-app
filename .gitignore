@@ -31,6 +31,7 @@ yarn-error.log*
 # generated
 .next
 .vscode/extensions.json
+.vscode/settings.json/extensions.json
 
 # misc
 pnpm-lock.yaml

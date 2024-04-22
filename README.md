@@ -47,9 +47,13 @@ automatically deploy a staged version of the website for final approval prior to
 deploying these changes to the public-facing website. Learn more about Vercel
 [here](https://vercel.com/docs).
 
+**Supabase** is used for Postgres database services and authentication with
+Google accounts via OAuth.
+
 ## System Requirements
 
 1. [Node.js](https://nodejs.org/en/)
+2. [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 
 ## Local Environment Setup
 
@@ -62,58 +66,27 @@ deploying these changes to the public-facing website. Learn more about Vercel
    npm install
    ```
 
-1. Setup VSCode for auto formatting
+1. Setup VSCode for auto-formatting
 
-- Install extensions: ESLint and Prettier
+- Install extensions: ESLint
 - Go to VSCode setting `Settings` > `Text Editor` > `Formatting` >
   `Format On Save`
-- In the same setting window, look up `Default Formatter` and set to Prettier.
 
 ### Configure Environmental Variables
 
-1. Create .env.local file:
+Local requires a few one-time steps. You will need to create a Google OAuth ID,
+put information about it into your .env.local file, start Supabase, put values
+from Supabase into your .env.local file, and then finally start the web app.
+
+1. Create a copy of .env.local.example
 
    ```bash
-   touch .env.local
+   cp .env.local.example .env.local
    ```
+1. Open the .env.local file in VSCode. You will need to put values in this file
+   after the next step, so keep it open.
 
-1. Paste the following into this file and save:
-
-   ```.env
-   # Defaults, used by ./intro-template and can be deleted if the component is removed
-   NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=
-   SUPABASE_AUTH_GOOGLE_CLIENT_ID=
-   SUPABASE_AUTH_GOOGLE_SECRET=
-   SUPABASE_AUTH_GOOGLE_REDIRECT_URI="http://localhost:54321/auth/v1/callback"
-   ```
-
-#### Setup Supabase
-
-1. Install Docker desktop. The local Supabase services run in containers.
-
-1. Login to the supabase project:
-   ```bash
-   npm run supa-login
-   ```
-
-1. Start the local Supabase services. From inside the repository directory:
-   ```bash
-   npm run supa-start
-   ```
-1. Copy the `anon key` output in the terminal and update the env variable
-   `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-
-#### Setup Deno
-
-Deno is used by Supabase Edge functions. You need to install it to run these
-functions locally during development.
-
-1. Install Deno or your host machine:
-   [Deno installation](https://docs.deno.com/runtime/manual/getting_started/installation)
-1. Or see the VS Code Dev Container option below 👇
-
-#### Setup Google OAuth
+1. #### Setup Google OAuth
 
 The only way to access the web app locally right now is via Google OAuth
 
@@ -141,6 +114,40 @@ The only way to access the web app locally right now is via Google OAuth
    variable
 1. Copy the `Client secret` and set it to the `SUPABASE_AUTH_GOOGLE_SECRET` env
    variable
+
+### Start the local Supabase services
+
+1. Load the values from the env file into the environment by running:
+   ```bash
+   source .env.local
+   ```
+
+1. Start development server locally. First, ensure you have NodeJS and Docker
+   Desktop installed. Then run:
+   ```bash
+   npm run supa-login # sign in to the supabase project
+   npx supabase start # start the local supabase services
+   ```
+
+   Enter "y" when/if asked to install the Supabase package.
+
+   Give it a moment to spin up the containers. When it's finished, it will
+   display URLs and keys that need to go into your local environment file. You
+   already have the URL set in your .env.local, so just add the displayed anon
+   key after the `NEXT_PUBLIC_SUPABASE_ANON_KEY=` variable in the .env.local
+   file. Double-check you copied the value correctly then save the file.
+
+   (These steps are derived from the
+   [Original Supabase instructions here](https://supabase.com/docs/guides/cli/local-development#start-supabase-services))
+
+#### Setup Deno
+
+Deno is used by Supabase Edge functions. You need to install it to run these
+functions locally during development.
+
+1. Install Deno or your host machine:
+   [Deno installation](https://docs.deno.com/runtime/manual/getting_started/installation)
+1. Or see the VS Code Dev Container option below 👇
 
 #### Run the app (in a VS Code Dev Container)
 

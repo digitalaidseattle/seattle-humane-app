@@ -1,7 +1,7 @@
 import '@testing-library/jest-dom';
 import { fireEvent, render, screen } from '@testing-library/react';
 import { createContext, useReducer } from 'react';
-import PetInformationSection, { petInformationLabels as labels, speciesOptions } from '@components/serviceRequest/PetInformationSection';
+import PetInformationSection, { petInformationLabels as labels } from '@components/serviceRequest/PetInformationSection';
 import { PetInformationProvider, petInfoReducer, defaultPetInformation } from '@context/serviceRequest/petInformationContext';
 import { AnimalSchemaInsert } from '@types';
 
@@ -34,6 +34,17 @@ jest.mock('@context/serviceRequest/petInformationContext', () => {
   };
 });
 
+const species = [{ value: 'bird', label: 'BIRD' }];
+jest.mock('src/services/useAppConstants', () => {
+  const orig = jest.requireActual('src/services/useAppConstants')
+  return {
+    ...orig,
+    useAppConstants: (value) => {
+      return { data: species }
+    }
+  }
+});
+
 afterEach(() => {
   // Clear the mock reducer call counts after each test
   jest.clearAllMocks();
@@ -49,8 +60,8 @@ describe('PetInformationSection', () => {
   let nameInput = null;
   let breedInput = null;
   let weightInput = null;
-  let speciesRadioButtons = [];
   let textInputs = [];
+
 
   //* The Section requires a context, so wrap it in a context provider to test
   function PetInfoSectionConsumer({ defaultState, disabled, fields }) {
@@ -82,8 +93,11 @@ describe('PetInformationSection', () => {
       breedInput,
       weightInput,
     ];
-    speciesRadioButtons = speciesOptions.map((val) => screen.queryByLabelText(val));
-  }
+    // speciesRadioButtons = speciesOptions.map((val) => screen.queryByLabelText(val));
+
+
+  };
+
 
   it('should render an empty form showing all fields by default', () => {
     //* Arrange
@@ -93,10 +107,11 @@ describe('PetInformationSection', () => {
       expect(field).toBeInTheDocument();
       expect(field).toHaveDisplayValue('');
     });
-    speciesRadioButtons.forEach((item) => {
-      expect(item).toBeInTheDocument();
-      expect(item).not.toBeChecked();
-    });
+    species.map((opt) => screen.queryByLabelText(opt.label))
+      .forEach((item) => {
+        expect(item).toBeInTheDocument();
+        expect(item).not.toBeChecked();
+      });
   });
 
   it('should hide fields not configured for visibility', () => {
@@ -106,9 +121,10 @@ describe('PetInformationSection', () => {
     textInputs.forEach((field) => {
       expect(field).not.toBeInTheDocument();
     });
-    speciesRadioButtons.forEach((item) => {
-      expect(item).not.toBeInTheDocument();
-    });
+    species.map((opt) => screen.queryByLabelText(opt.label))
+      .forEach((item) => {
+        expect(item).not.toBeInTheDocument();
+      });
   });
 
   it('should disable controls when so configured', () => {
@@ -118,9 +134,12 @@ describe('PetInformationSection', () => {
     textInputs.forEach((field) => {
       expect(field).toBeDisabled();
     });
-    speciesRadioButtons.forEach((item) => {
-      expect(item).toBeDisabled();
-    });
+    species.map((opt) => screen.queryByLabelText(opt.label))
+      .forEach((item) => {
+        console.log('item', item)
+        expect(item).toBeDisabled();
+      });
+
   });
 
   it('should dispatch updates when text values are changed', () => {
@@ -144,11 +163,11 @@ describe('PetInformationSection', () => {
     });
   });
 
-  it.each(speciesOptions)('should dispatch updates when the %s radio option is selected', (label) => {
+  it.each(species)('should dispatch updates when the %s radio option is selected', (opt) => {
     //* Arrange
     setup();
     //* Act
-    const radioButton = screen.queryByLabelText(label);
+    const radioButton = screen.queryByLabelText(opt.label);
     fireEvent.click(radioButton);
     //* Assert
     expect(petInfoReducer).toHaveBeenNthCalledWith(
@@ -156,7 +175,7 @@ describe('PetInformationSection', () => {
       expect.anything(), // We are only concerned with the action, not the previous state
       expect.objectContaining({
         type: 'Update',
-        partialStateUpdate: { species: label },
+        partialStateUpdate: { species: opt.value },
       }),
     );
   });
