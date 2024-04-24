@@ -34,7 +34,7 @@ interface PetInformationSectionProps {
 export default function PetInformationSection(props: PetInformationSectionProps) {
   const {
     disabled,
-    show = ['name', 'breed', 'species', 'weight'],
+    show = ['name', 'species_id'],
   } = props;
 
   const visibleFields = new Set<keyof AnimalSchemaInsert>(show);
@@ -50,8 +50,7 @@ export default function PetInformationSection(props: PetInformationSectionProps)
     { type: PetInfoActionType.Update, partialStateUpdate },
   );
   const setName = (name: AnimalSchemaInsert['name']) => setFormData({ name });
-  const setSpecies = (species: AnimalSchemaInsert['species']) => setFormData({ species });
-  const setBreed = (breed: AnimalSchemaInsert['breed']) => setFormData({ breed });
+  const setSpecies = (species_id: AnimalSchemaInsert['species_id']) => setFormData({ species_id });
   const setWeight = (weight: AnimalSchemaInsert['weight']) => setFormData({ weight });
 
   return (
@@ -76,7 +75,7 @@ export default function PetInformationSection(props: PetInformationSectionProps)
               />
             </div>
           )}
-        {visibleFields.has('species')
+        {visibleFields.has('species_id')
           && (
             <div className="grid col-12">
               <div className="col-fixed mr-3">{petInformationLabels.Species}</div>
@@ -90,24 +89,9 @@ export default function PetInformationSection(props: PetInformationSectionProps)
                     disabled={disabled}
                     name={`species-${spec.value}`}
                     onChange={(e) => setSpecies(e.target.value)}
-                    checked={formData.species === spec.value}
+                    checked={formData.species_id === spec.value}
                   />
                 ))}
-              </div>
-            </div>
-          )}
-        {visibleFields.has('breed')
-          && (
-            <div className="col-12 p-0">
-              <div className="col-6">
-                <InputText
-                  id="breed"
-                  value={formData.breed}
-                  disabled={disabled}
-                  label={petInformationLabels.Breeds}
-                  placeholder={petInformationLabels.BreedsPlaceholder}
-                  onChange={(e) => setBreed(e.target.value)}
-                />
               </div>
             </div>
           )}
@@ -121,7 +105,7 @@ export default function PetInformationSection(props: PetInformationSectionProps)
                   disabled={disabled}
                   label={petInformationLabels.Weight}
                   placeholder={petInformationLabels.WeightPlaceholder}
-                  onChange={(e) => setWeight(e.target.value)}
+                  onChange={(e) => setWeight(+e.target.value)}
                 />
               </div>
             </div>

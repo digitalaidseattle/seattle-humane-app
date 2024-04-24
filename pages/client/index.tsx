@@ -19,7 +19,8 @@ import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
 import React, { useEffect, useRef, useState } from 'react';
 import { Dropdown } from 'primereact/dropdown';
-import { ServiceCategory, ServiceStatus, ClientTicket } from '@lib';
+import { ServiceStatus, ClientTicket } from '@lib';
+import { AppConstant } from '@services/AppService';
 import {
   clientService,
 } from '../../src/services/ClientService';
@@ -29,7 +30,7 @@ function Client() {
   // TODO create LoadingContext & Loading Indicator in layout
   const [_loading, setLoading] = useState(false);
   // TODO create customHook for serviceCategories
-  const [categories, setCategories] = useState<ServiceCategory[]>();
+  const [categories, setCategories] = useState<AppConstant[]>();
   const [statuses, setStatuses] = useState<ServiceStatus[]>();
 
   const [ticket, setTicket] = useState<ClientTicket>();

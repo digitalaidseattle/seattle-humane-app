@@ -2,11 +2,10 @@ import InputRadio from '@components/InputRadio';
 import InputText from '@components/InputText';
 import InputTextArea from '@components/InputTextArea';
 import { ServiceInfoActionType, ServiceInformationContext, ServiceInformationDispatchContext } from '@context/serviceRequest/serviceInformationContext';
-import { EditableRequestType, ServiceRequestSchemaInsert } from '@types';
+import { ServiceRequestSchemaInsert } from '@types';
 import { Dropdown } from 'primereact/dropdown';
 import { useContext } from 'react';
 import { useAppConstants } from 'src/services/useAppConstants';
-import { TicketType } from '@lib';
 
 // TODO externalize to localization file
 export const serviceInformationLabels = {
@@ -48,7 +47,7 @@ interface ServiceInformationSectionProps {
 export default function ServiceInformationSection(props: ServiceInformationSectionProps) {
   const {
     disabled,
-    show = ['service_category', 'priority', 'source', 'description', 'status', 'assigned_to'],
+    show = ['service_category_id', 'request_source_id', 'description', 'team_member_id'],
   } = props;
 
   const visibleFields = new Set<keyof ServiceRequestSchemaInsert>(show);
@@ -58,19 +57,16 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
   const dispatch = useContext(ServiceInformationDispatchContext);
 
   const { data: sources } = useAppConstants('source');
-  const { data: statuses } = useAppConstants('status');
   const { data: categories } = useAppConstants('category');
 
   //* Map onChange handlers to dispatch
   const setFormData = (partialStateUpdate: Partial<ServiceRequestSchemaInsert>) => dispatch(
     { type: ServiceInfoActionType.Update, partialStateUpdate },
   );
-  const setCategory = (service_category: ServiceRequestSchemaInsert['service_category']) => setFormData({ service_category });
-  const setPriority = (priority: ServiceRequestSchemaInsert['priority']) => setFormData({ priority });
-  const setSource = (source: ServiceRequestSchemaInsert['source']) => setFormData({ source });
+  const setCategory = (service_category_id: ServiceRequestSchemaInsert['service_category_id']) => setFormData({ service_category_id });
+  const setSource = (request_source_id: ServiceRequestSchemaInsert['request_source_id']) => setFormData({ request_source_id });
   const setServiceDescription = (description: ServiceRequestSchemaInsert['description']) => setFormData({ description });
-  const setStatus = (status: ServiceRequestSchemaInsert['status']) => setFormData({ status });
-  const setAssignedTo = (assigned_to: ServiceRequestSchemaInsert['assigned_to']) => setFormData({ assigned_to });
+  const setAssignedTo = (team_member_id: ServiceRequestSchemaInsert['team_member_id']) => setFormData({ team_member_id });
 
   return (
     <div className="grid">
@@ -81,13 +77,13 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
         </h3>
       </div>
       <div className="col-12 grid row-gap-3 pl-5">
-        {visibleFields.has('service_category')
+        {visibleFields.has('service_category_id')
           && (
             <div className="col-6">
               <div className="col-fixed mr-3">{serviceInformationLabels.Category}</div>
               <Dropdown
                 id="category"
-                value={formData.service_category}
+                value={formData.service_category_id}
                 title={serviceInformationLabels.Category}
                 className="w-full md:w-14rem"
                 onChange={(e) => setCategory(e.target.value)}
@@ -96,26 +92,7 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
               />
             </div>
           )}
-        {visibleFields.has('priority')
-          && (
-            <div className="grid col-6 justify-content-end">
-              <div className="flex flex-wrap gap-3">
-                {priorityOptions.map((val) => (
-                  <InputRadio
-                    id={`priority-${val}`}
-                    key={val}
-                    label={val}
-                    value={val}
-                    disabled={disabled}
-                    name={`priority-${val}`}
-                    onChange={(e) => setPriority(e.target.value)}
-                    checked={formData.priority === val}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
-        {visibleFields.has('source')
+        {visibleFields.has('request_source_id')
           && (
             <div className="grid col-12">
               <div className="col-fixed mr-3">{serviceInformationLabels.Source}</div>
@@ -129,7 +106,7 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
                     disabled={disabled}
                     name={`source-${opt.value}`}
                     onChange={(e) => setSource(e.target.value)}
-                    checked={formData.source === opt.value}
+                    checked={formData.request_source_id === opt.value}
                   />
                 ))}
               </div>
@@ -149,33 +126,13 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
               />
             </div>
           )}
-        {visibleFields.has('status')
-          && (
-            <div className="grid col-6 pr-3">
-              <div className="col-fixed mr-3">{serviceInformationLabels.Status}</div>
-              <div className="flex flex-wrap gap-3">
-                {statuses.map((opt) => (
-                  <InputRadio
-                    id={`status-${opt.value}`}
-                    key={opt.value}
-                    label={opt.label}
-                    value={opt.value}
-                    disabled={disabled}
-                    name={`status-${opt.value}`}
-                    onChange={(e) => setStatus(e.target.value)}
-                    checked={formData.status === opt.value}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
-        {visibleFields.has('assigned_to')
+        {visibleFields.has('team_member_id')
           && (
             <div className="col-6">
               {/* TODO change to <select> element when options are known */}
               <InputText
                 id="assigned_to"
-                value={formData.assigned_to}
+                value={formData.team_member_id}
                 disabled={disabled}
                 label={serviceInformationLabels.AssignTo}
                 placeholder={serviceInformationLabels.AssignTo}

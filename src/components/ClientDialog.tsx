@@ -140,7 +140,7 @@ function ClientDialog(props: ClientDialogProps) {
           >
             <PetInformationSection
               disabled={busy}
-              show={['name', 'species']}
+              show={['name', 'species_id']}
             />
           </PetInformationProvider>
           <ServiceInformationProvider
@@ -149,7 +149,7 @@ function ClientDialog(props: ClientDialogProps) {
           >
             <ServiceInformationSection
               disabled={busy}
-              show={['service_category']}
+              show={['service_category_id']}
             />
           </ServiceInformationProvider>
         </div>

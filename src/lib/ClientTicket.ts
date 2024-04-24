@@ -1,4 +1,5 @@
-import { ChangeLog, TicketType } from '@lib';
+import ChangeLog from './ChangeLog';
+import TicketType from './TicketType';
 
 export default class ClientTicket {
   ticketNo: string;

@@ -20,6 +20,7 @@ export async function setupPrerequisiteTestData() {
         type: AppConstantTypes.ServiceCategory,
         label,
         value: label,
+        changed_at: (new Date()).toISOString(),
       }).select().maybeSingle();
     categories.push(category);
   }));
@@ -32,6 +33,7 @@ export async function setupPrerequisiteTestData() {
         type: AppConstantTypes.ServiceSource,
         label,
         value: label,
+        changed_at: (new Date()).toISOString(),
       }).select().maybeSingle();
     sources.push(source);
   }));
@@ -44,6 +46,7 @@ export async function setupPrerequisiteTestData() {
         type: AppConstantTypes.Species,
         label,
         value: label,
+        changed_at: (new Date()).toISOString(),
       }).select().maybeSingle();
     species.push(data);
   }));
