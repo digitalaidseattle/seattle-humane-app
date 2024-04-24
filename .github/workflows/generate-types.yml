@@ -1,5 +1,7 @@
 # If you run into issues with this workflow, make sure
 # that your Supabase CLI is up to date, then run
+# `supabase stop --no-backup` - careful, this will delete all records in your local database
+# `supabase db start` - This will apply the migration files
 # `supabase gen types typescript --local > supabase/database.types.ts`
 # that will create the database types for TypeScript.
 # For more information, check out this link:
@@ -18,6 +20,14 @@ jobs:
         - uses: supabase/setup-cli@v1
           with:
             version: latest
+        - name: Set env vars
+          run: |
+            echo "SUPABASE_AUTH_GOOGLE_CLIENT_ID=fake_data" >> "$GITHUB_ENV"
+            echo "SUPABASE_AUTH_GOOGLE_SECRET=fake_data" >> "$GITHUB_ENV"
+            echo "SUPABASE_AUTH_GOOGLE_REDIRECT_URI=fake_data" >> "$GITHUB_ENV"
+            echo "SUPABASE_AUTH_AZURE_CLIENT_ID=fake_data" >> "$GITHUB_ENV"
+            echo "SUPABASE_AUTH_AZURE_SECRET=fake_data" >> "$GITHUB_ENV"
+            echo "SUPABASE_AUTH_AZURE_REDIRECT_URI=fake_data" >> "$GITHUB_ENV"
         - run: supabase db start
         - name: Verify generated types match Postgres schema
           run: |
