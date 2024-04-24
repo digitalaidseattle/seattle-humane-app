@@ -1,9 +1,9 @@
 import React, { useContext } from 'react';
-import InputRadio from '@components/InputRadio';
 import InputText from '@components/InputText';
 import { PetInfoActionType, PetInformationContext, PetInformationDispatchContext } from '@context/serviceRequest/petInformationContext';
 import { AnimalSchemaInsert } from '@types';
 import { useAppConstants } from 'src/services/useAppConstants';
+import { Dropdown } from 'primereact/dropdown';
 
 // TODO externalize to localization file
 export const petInformationLabels = {
@@ -77,22 +77,17 @@ export default function PetInformationSection(props: PetInformationSectionProps)
           )}
         {visibleFields.has('species_id')
           && (
-            <div className="grid col-12">
-              <div className="col-fixed mr-3">{petInformationLabels.Species}</div>
-              <div className="flex flex-wrap gap-3">
-                {speciesOptions.map((spec) => (
-                  <InputRadio
-                    id={`species-${spec.value}`}
-                    key={spec.value}
-                    label={spec.label}
-                    value={spec.value}
-                    disabled={disabled}
-                    name={`species-${spec.value}`}
-                    onChange={(e) => setSpecies(e.target.value)}
-                    checked={formData.species_id === spec.value}
-                  />
-                ))}
-              </div>
+            <div className="flex flex-column gap-2 col-6">
+              <label htmlFor="category" className="mr-3">{petInformationLabels.Species}</label>
+              <Dropdown
+                id="species_id"
+                value={formData.species_id}
+                title={petInformationLabels.Species}
+                className="w-full md:w-14rem"
+                onChange={(e) => setSpecies(e.target.value)}
+                options={speciesOptions}
+                disabled={disabled}
+              />
             </div>
           )}
         {visibleFields.has('weight')

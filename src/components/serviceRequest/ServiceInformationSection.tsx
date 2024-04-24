@@ -1,4 +1,3 @@
-import InputRadio from '@components/InputRadio';
 import InputText from '@components/InputText';
 import InputTextArea from '@components/InputTextArea';
 import { ServiceInfoActionType, ServiceInformationContext, ServiceInformationDispatchContext } from '@context/serviceRequest/serviceInformationContext';
@@ -79,10 +78,10 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
       <div className="col-12 grid row-gap-3 pl-5">
         {visibleFields.has('service_category_id')
           && (
-            <div className="col-6">
-              <div className="col-fixed mr-3">{serviceInformationLabels.Category}</div>
+            <div className="flex flex-column gap-2 col-6">
+              <label htmlFor="service_category_id" className="col-fixed mr-3">{serviceInformationLabels.Category}</label>
               <Dropdown
-                id="category"
+                id="service_category_id"
                 value={formData.service_category_id}
                 title={serviceInformationLabels.Category}
                 className="w-full md:w-14rem"
@@ -94,22 +93,17 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
           )}
         {visibleFields.has('request_source_id')
           && (
-            <div className="grid col-12">
-              <div className="col-fixed mr-3">{serviceInformationLabels.Source}</div>
-              <div className="flex flex-wrap gap-3">
-                {sources.map((opt) => (
-                  <InputRadio
-                    id={`source-${opt.value}`}
-                    key={opt.value}
-                    label={opt.label}
-                    value={opt.value}
-                    disabled={disabled}
-                    name={`source-${opt.value}`}
-                    onChange={(e) => setSource(e.target.value)}
-                    checked={formData.request_source_id === opt.value}
-                  />
-                ))}
-              </div>
+            <div className="flex flex-column gap-2 col-6">
+              <label htmlFor="request_source_id" className="col-fixed mr-3">{serviceInformationLabels.Source}</label>
+              <Dropdown
+                id="request_source_id"
+                value={formData.request_source_id}
+                title={serviceInformationLabels.Source}
+                className="w-full md:w-14rem"
+                onChange={(e) => setSource(e.target.value)}
+                options={sources}
+                disabled={disabled}
+              />
             </div>
           )}
         {visibleFields.has('description')
