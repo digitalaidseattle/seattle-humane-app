@@ -36,13 +36,11 @@ jest.mock('@context/serviceRequest/petInformationContext', () => {
 
 const species = [{ value: 'bird', label: 'BIRD' }];
 jest.mock('src/services/useAppConstants', () => {
-  const orig = jest.requireActual('src/services/useAppConstants')
+  const orig = jest.requireActual('src/services/useAppConstants');
   return {
     ...orig,
-    useAppConstants: (value) => {
-      return { data: species }
-    }
-  }
+    useAppConstants: (value) => ({ data: species }),
+  };
 });
 
 afterEach(() => {
@@ -61,7 +59,6 @@ describe('PetInformationSection', () => {
   let breedInput = null;
   let weightInput = null;
   let textInputs = [];
-
 
   //* The Section requires a context, so wrap it in a context provider to test
   function PetInfoSectionConsumer({ defaultState, disabled, fields }) {
@@ -94,10 +91,7 @@ describe('PetInformationSection', () => {
       weightInput,
     ];
     // speciesRadioButtons = speciesOptions.map((val) => screen.queryByLabelText(val));
-
-
-  };
-
+  }
 
   it('should render an empty form showing all fields by default', () => {
     //* Arrange
@@ -136,10 +130,8 @@ describe('PetInformationSection', () => {
     });
     species.map((opt) => screen.queryByLabelText(opt.label))
       .forEach((item) => {
-        console.log('item', item)
         expect(item).toBeDisabled();
       });
-
   });
 
   it('should dispatch updates when text values are changed', () => {
