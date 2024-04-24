@@ -14,7 +14,7 @@ const useAppConstants = (type: string) => {
 
   useEffect(() => {
     appService.getAppConstants(type)
-      .then((resp) => setData(resp));
+      .then((resp) => resp && setData(resp));
   }, [type]);
 
   return { data };
