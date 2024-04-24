@@ -106,3 +106,8 @@ Local requires a few one-time steps. You will need to create a Google OAuth ID, 
 - To run all tests: yarn test.
 - To exclude tests while running your own, you may temporarily put 'x' in front of 'describe' or 'it'. However, DO NOT exclude tests on a PR to a sprint branch.
 
+## Manually updating Supabase types
+
+- To login to supabase: npx supabase login.
+- To update type file: npx supabase gen types typescript --project-id "liuebfxbxugpfsfwbkks" --schema public > supabase/database.types.ts
+
