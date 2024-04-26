@@ -211,7 +211,7 @@ class ClientService {
             first_name: client.first_name,
             last_name: client.last_name,
             email: client.email,
-            phone: client.phone_number,
+            phone_number: client.phone_number,
           }])
           .select()
           .single();
@@ -222,7 +222,7 @@ class ClientService {
       // Check if animal exists and create one if not
       // TODO: HOW TO IDENTIFY UNIQUE ANIMAL? NAME / SPECIES / CLIENT_ID?
       const { data: existingAnimal, error: animalError } = await supabaseClient
-        .from('animals')
+        .from('pets')
         .select('*')
         .eq('name', animal.name)
         .eq('species_id', animal.species_id)
@@ -233,7 +233,7 @@ class ClientService {
 
       if (!existingAnimal) {
         const { data: newAnimal, error } = await supabaseClient
-          .from('animals')
+          .from('pets')
           .insert([{
             name: animal.name,
             species_id: animal.species_id,
@@ -245,7 +245,7 @@ class ClientService {
 
       // Create new request
       const { data: newRequest, error } = await supabaseClient
-        .from('requests')
+        .from('service_requests')
         .insert([{
           client_id: clientId,
           animal_id: animalId,
