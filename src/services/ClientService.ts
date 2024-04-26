@@ -10,8 +10,17 @@
  *  @copyright 2024 Digital Aid Seattle
  *
  */
+import { AppConstants } from 'src/constants';
+import {
+  ClientType,
+  ServiceRequestType,
+  AnimalType,
+  EditableServiceRequestType,
+  EditableClientType,
+  EditableAnimalType,
+  AppConstantType,
+} from '@types';
 import supabaseClient from '../../utils/supabaseClient';
-import { ClientType, RequestType as ServiceRequestType, AnimalType } from '../types';
 
 enum RequestType {
   clientNew = 'client-new',
@@ -170,9 +179,9 @@ class ClientService {
   ];
 
   async newRequest(
-    request: ServiceRequestType,
-    client: ClientType,
-    animal: AnimalType,
+    request: EditableServiceRequestType,
+    client: EditableClientType,
+    animal: EditableAnimalType,
   )
     : Promise<ServiceRequestType> {
     // Post Request to supabase
@@ -180,8 +189,8 @@ class ClientService {
     let createdRequest: ServiceRequestType;
 
     try {
-      let animalId: BigInteger;
-      let clientId: BigInteger;
+      let animalId: string;
+      let clientId: string;
 
       // Check if client exists and create one if not
       // No Upsert operations currently in the supabaseClient library AFAIK
@@ -190,7 +199,7 @@ class ClientService {
         .select('*')
         // Here assumes that email is unique and required; may need to also check phone
         .eq('email', client.email)
-        .single() as { data: ClientType | null, error: Error };
+        .single();
 
       if (clientError) throw new Error(`Client retrieval failed: ${clientError.message}`);
 
@@ -202,8 +211,10 @@ class ClientService {
             first_name: client.first_name,
             last_name: client.last_name,
             email: client.email,
-            phone: client.phone,
-          }]) as { data: ClientType | null, error: Error };
+            phone: client.phone_number,
+          }])
+          .select()
+          .single();
         if (error) throw new Error(`Client creation failed: ${error.message}`);
         if (newClient) clientId = newClient.id;
       } else clientId = existingClient.id;
@@ -214,7 +225,7 @@ class ClientService {
         .from('animals')
         .select('*')
         .eq('name', animal.name)
-        .eq('species', animal.species)
+        .eq('species_id', animal.species_id)
         .eq('client_id', clientId)
         .maybeSingle() as { data: AnimalType | null, error: Error };
 
@@ -225,7 +236,7 @@ class ClientService {
           .from('animals')
           .insert([{
             name: animal.name,
-            species: animal.species,
+            species_id: animal.species_id,
             client_id: clientId,
           }]) as { data: AnimalType | null, error: Error };
         if (error) throw new Error(`Animal creation failed: ${error.message}`);
@@ -238,10 +249,12 @@ class ClientService {
         .insert([{
           client_id: clientId,
           animal_id: animalId,
-          service_category: request.service_category,
-          source: request.source,
-          staff_id: request.staff_id,
-        }]) as { data: ServiceRequestType | null, error: Error };
+          service_category_id: request.service_category_id,
+          request_source_id: request.request_source_id,
+          team_member_id: request.team_member_id,
+        }])
+        .select()
+        .single();
       if (error) throw new Error(`Request creation failed: ${error.message}`);
       else createdRequest = newRequest;
     } catch (error) {
@@ -289,12 +302,15 @@ class ClientService {
     return Promise.resolve(this.tickets.find((t) => t.ticketNo == ticket.ticketNo));
   }
 
-  async getServiceStatuses(): Promise<ServiceStatus[]> {
-    // REVIEW: Could be from DB
-    return Promise.resolve(statuses);
+  async getServiceStatuses(): Promise<AppConstantType[]> {
+    const response = await supabaseClient
+      .from('app_constants')
+      .select('*')
+      .eq('type', AppConstants.Status);
+    return response.data;
   }
 
-  async getServiceCategories(): Promise<ServiceCategory[]> {
+  async getServiceCategories(): Promise<AppConstantType[]> {
     // For Testing without DB
     // const tempCategories: ServiceCategory[] = [
     //   new ServiceCategory({ id: 'id_1', name: 'Cat One' }),
@@ -305,8 +321,9 @@ class ClientService {
     // return Promise.resolve(tempCategories);
 
     const response = await supabaseClient
-      .from('service_category')
-      .select('*');
+      .from('app_constants')
+      .select('*')
+      .eq('type', AppConstants.Category);
     return response.data;
   }
 }
