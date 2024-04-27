@@ -51,7 +51,7 @@ export default function PetInformationSection(props: PetInformationSectionProps)
   );
   const setName = (name: EditableAnimalType['name']) => setFormData({ name });
   const setSpecies = (species_id: EditableAnimalType['species_id']) => setFormData({ species_id });
-  const setBreed = (age: EditableAnimalType['age']) => setFormData({ age });
+  const setAge = (age: EditableAnimalType['age']) => setFormData({ age });
   const setWeight = (weight: EditableAnimalType['weight']) => setFormData({ weight });
 
   return (
@@ -107,7 +107,7 @@ export default function PetInformationSection(props: PetInformationSectionProps)
                   disabled={disabled}
                   label={petInformationLabels.Age}
                   placeholder={petInformationLabels.AgePlaceholder}
-                  onChange={(e) => setBreed(+e.target.value)}
+                  onChange={(e) => setAge(+e.target.value)}
                 />
               </div>
             </div>
