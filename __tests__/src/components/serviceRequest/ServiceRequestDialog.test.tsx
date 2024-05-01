@@ -1,3 +1,6 @@
+import { clientInformationLabels } from '@components/serviceRequest/ClientInformationSection';
+import { petInformationLabels } from '@components/serviceRequest/PetInformationSection';
+import { serviceInformationLabels } from '@components/serviceRequest/ServiceInformationSection';
 import ServiceRequestDialog from '@components/serviceRequest/ServiceRequestDialog';
 import { defaultClientInformation } from '@context/serviceRequest/clientInformationContext';
 import { defaultPetInformation } from '@context/serviceRequest/petInformationContext';
@@ -47,26 +50,27 @@ const SaveCancelLabels = {
 };
 
 const labelsOfFormFieldsToTest = [
-  'First Name', 'Last Name', 'Pet Name', 'Pet Breed(s)', 'Service Description',
+  clientInformationLabels.FirstName,
+  clientInformationLabels.LastName,
+  petInformationLabels.Name,
+  serviceInformationLabels.ServiceDescription,
 ];
 const testId = 'serviceRequestDialog';
 describe('ServiceRequestDialog', () => {
   const mockOnClose = jest.fn();
   function PageComponent({ showOnOpen }) {
-    const [visisble, setVisisble] = useState(showOnOpen);
-    mockOnClose.mockImplementation(() => setVisisble(false));
-    return <ServiceRequestDialog visible={visisble} onClose={mockOnClose} />;
+    const [visible, setVisible] = useState(showOnOpen);
+    mockOnClose.mockImplementation(() => setVisible(false));
+    return <ServiceRequestDialog visible={visible} onClose={mockOnClose} />;
   }
 
-  let fieldsToTest: HTMLElement[] = [];
   function setup(showOnOpen = false) {
     render(
       <PageComponent showOnOpen={showOnOpen} />,
     );
-    fieldsToTest = labelsOfFormFieldsToTest.map((label) => screen.queryByLabelText(label));
   }
 
-  it('should be hidden when props.visisble is false', () => {
+  it('should be hidden when props.visible is false', () => {
     //* Arrange
     setup();
     //* Assert
@@ -110,7 +114,8 @@ describe('ServiceRequestDialog', () => {
     //* Arrange
     // Capture resolve to "pause" the promise and check that fields are disabled
     let resolve;
-    clientService.newRequest = jest.fn().mockImplementation(async () => new Promise((r) => resolve = r));
+    clientService.newRequest = jest.fn()
+      .mockImplementation(async () => new Promise((r) => { resolve = r; }));
     setup(true);
 
     //* Act
@@ -138,7 +143,8 @@ describe('ServiceRequestDialog', () => {
     */
     //* Arrange
     let resolve;
-    clientService.newRequest = jest.fn().mockImplementation(async () => new Promise((r) => resolve = r));
+    clientService.newRequest = jest.fn()
+      .mockImplementation(async () => new Promise((r) => { resolve = r; }));
     setup(true);
 
     //* Act
@@ -155,7 +161,8 @@ describe('ServiceRequestDialog', () => {
   it('should log errors to the console', async () => {
     //* Arrange
     let reject;
-    clientService.newRequest = jest.fn().mockImplementation(async () => new Promise((undefined, r) => reject = r));
+    clientService.newRequest = jest.fn()
+      .mockImplementation(async () => new Promise((_undefined, r) => { reject = r; }));
     const testError = 'Test fetch failed';
     console.error = jest.fn();
     setup(true);

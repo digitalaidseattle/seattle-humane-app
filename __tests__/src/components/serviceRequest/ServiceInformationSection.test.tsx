@@ -1,32 +1,34 @@
 import '@testing-library/jest-dom';
-import { fireEvent, render, screen, within } from '@testing-library/react';
+import {
+  fireEvent, render, screen, within,
+} from '@testing-library/react';
 import { createContext, useReducer } from 'react';
 import ServiceInformationSection, {
   serviceInformationLabels as labels,
-  priorityOptions,
 } from '@components/serviceRequest/ServiceInformationSection';
 import {
   ServiceInformationProvider,
   serviceInfoReducer,
   defaultServiceInformation,
 } from '@context/serviceRequest/serviceInformationContext';
-import { EditableRequestType } from '@types';
+import { EditableServiceRequestType } from '@types';
 
 //* Mocking the service information context module to isolate the test
 jest.mock('@context/serviceRequest/serviceInformationContext', () => {
   const ServiceInformationContext = createContext(null);
   const ServiceInformationDispatchContext = createContext(null);
   //* Using type annotation here to force this test to break if the contract changes
-  const defaultServiceInformation: EditableRequestType = {
-    service_category: '',
-    priority: '',
-    source: '',
+  const testDefaultServiceInformation: EditableServiceRequestType = {
+    client_id: '',
+    pet_id: '',
+    log_id: '',
+    service_category_id: '',
+    request_source_id: '',
     description: '',
-    status: '',
-    assigned_to: '',
+    team_member_id: '',
   };
   return {
-    defaultServiceInformation,
+    defaultServiceInformation: testDefaultServiceInformation,
     ServiceInformationContext,
     ServiceInformationDispatchContext,
     ServiceInformationProvider: ({ state, dispatch, children }) => (
@@ -55,22 +57,22 @@ const statuses = [{ value: 'open', label: 'Open' }];
 const sources = [{ value: 'phone', label: 'Phone' }];
 const categories = [{ value: 'pet_fostering', label: 'Pet Fostering' }];
 jest.mock('src/services/useAppConstants', () => {
-  const orig = jest.requireActual('src/services/useAppConstants')
+  const orig = jest.requireActual('src/services/useAppConstants');
   return {
     ...orig,
     useAppConstants: (value) => {
       switch (value) {
         case 'status':
-          return { data: statuses }
+          return { data: statuses };
         case 'source':
-          return { data: sources }
+          return { data: sources };
         case 'category':
-          return { data: categories }
+          return { data: categories };
         default:
-          return { data: [] }
+          return { data: [] };
       }
-    }
-  }
+    },
+  };
 });
 
 afterEach(() => {
@@ -91,7 +93,7 @@ describe('ServiceInformationSection', () => {
   * The label is used to query the DOM for the element.
   * The field key and value are used to assert the action is dispatched with the right data.
   * */
-  let radioButtons: [HTMLElement, keyof EditableRequestType, string, string][] = [];
+  let radioButtons: [HTMLElement, keyof EditableServiceRequestType, string, string][] = [];
   let dropdowns = [];
 
   //* The Section requires a context, so wrap it in a context provider to test
@@ -105,8 +107,16 @@ describe('ServiceInformationSection', () => {
   }
 
   //* Renders the component and captures the elements for later assertions
-  function setup({ defaultState = defaultServiceInformation, fields = undefined, disabled = false } = {}) {
-    render(<PetInfoSectionConsumer defaultState={defaultState} disabled={disabled} fields={fields} />);
+  function setup({
+    defaultState = defaultServiceInformation,
+    fields = undefined,
+    disabled = false,
+  } = {}) {
+    render(<PetInfoSectionConsumer
+      defaultState={defaultState}
+      disabled={disabled}
+      fields={fields}
+    />);
     // Putting all inputs in an array for more consice assertions via loops
     textInputs = [
       screen.queryByLabelText(labels.ServiceDescription),
@@ -114,17 +124,9 @@ describe('ServiceInformationSection', () => {
     ];
 
     radioButtons = [];
-    statuses.map((opt) => {
+    sources.forEach((opt) => {
       const radioButton = screen.queryByLabelText(opt.label);
-      radioButtons.push([radioButton, 'status', opt.label, opt.value]);
-    })
-    priorityOptions.forEach((label) => {
-      const radioButton = screen.queryByLabelText(label);
-      radioButtons.push([radioButton, 'priority', label, label]);
-    });
-    sources.map((opt) => {
-      const radioButton = screen.queryByLabelText(opt.label);
-      radioButtons.push([radioButton, 'source', opt.label, opt.value]);
+      radioButtons.push([radioButton, 'request_source_id', opt.label, opt.value]);
     });
 
     dropdowns = [screen.queryByTitle(labels.Category)];
@@ -206,7 +208,7 @@ describe('ServiceInformationSection', () => {
       fireEvent.click(radioButton);
     });
     //* Assert
-    radioButtons.forEach(([radioButton, key, label, value], i) => {
+    radioButtons.forEach(([, key, , value], i) => {
       expect(serviceInfoReducer).toHaveBeenNthCalledWith(
         i + 1,
         expect.anything(), // We are only concerned with the action, not the previous state
@@ -224,7 +226,7 @@ describe('ServiceInformationSection', () => {
     //* Act
     dropdowns.forEach(async (dropdown) => {
       fireEvent.click(
-        within(dropdown).getByRole('button')
+        within(dropdown).getByRole('button'),
       );
       fireEvent.click(await screen.findByText('Pet Fostering'));
       expect(screen.getByDisplayValue('Pet Fostering')).toBeInTheDocument();
