@@ -30,7 +30,7 @@ jest.mock('next/config', () => ({
   }),
 }));
 
-const layoutContextValue: LayoutContextType = {
+const layoutContextValue = {
   layoutState: {
     staticMenuDesktopInactive: false,
     overlayMenuActive: false,
@@ -40,6 +40,14 @@ const layoutContextValue: LayoutContextType = {
     menuHoverActive: false,
   },
   showProfileSidebar: jest.fn(),
+  layoutConfig: {
+    ripple: true,
+    inputStyle: '',
+    menuMode: '',
+    colorScheme: '',
+    theme: '',
+    scale: 0,
+  },
 };
 
 jest.mock('next/router', () => jest.requireActual('next-router-mock'));

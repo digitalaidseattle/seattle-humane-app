@@ -46,6 +46,14 @@ const layoutContextValue = {
     menuHoverActive: false,
   },
   showProfileSidebar: jest.fn(),
+  layoutConfig: {
+    ripple: true,
+    inputStyle: '',
+    menuMode: '',
+    colorScheme: '',
+    theme: '',
+    scale: 0,
+  },
 };
 
 jest.mock('next/router', () => jest.requireActual('next-router-mock'));
