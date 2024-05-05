@@ -1,10 +1,10 @@
 import InputRadio from '@components/InputRadio';
-import InputText from '@components/InputText';
 import InputTextArea from '@components/InputTextArea';
 import { ServiceInfoActionType, ServiceInformationContext, ServiceInformationDispatchContext } from '@context/serviceRequest/serviceInformationContext';
 import { EditableServiceRequestType } from '@types';
 import { Dropdown } from 'primereact/dropdown';
 import { useContext } from 'react';
+import useTeamMembers from 'src/hooks/useTeamMembers';
 import { useAppConstants } from 'src/services/useAppConstants';
 
 // TODO externalize to localization file
@@ -58,6 +58,7 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
 
   const { data: sources } = useAppConstants('source');
   const { data: categories } = useAppConstants('category');
+  const { data: teamMembers } = useTeamMembers();
 
   //* Map onChange handlers to dispatch
   const setFormData = (partialStateUpdate: Partial<EditableServiceRequestType>) => dispatch(
@@ -129,14 +130,16 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
         {visibleFields.has('team_member_id')
           && (
             <div className="col-6">
-              {/* TODO change to <select> element when options are known */}
-              <InputText
+              <div className="col-fixed mr-3">{serviceInformationLabels.AssignTo}</div>
+
+              <Dropdown
                 id="team_member_id"
                 value={formData.team_member_id}
-                disabled={disabled}
-                label={serviceInformationLabels.AssignTo}
-                placeholder={serviceInformationLabels.AssignTo}
+                title={serviceInformationLabels.AssignTo}
+                className="w-full md:w-14rem"
                 onChange={(e) => setAssignedTo(e.target.value)}
+                options={teamMembers}
+                disabled={disabled}
               />
             </div>
           )}

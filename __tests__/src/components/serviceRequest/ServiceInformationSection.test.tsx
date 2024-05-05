@@ -12,6 +12,7 @@ import {
   defaultServiceInformation,
 } from '@context/serviceRequest/serviceInformationContext';
 import { EditableServiceRequestType } from '@types';
+import { john } from 'src/hooks/__mocks__/useTeamMembers';
 
 //* Mocking the service information context module to isolate the test
 jest.mock('@context/serviceRequest/serviceInformationContext', () => {
@@ -75,6 +76,8 @@ jest.mock('src/services/useAppConstants', () => {
   };
 });
 
+jest.mock('src/hooks/useTeamMembers');
+
 afterEach(() => {
   // Clear the mock reducer call counts after each test
   jest.clearAllMocks();
@@ -120,7 +123,6 @@ describe('ServiceInformationSection', () => {
     // Putting all inputs in an array for more consice assertions via loops
     textInputs = [
       screen.queryByLabelText(labels.ServiceDescription),
-      screen.queryByLabelText(labels.AssignTo),
     ];
 
     radioButtons = [];
@@ -224,12 +226,27 @@ describe('ServiceInformationSection', () => {
     //* Arrange
     setup();
     //* Act
-    dropdowns.forEach(async (dropdown) => {
+    return Promise.all(dropdowns.map(async (dropdown) => {
       fireEvent.click(
         within(dropdown).getByRole('button'),
       );
       fireEvent.click(await screen.findByText('Pet Fostering'));
       expect(screen.getByDisplayValue('Pet Fostering')).toBeInTheDocument();
-    });
+    }));
+  });
+
+  it('should load the list of team members', async () => {
+    //* Arrange
+    setup();
+    const assignToDropdown = screen.queryByTitle(labels.AssignTo);
+
+    //* Act
+    fireEvent.click(
+      within(assignToDropdown).getByRole('button'),
+    );
+    fireEvent.click(await screen.findByText(john.label));
+
+    //* Assert
+    expect(screen.getByDisplayValue(john.label)).toBeInTheDocument();
   });
 });
