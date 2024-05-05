@@ -1,6 +1,18 @@
 import React, { useMemo, useState } from 'react';
 
-export const LayoutContext = React.createContext(null);
+export interface LayoutContextType {
+  layoutState: {
+    staticMenuDesktopInactive: boolean;
+    overlayMenuActive: boolean;
+    profileSidebarVisible: boolean;
+    configSidebarVisible: boolean;
+    staticMenuMobileActive: boolean;
+    menuHoverActive: boolean;
+  };
+  showProfileSidebar: () => void;
+}
+
+export const LayoutContext = React.createContext<LayoutContextType>(null);
 
 export function LayoutProvider({ children }) {
   const [layoutConfig, setLayoutConfig] = useState({

@@ -1,25 +1,14 @@
 import React from 'react';
-import { act, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen } from '@testing-library/react';
 import ServiceRequestDialog from '@components/serviceRequest/ServiceRequestDialog';
 import { LayoutContext } from '../../layout/context/layoutcontext';
 import AppMenu from '../../layout/AppMenu';
 import '@testing-library/jest-dom';
 
 // Mock the LayoutContext provider
-interface LayoutContextType {
-  layoutState: {
-    staticMenuDesktopInactive: boolean;
-    overlayMenuActive: boolean;
-    profileSidebarVisible: boolean;
-    configSidebarVisible: boolean;
-    staticMenuMobileActive: boolean;
-    menuHoverActive: boolean;
-  };
-  showProfileSidebar: () => void;
-}
 
 jest.mock('../../layout/context/layoutcontext', () => {
-  const MockLayoutContext = React.createContext<LayoutContextType>(null);
+  const MockLayoutContext = React.createContext(null);
   return { LayoutContext: MockLayoutContext };
 });
 
@@ -47,7 +36,7 @@ Error: No app constants found.
 //   }]),
 // }));
 
-const layoutContextValue: LayoutContextType = {
+const layoutContextValue = {
   layoutState: {
     staticMenuDesktopInactive: false,
     overlayMenuActive: false,
@@ -98,9 +87,7 @@ describe('Menu Items Check', () => {
 
     const newRequestLink = screen.getByText(/New Request/i);
     // Wrap clicking newRequestLink in act() to avoid React state update warning
-    act(() => {
-      newRequestLink.click();
-    });
+    fireEvent.click(newRequestLink);
 
     const clientInformationHeaders = screen.getAllByRole('heading', {
       name: /client information/i,
