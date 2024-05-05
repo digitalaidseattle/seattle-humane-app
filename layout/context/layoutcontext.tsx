@@ -10,6 +10,14 @@ export interface LayoutContextType {
     menuHoverActive: boolean;
   };
   showProfileSidebar: () => void;
+  layoutConfig: {
+    ripple: boolean;
+    inputStyle: string;
+    menuMode: string;
+    colorScheme: string;
+    theme: string;
+    scale: number;
+  }
 }
 
 export const LayoutContext = React.createContext<LayoutContextType>(null);
