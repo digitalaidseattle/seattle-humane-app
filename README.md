@@ -56,6 +56,11 @@ Install:
 
     _Note: For more information check out: https://code.visualstudio.com/docs/devcontainers/containers_
 
+1. Install dependecies by running:
+    ```bash
+    npm install
+    ```
+
 
 ### Configure Environmental Variables
 Local requires a few one-time steps. You will need to start Supabase locally, put values from Supabase into your .env.local file.
@@ -83,10 +88,11 @@ Local requires a few one-time steps. You will need to start Supabase locally, pu
 
     _Note: If you have existing Supabase containers running, you may need to run `supabase stop --no-backup` to reset your environment. Careful, this will delete anything saved in your local database._
 
-1. IS THIS NEEDED? Load the values from the env file into the environment by running:
+1. Load the values from the env file into the environment by running:
     ```bash
       source .env.local
     ```
+    _Note: If you need to use OAuth, be sure to follow the steps in .env.local.example_
 
 ### Run the application
 
