@@ -73,7 +73,7 @@ Local requires a few one-time steps. You will need to start Supabase locally, pu
 
 1. Open the .env.local file in VSCode. You will need to put values in this file after the next step, so keep it open.
 
-1. Start Supabase locally. First, ensure you have NodeJS and Docket Desktop installed, then run: 
+1. Start Supabase locally. First, ensure you have NodeJS and Docket Desktop installed. Then, open a [local terminal window](https://stackoverflow.com/questions/59815283/open-local-terminal-in-vscode-when-running-in-ssh-mode?rq=1) from the seattle -humane-app folder and run: 
    ```bash 
    npx supabase start
    ```
@@ -86,17 +86,14 @@ Local requires a few one-time steps. You will need to start Supabase locally, pu
 
     (These steps are derived from the [Original Supabase instructions here](https://supabase.com/docs/guides/cli/local-development#start-supabase-services))
 
-    _Note: Make sure you run this outside of the Docker environment! More info [here](https://stackoverflow.com/questions/59815283/open-local-terminal-in-vscode-when-running-in-ssh-mode?rq=1)._
-
     _Note: If you have existing Supabase containers running, you may need to run `supabase stop --no-backup` to reset your environment. Careful, this will delete anything saved in your local database._
+
+### Run the application
 
 1. Load the values from the env file into the environment by running:
     ```bash
       source .env.local
     ```
-    _Note: If you need to use OAuth, be sure to follow the steps in .env.local.example_
-
-### Run the application
 
 1. Start development server
    ```bash
@@ -104,6 +101,11 @@ Local requires a few one-time steps. You will need to start Supabase locally, pu
    ```
 
 1. Open local instance in browser: <http://localhost:3000>.
+
+1. If you need to use OAuth, be sure to follow the steps in _.env.local.example_. Once the variables are set, run:
+    `supabase stop`
+    `source .env.local`
+    `supabase start`
 
 ## Testing
 
