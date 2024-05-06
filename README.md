@@ -80,7 +80,9 @@ Local requires a few one-time steps. You will need to start Supabase locally, pu
 
     Enter "y" when/if asked to install the Supabase package.
 
-    Give it a moment to spin up the containers. When it's finished, it will display URLs and keys that need to go into your local environment file. You already have the URL set in your .env.local, so just add the displayed anon key after the `NEXT_PUBLIC_SUPABASE_ANON_KEY=` variable in the .env.local file. Double-check you copied the value correctly then save the file.
+    Give it a moment to spin up the containers. When it's finished, it will display URLs and keys that need to go into your local environment file.
+    
+    Put the API URL after `NEXT_PUBLIC_SUPABASE_URL=` variable and the anon key after the `NEXT_PUBLIC_SUPABASE_ANON_KEY=` variable in the .env.local file. Double-check you copied the value correctly then save the file.
 
     (These steps are derived from the [Original Supabase instructions here](https://supabase.com/docs/guides/cli/local-development#start-supabase-services))
 
