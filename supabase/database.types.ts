@@ -36,34 +36,34 @@ export type Database = {
     Tables: {
       app_constants: {
         Row: {
-          active: boolean
-          changed_at: string
-          changed_by: string
+          active: boolean | null
+          changed_at: string | null
+          changed_by: string | null
           created_at: string
           id: string
-          label: string
-          type: string
-          value: string
+          label: string | null
+          type: string | null
+          value: string | null
         }
         Insert: {
-          active?: boolean
-          changed_at: string
-          changed_by: string
+          active?: boolean | null
+          changed_at?: string | null
+          changed_by?: string | null
           created_at?: string
           id?: string
-          label: string
-          type: string
-          value: string
+          label?: string | null
+          type?: string | null
+          value?: string | null
         }
         Update: {
-          active?: boolean
-          changed_at?: string
-          changed_by?: string
+          active?: boolean | null
+          changed_at?: string | null
+          changed_by?: string | null
           created_at?: string
           id?: string
-          label?: string
-          type?: string
-          value?: string
+          label?: string | null
+          type?: string | null
+          value?: string | null
         }
         Relationships: []
       }

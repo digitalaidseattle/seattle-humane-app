@@ -1,3 +1,4 @@
+
 SET statement_timeout = 0;
 SET lock_timeout = 0;
 SET idle_in_transaction_session_timeout = 0;
@@ -38,12 +39,12 @@ SET default_table_access_method = "heap";
 CREATE TABLE IF NOT EXISTS "public"."app_constants" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "label" "text" NOT NULL,
-    "value" "text" NOT NULL,
-    "type" "text" NOT NULL,
-    "active" boolean DEFAULT true NOT NULL,
-    "changed_at" timestamp with time zone NOT NULL,
-    "changed_by" "text" NOT NULL
+    "label" "text",
+    "value" "text",
+    "type" "text",
+    "active" boolean DEFAULT true,
+    "changed_at" timestamp with time zone,
+    "changed_by" "text"
 );
 
 ALTER TABLE "public"."app_constants" OWNER TO "postgres";
@@ -132,10 +133,6 @@ ALTER TABLE ONLY "public"."service_requests"
 
 ALTER TABLE ONLY "public"."service_requests"
     ADD CONSTRAINT "public_service_requests_team_member_id_fkey" FOREIGN KEY ("team_member_id") REFERENCES "public"."team_members"("id");
-
-ALTER TABLE "public"."pets" ENABLE ROW LEVEL SECURITY;
-
-ALTER TABLE "public"."team_members" ENABLE ROW LEVEL SECURITY;
 
 GRANT USAGE ON SCHEMA "public" TO "postgres";
 GRANT USAGE ON SCHEMA "public" TO "anon";
