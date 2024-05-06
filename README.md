@@ -28,9 +28,13 @@ The website is built using **Next.js**, a React-based framework for server-side 
 
 **Vercel** is used for deployment, providing a fast and scalable hosting environment for the website. Once a pull request is made, Vercel will automatically deploy a staged version of the website for final approval prior to deploying these changes to the public-facing website. Learn more about Vercel [here](https://vercel.com/docs).
 
+**Supabase** is used for Postgres database services and authentication with Google accounts via OAuth. 
+
+
 ## System Requirements
 
 1. [Node.js](https://nodejs.org/en/)
+2. [Docker Desktop](https://www.docker.com/products/docker-desktop/)
 
 ## Local Environment Setup
 
@@ -43,43 +47,59 @@ The website is built using **Next.js**, a React-based framework for server-side 
    npm install
    ```
 
-2. Setup VSCode for auto formatting
+2. Setup VSCode for auto-formatting
 
-- Install extensions: ESLint and Prettier
+- Install extensions: ESLint
 - Go to VSCode setting `Settings` > `Text Editor` > `Formatting` > `Format On Save`
-- In the same setting window, look up `Default Formatter` and set to Prettier.
 
 ### Configure Environmental Variables
+Local requires a few one-time steps. You will need to create a Google OAuth ID, put information about it into your .env.local file, start Supabase, put values from Supabase into your .env.local file, and then finally start the web app.
 
-1. Create .env.local file:
+1. Create a copy of .env.local.example
 
    ```bash
-   touch .env.local
+   cp .env.local.example .env.local
+   ```
+1. Open the .env.local file in VSCode. You will need to put values in this file after the next step, so keep it open.
+1. #### Create a Google OAuth ID
+    Follow the [Configuration Steps provided by Supabase](https://supabase.com/docs/guides/auth/social-login/auth-google#configuration-web). 
+    
+    During setup, instead of providing a production URI like `https://<project-id>.supabase.co/auth/v1/callback`, provide the local development URI present in the .env.local.exmaple file: `http://localhost:54321/auth/v1/callback`.
+
+    Also, note the Supabase instructions list the Consent Screen configuration as step 2, but it's likely Google will prompt you to complete the OAuth Consent Screen setup **before** allowing you to create the Credentials. When creating the OAuth Consent Screen you do **not** need to specify any Authorized domains, but you will need to select the scopes as mentioned.
+
+    When you create the new Credentials, choose *OAuth Client ID* and for Application type choose *Web application* per the Supabase instructions. Add `http://localhost:54321` under the *Authorized JavaScript origins* and add `http://localhost:54321/auth/v1/callback` under *Authorized redirect URIs*.
+
+    The next screen is important, don't close it. 
+    
+    Copy the *Client ID* shown and paste it after `SUPABASE_AUTH_GOOGLE_CLIENT_ID=` in your .env.local file.
+    Do the same for the *Client secret*. Double-check you pasted the values correctly. Then save your .env.local file. 
+
+    You can now close the `OAuth Client Created` popup. You can also close the entire window/tab as we are done with it now (though you may need to open it back up to troubleshoot if you did something wrong in the steps above). 
+
+1. Load the values from the env file into the environment by running:
+    ```bash
+      source .env.local
+    ```
+
+1. Start Supabase locally. First, ensure you have NodeJS and Docket Desktop installed, then run: 
+   ```bash 
+   npx supabase start
    ```
 
-2. Paste the following into this file and save:
+    Enter "y" when/if asked to install the Supabase package.
 
-   ```.env
-   # Defaults, used by ./intro-template and can be deleted if the component is removed
-   NEXT_PUBLIC_VERCEL_GIT_PROVIDER="github"
-   NEXT_PUBLIC_VERCEL_GIT_REPO_SLUG="template-nextjs-clean"
-   ```
+    Give it a moment to spin up the containers. When it's finished, it will display URLs and keys that need to go into your local environment file. You already have the URL set in your .env.local, so just add the displayed anon key after the `NEXT_PUBLIC_SUPABASE_ANON_KEY=` variable in the .env.local file. Double-check you copied the value correctly then save the file.
 
-### Run locally
+    (These steps are derived from the [Original Supabase instructions here](https://supabase.com/docs/guides/cli/local-development#start-supabase-services))
 
 1. Start development server
-
    ```bash
    yarn dev
    ```
 
-2. Open local instance in browser: <http://localhost:3000>. Note: Pages populated by Sanity.io will return 404 until Sanity is properly configured.
-
-3. In order to work on Sanity components, request to be added to Sanity.io as an administrator, and then populate the respective fields in the .env.local file.
-
-4. In order to work on Airtable forms, request access to Airtable and create a personal access token
-
-5. Look into .env.local.example file, it should have the necessary environmental variables needed for this project.
+1. Open local instance in browser: <http://localhost:3000>. 
+1. Sign in with Google.
 
 ## Testing
 

@@ -1,35 +1,38 @@
-import React, { createContext } from 'react';
-import { EditableRequestType } from '@types';
+/** Generic type params in React context files result in long
+ * lines that are tough to split, so the max-len rule is disabled
+ */
+/* eslint-disable max-len */
 
-export const defaultServiceInformation: EditableRequestType = {
-  service_category: '',
-  priority: '',
-  source: '',
+import React, { createContext } from 'react';
+import { EditableServiceRequestType } from '@types';
+
+export const defaultServiceInformation: EditableServiceRequestType = {
+  client_id: '',
+  log_id: '',
+  pet_id: '',
+  service_category_id: '',
+  request_source_id: '',
   description: '',
-  status: '',
-  assigned_to: '',
-  team_members: null,
+  team_member_id: '',
 };
 
 export enum ServiceInfoActionType { Clear = 'clear', Update = 'update' }
-type ServiceInfoAction = { type: ServiceInfoActionType.Clear } | {
-  type: ServiceInfoActionType.Update,
-  partialStateUpdate: Partial<EditableRequestType>
-};
+type ServiceInfoAction = { type: ServiceInfoActionType.Clear } | { type: ServiceInfoActionType.Update, partialStateUpdate: Partial<EditableServiceRequestType> };
 
-export const serviceInfoReducer = (state: EditableRequestType, action: ServiceInfoAction) => {
+export const serviceInfoReducer = (
+  state: EditableServiceRequestType,
+  action: ServiceInfoAction,
+) => {
   if (action.type === ServiceInfoActionType.Update) {
     return { ...state, ...action.partialStateUpdate };
   }
   return { ...defaultServiceInformation };
 };
 
-export const ServiceInformationContext = createContext<EditableRequestType>(null);
-/* eslint-disable @typescript-eslint/indent */
-export const ServiceInformationDispatchContext = createContext<React.Dispatch<
-  ServiceInfoAction>>(null);
+export const ServiceInformationContext = createContext<EditableServiceRequestType>(null);
+export const ServiceInformationDispatchContext = createContext<React.Dispatch<ServiceInfoAction>>(null);
 interface ServiceInformationProviderProps extends React.PropsWithChildren {
-  state: EditableRequestType,
+  state: EditableServiceRequestType,
   dispatch: React.Dispatch<ServiceInfoAction>
 }
 export function ServiceInformationProvider({
