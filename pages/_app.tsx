@@ -17,6 +17,7 @@ export default function MyApp({ Component, pageProps }) {
     user, setUser,
   }), [user]);
 
+  // TODO add is_production
   useEffect(() => {
     authService.getUser()
       .then((resp: any) => {
