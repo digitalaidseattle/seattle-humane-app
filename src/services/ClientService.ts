@@ -10,7 +10,6 @@
  *  @copyright 2024 Digital Aid Seattle
  *
  */
-import { AppConstants } from 'src/constants';
 import {
   ClientType,
   ServiceRequestType,
@@ -19,14 +18,12 @@ import {
   EditableClientType,
   EditableAnimalType,
   AppConstantType,
-} from '@types';
-import supabaseClient from '../../utils/supabaseClient';
-import {
-  ClientType,
-  RequestType as ServiceRequestType,
-  AnimalType,
   SearchOptions,
-} from '../types';
+} from '@types';
+import { AppConstants } from 'src/constants';
+
+import supabaseClient from '../../utils/supabaseClient';
+
 
 enum RequestType {
   clientNew = 'client-new',

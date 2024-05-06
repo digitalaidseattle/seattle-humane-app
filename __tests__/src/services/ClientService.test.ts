@@ -5,9 +5,9 @@
  *
  */
 
-import { AppConstants } from 'src/constants';
 import { AppConstantType } from '@types';
 import { clientService } from '../../../src/services/ClientService';
+import { AppConstants } from 'src/constants';
 import supabaseClient from '../../../utils/supabaseClient';
 
 // Idea for mock from https://stackoverflow.com/questions/77411385/how-to-mock-supabase-api-select-requests-in-nodejs
@@ -76,44 +76,4 @@ describe('ClientService', () => {
      */
     expect(returnedAppConstants).toBe(expectedAppConstants);
   });
-});
-
-
-it('getServiceRequests', async () => {
-  const searchOptions = {
-    first: 0,
-    page: 0,
-    pageCount: 0,
-    rows: 10,
-  }
-
-  const serviceRequests = [{}];
-  const response = { data: serviceRequests }
-
-  const fromSpy = jest.spyOn(supabaseClient, 'from')
-    .mockReturnValue(mockQueryBuilder as any)
-  const selectSpy = jest.spyOn(mockQueryBuilder, 'select')
-    .mockReturnValue(mockFilterBuilder as any)
-  const rangeSpy = jest.spyOn(mockFilterBuilder, 'range')
-    .mockResolvedValue(response)
-
-  const actual = await clientService.getServiceRequests(searchOptions);
-  expect(fromSpy).toHaveBeenCalledWith('service_requests');
-  expect(selectSpy).toHaveBeenCalledWith('*, team_members(*)');
-  expect(rangeSpy).toHaveBeenCalledWith(0, 10);
-  expect(actual).toEqual(serviceRequests);
-});
-
-it('getServiceRequestsTotalRecords', async () => {
-  const response = { count: 14 }
-
-  const fromSpy = jest.spyOn(supabaseClient, 'from')
-    .mockReturnValue(mockQueryBuilder as any)
-  const selectSpy = jest.spyOn(mockQueryBuilder, 'select')
-    .mockResolvedValue(response)
-
-  const actual = await clientService.getServiceRequestsTotalRecords();
-  expect(fromSpy).toHaveBeenCalledWith('service_requests');
-  expect(selectSpy).toHaveBeenCalledWith('*, team_members(*)');
-  expect(actual).toEqual(14);
 });

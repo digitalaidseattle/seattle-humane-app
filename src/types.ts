@@ -25,3 +25,11 @@ export type ServiceRequestType = Tables<'service_requests'>;
 export type EditableServiceRequestType = Omit<ServiceRequestType, 'id' | 'created_at'>;
 
 export type AppConstantType = Tables<'app_constants'>;
+
+export type SearchOptions = {
+  first: number;
+  page: number;
+  pageCount: number;
+  rows: number;
+};
+
