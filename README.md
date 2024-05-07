@@ -128,6 +128,6 @@ Local setup requires a few one-time steps. In the following steps, you will star
 
 ## Testing
 
-- To run all tests: yarn test.
+- To run all tests: `yarn test`.
 - To exclude tests while running your own, you may temporarily put 'x' in front of 'describe' or 'it'. However, DO NOT exclude tests on a PR to a sprint branch.
 
