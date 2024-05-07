@@ -51,9 +51,9 @@ The application requires setup of both a Next.JS frontend and a Supabase backend
    git clone https://github.com/openseattle/seattle-humane-app
    ```
 
-1. Open VS code
+1. Open VS code.
 
-1. From VS code, open the command palette using `⇧⌘P` and type
+1. From VS code, open the command palette using `⇧⌘P` and type:
     ```
     Dev Containers: Open Folder in Container...
     ```
@@ -66,9 +66,9 @@ The application requires setup of both a Next.JS frontend and a Supabase backend
     ```
 
 ### Configure Environmental Variables
-Local setup requires a few one-time steps. In the following steps, you will start Supabase locally, put values from Supabase into your .env.local file.
+Local setup requires a few one-time steps. In the following steps, you will start Supabase locally and put values from Supabase into your .env.local file.
 
-1. Create a copy of .env.local.example
+1. Create a copy of .env.local.example:
 
    ```bash
    cp .env.local.example .env.local
@@ -76,7 +76,7 @@ Local setup requires a few one-time steps. In the following steps, you will star
 
 1. Open the .env.local file in VSCode. You will need to put values in this file after the next step, so keep it open.
 
-1. Start Supabase locally. First, ensure you have NodeJS and Docket Desktop installed. Then, open a *[local terminal window](https://stackoverflow.com/questions/59815283/open-local-terminal-in-vscode-when-running-in-ssh-mode?rq=1)* from the seattle-humane-app folder and run: 
+1. Start Supabase locally. Open a *[local terminal window](https://stackoverflow.com/questions/59815283/open-local-terminal-in-vscode-when-running-in-ssh-mode?rq=1)* from the seattle-humane-app folder and run: 
    ```bash 
    npx supabase start
    ```
@@ -91,18 +91,22 @@ Local setup requires a few one-time steps. In the following steps, you will star
 
     _Note: If you have existing Supabase containers running, you may need to run `supabase stop --no-backup` to reset your environment. Careful, this will delete anything saved in your local database._
 
+1. Run `supabase stop` to close Supabase when you are done.
+
 #### Configure OAuth Environment Variables (optional)
 
-1. If you need to use OAuth, be sure to follow the steps in _.env.local.example_ to set the OAuth variables. Once the variables are set, run:
-    `supabase stop`
-    `source .env.local`
-    `supabase start`
+1. If you need to use OAuth, be sure to follow the steps listed in _.env.local.example_ to set the OAuth variables. Once the variables are set, run:
+    ```bash
+    supabase stop # You need to stop Supabase execution so that the new configuration changes will be picked up.
+    source .env.local
+    supabase start
+    ```
 
 ### Running the application
 
 #### Run the frontend
 
-1. Open a shell inside the docker container (default option when opening shells with Dev Container)
+1. Open a shell inside the docker container (default option when opening shells with Dev Container).
 
 1. Load the values from the env file into the environment by running:
     ```bash
@@ -118,7 +122,7 @@ Local setup requires a few one-time steps. In the following steps, you will star
 
 #### Run Supabase
 
-1. Open a *[local terminal window](https://stackoverflow.com/questions/59815283/open-local-terminal-in-vscode-when-running-in-ssh-mode?rq=1)* from the seattle-humane-app folder
+1. Open a *[local terminal window](https://stackoverflow.com/questions/59815283/open-local-terminal-in-vscode-when-running-in-ssh-mode?rq=1)* from the seattle-humane-app folder.
 
 1. Run `supabase start`. If Supabase is already running, you can stop it by running `supabase stop` first.
 
