@@ -5,7 +5,8 @@ import { ServiceInfoActionType, ServiceInformationContext, ServiceInformationDis
 import { EditableServiceRequestType } from '@types';
 import { Dropdown } from 'primereact/dropdown';
 import { useContext } from 'react';
-import { useAppConstants } from 'src/services/useAppConstants';
+import useAppConstants from '@hooks/useAppConstants';
+import { AppConstants } from 'src/constants';
 
 // TODO externalize to localization file
 export const serviceInformationLabels = {
@@ -56,8 +57,8 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
   const formData = useContext(ServiceInformationContext);
   const dispatch = useContext(ServiceInformationDispatchContext);
 
-  const { data: sources } = useAppConstants('source');
-  const { data: categories } = useAppConstants('category');
+  const sources = useAppConstants(AppConstants.Source);
+  const categories = useAppConstants(AppConstants.Category);
 
   //* Map onChange handlers to dispatch
   const setFormData = (partialStateUpdate: Partial<EditableServiceRequestType>) => dispatch(

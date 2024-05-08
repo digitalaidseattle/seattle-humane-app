@@ -21,9 +21,7 @@ import {
   SearchOptions,
 } from '@types';
 import { AppConstants } from 'src/constants';
-
 import supabaseClient from '../../utils/supabaseClient';
-
 
 enum RequestType {
   clientNew = 'client-new',
@@ -181,6 +179,8 @@ class ClientService {
     new ClientTicket({ ticketNo: '1234', type: 'email', name: 'John Doe' }),
   ];
 
+  appConstants: Map<AppConstants, AppConstantType[]> = new Map();
+
   async newRequest(
     request: EditableServiceRequestType,
     client: EditableClientType,
@@ -298,6 +298,18 @@ class ClientService {
     return Promise.resolve(this.tickets.find((t) => t.ticketNo == ticket.ticketNo));
   }
 
+  async getAppConstants(type: AppConstants) {
+    if (!this.appConstants.has(type)) {
+      const { data: constants, error } = await supabaseClient
+        .from('app_constants')
+        .select('*')
+        .eq('type', type);
+      if (error) throw new Error(error.message);
+      this.appConstants.set(type, constants);
+    }
+    return this.appConstants.get(type);
+  }
+
   async getServiceStatuses(): Promise<AppConstantType[]> {
     const response = await supabaseClient
       .from('app_constants')
@@ -323,19 +335,30 @@ class ClientService {
     return response.data;
   }
 
-  async getServiceRequests(opts: SearchOptions): Promise<ServiceRequestType[]> {
-    return supabaseClient
+  async getServiceRequestById(id: ServiceRequestType['id']): Promise<ServiceRequestType> {
+    const { data, error } = await supabaseClient
       .from('service_requests')
       .select('*, team_members(*)')
-      .range(opts.first, opts.first + opts.rows)
-      .then((resp) => resp.data);
+      .eq(id, 'id').maybeSingle();
+    if (error) throw new Error(error.message);
+    return data;
+  }
+
+  async getServiceRequests(opts: SearchOptions): Promise<ServiceRequestType[]> {
+    const { data, error } = await supabaseClient
+      .from('service_requests')
+      .select('*, team_members(*)')
+      .range(opts.first, opts.first + opts.rows);
+    if (error) throw new Error(error.message);
+    return data;
   }
 
   async getServiceRequestsTotalRecords(): Promise<number> {
-    return supabaseClient
+    const { count, error } = await supabaseClient
       .from('service_requests')
-      .select('*, team_members(*)', { count: 'exact', head: true })
-      .then((resp) => resp.count);
+      .select('*, team_members(*)', { count: 'exact', head: true });
+    if (error) throw new Error(error.message);
+    return count;
   }
 }
 

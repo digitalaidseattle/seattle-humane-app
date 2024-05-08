@@ -32,4 +32,3 @@ export type SearchOptions = {
   pageCount: number;
   rows: number;
 };
-

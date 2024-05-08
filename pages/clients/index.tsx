@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-import { SearchOptions, RequestType as ServiceRequestType } from '@types';
+import { SearchOptions, ServiceRequestType } from '@types';
 import { useRouter } from 'next/navigation';
 import { Button } from 'primereact/button';
 import { Column } from 'primereact/column';
@@ -9,7 +9,6 @@ import { InputText } from 'primereact/inputtext';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
 import { useEffect, useRef, useState } from 'react';
-import { useAppConstants } from 'src/services/useAppConstants';
 import ClientDialog from '../../src/components/ClientDialog';
 import { clientService } from '../../src/services/ClientService';
 
@@ -108,14 +107,16 @@ function Clients() {
   const emailBodyTemplate = (rowData: ServiceRequestType) => (
     <>
       <span className="p-column-title">Description</span>
-      {rowData.team_members.email}
+      FIXME rowData.team_member.email
+
     </>
   );
 
   const statusBodyTemplate = (rowData: ServiceRequestType) => (
     <>
       <span className="p-column-title">Status</span>
-      {rowData.status}
+      FIXME rowData.status
+
     </>
   );
 

@@ -27,6 +27,9 @@
       ],
       "@types": [
         "src/types"
+      ],
+      "@hooks/*": [
+        "src/hooks/*"
       ]
     }
   },

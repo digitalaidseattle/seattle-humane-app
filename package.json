@@ -9,7 +9,7 @@
         "export": "next build && next export",
         "lint": "next lint",
         "format": "prettier --write \"**/**/*.{js,ts,tsx}\"",
-        "test": "jest --coverage"
+        "test": "jest"
     },
     "dependencies": {
         "@supabase/auth-helpers-nextjs": "^0.8.7",
