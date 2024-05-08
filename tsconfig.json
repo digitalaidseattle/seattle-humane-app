@@ -28,6 +28,9 @@
       "@types": [
         "src/types"
       ],
+      "@layout/*": [
+        "src/layout/*"
+      ],
       "@hooks/*": [
         "src/hooks/*"
       ]
