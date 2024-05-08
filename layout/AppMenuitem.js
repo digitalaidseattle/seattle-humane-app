@@ -14,6 +14,7 @@ const AppMenuitem = (props) => {
     const isActiveRoute = item.to && router.pathname === item.to;
     const active = activeMenu === key || activeMenu.startsWith(key + '-');
 
+
     useEffect(() => {
         if (item.to && router.pathname === item.to) {
             setActiveMenu(key);
@@ -60,10 +61,10 @@ const AppMenuitem = (props) => {
     );
 
     return (
-        <li className={classNames({ 'layout-root-menuitem': props.root, 'active-menuitem': active })}>
+        <li key={item.label}  className={classNames({ 'layout-root-menuitem': props.root, 'active-menuitem': active })}>
             {props.root && item.visible !== false && <div className="layout-menuitem-root-text">{item.label}</div>}
             {(!item.to || item.items) && item.visible !== false ? (
-                <a href={item.url} onClick={(e) => itemClick(e)} className={classNames(item.class, 'p-ripple')} target={item.target} tabIndex="0">
+                <a pathname={item.to} href={item.to} onClick={(e) => itemClick(e)} className={classNames(item.class, 'p-ripple')} target={item.target} tabIndex="0">
                     {item.icon && <i className={classNames('layout-menuitem-icon', item.icon)}></i>}
                     {item.iconSrc &&
                         <img src={item.iconSrc} height="20" className="mr-2" />
@@ -75,12 +76,12 @@ const AppMenuitem = (props) => {
             ) : null}
 
             {item.to && !item.items && item.visible !== false ? (
-                <Link legacyBehavior href={item.to} replace={item.replaceUrl} target={item.target}>
-                    <a onClick={(e) => itemClick(e)} className={classNames(item.class, 'p-ripple', { 'active-route': isActiveRoute })} target={item.target} tabIndex="0">
+                <Link legacyBehavior pathname={item.to} href={item.to} replace={item.replaceUrl} target={item.target}>
+                    <a id={item.label} pathname={item.to} href={item.to} onClick={(e) => itemClick(e)} className={classNames(item.class, 'p-ripple', { 'active-route': isActiveRoute })} target={item.target} tabIndex="0">
                         {item.icon && <i className={classNames('layout-menuitem-icon', item.icon)}></i>}
                         {item.iconSrc &&
                             <img src={item.iconSrc} height="20" className="mr-2" />
-                        }<span className="layout-menuitem-text">{item.label}</span>
+                        }<span className="layout-menuitem-text" htmlFor={item.label}>{item.label}</span>
                         {item.items && <i className="pi pi-fw pi-angle-down layout-submenu-toggler"></i>}
                         <Ripple />
                     </a>
@@ -88,6 +89,7 @@ const AppMenuitem = (props) => {
             ) : null}
 
             {subMenu}
+            
         </li>
     );
 };

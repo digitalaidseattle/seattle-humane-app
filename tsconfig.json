@@ -1,11 +1,13 @@
 {
   "compilerOptions": {
     "baseUrl": "./",
+    "baseUrl": "./",
     "lib": [
       "dom",
       "dom.iterable",
       "esnext"
     ],
+    "target": "ES6",
     "target": "ES6",
     "allowJs": true,
     "skipLibCheck": true,
@@ -27,12 +29,16 @@
       ],
       "@types": [
         "src/types"
+      ],
+      "@layout/*": [
+        "src/layout/*"
       ]
     }
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
+    "**/*.tsx",
     "**/*.tsx"
   ],
   "exclude": [
