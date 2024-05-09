@@ -211,7 +211,7 @@ class ClientService {
             first_name: client.first_name,
             last_name: client.last_name,
             email: client.email,
-            phone_number: client.phone_number,
+            phone: client.phone,
           }])
           .select()
           .single();
