@@ -109,8 +109,7 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
                     checked={formData.request_source_id === opt.value}
                   />
                 ))
-                  : null
-                }
+                  : null}
               </div>
             </div>
           )}

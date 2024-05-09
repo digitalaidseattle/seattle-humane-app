@@ -93,8 +93,7 @@ export default function PetInformationSection(props: PetInformationSectionProps)
                     checked={formData.species_id === spec.value}
                   />
                 ))
-                  : null
-                }
+                  : null}
               </div>
             </div>
           )}
