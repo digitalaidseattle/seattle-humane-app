@@ -4,8 +4,9 @@ import { createContext, useReducer } from 'react';
 import PetInformationSection, { petInformationLabels as labels } from '@components/serviceRequest/PetInformationSection';
 import { PetInformationProvider, petInfoReducer, defaultPetInformation } from '@context/serviceRequest/petInformationContext';
 import { EditableAnimalType } from '@types';
-import { AppConstants } from 'src/constants';
+import { data } from '@hooks/__mocks__/useAppConstants';
 
+const { species } = data;
 //* Mocking the pet information context module to isolate the test
 jest.mock('@context/serviceRequest/petInformationContext', () => {
   const PetInformationContext = createContext(null);
@@ -35,23 +36,7 @@ jest.mock('@context/serviceRequest/petInformationContext', () => {
   };
 });
 
-const species = [{
-  id: '',
-  value: 'bird',
-  label: 'BIRD',
-  type: AppConstants.Species,
-  active: true,
-  changed_at: '',
-  changed_by: '',
-  created_at: '',
-}];
-jest.mock('src/services/useAppConstants', () => {
-  const orig = jest.requireActual('src/services/useAppConstants');
-  return {
-    ...orig,
-    useAppConstants: () => ({ data: species }),
-  };
-});
+jest.mock('src/hooks/useAppConstants');
 
 afterEach(() => {
   // Clear the mock reducer call counts after each test
@@ -164,7 +149,7 @@ describe('PetInformationSection', () => {
     });
   });
 
-  it.each(species)('should dispatch updates when the %s radio option is selected', (opt) => {
+  it.each(species.map((opt) => [opt.label, opt]))('should dispatch updates when the %s radio option is selected', (label, opt) => {
     //* Arrange
     setup();
     //* Act
