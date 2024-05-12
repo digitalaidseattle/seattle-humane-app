@@ -25,6 +25,8 @@ jest.mock('src/services/ClientService', () => {
 
 jest.mock('src/hooks/useAppConstants');
 
+jest.mock('src/hooks/useTeamMembers');
+
 const SaveCancelLabels = {
   Save: 'Save', Cancel: 'Cancel',
 };
