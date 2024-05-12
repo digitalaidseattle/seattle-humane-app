@@ -57,6 +57,8 @@ const layoutContextValue = {
 };
 
 jest.mock('next/router', () => jest.requireActual('next-router-mock'));
+jest.mock('src/hooks/useAppConstants');
+jest.mock('src/hooks/useTeamMembers');
 
 describe('Menu Items Check', () => {
   test('renders AppMenu component', () => {

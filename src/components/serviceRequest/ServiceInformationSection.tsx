@@ -108,7 +108,7 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
                     disabled={disabled}
                     name={`request_source_id-${opt.value}`}
                     onChange={(e) => setSource(e.target.value)}
-                    checked={formData.request_source_id === opt.id}
+                    checked={opt.id && formData.request_source_id === opt.id}
                   />
                 ))
                   : null}

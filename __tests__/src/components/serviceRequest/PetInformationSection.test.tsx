@@ -161,7 +161,7 @@ describe('PetInformationSection', () => {
       expect.anything(), // We are only concerned with the action, not the previous state
       expect.objectContaining({
         type: 'Update',
-        partialStateUpdate: { species_id: opt.value },
+        partialStateUpdate: { species_id: opt.id },
       }),
     );
   });

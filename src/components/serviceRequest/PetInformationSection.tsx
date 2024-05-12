@@ -91,7 +91,7 @@ export default function PetInformationSection(props: PetInformationSectionProps)
                     disabled={disabled}
                     name={`species-${spec.value}`}
                     onChange={(e) => setSpecies(e.target.value)}
-                    checked={formData.species_id === spec.id}
+                    checked={spec.id && formData.species_id === spec.id}
                   />
                 ))
                   : null}
