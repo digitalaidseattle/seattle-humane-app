@@ -262,12 +262,12 @@ class ClientService {
     ClientService.throwIfInvalidInput('client', client);
     const {
 
-      first_name, last_name, email, phone_number,
+      first_name, last_name, email, phone,
     } = client;
     const { data: newClient, error } = await supabaseClient
       .from('clients')
       .insert([{
-        first_name, last_name, email, phone_number,
+        first_name, last_name, email, phone,
       }])
       .select()
       .single();

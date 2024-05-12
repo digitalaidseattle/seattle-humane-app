@@ -36,7 +36,7 @@ interface ClientInformationSectionProps {
 export default function ClientInformationSection(props: ClientInformationSectionProps) {
   const {
     disabled,
-    show = ['first_name', 'last_name', 'email', 'phone_number', 'zip_code'],
+    show = ['first_name', 'last_name', 'email', 'phone', 'zip_code'],
   } = props;
 
   const visibleFields = new Set<keyof EditableClientType>(show);
@@ -52,7 +52,7 @@ export default function ClientInformationSection(props: ClientInformationSection
   const setFirstName = (first_name: EditableClientType['first_name']) => (setFormData({ first_name }));
   const setLastName = (last_name: EditableClientType['last_name']) => (setFormData({ last_name }));
   const setEmail = (email: EditableClientType['email']) => (setFormData({ email }));
-  const setPhone = (phone_number: EditableClientType['phone_number']) => (setFormData({ phone_number }));
+  const setPhone = (phone: EditableClientType['phone']) => (setFormData({ phone }));
   const setPostalCode = (zip_code: EditableClientType['zip_code']) => (setFormData({ zip_code }));
 
   return (
@@ -103,12 +103,12 @@ export default function ClientInformationSection(props: ClientInformationSection
               />
             </div>
           )}
-        {visibleFields.has('phone_number')
+        {visibleFields.has('phone')
           && (
             <div className="col-6">
               <InputText
-                id="phone_number"
-                value={formData.phone_number}
+                id="phone"
+                value={formData.phone}
                 disabled={disabled}
                 label={clientInformationLabels.PhoneNumber}
                 placeholder={clientInformationLabels.PhoneNumberPlaceholder}
