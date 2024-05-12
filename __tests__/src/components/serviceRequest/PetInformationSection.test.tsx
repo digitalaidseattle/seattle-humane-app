@@ -4,6 +4,7 @@ import { createContext, useReducer } from 'react';
 import PetInformationSection, { petInformationLabels as labels } from '@components/serviceRequest/PetInformationSection';
 import { PetInformationProvider, petInfoReducer, defaultPetInformation } from '@context/serviceRequest/petInformationContext';
 import { EditableAnimalType } from '@types';
+import { AppConstants } from 'src/constants';
 
 //* Mocking the pet information context module to isolate the test
 jest.mock('@context/serviceRequest/petInformationContext', () => {
@@ -13,9 +14,9 @@ jest.mock('@context/serviceRequest/petInformationContext', () => {
   // eslint-disable-next-line @typescript-eslint/no-shadow
   const defaultPetInformation: EditableAnimalType = {
     name: '',
-    species: '',
-    breed: '',
-    weight: '',
+    species_id: '',
+    age: 0,
+    weight: 0,
   };
   return {
     defaultPetInformation,
@@ -34,15 +35,22 @@ jest.mock('@context/serviceRequest/petInformationContext', () => {
   };
 });
 
-const species = [{ value: 'bird', label: 'BIRD' }];
+const species = [{
+  id: '',
+  value: 'bird',
+  label: 'BIRD',
+  type: AppConstants.Species,
+  active: true,
+  changed_at: '',
+  changed_by: '',
+  created_at: '',
+}];
 jest.mock('src/services/useAppConstants', () => {
-  const orig = jest.requireActual('src/services/useAppConstants')
+  const orig = jest.requireActual('src/services/useAppConstants');
   return {
     ...orig,
-    useAppConstants: (value) => {
-      return { data: species }
-    }
-  }
+    useAppConstants: () => ({ data: species }),
+  };
 });
 
 afterEach(() => {
@@ -58,10 +66,9 @@ afterEach(() => {
 
 describe('PetInformationSection', () => {
   let nameInput = null;
-  let breedInput = null;
+  let ageInput = null;
   let weightInput = null;
   let textInputs = [];
-
 
   //* The Section requires a context, so wrap it in a context provider to test
   function PetInfoSectionConsumer({ defaultState, disabled, fields }) {
@@ -85,19 +92,16 @@ describe('PetInformationSection', () => {
       fields={fields}
     />);
     nameInput = screen.queryByLabelText(labels.Name);
-    breedInput = screen.queryByLabelText(labels.Breeds);
+    ageInput = screen.queryByLabelText(labels.Age);
     weightInput = screen.queryByLabelText(labels.Weight);
     // Putting all inputs in an array for more consice assertions via loops
     textInputs = [
       nameInput,
-      breedInput,
+      ageInput,
       weightInput,
     ];
     // speciesRadioButtons = speciesOptions.map((val) => screen.queryByLabelText(val));
-
-
-  };
-
+  }
 
   it('should render an empty form showing all fields by default', () => {
     //* Arrange
@@ -105,7 +109,7 @@ describe('PetInformationSection', () => {
     //* Assert
     textInputs.forEach((field) => {
       expect(field).toBeInTheDocument();
-      expect(field).toHaveDisplayValue('');
+      expect(field).toHaveValue(defaultPetInformation[field.id]);
     });
     species.map((opt) => screen.queryByLabelText(opt.label))
       .forEach((item) => {
@@ -136,19 +140,16 @@ describe('PetInformationSection', () => {
     });
     species.map((opt) => screen.queryByLabelText(opt.label))
       .forEach((item) => {
-        console.log('item', item)
         expect(item).toBeDisabled();
       });
-
   });
 
   it('should dispatch updates when text values are changed', () => {
     //* Arrange
     setup();
     //* Act
-    const newValue = 'new value';
     textInputs.forEach((field, i) => {
-      fireEvent.change(field, { target: { value: newValue + i } });
+      fireEvent.change(field, { target: { value: defaultPetInformation[field.id] + i } });
     });
     //* Assert
     textInputs.forEach((field, i) => {
@@ -157,7 +158,7 @@ describe('PetInformationSection', () => {
         expect.anything(), // We are only concerned with the action, not the previous state
         expect.objectContaining({
           type: 'Update',
-          partialStateUpdate: { [field.id]: newValue + i },
+          partialStateUpdate: { [field.id]: defaultPetInformation[field.id] + i },
         }),
       );
     });
@@ -175,7 +176,7 @@ describe('PetInformationSection', () => {
       expect.anything(), // We are only concerned with the action, not the previous state
       expect.objectContaining({
         type: 'Update',
-        partialStateUpdate: { species: opt.value },
+        partialStateUpdate: { species_id: opt.value },
       }),
     );
   });

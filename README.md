@@ -28,61 +28,115 @@ The website is built using **Next.js**, a React-based framework for server-side 
 
 **Vercel** is used for deployment, providing a fast and scalable hosting environment for the website. Once a pull request is made, Vercel will automatically deploy a staged version of the website for final approval prior to deploying these changes to the public-facing website. Learn more about Vercel [here](https://vercel.com/docs).
 
+**Supabase** is used for Postgres database services and authentication with Google and Azure accounts via OAuth. 
+
+
 ## System Requirements
 
+Install:
 1. [Node.js](https://nodejs.org/en/)
+1. [Docker Desktop](https://www.docker.com/products/docker-desktop/)
+1. [VS Code](https://code.visualstudio.com/download)
+1. [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
 
 ## Local Environment Setup
 
-1. Setup the frontend environment
+The application requires setup of both a Next.JS frontend and a Supabase backend.
+
+### Setup the frontend environment.
+    
+1. Go in the folder you want the project to exist, run:
 
    ```bash
    git clone https://github.com/openseattle/seattle-humane-app
-   cd seattle-humane-app
-   git checkout main
-   npm install
    ```
 
-2. Setup VSCode for auto formatting
+1. Open VS code.
 
-- Install extensions: ESLint and Prettier
-- Go to VSCode setting `Settings` > `Text Editor` > `Formatting` > `Format On Save`
-- In the same setting window, look up `Default Formatter` and set to Prettier.
+1. From VS code, open the command palette using `⇧⌘P` on Mac or `Ctrl+Shift+P` on Windows and type:
+    ```
+    Dev Containers: Open Folder in Container...
+    ```
+
+    _Note: For more information check out: https://code.visualstudio.com/docs/devcontainers/containers_
+
+1. Open a shell and install dependecies by running:
+    ```bash
+    npm install
+    ```
 
 ### Configure Environmental Variables
+Local setup requires a few one-time steps. In the following steps, you will start Supabase locally and put values from Supabase into your .env.local file.
 
-1. Create .env.local file:
+1. Create a copy of .env.local.example:
 
    ```bash
-   touch .env.local
+   cp .env.local.example .env.local
    ```
 
-2. Paste the following into this file and save:
+1. Open the .env.local file in VSCode. You will need to put values in this file after the next step, so keep it open.
 
-   ```.env
-   # Defaults, used by ./intro-template and can be deleted if the component is removed
-   NEXT_PUBLIC_VERCEL_GIT_PROVIDER="github"
-   NEXT_PUBLIC_VERCEL_GIT_REPO_SLUG="template-nextjs-clean"
+1. Start Supabase locally. Open a *[local terminal window](https://stackoverflow.com/questions/59815283/open-local-terminal-in-vscode-when-running-in-ssh-mode?rq=1)* from the seattle-humane-app folder and run: 
+   ```bash 
+   npx supabase start
    ```
 
-### Run locally
+    Enter "y" when/if asked to install the Supabase package.
+
+    Give it a moment to spin up the containers. When it's finished, it will display URLs and keys that need to go into your local environment file.
+    
+    Put the API URL after `NEXT_PUBLIC_SUPABASE_URL=` variable and the anon key after the `NEXT_PUBLIC_SUPABASE_ANON_KEY=` variable in the .env.local file. Double-check you copied the value correctly then save the file.
+
+    (These steps are derived from the [Original Supabase instructions here](https://supabase.com/docs/guides/cli/local-development#start-supabase-services))
+
+    _Note: If you have existing Supabase containers running, you may need to run `supabase stop --no-backup` to reset your environment. Careful, this will delete anything saved in your local database._
+
+1. Run `supabase stop` to close Supabase when you are done.
+
+#### Configure OAuth Environment Variables (optional)
+
+1. If you need to use OAuth, be sure to follow the steps listed in _.env.local.example_ to set the OAuth variables. Once the variables are set, run:
+    ```bash
+    supabase stop # You need to stop Supabase execution so that the new configuration changes will be picked up.
+    source .env.local
+    supabase start
+    ```
+
+### Running the application
+
+#### Run the frontend
+
+1. Open a shell inside the docker container (default option when opening shells with Dev Container).
+
+1. Load the values from the env file into the environment by running:
+    ```bash
+      source .env.local
+    ```
 
 1. Start development server
-
    ```bash
    yarn dev
    ```
 
-2. Open local instance in browser: <http://localhost:3000>. Note: Pages populated by Sanity.io will return 404 until Sanity is properly configured.
+1. Open local instance in browser: <http://localhost:3000>.
 
-3. In order to work on Sanity components, request to be added to Sanity.io as an administrator, and then populate the respective fields in the .env.local file.
+1. Use `Ctrl+C` to stop the server when you are done.
 
-4. In order to work on Airtable forms, request access to Airtable and create a personal access token
+#### Run Supabase
 
-5. Look into .env.local.example file, it should have the necessary environmental variables needed for this project.
+1. Open a *[local terminal window](https://stackoverflow.com/questions/59815283/open-local-terminal-in-vscode-when-running-in-ssh-mode?rq=1)* from the seattle-humane-app folder.
+
+1. Run `supabase start`. If Supabase is already running, you can stop it by running `supabase stop` first.
+
+1. Run `supabase stop` when you are done.
 
 ## Testing
 
-- To run all tests: yarn test.
+- To run all tests: `yarn test`.
 - To exclude tests while running your own, you may temporarily put 'x' in front of 'describe' or 'it'. However, DO NOT exclude tests on a PR to a sprint branch.
+
+## Manually updating Supabase types
+
+- To login to supabase: npx supabase login.
+- To update type file: npx supabase gen types typescript --project-id "liuebfxbxugpfsfwbkks" --schema public > supabase/database.types.ts
 

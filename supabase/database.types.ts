@@ -36,34 +36,34 @@ export type Database = {
     Tables: {
       app_constants: {
         Row: {
-          active: boolean
-          changed_at: string
-          changed_by: string
+          active: boolean | null
+          changed_at: string | null
+          changed_by: string | null
           created_at: string
           id: string
-          label: string
-          type: string
-          value: string
+          label: string | null
+          type: string | null
+          value: string | null
         }
         Insert: {
-          active?: boolean
-          changed_at: string
-          changed_by?: string
+          active?: boolean | null
+          changed_at?: string | null
+          changed_by?: string | null
           created_at?: string
           id?: string
-          label: string
-          type: string
-          value: string
+          label?: string | null
+          type?: string | null
+          value?: string | null
         }
         Update: {
-          active?: boolean
-          changed_at?: string
-          changed_by?: string
+          active?: boolean | null
+          changed_at?: string | null
+          changed_by?: string | null
           created_at?: string
           id?: string
-          label?: string
-          type?: string
-          value?: string
+          label?: string | null
+          type?: string | null
+          value?: string | null
         }
         Relationships: []
       }
@@ -73,7 +73,7 @@ export type Database = {
           first_name: string | null
           id: string
           last_name: string | null
-          phone_number: string | null
+          phone: string | null
           zip_code: string | null
         }
         Insert: {
@@ -81,7 +81,7 @@ export type Database = {
           first_name?: string | null
           id?: string
           last_name?: string | null
-          phone_number?: string | null
+          phone?: string | null
           zip_code?: string | null
         }
         Update: {
@@ -89,7 +89,7 @@ export type Database = {
           first_name?: string | null
           id?: string
           last_name?: string | null
-          phone_number?: string | null
+          phone?: string | null
           zip_code?: string | null
         }
         Relationships: []
@@ -135,63 +135,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
-      }
-      request_sources: {
-        Row: {
-          created_at: string
-          id: string
-          label: string | null
-        }
-        Insert: {
-          created_at?: string
-          id: string
-          label?: string | null
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          label?: string | null
-        }
-        Relationships: []
-      }
-      service_categories: {
-        Row: {
-          created_at: string
-          id: string
-          label: string | null
-        }
-        Insert: {
-          created_at?: string
-          id: string
-          label?: string | null
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          label?: string | null
-        }
-        Relationships: []
-      }
-      service_category: {
-        Row: {
-          created_at: string
-          id: string
-          label: string | null
-          value: string | null
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          label?: string | null
-          value?: string | null
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          label?: string | null
-          value?: string | null
-        }
-        Relationships: []
       }
       service_requests: {
         Row: {
@@ -264,24 +207,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
-      }
-      species: {
-        Row: {
-          created_at: string
-          id: string
-          label: string | null
-        }
-        Insert: {
-          created_at?: string
-          id: string
-          label?: string | null
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          label?: string | null
-        }
-        Relationships: []
       }
       team_members: {
         Row: {
@@ -433,6 +358,101 @@ export type Database = {
           },
         ]
       }
+      s3_multipart_uploads: {
+        Row: {
+          bucket_id: string
+          created_at: string
+          id: string
+          in_progress_size: number
+          key: string
+          owner_id: string | null
+          upload_signature: string
+          version: string
+        }
+        Insert: {
+          bucket_id: string
+          created_at?: string
+          id: string
+          in_progress_size?: number
+          key: string
+          owner_id?: string | null
+          upload_signature: string
+          version: string
+        }
+        Update: {
+          bucket_id?: string
+          created_at?: string
+          id?: string
+          in_progress_size?: number
+          key?: string
+          owner_id?: string | null
+          upload_signature?: string
+          version?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "s3_multipart_uploads_bucket_id_fkey"
+            columns: ["bucket_id"]
+            isOneToOne: false
+            referencedRelation: "buckets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      s3_multipart_uploads_parts: {
+        Row: {
+          bucket_id: string
+          created_at: string
+          etag: string
+          id: string
+          key: string
+          owner_id: string | null
+          part_number: number
+          size: number
+          upload_id: string
+          version: string
+        }
+        Insert: {
+          bucket_id: string
+          created_at?: string
+          etag: string
+          id?: string
+          key: string
+          owner_id?: string | null
+          part_number: number
+          size?: number
+          upload_id: string
+          version: string
+        }
+        Update: {
+          bucket_id?: string
+          created_at?: string
+          etag?: string
+          id?: string
+          key?: string
+          owner_id?: string | null
+          part_number?: number
+          size?: number
+          upload_id?: string
+          version?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "s3_multipart_uploads_parts_bucket_id_fkey"
+            columns: ["bucket_id"]
+            isOneToOne: false
+            referencedRelation: "buckets"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "s3_multipart_uploads_parts_upload_id_fkey"
+            columns: ["upload_id"]
+            isOneToOne: false
+            referencedRelation: "s3_multipart_uploads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
@@ -470,6 +490,37 @@ export type Database = {
         Returns: {
           size: number
           bucket_id: string
+        }[]
+      }
+      list_multipart_uploads_with_delimiter: {
+        Args: {
+          bucket_id: string
+          prefix_param: string
+          delimiter_param: string
+          max_keys?: number
+          next_key_token?: string
+          next_upload_token?: string
+        }
+        Returns: {
+          key: string
+          id: string
+          created_at: string
+        }[]
+      }
+      list_objects_with_delimiter: {
+        Args: {
+          bucket_id: string
+          prefix_param: string
+          delimiter_param: string
+          max_keys?: number
+          start_after?: string
+          next_token?: string
+        }
+        Returns: {
+          name: string
+          id: string
+          metadata: Json
+          updated_at: string
         }[]
       }
       search: {

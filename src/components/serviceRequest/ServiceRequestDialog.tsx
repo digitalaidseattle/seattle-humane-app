@@ -75,8 +75,8 @@ function ServiceRequestDialog(props: ServiceRequestDialogProps) {
         {
           ...serviceInformationState,
           // TODO wire up lookup controls for these fields
-          animal_id: null,
-          staff_id: null,
+          pet_id: '',
+          team_member_id: '',
         },
         clientInformationState,
         petInformationState,

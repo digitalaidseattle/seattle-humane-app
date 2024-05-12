@@ -5,30 +5,60 @@
  *
  */
 
-import { ServiceCategory, clientService } from '../../../src/services/ClientService';
+import { AppConstants } from 'src/constants';
+import { AppConstantType } from '@types';
+import { clientService } from '../../../src/services/ClientService';
 import supabaseClient from '../../../utils/supabaseClient';
-describe('ClientService', () => {
 
-  it('should get service categories', async () => {
-    const response = { data: [new ServiceCategory({})], error: null }
-    const mockQueryBuilder = {
-      select: jest.fn(() => Promise.resolve(response)),
+// Idea for mock from https://stackoverflow.com/questions/77411385/how-to-mock-supabase-api-select-requests-in-nodejs
+jest.mock('@supabase/supabase-js', () => ({
+  /** Need to use non-arrow function to bind setTestData function to returned 'supabaseClient' object  */
+  // eslint-disable-next-line prefer-arrow-callback
+  createClient: jest.fn().mockImplementation(function mockCreateClient() {
+    return {
+      setTestData(newData) {
+        this.data = newData;
+      },
+      data: [],
+      from: jest.fn().mockReturnThis(),
+      select: jest.fn().mockReturnThis(),
+      eq: jest.fn().mockReturnThis(),
+      in: jest.fn().mockReturnThis(),
+      is: jest.fn().mockReturnThis(),
+      order: jest.fn().mockReturnThis(),
+      gte: jest.fn().mockReturnThis(),
+      lte: jest.fn().mockReturnThis(),
+      update: jest.fn().mockReturnThis(),
+      insert: jest.fn().mockReturnThis(),
+      error: null,
     };
-    const fromSpy = jest.spyOn(supabaseClient, "from")
-      .mockReturnValue(mockQueryBuilder as any)
-    const selectSpy = jest.spyOn(mockQueryBuilder, "select")
-      .mockReturnValue(response as any)
+  }),
+}));
 
-    const cats = await clientService.getServiceCategories()
-    expect(fromSpy).toHaveBeenCalledWith('service_category')
-    expect(selectSpy).toHaveBeenCalledWith('*')
-    expect(cats.length).toEqual(1);
-  })
+describe('ClientService', () => {
+  it.each([
+    // [label suffix for test, AppConstant type, ClientService method name]
+    ['service categories', AppConstants.Category, 'getServiceCategories'],
+    ['service statuses', AppConstants.Status, 'getServiceStatuses'],
+  ])('should get %s', async (label, appConstantType, methodName: 'getServiceCategories' | 'getServiceStatuses') => {
+    // Arrange
+    const expectedAppConstants: AppConstantType[] = [{ test: 1 }] as any;
+    (supabaseClient as typeof supabaseClient & { setTestData(newData): void })
+      .setTestData(expectedAppConstants);
+    const mockSupabaseClient = jest.mocked(supabaseClient);
 
-  it('should get service statuses', async () => {
-    const stats = await clientService.getServiceStatuses()
-    expect(stats.length).toBeGreaterThan(1);
-  })
+    // Act
+    const returnedAppConstants = await clientService[methodName]();
 
-
-})
+    // Assert
+    expect(mockSupabaseClient.from).toHaveBeenCalledWith('app_constants');
+    expect(mockSupabaseClient.from('').select).toHaveBeenCalledWith('*');
+    expect(mockSupabaseClient.from('').select('').eq).toHaveBeenCalledWith('type', appConstantType);
+    /**
+     * 'toBe' checks for reference equality to ensure
+     * getServiceCategories function returns the exact
+     * array instance that the query returns
+     */
+    expect(returnedAppConstants).toBe(expectedAppConstants);
+  });
+});

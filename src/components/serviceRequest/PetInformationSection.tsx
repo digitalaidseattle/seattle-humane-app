@@ -12,8 +12,8 @@ export const petInformationLabels = {
   NamePlaceholder: 'Name',
   Species: 'Pet Species',
   SpeciesPlaceholder: 'Species',
-  Breeds: 'Pet Breed(s)',
-  BreedsPlaceholder: 'Breeds',
+  Age: 'Pet Age',
+  AgePlaceholder: 'Age in years',
   Weight: 'Pet Weight',
   WeightPlaceholder: 'lbs',
 };
@@ -34,7 +34,7 @@ interface PetInformationSectionProps {
 export default function PetInformationSection(props: PetInformationSectionProps) {
   const {
     disabled,
-    show = ['name', 'breed', 'species', 'weight'],
+    show = ['name', 'species_id', 'age', 'weight'],
   } = props;
 
   const visibleFields = new Set<keyof EditableAnimalType>(show);
@@ -50,8 +50,8 @@ export default function PetInformationSection(props: PetInformationSectionProps)
     { type: PetInfoActionType.Update, partialStateUpdate },
   );
   const setName = (name: EditableAnimalType['name']) => setFormData({ name });
-  const setSpecies = (species: EditableAnimalType['species']) => setFormData({ species });
-  const setBreed = (breed: EditableAnimalType['breed']) => setFormData({ breed });
+  const setSpecies = (species_id: EditableAnimalType['species_id']) => setFormData({ species_id });
+  const setAge = (age: EditableAnimalType['age']) => setFormData({ age });
   const setWeight = (weight: EditableAnimalType['weight']) => setFormData({ weight });
 
   return (
@@ -76,12 +76,12 @@ export default function PetInformationSection(props: PetInformationSectionProps)
               />
             </div>
           )}
-        {visibleFields.has('species')
+        {visibleFields.has('species_id')
           && (
             <div className="grid col-12">
               <div className="col-fixed mr-3">{petInformationLabels.Species}</div>
               <div className="flex flex-wrap gap-3">
-                {speciesOptions.map((spec) => (
+                {speciesOptions ? speciesOptions.map((spec) => (
                   <InputRadio
                     id={`species-${spec.value}`}
                     key={spec.value}
@@ -90,23 +90,25 @@ export default function PetInformationSection(props: PetInformationSectionProps)
                     disabled={disabled}
                     name={`species-${spec.value}`}
                     onChange={(e) => setSpecies(e.target.value)}
-                    checked={formData.species === spec.value}
+                    checked={formData.species_id === spec.value}
                   />
-                ))}
+                ))
+                  : null}
               </div>
             </div>
           )}
-        {visibleFields.has('breed')
+        {visibleFields.has('age')
           && (
             <div className="col-12 p-0">
               <div className="col-6">
                 <InputText
-                  id="breed"
-                  value={formData.breed}
+                  type="number"
+                  id="age"
+                  value={`${formData.age}`}
                   disabled={disabled}
-                  label={petInformationLabels.Breeds}
-                  placeholder={petInformationLabels.BreedsPlaceholder}
-                  onChange={(e) => setBreed(e.target.value)}
+                  label={petInformationLabels.Age}
+                  placeholder={petInformationLabels.AgePlaceholder}
+                  onChange={(e) => setAge(+e.target.value)}
                 />
               </div>
             </div>
@@ -117,11 +119,12 @@ export default function PetInformationSection(props: PetInformationSectionProps)
               <div className="col-6">
                 <InputText
                   id="weight"
+                  type="number"
                   value={`${formData.weight}`}
                   disabled={disabled}
                   label={petInformationLabels.Weight}
                   placeholder={petInformationLabels.WeightPlaceholder}
-                  onChange={(e) => setWeight(e.target.value)}
+                  onChange={(e) => setWeight(+e.target.value)}
                 />
               </div>
             </div>

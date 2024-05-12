@@ -20,46 +20,42 @@ import {
   ServiceInfoActionType, ServiceInformationProvider, defaultServiceInformation, serviceInfoReducer,
 } from '@context/serviceRequest/serviceInformationContext';
 import { clientService } from '../services/ClientService';
-import { AnimalType, ClientType, RequestType } from '../types';
+import {
+  EditableAnimalType, EditableClientType, EditableServiceRequestType, ServiceRequestType,
+} from '../types';
 import FormConfirmationButtons from './FormConfirmationButtons';
 import ClientInformationSection from './serviceRequest/ClientInformationSection';
 import PetInformationSection from './serviceRequest/PetInformationSection';
 import ServiceInformationSection from './serviceRequest/ServiceInformationSection';
 
-const defaultClient: ClientType = {
-  id: null,
+const defaultClient: EditableClientType = {
   first_name: '',
   last_name: '',
   email: '',
   phone: '',
-  postal_code: '',
-  previously_used: '',
+  zip_code: '',
 };
 
-const defaultAnimal: AnimalType = {
-  id: null,
+const defaultAnimal: EditableAnimalType = {
   name: '',
-  species: '',
-  breed: '',
-  weight: '',
-  client_id: null,
+  species_id: '',
+  age: 0,
+  weight: 0,
 };
 
-const defaultRequest: RequestType = {
-  id: null,
+const defaultRequest: EditableServiceRequestType = {
   client_id: null,
-  animal_id: null,
-  service_category: '',
-  priority: '',
-  source: '',
+  pet_id: null,
+  service_category_id: '',
+  request_source_id: '',
   description: '',
-  status: '',
-  staff_id: null,
+  team_member_id: null,
+  log_id: '',
 };
 
 interface ClientDialogProps {
   visible: boolean;
-  onClose: (request: RequestType) => void;
+  onClose: (request: ServiceRequestType) => void;
 }
 
 function ClientDialog(props: ClientDialogProps) {
@@ -87,8 +83,8 @@ function ClientDialog(props: ClientDialogProps) {
     clientService.newRequest({
       ...request,
       // TODO not sure how we want to handle these ids, needs lookup control?
-      animal_id: null,
-      staff_id: null,
+      pet_id: null,
+      team_member_id: null,
     }, client, animal)
       .then((requestResponse) => props.onClose(requestResponse))
       // TODO - handle all sorts of errors: client exists, animal exists, request exists, etc.
@@ -171,7 +167,7 @@ function ClientDialog(props: ClientDialogProps) {
           >
             <PetInformationSection
               disabled={busy}
-              show={['name', 'species']}
+              show={['name', 'species_id']}
             />
           </PetInformationProvider>
           <ServiceInformationProvider
@@ -180,7 +176,7 @@ function ClientDialog(props: ClientDialogProps) {
           >
             <ServiceInformationSection
               disabled={busy}
-              show={['service_category']}
+              show={['service_category_id']}
             />
           </ServiceInformationProvider>
         </div>
