@@ -79,7 +79,6 @@ function ClientDialog(props: ClientDialogProps) {
   const saveClientDialog = () => {
     setBusy(true);
     // type handle separate to support RadioButton
-
     clientService.newRequest({
       ...request,
       // TODO not sure how we want to handle these ids, needs lookup control?

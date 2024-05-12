@@ -89,7 +89,7 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
                 title={serviceInformationLabels.Category}
                 className="w-full md:w-14rem"
                 onChange={(e) => setCategory(e.target.value)}
-                options={categories}
+                options={categories.map((opt) => ({ label: opt.label, value: opt.id }))}
                 disabled={disabled}
               />
             </div>
@@ -104,11 +104,11 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
                     id={`request_source_id-${opt.value}`}
                     key={opt.value}
                     label={opt.label}
-                    value={opt.value}
+                    value={opt.id}
                     disabled={disabled}
                     name={`request_source_id-${opt.value}`}
                     onChange={(e) => setSource(e.target.value)}
-                    checked={formData.request_source_id === opt.value}
+                    checked={formData.request_source_id === opt.id}
                   />
                 ))}
               </div>

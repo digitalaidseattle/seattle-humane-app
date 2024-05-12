@@ -87,11 +87,11 @@ export default function PetInformationSection(props: PetInformationSectionProps)
                     id={`species-${spec.value}`}
                     key={spec.value}
                     label={spec.label}
-                    value={spec.value}
+                    value={spec.id}
                     disabled={disabled}
                     name={`species-${spec.value}`}
                     onChange={(e) => setSpecies(e.target.value)}
-                    checked={formData.species_id === spec.value}
+                    checked={formData.species_id === spec.id}
                   />
                 ))}
               </div>
