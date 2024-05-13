@@ -10,13 +10,7 @@ SET xmloption = content;
 SET client_min_messages = warning;
 SET row_security = off;
 
-CREATE EXTENSION IF NOT EXISTS "pg_net" WITH SCHEMA "extensions";
-
 CREATE EXTENSION IF NOT EXISTS "pgsodium" WITH SCHEMA "pgsodium";
-
-CREATE SCHEMA IF NOT EXISTS "public";
-
-ALTER SCHEMA "public" OWNER TO "pg_database_owner";
 
 COMMENT ON SCHEMA "public" IS 'standard public schema';
 
@@ -39,23 +33,26 @@ SET default_table_access_method = "heap";
 CREATE TABLE IF NOT EXISTS "public"."app_constants" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "label" "text",
-    "value" "text",
-    "type" "text",
-    "active" boolean DEFAULT true,
-    "changed_at" timestamp with time zone,
-    "changed_by" "text"
+    "label" character varying NOT NULL,
+    "value" character varying NOT NULL,
+    "type" character varying NOT NULL,
+    "active" boolean DEFAULT true NOT NULL,
+    "changed_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "changed_by" character varying DEFAULT 'sam.henderson@digitalaidseattle.org'::character varying NOT NULL
 );
 
 ALTER TABLE "public"."app_constants" OWNER TO "postgres";
+
+COMMENT ON TABLE "public"."app_constants" IS 'Application Constants';
 
 CREATE TABLE IF NOT EXISTS "public"."clients" (
     "id" "uuid" DEFAULT "extensions"."uuid_generate_v4"() NOT NULL,
     "first_name" "text",
     "last_name" "text",
-    "phone" "text",
     "email" "text",
-    "zip_code" "text"
+    "phone" "text",
+    "postal_code" "text",
+    "previously_used" "text"
 );
 
 ALTER TABLE "public"."clients" OWNER TO "postgres";
@@ -63,13 +60,44 @@ ALTER TABLE "public"."clients" OWNER TO "postgres";
 CREATE TABLE IF NOT EXISTS "public"."pets" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "name" "text",
+    "species_id" "uuid",
     "age" integer,
     "weight" integer,
-    "client_id" "uuid",
-    "species_id" "uuid"
+    "client_id" "uuid"
 );
 
 ALTER TABLE "public"."pets" OWNER TO "postgres";
+
+CREATE TABLE IF NOT EXISTS "public"."request_sources" (
+    "id" "text" NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "label" "text"
+);
+
+ALTER TABLE "public"."request_sources" OWNER TO "postgres";
+
+COMMENT ON TABLE "public"."request_sources" IS 'Constants for source of request';
+
+CREATE TABLE IF NOT EXISTS "public"."service_categories" (
+    "id" "text" NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "label" "text"
+);
+
+ALTER TABLE "public"."service_categories" OWNER TO "postgres";
+
+COMMENT ON TABLE "public"."service_categories" IS 'Constants for service categories NEW';
+
+CREATE TABLE IF NOT EXISTS "public"."service_category" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "label" "text",
+    "value" character varying
+);
+
+ALTER TABLE "public"."service_category" OWNER TO "postgres";
+
+COMMENT ON TABLE "public"."service_category" IS 'Constants for service categories';
 
 CREATE TABLE IF NOT EXISTS "public"."service_requests" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
@@ -80,10 +108,22 @@ CREATE TABLE IF NOT EXISTS "public"."service_requests" (
     "pet_id" "uuid",
     "client_id" "uuid",
     "team_member_id" "uuid",
-    "log_id" "uuid"
+    "log_id" "uuid" DEFAULT "gen_random_uuid"()
 );
 
 ALTER TABLE "public"."service_requests" OWNER TO "postgres";
+
+COMMENT ON TABLE "public"."service_requests" IS 'Central data type - all service requests';
+
+CREATE TABLE IF NOT EXISTS "public"."species" (
+    "id" "text" NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "label" "text"
+);
+
+ALTER TABLE "public"."species" OWNER TO "postgres";
+
+COMMENT ON TABLE "public"."species" IS 'Constants for all types of species';
 
 CREATE TABLE IF NOT EXISTS "public"."team_members" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
@@ -94,6 +134,8 @@ CREATE TABLE IF NOT EXISTS "public"."team_members" (
 );
 
 ALTER TABLE "public"."team_members" OWNER TO "postgres";
+
+COMMENT ON TABLE "public"."team_members" IS 'All team members (for task assignment, not auth)';
 
 ALTER TABLE ONLY "public"."app_constants"
     ADD CONSTRAINT "app_constants_pkey" PRIMARY KEY ("id");
@@ -107,8 +149,20 @@ ALTER TABLE ONLY "public"."clients"
 ALTER TABLE ONLY "public"."pets"
     ADD CONSTRAINT "pets_pkey" PRIMARY KEY ("id");
 
+ALTER TABLE ONLY "public"."service_categories"
+    ADD CONSTRAINT "service_categories_pkey" PRIMARY KEY ("id");
+
+ALTER TABLE ONLY "public"."service_category"
+    ADD CONSTRAINT "service_category_pkey" PRIMARY KEY ("id");
+
 ALTER TABLE ONLY "public"."service_requests"
     ADD CONSTRAINT "service_request_pkey" PRIMARY KEY ("id");
+
+ALTER TABLE ONLY "public"."request_sources"
+    ADD CONSTRAINT "source_types_pkey" PRIMARY KEY ("id");
+
+ALTER TABLE ONLY "public"."species"
+    ADD CONSTRAINT "species_types_pkey" PRIMARY KEY ("id");
 
 ALTER TABLE ONLY "public"."team_members"
     ADD CONSTRAINT "team_members_pkey" PRIMARY KEY ("id");
@@ -134,6 +188,14 @@ ALTER TABLE ONLY "public"."service_requests"
 ALTER TABLE ONLY "public"."service_requests"
     ADD CONSTRAINT "public_service_requests_team_member_id_fkey" FOREIGN KEY ("team_member_id") REFERENCES "public"."team_members"("id");
 
+ALTER TABLE "public"."request_sources" ENABLE ROW LEVEL SECURITY;
+
+ALTER TABLE "public"."service_categories" ENABLE ROW LEVEL SECURITY;
+
+ALTER TABLE "public"."species" ENABLE ROW LEVEL SECURITY;
+
+ALTER PUBLICATION "supabase_realtime" OWNER TO "postgres";
+
 GRANT USAGE ON SCHEMA "public" TO "postgres";
 GRANT USAGE ON SCHEMA "public" TO "anon";
 GRANT USAGE ON SCHEMA "public" TO "authenticated";
@@ -151,9 +213,25 @@ GRANT ALL ON TABLE "public"."pets" TO "anon";
 GRANT ALL ON TABLE "public"."pets" TO "authenticated";
 GRANT ALL ON TABLE "public"."pets" TO "service_role";
 
+GRANT ALL ON TABLE "public"."request_sources" TO "anon";
+GRANT ALL ON TABLE "public"."request_sources" TO "authenticated";
+GRANT ALL ON TABLE "public"."request_sources" TO "service_role";
+
+GRANT ALL ON TABLE "public"."service_categories" TO "anon";
+GRANT ALL ON TABLE "public"."service_categories" TO "authenticated";
+GRANT ALL ON TABLE "public"."service_categories" TO "service_role";
+
+GRANT ALL ON TABLE "public"."service_category" TO "anon";
+GRANT ALL ON TABLE "public"."service_category" TO "authenticated";
+GRANT ALL ON TABLE "public"."service_category" TO "service_role";
+
 GRANT ALL ON TABLE "public"."service_requests" TO "anon";
 GRANT ALL ON TABLE "public"."service_requests" TO "authenticated";
 GRANT ALL ON TABLE "public"."service_requests" TO "service_role";
+
+GRANT ALL ON TABLE "public"."species" TO "anon";
+GRANT ALL ON TABLE "public"."species" TO "authenticated";
+GRANT ALL ON TABLE "public"."species" TO "service_role";
 
 GRANT ALL ON TABLE "public"."team_members" TO "anon";
 GRANT ALL ON TABLE "public"."team_members" TO "authenticated";
