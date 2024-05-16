@@ -5,8 +5,10 @@ import { LayoutContext } from '../../layout/context/layoutcontext';
 import AppMenu from '../../layout/AppMenu';
 import '@testing-library/jest-dom';
 
-// Mock the LayoutContext provider
+jest.mock('../../src/hooks/useAppConstants');
+jest.mock('../../src/hooks/useTeamMembers');
 
+// Mock the LayoutContext provider
 jest.mock('../../layout/context/layoutcontext', () => {
   const MockLayoutContext = React.createContext(null);
   return { LayoutContext: MockLayoutContext };
