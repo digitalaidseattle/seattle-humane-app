@@ -25,5 +25,5 @@ export default function useTeamMembers() {
     };
     fetchData();
   }, []);
-  return { data: options };
+  return options;
 }

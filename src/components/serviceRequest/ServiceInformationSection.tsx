@@ -4,8 +4,9 @@ import { ServiceInfoActionType, ServiceInformationContext, ServiceInformationDis
 import { EditableServiceRequestType } from '@types';
 import { Dropdown } from 'primereact/dropdown';
 import { useContext } from 'react';
+import useAppConstants from '@hooks/useAppConstants';
+import { AppConstants } from 'src/constants';
 import useTeamMembers from 'src/hooks/useTeamMembers';
-import { useAppConstants } from 'src/services/useAppConstants';
 
 // TODO externalize to localization file
 export const serviceInformationLabels = {
@@ -56,9 +57,9 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
   const formData = useContext(ServiceInformationContext);
   const dispatch = useContext(ServiceInformationDispatchContext);
 
-  const { data: sources } = useAppConstants('source');
-  const { data: categories } = useAppConstants('category');
-  const { data: teamMembers } = useTeamMembers();
+  const sources = useAppConstants(AppConstants.Source);
+  const categories = useAppConstants(AppConstants.Category);
+  const teamMembers = useTeamMembers();
 
   //* Map onChange handlers to dispatch
   const setFormData = (partialStateUpdate: Partial<EditableServiceRequestType>) => dispatch(
@@ -98,7 +99,7 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
             <div className="grid col-12">
               <div className="col-fixed mr-3">{serviceInformationLabels.Source}</div>
               <div className="flex flex-wrap gap-3">
-                {sources.map((opt) => (
+                {sources ? sources.map((opt) => (
                   <InputRadio
                     id={`request_source_id-${opt.value}`}
                     key={opt.value}
@@ -109,7 +110,8 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
                     onChange={(e) => setSource(e.target.value)}
                     checked={formData.request_source_id === opt.value}
                   />
-                ))}
+                ))
+                  : null}
               </div>
             </div>
           )}

@@ -179,6 +179,8 @@ class ClientService {
     new ClientTicket({ ticketNo: '1234', type: 'email', name: 'John Doe' }),
   ];
 
+  appConstants: Map<AppConstants, AppConstantType[]> = new Map();
+
   async newRequest(
     request: EditableServiceRequestType,
     client: EditableClientType,
@@ -212,7 +214,7 @@ class ClientService {
             first_name: client.first_name,
             last_name: client.last_name,
             email: client.email,
-            phone_number: client.phone_number,
+            phone: client.phone,
           }])
           .select()
           .single();
@@ -301,6 +303,18 @@ class ClientService {
   update(ticket: ClientTicket): Promise<ClientTicket> {
     this.tickets = this.tickets.map((obj) => (ticket.ticketNo === obj.ticketNo ? ticket : obj));
     return Promise.resolve(this.tickets.find((t) => t.ticketNo == ticket.ticketNo));
+  }
+
+  async getAppConstants(type: AppConstants) {
+    if (!this.appConstants.has(type)) {
+      const { data: constants, error } = await supabaseClient
+        .from('app_constants')
+        .select('*')
+        .eq('type', type);
+      if (error) throw new Error(error.message);
+      this.appConstants.set(type, constants);
+    }
+    return this.appConstants.get(type);
   }
 
   async getServiceStatuses(): Promise<AppConstantType[]> {
