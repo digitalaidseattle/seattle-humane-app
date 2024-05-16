@@ -74,13 +74,13 @@ ALTER TABLE "public"."pets" OWNER TO "postgres";
 CREATE TABLE IF NOT EXISTS "public"."service_requests" (
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
-    "service_category_id" "uuid",
-    "request_source_id" "uuid",
+    "service_category" "text",
+    "request_source" "text",
+    "status" "text",
     "description" "text",
     "pet_id" "uuid",
     "client_id" "uuid",
     "team_member_id" "uuid",
-    "log_id" "uuid"
 );
 
 ALTER TABLE "public"."service_requests" OWNER TO "postgres";
@@ -94,6 +94,16 @@ CREATE TABLE IF NOT EXISTS "public"."team_members" (
 );
 
 ALTER TABLE "public"."team_members" OWNER TO "postgres";
+
+CREATE TABLE IF NOT EXISTS "public"."service_request_history" (
+    "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
+    "created_at" timestamp with time zone DEFAULT "now"() NOT NULL,
+    "service_request_id" "uuid",
+    "team_member_id" "uuid",
+    "description" "text"
+);
+
+ALTER TABLE "public"."service_request_history" OWNER TO "postgres";
 
 ALTER TABLE ONLY "public"."app_constants"
     ADD CONSTRAINT "app_constants_pkey" PRIMARY KEY ("id");
@@ -110,8 +120,11 @@ ALTER TABLE ONLY "public"."pets"
 ALTER TABLE ONLY "public"."service_requests"
     ADD CONSTRAINT "service_request_pkey" PRIMARY KEY ("id");
 
-ALTER TABLE ONLY "public"."team_members"
-    ADD CONSTRAINT "team_members_pkey" PRIMARY KEY ("id");
+ALTER TABLE ONLY "public"."service_request_history"
+    ADD CONSTRAINT "service_request_history_pkey" PRIMARY KEY ("id");
+
+ALTER TABLE ONLY "public"."app_constants"
+    ADD CONSTRAINT "app_constants_pkey" PRIMARY KEY ("id");
 
 ALTER TABLE ONLY "public"."pets"
     ADD CONSTRAINT "public_pets_client_id_fkey" FOREIGN KEY ("client_id") REFERENCES "public"."clients"("id");
@@ -126,13 +139,13 @@ ALTER TABLE ONLY "public"."service_requests"
     ADD CONSTRAINT "public_service_requests_pet_id_fkey" FOREIGN KEY ("pet_id") REFERENCES "public"."pets"("id");
 
 ALTER TABLE ONLY "public"."service_requests"
-    ADD CONSTRAINT "public_service_requests_request_source_id_fkey" FOREIGN KEY ("request_source_id") REFERENCES "public"."app_constants"("id");
-
-ALTER TABLE ONLY "public"."service_requests"
-    ADD CONSTRAINT "public_service_requests_service_category_id_fkey" FOREIGN KEY ("service_category_id") REFERENCES "public"."app_constants"("id");
-
-ALTER TABLE ONLY "public"."service_requests"
     ADD CONSTRAINT "public_service_requests_team_member_id_fkey" FOREIGN KEY ("team_member_id") REFERENCES "public"."team_members"("id");
+
+ALTER TABLE ONLY "public"."service_request_history"
+    ADD CONSTRAINT "public_service_request_history_team_member_id_fkey" FOREIGN KEY ("team_member_id") REFERENCES "public"."team_members"("id");
+
+ALTER TABLE ONLY "public"."service_request_history"
+    ADD CONSTRAINT "public_service_request_history_tservice_request_id_fkey" FOREIGN KEY ("service_request_id") REFERENCES "public"."service_requests"("id");
 
 GRANT USAGE ON SCHEMA "public" TO "postgres";
 GRANT USAGE ON SCHEMA "public" TO "anon";
@@ -158,6 +171,10 @@ GRANT ALL ON TABLE "public"."service_requests" TO "service_role";
 GRANT ALL ON TABLE "public"."team_members" TO "anon";
 GRANT ALL ON TABLE "public"."team_members" TO "authenticated";
 GRANT ALL ON TABLE "public"."team_members" TO "service_role";
+
+GRANT ALL ON TABLE "public"."service_request_history" TO "anon";
+GRANT ALL ON TABLE "public"."service_request_history" TO "authenticated";
+GRANT ALL ON TABLE "public"."service_request_history" TO "service_role";
 
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON SEQUENCES  TO "postgres";
 ALTER DEFAULT PRIVILEGES FOR ROLE "postgres" IN SCHEMA "public" GRANT ALL ON SEQUENCES  TO "anon";
