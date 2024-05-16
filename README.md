@@ -53,7 +53,7 @@ The application requires setup of both a Next.JS frontend and a Supabase backend
 
 1. Open VS code.
 
-1. From VS code, open the command palette using `⇧⌘P` and type:
+1. From VS code, open the command palette using `⇧⌘P` on Mac or `Ctrl+Shift+P` on Windows and type:
     ```
     Dev Containers: Open Folder in Container...
     ```
@@ -134,4 +134,9 @@ Local setup requires a few one-time steps. In the following steps, you will star
 
 - To run all tests: `yarn test`.
 - To exclude tests while running your own, you may temporarily put 'x' in front of 'describe' or 'it'. However, DO NOT exclude tests on a PR to a sprint branch.
+
+## Manually updating Supabase types
+
+- To login to supabase: npx supabase login.
+- To update type file: npx supabase gen types typescript --project-id "liuebfxbxugpfsfwbkks" --schema public > supabase/database.types.ts
 

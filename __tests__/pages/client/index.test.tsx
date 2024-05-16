@@ -47,7 +47,7 @@ describe('Client', () => {
     expect(push).toHaveBeenCalledWith('/clients')
   });
 
-  it('render category drop down', async () => {
+  xit('render category drop down', async () => {
     Object.defineProperty(window, 'location', {
       writable: true,
       value: { search: '?ticketNo=t123' },

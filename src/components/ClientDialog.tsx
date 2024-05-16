@@ -32,7 +32,7 @@ const defaultClient: EditableClientType = {
   first_name: '',
   last_name: '',
   email: '',
-  phone_number: '',
+  phone: '',
   zip_code: '',
 };
 
@@ -79,7 +79,6 @@ function ClientDialog(props: ClientDialogProps) {
   const saveClientDialog = () => {
     setBusy(true);
     // type handle separate to support RadioButton
-
     clientService.newRequest({
       ...request,
       // TODO not sure how we want to handle these ids, needs lookup control?
@@ -116,7 +115,7 @@ function ClientDialog(props: ClientDialogProps) {
               partialStateUpdate: {
                 first_name: clientResponse.first_name,
                 last_name: clientResponse.last_name,
-                phone_number: clientResponse.phone_number,
+                phone: clientResponse.phone,
                 email: clientResponse.email,
               },
             });
@@ -158,7 +157,7 @@ function ClientDialog(props: ClientDialogProps) {
           >
             <ClientInformationSection
               disabled={busy}
-              show={['first_name', 'last_name', 'email', 'phone_number']}
+              show={['first_name', 'last_name', 'email', 'phone']}
             />
           </ClientInformationProvider>
           <PetInformationProvider

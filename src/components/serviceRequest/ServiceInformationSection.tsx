@@ -1,11 +1,12 @@
 import InputRadio from '@components/InputRadio';
-import InputText from '@components/InputText';
 import InputTextArea from '@components/InputTextArea';
 import { ServiceInfoActionType, ServiceInformationContext, ServiceInformationDispatchContext } from '@context/serviceRequest/serviceInformationContext';
 import { EditableServiceRequestType } from '@types';
 import { Dropdown } from 'primereact/dropdown';
 import { useContext } from 'react';
-import { useAppConstants } from 'src/services/useAppConstants';
+import useAppConstants from '@hooks/useAppConstants';
+import { AppConstants } from 'src/constants';
+import useTeamMembers from 'src/hooks/useTeamMembers';
 
 // TODO externalize to localization file
 export const serviceInformationLabels = {
@@ -56,8 +57,9 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
   const formData = useContext(ServiceInformationContext);
   const dispatch = useContext(ServiceInformationDispatchContext);
 
-  const { data: sources } = useAppConstants('source');
-  const { data: categories } = useAppConstants('category');
+  const sources = useAppConstants(AppConstants.Source);
+  const categories = useAppConstants(AppConstants.Category);
+  const teamMembers = useTeamMembers();
 
   //* Map onChange handlers to dispatch
   const setFormData = (partialStateUpdate: Partial<EditableServiceRequestType>) => dispatch(
@@ -87,7 +89,7 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
                 title={serviceInformationLabels.Category}
                 className="w-full md:w-14rem"
                 onChange={(e) => setCategory(e.target.value)}
-                options={categories}
+                options={categories.map((opt) => ({ label: opt.label, value: opt.id }))}
                 disabled={disabled}
               />
             </div>
@@ -97,18 +99,19 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
             <div className="grid col-12">
               <div className="col-fixed mr-3">{serviceInformationLabels.Source}</div>
               <div className="flex flex-wrap gap-3">
-                {sources.map((opt) => (
+                {sources ? sources.map((opt) => (
                   <InputRadio
                     id={`request_source_id-${opt.value}`}
                     key={opt.value}
                     label={opt.label}
-                    value={opt.value}
+                    value={opt.id}
                     disabled={disabled}
                     name={`request_source_id-${opt.value}`}
                     onChange={(e) => setSource(e.target.value)}
-                    checked={formData.request_source_id === opt.value}
+                    checked={opt.id && formData.request_source_id === opt.id}
                   />
-                ))}
+                ))
+                  : null}
               </div>
             </div>
           )}
@@ -129,14 +132,16 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
         {visibleFields.has('team_member_id')
           && (
             <div className="col-6">
-              {/* TODO change to <select> element when options are known */}
-              <InputText
+              <div className="col-fixed mr-3">{serviceInformationLabels.AssignTo}</div>
+
+              <Dropdown
                 id="team_member_id"
                 value={formData.team_member_id}
-                disabled={disabled}
-                label={serviceInformationLabels.AssignTo}
-                placeholder={serviceInformationLabels.AssignTo}
+                title={serviceInformationLabels.AssignTo}
+                className="w-full md:w-14rem"
                 onChange={(e) => setAssignedTo(e.target.value)}
+                options={teamMembers}
+                disabled={disabled}
               />
             </div>
           )}

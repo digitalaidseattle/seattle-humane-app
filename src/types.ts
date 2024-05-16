@@ -25,3 +25,5 @@ export type ServiceRequestType = Tables<'service_requests'>;
 export type EditableServiceRequestType = Omit<ServiceRequestType, 'id' | 'created_at'>;
 
 export type AppConstantType = Tables<'app_constants'>;
+
+export type TeamMemberType = Tables<'team_members'>;

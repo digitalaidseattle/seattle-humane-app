@@ -9,7 +9,7 @@ export const defaultClientInformation: EditableClientInfo = {
   first_name: '',
   last_name: '',
   email: '',
-  phone_number: '',
+  phone: '',
   zip_code: '',
 };
 

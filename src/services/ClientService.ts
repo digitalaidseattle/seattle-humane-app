@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-throw-literal */
 /* eslint-disable no-useless-catch */
@@ -19,6 +20,7 @@ import {
   EditableClientType,
   EditableAnimalType,
   AppConstantType,
+  TeamMemberType,
 } from '@types';
 import supabaseClient from '../../utils/supabaseClient';
 
@@ -178,6 +180,8 @@ class ClientService {
     new ClientTicket({ ticketNo: '1234', type: 'email', name: 'John Doe' }),
   ];
 
+  appConstants: Map<AppConstants, AppConstantType[]> = new Map();
+
   async newRequest(
     request: EditableServiceRequestType,
     client: EditableClientType,
@@ -185,8 +189,6 @@ class ClientService {
   )
     : Promise<ServiceRequestType> {
     // Post Request to supabase
-
-    let createdRequest: ServiceRequestType;
 
     try {
       let animalId: string;
@@ -199,70 +201,119 @@ class ClientService {
         .select('*')
         // Here assumes that email is unique and required; may need to also check phone
         .eq('email', client.email)
-        .single();
+        .maybeSingle();
 
       if (clientError) throw new Error(`Client retrieval failed: ${clientError.message}`);
 
       // TODO: Deal with modifying client information if it already exists
       if (!existingClient) {
-        const { data: newClient, error } = await supabaseClient
-          .from('clients')
-          .insert([{
-            first_name: client.first_name,
-            last_name: client.last_name,
-            email: client.email,
-            phone_number: client.phone_number,
-          }])
-          .select()
-          .single();
-        if (error) throw new Error(`Client creation failed: ${error.message}`);
-        if (newClient) clientId = newClient.id;
+        const newClient = await ClientService.createClient(client);
+        clientId = newClient.id;
       } else clientId = existingClient.id;
 
       // Check if animal exists and create one if not
       // TODO: HOW TO IDENTIFY UNIQUE ANIMAL? NAME / SPECIES / CLIENT_ID?
+      if (!animal.species_id) throw new Error('Animal species is required');
       const { data: existingAnimal, error: animalError } = await supabaseClient
         .from('pets')
         .select('*')
         .eq('name', animal.name)
         .eq('species_id', animal.species_id)
         .eq('client_id', clientId)
-        .maybeSingle() as { data: AnimalType | null, error: Error };
+        .maybeSingle();
 
       if (animalError) throw new Error(`Animal retrieval failed: ${animalError.message}`);
 
       if (!existingAnimal) {
-        const { data: newAnimal, error } = await supabaseClient
-          .from('pets')
-          .insert([{
-            name: animal.name,
-            species_id: animal.species_id,
-            client_id: clientId,
-          }]) as { data: AnimalType | null, error: Error };
-        if (error) throw new Error(`Animal creation failed: ${error.message}`);
-        if (newAnimal) animalId = newAnimal.id;
+        const newAnimal = await ClientService.createAnimal(animal, clientId);
+        animalId = newAnimal.id;
       } else animalId = existingAnimal.id;
 
-      // Create new request
-      const { data: newRequest, error } = await supabaseClient
-        .from('service_requests')
-        .insert([{
-          client_id: clientId,
-          animal_id: animalId,
-          service_category_id: request.service_category_id,
-          request_source_id: request.request_source_id,
-          team_member_id: request.team_member_id,
-        }])
-        .select()
-        .single();
-      if (error) throw new Error(`Request creation failed: ${error.message}`);
-      else createdRequest = newRequest;
+      // Create new ticket
+      const ticket = await ClientService.createTicket(request, clientId, animalId);
+      return ticket;
     } catch (error) {
       console.log('ERROR AT NEW REQUEST CREATION:', error);
       throw error;
     }
     // TODO: ChangeLog not currently implemented
-    return Promise.resolve(createdRequest);
+  }
+
+  static validFieldsByType: {
+    client: (keyof ClientType)[],
+    animal: (keyof AnimalType)[],
+    ticket: (keyof ServiceRequestType)[]
+  } = {
+      client: ['first_name', 'last_name', 'email', 'phone'],
+      animal: ['name', 'age', 'weight', 'species_id'],
+      ticket: ['service_category_id', 'request_source_id', 'team_member_id'],
+    };
+
+  static throwIfInvalidInput(
+    type: keyof typeof ClientService.validFieldsByType,
+    data: any,
+  ) {
+    const missingFields = [];
+    const fields = ClientService.validFieldsByType[type];
+    fields.forEach((field) => {
+      if (!data[field]) missingFields.push(field);
+    });
+    if (missingFields.length) throw new Error(`Cannot create the ${type} as the following information was missing: ${missingFields.join(',')}`);
+    return true;
+  }
+
+  static async createClient(client: EditableClientType) {
+    ClientService.throwIfInvalidInput('client', client);
+    const {
+
+      first_name, last_name, email, phone,
+    } = client;
+    const { data: newClient, error } = await supabaseClient
+      .from('clients')
+      .insert([{
+        first_name, last_name, email, phone,
+      }])
+      .select()
+      .single();
+    if (error) throw new Error(`Client creation failed: ${error.message}`);
+    return newClient;
+  }
+
+  static async createAnimal(animal: EditableAnimalType, clientId: ClientType['id']) {
+    ClientService.throwIfInvalidInput('animal', animal);
+    const { data: newAnimal, error } = await supabaseClient
+      .from('pets')
+      .insert([{
+        name: animal.name,
+        species_id: animal.species_id,
+        client_id: clientId,
+      }])
+      .select()
+      .single();
+    if (error) throw new Error(`Animal creation failed: ${error.message}`);
+    return newAnimal;
+  }
+
+  static async createTicket(
+    ticket: EditableServiceRequestType,
+    clientId: ClientType['id'],
+    petId: AnimalType['id'],
+  ) {
+    ClientService.throwIfInvalidInput('ticket', ticket);
+    const { data: newTicket, error } = await supabaseClient
+      .from('service_requests')
+      .insert([{
+        client_id: clientId,
+        pet_id: petId,
+        description: ticket.description,
+        service_category_id: ticket.service_category_id,
+        request_source_id: ticket.request_source_id,
+        team_member_id: ticket.team_member_id,
+      }])
+      .select()
+      .single();
+    if (error) throw new Error(`Request creation failed: ${error.message}`);
+    return newTicket;
   }
 
   async getClientByEmail(email: string): Promise<ClientType> {
@@ -302,6 +353,18 @@ class ClientService {
     return Promise.resolve(this.tickets.find((t) => t.ticketNo == ticket.ticketNo));
   }
 
+  async getAppConstants(type: AppConstants) {
+    if (!this.appConstants.has(type)) {
+      const { data: constants, error } = await supabaseClient
+        .from('app_constants')
+        .select('*')
+        .eq('type', type);
+      if (error) throw new Error(error.message);
+      this.appConstants.set(type, constants);
+    }
+    return this.appConstants.get(type);
+  }
+
   async getServiceStatuses(): Promise<AppConstantType[]> {
     const response = await supabaseClient
       .from('app_constants')
@@ -326,9 +389,18 @@ class ClientService {
       .eq('type', AppConstants.Category);
     return response.data;
   }
+
+  async getTeamMembers(): Promise<TeamMemberType[]> {
+    const { data: teamMembers, error } = await supabaseClient
+      .from('team_members')
+      .select();
+    if (error) throw new Error(error.message);
+    return teamMembers;
+  }
 }
 
 const clientService = new ClientService();
+export default ClientService;
 export {
   ClientTicket,
   NewClientRequest,
