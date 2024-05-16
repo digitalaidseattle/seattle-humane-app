@@ -239,11 +239,15 @@ class ClientService {
     // TODO: ChangeLog not currently implemented
   }
 
-  static validFieldsByType = {
-    client: ['first_name', 'last_name', 'email', 'phone_number'],
-    animal: ['name', 'age', 'weight', 'species_id'],
-    ticket: ['service_category_id', 'request_source_id', 'team_member_id'],
-  };
+  static validFieldsByType: {
+    client: (keyof ClientType)[],
+    animal: (keyof AnimalType)[],
+    ticket: (keyof ServiceRequestType)[]
+  } = {
+      client: ['first_name', 'last_name', 'email', 'phone'],
+      animal: ['name', 'age', 'weight', 'species_id'],
+      ticket: ['service_category_id', 'request_source_id', 'team_member_id'],
+    };
 
   static throwIfInvalidInput(
     type: keyof typeof ClientService.validFieldsByType,
