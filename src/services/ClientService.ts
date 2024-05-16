@@ -19,6 +19,7 @@ import {
   EditableClientType,
   EditableAnimalType,
   AppConstantType,
+  TeamMemberType,
 } from '@types';
 import supabaseClient from '../../utils/supabaseClient';
 
@@ -339,6 +340,14 @@ class ClientService {
       .select('*')
       .eq('type', AppConstants.Category);
     return response.data;
+  }
+
+  async getTeamMembers(): Promise<TeamMemberType[]> {
+    const { data: teamMembers, error } = await supabaseClient
+      .from('team_members')
+      .select();
+    if (error) throw new Error(error.message);
+    return teamMembers;
   }
 }
 

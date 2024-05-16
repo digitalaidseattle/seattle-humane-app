@@ -1,5 +1,4 @@
 import InputRadio from '@components/InputRadio';
-import InputText from '@components/InputText';
 import InputTextArea from '@components/InputTextArea';
 import { ServiceInfoActionType, ServiceInformationContext, ServiceInformationDispatchContext } from '@context/serviceRequest/serviceInformationContext';
 import { EditableServiceRequestType } from '@types';
@@ -7,6 +6,7 @@ import { Dropdown } from 'primereact/dropdown';
 import { useContext } from 'react';
 import useAppConstants from '@hooks/useAppConstants';
 import { AppConstants } from 'src/constants';
+import useTeamMembers from 'src/hooks/useTeamMembers';
 
 // TODO externalize to localization file
 export const serviceInformationLabels = {
@@ -59,6 +59,7 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
 
   const sources = useAppConstants(AppConstants.Source);
   const categories = useAppConstants(AppConstants.Category);
+  const teamMembers = useTeamMembers();
 
   //* Map onChange handlers to dispatch
   const setFormData = (partialStateUpdate: Partial<EditableServiceRequestType>) => dispatch(
@@ -131,14 +132,16 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
         {visibleFields.has('team_member_id')
           && (
             <div className="col-6">
-              {/* TODO change to <select> element when options are known */}
-              <InputText
+              <div className="col-fixed mr-3">{serviceInformationLabels.AssignTo}</div>
+
+              <Dropdown
                 id="team_member_id"
                 value={formData.team_member_id}
-                disabled={disabled}
-                label={serviceInformationLabels.AssignTo}
-                placeholder={serviceInformationLabels.AssignTo}
+                title={serviceInformationLabels.AssignTo}
+                className="w-full md:w-14rem"
                 onChange={(e) => setAssignedTo(e.target.value)}
+                options={teamMembers}
+                disabled={disabled}
               />
             </div>
           )}
