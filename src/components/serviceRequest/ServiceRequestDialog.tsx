@@ -36,6 +36,7 @@ function ServiceRequestDialog(props: ServiceRequestDialogProps) {
   const { visible, onClose } = props;
   const [showDialog, setShowDialog] = useState(false);
   const [busy, setBusy] = useState(false);
+  const [message, setMessage] = useState('');
 
   useEffect(() => {
     setShowDialog(visible);
@@ -58,11 +59,12 @@ function ServiceRequestDialog(props: ServiceRequestDialogProps) {
     serviceInformationState, serviceInformationDispatch,
   ] = useReducer(serviceInfoReducer, defaultServiceInformation);
 
-  const cancel = () => {
+  const close = () => {
     //* Clear form data
     clientInformationDispatch({ type: ClientInfoActionType.Clear });
     petInformationDispatch({ type: PetInfoActionType.Clear });
     serviceInformationDispatch({ type: ServiceInfoActionType.Clear });
+    setMessage('');
     hideDialog();
   };
 
@@ -72,17 +74,13 @@ function ServiceRequestDialog(props: ServiceRequestDialogProps) {
     // TODO add error handling scenario
     try {
       await clientService.newRequest(
-        {
-          ...serviceInformationState,
-          // TODO wire up lookup controls for these fields
-          pet_id: '',
-          team_member_id: '',
-        },
+        serviceInformationState,
         clientInformationState,
         petInformationState,
       );
+      close();
     } catch (e) {
-      console.error(e.message);
+      setMessage(e.message);
     } finally {
       setBusy(false);
     }
@@ -91,7 +89,7 @@ function ServiceRequestDialog(props: ServiceRequestDialogProps) {
   const dialogFooter = (
     <FormConfirmationButtons
       disabled={busy}
-      onCancelClicked={cancel}
+      onCancelClicked={close}
       onSaveClicked={save}
       saving={busy}
     />
@@ -109,6 +107,11 @@ function ServiceRequestDialog(props: ServiceRequestDialogProps) {
     >
       <div className="col-12 md:col-12">
         <div className="card">
+          {message && (
+            <h3 className="text-red-500">
+              {message}
+            </h3>
+          )}
           <ClientInformationProvider
             state={clientInformationState}
             dispatch={clientInformationDispatch}
@@ -125,6 +128,7 @@ function ServiceRequestDialog(props: ServiceRequestDialogProps) {
             <ServiceInformationSection disabled={busy} />
           </ServiceInformationProvider>
         </div>
+
       </div>
     </Dialog>
   );

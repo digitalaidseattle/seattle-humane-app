@@ -26,6 +26,8 @@ export type EditableServiceRequestType = Omit<ServiceRequestType, 'id' | 'create
 
 export type AppConstantType = Tables<'app_constants'>;
 
+export type TeamMemberType = Tables<'team_members'>;
+
 export type SearchOptions = {
   first: number;
   page: number;

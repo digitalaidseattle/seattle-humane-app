@@ -25,6 +25,8 @@ jest.mock('src/services/ClientService', () => {
 
 jest.mock('src/hooks/useAppConstants');
 
+jest.mock('src/hooks/useTeamMembers');
+
 const SaveCancelLabels = {
   Save: 'Save', Cancel: 'Cancel',
 };
@@ -138,13 +140,12 @@ describe('ServiceRequestDialog', () => {
     expect(clientService.newRequest).toHaveBeenCalledTimes(1);
   });
 
-  it('should log errors to the console', async () => {
+  it('should show errors in the dialog', async () => {
     //* Arrange
     let reject;
     clientService.newRequest = jest.fn()
       .mockImplementation(async () => new Promise((_undefined, r) => { reject = r; }));
     const testError = 'Test fetch failed';
-    console.error = jest.fn();
     setup(true);
 
     //* Act
@@ -153,6 +154,7 @@ describe('ServiceRequestDialog', () => {
 
     //* Assert
     await waitFor(() => reject(new Error(testError)));
-    expect(console.error).toHaveBeenCalledWith(testError);
+    const errorMessage = await screen.findByText(testError);
+    expect(errorMessage).toBeInTheDocument();
   });
 });

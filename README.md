@@ -53,7 +53,7 @@ The application requires setup of both a Next.JS frontend and a Supabase backend
 
 1. Open VS code.
 
-1. From VS code, open the command palette using `⇧⌘P` and type:
+1. From VS code, open the command palette using `⇧⌘P` on Mac or `Ctrl+Shift+P` on Windows and type:
     ```
     Dev Containers: Open Folder in Container...
     ```

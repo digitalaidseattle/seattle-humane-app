@@ -4,7 +4,7 @@ import { createContext, useReducer } from 'react';
 import PetInformationSection, { petInformationLabels as labels } from '@components/serviceRequest/PetInformationSection';
 import { PetInformationProvider, petInfoReducer, defaultPetInformation } from '@context/serviceRequest/petInformationContext';
 import { EditableAnimalType } from '@types';
-import { data } from 'src/hooks/__mocks__/useAppConstants';
+import { data } from '@hooks/__mocks__/useAppConstants';
 
 const { species } = data;
 //* Mocking the pet information context module to isolate the test
@@ -161,7 +161,7 @@ describe('PetInformationSection', () => {
       expect.anything(), // We are only concerned with the action, not the previous state
       expect.objectContaining({
         type: 'Update',
-        partialStateUpdate: { species_id: opt.value },
+        partialStateUpdate: { species_id: opt.id },
       }),
     );
   });
