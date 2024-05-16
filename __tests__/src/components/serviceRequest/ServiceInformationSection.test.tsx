@@ -12,6 +12,9 @@ import {
   defaultServiceInformation,
 } from '@context/serviceRequest/serviceInformationContext';
 import { EditableServiceRequestType } from '@types';
+import { data } from '@hooks/__mocks__/useAppConstants';
+
+const { source } = data;
 
 //* Mocking the service information context module to isolate the test
 jest.mock('@context/serviceRequest/serviceInformationContext', () => {
@@ -53,27 +56,7 @@ jest.mock('src/services/ClientService', () => ({
   },
 }));
 
-const statuses = [{ value: 'open', label: 'Open' }];
-const sources = [{ value: 'phone', label: 'Phone' }];
-const categories = [{ value: 'pet_fostering', label: 'Pet Fostering' }];
-jest.mock('src/services/useAppConstants', () => {
-  const orig = jest.requireActual('src/services/useAppConstants');
-  return {
-    ...orig,
-    useAppConstants: (value) => {
-      switch (value) {
-        case 'status':
-          return { data: statuses };
-        case 'source':
-          return { data: sources };
-        case 'category':
-          return { data: categories };
-        default:
-          return { data: [] };
-      }
-    },
-  };
-});
+jest.mock('src/hooks/useAppConstants');
 
 afterEach(() => {
   // Clear the mock reducer call counts after each test
@@ -124,7 +107,7 @@ describe('ServiceInformationSection', () => {
     ];
 
     radioButtons = [];
-    sources.forEach((opt) => {
+    source.forEach((opt) => {
       const radioButton = screen.queryByLabelText(opt.label);
       radioButtons.push([radioButton, 'request_source_id', opt.label, opt.value]);
     });

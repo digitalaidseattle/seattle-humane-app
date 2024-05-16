@@ -3,7 +3,8 @@ import InputRadio from '@components/InputRadio';
 import InputText from '@components/InputText';
 import { PetInfoActionType, PetInformationContext, PetInformationDispatchContext } from '@context/serviceRequest/petInformationContext';
 import { EditableAnimalType } from '@types';
-import { useAppConstants } from 'src/services/useAppConstants';
+import useAppConstants from '@hooks/useAppConstants';
+import { AppConstants } from 'src/constants';
 
 // TODO externalize to localization file
 export const petInformationLabels = {
@@ -43,7 +44,7 @@ export default function PetInformationSection(props: PetInformationSectionProps)
   const formData = useContext(PetInformationContext);
   const dispatch = useContext(PetInformationDispatchContext);
   //* Options for multi-choice controls
-  const { data: speciesOptions } = useAppConstants('species');
+  const speciesOptions = useAppConstants(AppConstants.Species);
 
   //* Map onChange handlers to dispatch
   const setFormData = (partialStateUpdate: Partial<EditableAnimalType>) => dispatch(
