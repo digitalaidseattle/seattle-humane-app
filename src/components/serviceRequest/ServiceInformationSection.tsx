@@ -98,7 +98,7 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
             <div className="grid col-12">
               <div className="col-fixed mr-3">{serviceInformationLabels.Source}</div>
               <div className="flex flex-wrap gap-3">
-                {sources.map((opt) => (
+                {sources ? sources.map((opt) => (
                   <InputRadio
                     id={`request_source_id-${opt.value}`}
                     key={opt.value}
@@ -109,7 +109,8 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
                     onChange={(e) => setSource(e.target.value)}
                     checked={formData.request_source_id === opt.value}
                   />
-                ))}
+                ))
+                  : null}
               </div>
             </div>
           )}

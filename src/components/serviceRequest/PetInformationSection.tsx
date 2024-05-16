@@ -82,7 +82,7 @@ export default function PetInformationSection(props: PetInformationSectionProps)
             <div className="grid col-12">
               <div className="col-fixed mr-3">{petInformationLabels.Species}</div>
               <div className="flex flex-wrap gap-3">
-                {speciesOptions.map((spec) => (
+                {speciesOptions ? speciesOptions.map((spec) => (
                   <InputRadio
                     id={`species-${spec.value}`}
                     key={spec.value}
@@ -93,7 +93,8 @@ export default function PetInformationSection(props: PetInformationSectionProps)
                     onChange={(e) => setSpecies(e.target.value)}
                     checked={formData.species_id === spec.value}
                   />
-                ))}
+                ))
+                  : null}
               </div>
             </div>
           )}
