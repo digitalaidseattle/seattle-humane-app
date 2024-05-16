@@ -6,8 +6,13 @@
  */
 
 import { AppConstants } from 'src/constants';
-import { AppConstantType } from '@types';
-import { clientService } from '../../../src/services/ClientService';
+import {
+  AppConstantType,
+  EditableAnimalType,
+  EditableClientType,
+  EditableServiceRequestType,
+} from '@types';
+import ClientService, { clientService } from '../../../src/services/ClientService';
 import supabaseClient from '../../../utils/supabaseClient';
 
 // Idea for mock from https://stackoverflow.com/questions/77411385/how-to-mock-supabase-api-select-requests-in-nodejs
@@ -25,6 +30,8 @@ jest.mock('@supabase/supabase-js', () => ({
       data: [],
       from: jest.fn().mockReturnThis(),
       select: jest.fn().mockReturnThis(),
+      single: jest.fn().mockReturnThis(),
+      maybeSingle: jest.fn().mockReturnThis(),
       eq: jest.fn().mockReturnThis(),
       in: jest.fn().mockReturnThis(),
       is: jest.fn().mockReturnThis(),
@@ -43,11 +50,13 @@ jest.mock('@supabase/supabase-js', () => ({
  * that we use for testing purposes.
  * However Jest infers the type based on the original module.
  * So we need to manually cast the type to match our mock.
- */
+*/
 const mockSupabaseClient = jest.mocked(supabaseClient as typeof supabaseClient & {
   setTestData(newData): void
   setTestError(errorText): void
 });
+
+jest.spyOn(global.console, 'log').mockImplementation(() => { });
 
 afterEach(() => {
   // Reset the call counts for mocks
@@ -58,6 +67,33 @@ afterEach(() => {
 });
 
 describe('ClientService', () => {
+  describe('createClient()', () => {
+    const ticket = {} as EditableServiceRequestType;
+    const client = {} as EditableClientType;
+    const animal = {} as EditableAnimalType;
+
+    it('should throw error if client information is missing', async () => {
+      // arrange
+      mockSupabaseClient.setTestData(null);
+      // act & assert
+      await expect(ClientService.createClient(client))
+        .rejects.toThrow();
+    });
+    it('should throw error if animal information is missing', async () => {
+      // arrange
+      mockSupabaseClient.setTestData(null);
+      // act & assert
+      await expect(ClientService.createAnimal(animal, ''))
+        .rejects.toThrow();
+    });
+    it('should throw error if ticket information is missing', async () => {
+      // arrange
+      mockSupabaseClient.setTestData(null);
+      // act & assert
+      await expect(ClientService.createTicket(ticket, '', ''))
+        .rejects.toThrow();
+    });
+  });
   it.each([
     // [label suffix for test, AppConstant type, ClientService method name]
     ['service categories', AppConstants.Category, 'getServiceCategories'],

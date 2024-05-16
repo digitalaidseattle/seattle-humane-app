@@ -12,8 +12,8 @@ import {
   defaultServiceInformation,
 } from '@context/serviceRequest/serviceInformationContext';
 import { EditableServiceRequestType } from '@types';
-import { data } from '@hooks/__mocks__/useAppConstants';
 import { john } from 'src/hooks/__mocks__/useTeamMembers';
+import { data } from '@hooks/__mocks__/useAppConstants';
 
 const { source } = data;
 
@@ -82,11 +82,11 @@ describe('ServiceInformationSection', () => {
   let dropdowns = [];
 
   //* The Section requires a context, so wrap it in a context provider to test
-  function PetInfoSectionConsumer({ defaultState, disabled, fields }) {
+  function SereviceInfoSectionConsumer({ defaultState, disabled, show }) {
     const [state, dispatch] = useReducer(serviceInfoReducer, defaultState);
     return (
       <ServiceInformationProvider state={state} dispatch={dispatch}>
-        <ServiceInformationSection disabled={disabled} show={fields} />
+        <ServiceInformationSection disabled={disabled} show={show} />
       </ServiceInformationProvider>
     );
   }
@@ -94,13 +94,13 @@ describe('ServiceInformationSection', () => {
   //* Renders the component and captures the elements for later assertions
   function setup({
     defaultState = defaultServiceInformation,
-    fields = undefined,
+    show = undefined,
     disabled = false,
   } = {}) {
-    render(<PetInfoSectionConsumer
+    render(<SereviceInfoSectionConsumer
       defaultState={defaultState}
       disabled={disabled}
-      fields={fields}
+      show={show}
     />);
     // Putting all inputs in an array for more consice assertions via loops
     textInputs = [
@@ -110,7 +110,7 @@ describe('ServiceInformationSection', () => {
     radioButtons = [];
     source.forEach((opt) => {
       const radioButton = screen.queryByLabelText(opt.label);
-      radioButtons.push([radioButton, 'request_source_id', opt.label, opt.value]);
+      radioButtons.push([radioButton, 'request_source_id', opt.label, opt.id]);
     });
 
     dropdowns = [screen.queryByTitle(labels.Category)];
@@ -135,7 +135,7 @@ describe('ServiceInformationSection', () => {
 
   it('should hide fields not configured for visibility', () => {
     //* Arrange
-    setup({ fields: [] });
+    setup({ show: [] });
     //* Assert
     textInputs.forEach((field) => {
       expect(field).not.toBeInTheDocument();
@@ -212,7 +212,7 @@ describe('ServiceInformationSection', () => {
       fireEvent.click(
         within(dropdown).getByRole('button'),
       );
-      fireEvent.click(await screen.findByText('Pet Fostering'));
+      fireEvent.click(await screen.getByLabelText('Pet Fostering'));
       expect(screen.getByDisplayValue('Pet Fostering')).toBeInTheDocument();
     }));
   });

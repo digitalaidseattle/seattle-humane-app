@@ -17,6 +17,7 @@ export const data = {
   [AppConstants.Species]: [
     {
       ...emptyRecord,
+      id: 'bird-id',
       value: 'bird',
       label: 'BIRD',
       type: AppConstants.Species,
@@ -24,6 +25,7 @@ export const data = {
     },
     {
       ...emptyRecord,
+      id: 'dog-id',
       value: 'dog',
       label: 'DOG',
       type: AppConstants.Species,
@@ -33,6 +35,7 @@ export const data = {
   [AppConstants.Source]: [
     {
       ...emptyRecord,
+      id: 'phone-id',
       value: 'phone',
       label: 'PHONE',
       type: AppConstants.Source,
@@ -40,6 +43,7 @@ export const data = {
     },
     {
       ...emptyRecord,
+      id: 'walkin-id',
       value: 'walkin',
       label: 'Walk-in',
       type: AppConstants.Source,
@@ -49,6 +53,7 @@ export const data = {
   [AppConstants.Status]: [
     {
       ...emptyRecord,
+      id: 'open-id',
       value: 'open',
       label: 'Open',
       type: AppConstants.Status,
@@ -56,6 +61,7 @@ export const data = {
     },
     {
       ...emptyRecord,
+      id: 'in_progress-id',
       value: 'in_progress',
       label: 'IN PROGRESS',
       type: AppConstants.Status,
@@ -65,6 +71,7 @@ export const data = {
   [AppConstants.Category]: [
     {
       ...emptyRecord,
+      id: 'pet_fostering-id',
       value: 'pet_fostering',
       label: 'Pet Fostering',
       type: AppConstants.Category,
