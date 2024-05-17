@@ -29,6 +29,9 @@ ALTER TABLE "public"."service_request_history" OWNER TO "postgres";
 ALTER TABLE ONLY "public"."service_request_history"
     ADD CONSTRAINT "public_service_request_history_team_member_id_fkey" FOREIGN KEY ("team_member_id") REFERENCES "public"."team_members"("id");
 
+ALTER TABLE ONLY "public"."service_request_history"
+    ADD CONSTRAINT "public_service_request_service_request_id_fkey" FOREIGN KEY ("service_request_id") REFERENCES "public"."service_requests"("id");
+
 GRANT ALL ON TABLE "public"."service_request_history" TO "anon";
 GRANT ALL ON TABLE "public"."service_request_history" TO "authenticated";
 GRANT ALL ON TABLE "public"."service_request_history" TO "service_role";
