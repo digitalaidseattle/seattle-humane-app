@@ -12,6 +12,7 @@ import { LayoutContext } from '../../../layout/context/layoutcontext';
 import authService from '../../../src/services/authService';
 import supabaseClient from '../../../utils/supabaseClient';
 import GoogleIcon from '../../../src/components/GoogleIcon';
+import { Link } from 'react-router-dom';
 
 function LoginPage() {
   const { layoutConfig } = useContext(LayoutContext);
@@ -86,6 +87,19 @@ function LoginPage() {
                 className="w-full text-sm bg-white border-gray-900 text-gray-900 ml-2 pl-3 pr-5"
                 onClick={() => {
                   authService.signInWithAzure();
+                }}
+                style={{ whiteSpace: 'nowrap' }}
+              />
+            </div>
+            <div
+              className="flex"
+              style={{ position: 'relative', zIndex: '11' }}
+            >
+              <Button
+                label="Email login - for development purposes only!"
+                className="w-full text-sm bg-blue border-gray-900 ml-2 pl-3 pr-5"
+                onClick={() => {
+                  authService.signInWithEmail();
                 }}
                 style={{ whiteSpace: 'nowrap' }}
               />

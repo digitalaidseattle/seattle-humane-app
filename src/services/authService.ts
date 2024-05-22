@@ -44,12 +44,20 @@ function signInWithAzure() {
   });
 }
 
+function signInWithEmail() {
+  return supabaseClient.auth.signInWithPassword({
+    email: 'example@email.com',
+    password: 'example-password',
+  });
+}
+
 const authService = {
   signOut,
   hasUser,
   getUser,
   signInWithGoogle,
   signInWithAzure,
+  signInWithEmail,
 };
 
 export default authService;
