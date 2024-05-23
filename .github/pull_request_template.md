@@ -51,10 +51,10 @@ _We are aiming for 100% statement coverage._
 ## [optional] Which Seattle Humane animal would you like to dedicate this PR to?
 <!-- Grab an image from the links below or from the Seattle Humane website https://www.seattlehumane.org/adoption/
 
-https://g.petango.com/photos/337/31aa6d40-bd99-4071-bd36-2e992dcc4610.jpg
-https://g.petango.com/photos/337/5dd35f76-f5cc-4357-8031-1b883a2eb8d9.jpg
-https://g.petango.com/photos/337/4c107cfb-f2c4-4f45-9d0c-ace59dbdea4b.jpg
-https://g.petango.com/photos/337/d5a2bc2a-d585-4463-906a-06040b5103e0.jpg
-https://g.petango.com/photos/337/6d9679a9-76e0-4314-8750-87c443d4a64f.jpg"
+Stanley Yelnats - https://g.petango.com/photos/337/e7cc8f69-25ec-4de8-bfdb-47f97d3f7688.jpg
+Lucy - https://g.petango.com/photos/337/6d9679a9-76e0-4314-8750-87c443d4a64f.jpg
+Tanner - https://g.petango.com/photos/337/ee77a482-7022-47e1-aab6-b5f5281760a5.jpg
+Swizzle - https://g.petango.com/photos/337/b2c75b85-dc6a-4b4a-a146-4f3fa7c2058b.jpg
+Asher - https://g.petango.com/photos/337/14c79a05-5a9b-45d7-9c26-5d8ad295fd0b.jpg
 -->
 ![alt_text](gif_link)
