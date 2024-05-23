@@ -48,6 +48,13 @@ _We are aiming for 100% statement coverage._
 
 ## [optional] Are there any post-deployment tasks we need to perform?
 
-## [optional] What gif best describes this PR or how it makes you feel?
+## [optional] Which Seattle Humane animal would you like to dedicate this PR to?
+<!-- Grab an image from the links below or from the Seattle Humane website https://www.seattlehumane.org/adoption/
 
+https://g.petango.com/photos/337/31aa6d40-bd99-4071-bd36-2e992dcc4610.jpg
+https://g.petango.com/photos/337/5dd35f76-f5cc-4357-8031-1b883a2eb8d9.jpg
+https://g.petango.com/photos/337/4c107cfb-f2c4-4f45-9d0c-ace59dbdea4b.jpg
+https://g.petango.com/photos/337/d5a2bc2a-d585-4463-906a-06040b5103e0.jpg
+https://g.petango.com/photos/337/6d9679a9-76e0-4314-8750-87c443d4a64f.jpg"
+-->
 ![alt_text](gif_link)
