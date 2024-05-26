@@ -93,6 +93,7 @@ describe('Menu Items Check', () => {
         <ServiceRequestDialog
           visible={dialog === 'newServiceRequest'}
           onClose={onClose}
+          ticketId=""
         />
       </LayoutContext.Provider>,
     );
