@@ -316,6 +316,26 @@ class ClientService {
     return newTicket;
   }
 
+  static async getTicket(ticketId: ServiceRequestType['id']) {
+    const { data: ticket, error } = await supabaseClient
+      .from('service_requests')
+      .select()
+      .eq('id', ticketId)
+      .single();
+    if (error) throw new Error(`${error.message}`);
+    return ticket;
+  }
+
+  static async getRecentTickets() {
+    const { data: tickets, error } = await supabaseClient
+      .from('service_requests')
+      .select()
+      .order('created_at', { ascending: false })
+      .limit(10);
+    if (error) throw new Error(`${error.message}`);
+    return tickets;
+  }
+
   async getClientByEmail(email: string): Promise<ClientType> {
     try {
       const { data, error } = await supabaseClient
@@ -330,6 +350,54 @@ class ClientService {
       }
 
       if (!data) throw new Error('No client found with this email');
+
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  static async getClientByKeyValue<T extends keyof ClientType>(
+    key: T,
+    value: ClientType[T],
+  ): Promise<ClientType> {
+    try {
+      const { data, error } = await supabaseClient
+        .from('clients')
+        .select('*')
+        .eq(key, value)
+        .maybeSingle();
+
+      if (error) {
+        console.log(`ERROR IN GET CLIENT BY ${key}:`, error);
+        throw error;
+      }
+
+      if (!data) throw new Error(`No client found with the provided ${key}`);
+
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  static async getAnimalByKeyValue<T extends keyof AnimalType>(
+    key: T,
+    value: AnimalType[T],
+  ): Promise<AnimalType> {
+    try {
+      const { data, error } = await supabaseClient
+        .from('pets')
+        .select('*')
+        .eq(key, value)
+        .maybeSingle();
+
+      if (error) {
+        console.log(`ERROR IN GET PET BY ${key}:`, error);
+        throw error;
+      }
+
+      if (!data) throw new Error(`No pet found with the provided ${key}`);
 
       return data;
     } catch (error) {
@@ -396,6 +464,29 @@ class ClientService {
       .select();
     if (error) throw new Error(error.message);
     return teamMembers;
+  }
+
+  static async getTeamMemberById(
+    id: TeamMemberType['id'],
+  ): Promise<TeamMemberType> {
+    try {
+      const { data, error } = await supabaseClient
+        .from('team_members')
+        .select('*')
+        .eq('id', id)
+        .maybeSingle();
+
+      if (error) {
+        console.log('ERROR IN GET TEAMMEMBER BY ID:', error);
+        throw error;
+      }
+
+      if (!data) throw new Error('No team member found with the provided ID');
+
+      return data;
+    } catch (error) {
+      throw error;
+    }
   }
 }
 
