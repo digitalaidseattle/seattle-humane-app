@@ -35,7 +35,7 @@ interface PetInformationSectionProps {
 export default function PetInformationSection(props: PetInformationSectionProps) {
   const {
     disabled,
-    show = ['name', 'species_id', 'age', 'weight'],
+    show = ['name', 'species', 'age', 'weight'],
   } = props;
 
   const visibleFields = new Set<keyof EditableAnimalType>(show);
@@ -51,7 +51,7 @@ export default function PetInformationSection(props: PetInformationSectionProps)
     { type: PetInfoActionType.Update, partialStateUpdate },
   );
   const setName = (name: EditableAnimalType['name']) => setFormData({ name });
-  const setSpecies = (species_id: EditableAnimalType['species_id']) => setFormData({ species_id });
+  const setSpecies = (species: EditableAnimalType['species']) => setFormData({ species });
   const setAge = (age: EditableAnimalType['age']) => setFormData({ age });
   const setWeight = (weight: EditableAnimalType['weight']) => setFormData({ weight });
 
@@ -77,7 +77,7 @@ export default function PetInformationSection(props: PetInformationSectionProps)
               />
             </div>
           )}
-        {visibleFields.has('species_id')
+        {visibleFields.has('species')
           && (
             <div className="grid col-12">
               <div className="col-fixed mr-3">{petInformationLabels.Species}</div>
@@ -91,7 +91,7 @@ export default function PetInformationSection(props: PetInformationSectionProps)
                     disabled={disabled}
                     name={`species-${spec.value}`}
                     onChange={(e) => setSpecies(e.target.value)}
-                    checked={spec.id && formData.species_id === spec.id}
+                    checked={spec.id && formData.species === spec.id}
                   />
                 ))
                   : null}
