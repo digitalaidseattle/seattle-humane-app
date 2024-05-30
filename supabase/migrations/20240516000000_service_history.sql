@@ -1,14 +1,14 @@
 ALTER TABLE ONLY "public"."service_requests"
-    DROP CONSTRAINT "public_service_requests_service_category_id_fkey" FOREIGN KEY ("service_category_id") REFERENCES "public"."app_constants"("id");
+    DROP CONSTRAINT "public_service_requests_service_category_id_fkey";
 
 ALTER TABLE ONLY "public"."service_requests"
-    DROP CONSTRAINT "public_service_requests_request_source_id_fkey" FOREIGN KEY ("request_source_id") REFERENCES "public"."app_constants"("id");
+    DROP CONSTRAINT "public_service_requests_request_source_id_fkey";
 
 ALTER TABLE ONLY "public"."service_requests"
-    DROP COLUMN "service_category_id" text;
+    DROP COLUMN "service_category_id";
 
 ALTER TABLE ONLY "public"."service_requests"
-    DROP COLUMN "request_source_id" text;
+    DROP COLUMN "request_source_id";
 
 ALTER TABLE ONLY "public"."service_requests"
     DROP COLUMN "log_id";
@@ -44,10 +44,10 @@ GRANT ALL ON TABLE "public"."service_request_history" TO "authenticated";
 GRANT ALL ON TABLE "public"."service_request_history" TO "service_role";
 
 ALTER TABLE ONLY "public"."pets"
-    DROP CONSTRAINT "public_pets_species_id_fkey" FOREIGN KEY ("species_id") REFERENCES "public"."app_constants"("id");
+    DROP CONSTRAINT "public_pets_species_id_fkey";
 
 ALTER TABLE ONLY "public"."pets"
-    DROP COLUMN "species_id" text;
+    DROP COLUMN "species_id";
 
 ALTER TABLE ONLY "public"."pets"
     ADD COLUMN "species" text;
