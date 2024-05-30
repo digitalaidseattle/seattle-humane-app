@@ -48,9 +48,9 @@ const defaultRequest: EditableServiceRequestType = {
   pet_id: null,
   service_category: '',
   request_source: '',
+  status: '',
   description: '',
   team_member_id: null,
-  log_id: '',
 };
 
 interface ClientDialogProps {

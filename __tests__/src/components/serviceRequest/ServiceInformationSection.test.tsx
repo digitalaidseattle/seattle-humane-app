@@ -25,7 +25,6 @@ jest.mock('@context/serviceRequest/serviceInformationContext', () => {
   const testDefaultServiceInformation: EditableServiceRequestType = {
     client_id: '',
     pet_id: '',
-    log_id: '',
     service_category: '',
     request_source: '',
     description: '',

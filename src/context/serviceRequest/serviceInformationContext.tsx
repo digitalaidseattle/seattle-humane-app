@@ -8,10 +8,10 @@ import { EditableServiceRequestType } from '@types';
 
 export const defaultServiceInformation: EditableServiceRequestType = {
   client_id: '',
-  log_id: '',
   pet_id: '',
   service_category: '',
   request_source: '',
+  status: '',
   description: '',
   team_member_id: '',
 };
