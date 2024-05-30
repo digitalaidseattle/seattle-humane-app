@@ -26,8 +26,8 @@ jest.mock('@context/serviceRequest/serviceInformationContext', () => {
     client_id: '',
     pet_id: '',
     log_id: '',
-    service_category_id: '',
-    request_source_id: '',
+    service_category: '',
+    request_source: '',
     description: '',
     team_member_id: '',
   };
@@ -110,7 +110,7 @@ describe('ServiceInformationSection', () => {
     radioButtons = [];
     source.forEach((opt) => {
       const radioButton = screen.queryByLabelText(opt.label);
-      radioButtons.push([radioButton, 'request_source_id', opt.label, opt.id]);
+      radioButtons.push([radioButton, 'request_source', opt.label, opt.id]);
     });
 
     dropdowns = [screen.queryByTitle(labels.Category)];

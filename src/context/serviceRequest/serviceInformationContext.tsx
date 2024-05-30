@@ -10,8 +10,8 @@ export const defaultServiceInformation: EditableServiceRequestType = {
   client_id: '',
   log_id: '',
   pet_id: '',
-  service_category_id: '',
-  request_source_id: '',
+  service_category: '',
+  request_source: '',
   description: '',
   team_member_id: '',
 };

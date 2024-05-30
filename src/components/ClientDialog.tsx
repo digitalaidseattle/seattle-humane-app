@@ -38,7 +38,7 @@ const defaultClient: EditableClientType = {
 
 const defaultAnimal: EditableAnimalType = {
   name: '',
-  species_id: '',
+  species: '',
   age: 0,
   weight: 0,
 };
@@ -46,8 +46,8 @@ const defaultAnimal: EditableAnimalType = {
 const defaultRequest: EditableServiceRequestType = {
   client_id: null,
   pet_id: null,
-  service_category_id: '',
-  request_source_id: '',
+  service_category: '',
+  request_source: '',
   description: '',
   team_member_id: null,
   log_id: '',
@@ -166,7 +166,7 @@ function ClientDialog(props: ClientDialogProps) {
           >
             <PetInformationSection
               disabled={busy}
-              show={['name', 'species_id']}
+              show={['name', 'species']}
             />
           </PetInformationProvider>
           <ServiceInformationProvider
@@ -175,7 +175,7 @@ function ClientDialog(props: ClientDialogProps) {
           >
             <ServiceInformationSection
               disabled={busy}
-              show={['service_category_id']}
+              show={['service_category']}
             />
           </ServiceInformationProvider>
         </div>

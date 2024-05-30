@@ -7,7 +7,7 @@ import { EditableAnimalType } from '@types';
 
 export const defaultPetInformation: EditableAnimalType = {
   name: '',
-  species_id: '',
+  species: '',
   weight: 0,
   age: 0,
 };
