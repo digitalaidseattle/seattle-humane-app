@@ -8,49 +8,39 @@
 *
 * @2024 Digital Aid Seattle
 */
+import useAppConstants from '@hooks/useAppConstants';
+import { ServiceRequestType } from '@types';
 import { useRouter } from 'next/navigation';
 import { BreadCrumb } from 'primereact/breadcrumb';
 import { Button } from 'primereact/button';
+import { Dropdown } from 'primereact/dropdown';
 import { InputMask } from 'primereact/inputmask';
 import { InputText } from 'primereact/inputtext';
 import { InputTextarea } from 'primereact/inputtextarea';
-import { Rating } from 'primereact/rating';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
-import React, { useEffect, useRef, useState } from 'react';
-import { Dropdown } from 'primereact/dropdown';
-import { AppConstantType } from '@types';
-import {
-  ClientTicket,
-  clientService,
-} from '../../src/services/ClientService';
+import { useEffect, useRef, useState } from 'react';
+import { AppConstants } from 'src/constants';
+import { clientService } from '../../src/services/ClientService';
 
 function Client() {
   const { push } = useRouter();
   // TODO create LoadingContext & Loading Indicator in layout
   const [_loading, setLoading] = useState(false);
   // TODO create customHook for serviceCategories
-  const [categories, setCategories] = useState<AppConstantType[]>();
-  const [statuses, setStatuses] = useState<AppConstantType[]>();
+  const categories = useAppConstants(AppConstants.Category);
+  const statuses = useAppConstants(AppConstants.Status);
 
-  const [ticket, setTicket] = useState<ClientTicket>();
+  const [ticket, setTicket] = useState<ServiceRequestType>();
   const toast = useRef(null);
 
   const home = { icon: 'pi pi-home', url: '/' };
 
   useEffect(() => {
-    const ticketNo = new URLSearchParams(window.location.search).get('ticketNo');
-    Promise
-      .all([
-        clientService.getTicket(ticketNo),
-        clientService.getServiceCategories(),
-        clientService.getServiceStatuses(),
-      ])
-      .then((resps) => {
-        setTicket(resps[0]);
-        setCategories(resps[1]);
-        setStatuses(resps[2]);
-      })
+    setLoading(true);
+    const id = new URLSearchParams(window.location.search).get('id');
+    clientService.getTicket(id)
+      .then((resp) => setTicket(resp))
       .catch((err) => console.error(err))
       .finally(() => setLoading(false));
   }, []);
@@ -65,7 +55,7 @@ function Client() {
     }, {
       template: <span>
         Request:
-        {ticket ? ticket.ticketNo : 'New Request'}
+        {ticket ? ticket.id : 'New Request'}
       </span>,
     },
   ];
@@ -86,8 +76,7 @@ function Client() {
   );
 
   const changeProp = (prop: string, value: any) => {
-    const clone = new ClientTicket(ticket);
-    clone[prop] = value;
+    const clone = Object.assign(ticket, { prop, value });
     setTicket(clone);
   };
 
@@ -119,16 +108,6 @@ function Client() {
                     </div>
                     <ul className="list-none p-0 m-0">
                       <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
-                        <div className="text-500 w-6 md:w-2 font-medium">Summary</div>
-                        <InputText id="summary" type="text" value={ticket.summary} onBlur={() => update()} onChange={(e) => changeProp('summary', e.target.value)} />
-                      </li>
-                      <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
-                        <div className="text-500 w-6 md:w-2 font-medium">Urgency</div>
-                        <Rating value={ticket.urgency} onChange={(e) => changeProp('urgency', e.value)} />
-                        \
-                        {' '}
-                      </li>
-                      <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
                         <div className="text-500 w-6 md:w-2 font-medium">Status</div>
                         <Dropdown
                           value={ticket.status}
@@ -144,7 +123,7 @@ function Client() {
                       <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
                         <div className="text-500 w-6 md:w-2 font-medium">Service Category</div>
                         <Dropdown
-                          value={ticket.serviceCategoryId}
+                          value={ticket.service_category}
                           title="Service category options"
                           className="w-full md:w-14rem"
                           // Note: we're updating onBlur.  we may have to change to a "save" button because of performance
@@ -178,7 +157,7 @@ function Client() {
                       <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
                         <div className="text-500 w-6 md:w-2 font-medium">Name</div>
                         <div className="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
-                          <InputText id="name" type="text" value={ticket.name} onBlur={() => update()} onChange={(e) => changeProp('name', e.target.value)} />
+                          <InputText id="name" type="text" value={ticket.clients.first_name} onBlur={() => update()} onChange={(e) => changeProp('name', e.target.value)} />
                         </div>
                       </li>
                       <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
@@ -188,7 +167,7 @@ function Client() {
                             id="phone"
                             type="text"
                             mask="(999) 999-9999"
-                            value={ticket.phone}
+                            value={ticket.clients.phone}
                             onBlur={() => update()}
                             onChange={(e) => changeProp('phone', e.target.value)}
                           />
@@ -197,7 +176,7 @@ function Client() {
                       <li className="flex align-items-center py-3 px-2 border-top-1 border-300 flex-wrap">
                         <div className="text-500 w-6 md:w-2 font-medium">Email</div>
                         <div className="text-900 w-full md:w-8 md:flex-order-0 flex-order-1">
-                          <InputText id="email" type="text" value={ticket.email} onBlur={() => update()} onChange={(e) => changeProp('email', e.target.value)} />
+                          <InputText id="email" type="text" value={ticket.clients.email} onBlur={() => update()} onChange={(e) => changeProp('email', e.target.value)} />
                         </div>
                       </li>
                     </ul>

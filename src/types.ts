@@ -20,7 +20,10 @@ export type AnimalType = Tables<'pets'>;
 export type EditableAnimalType = Omit<AnimalType, 'id' | 'client_id'>;
 
 // INCOMPLETE: more fields to be added when confirmed as required
-export type ServiceRequestType = Tables<'service_requests'>;
+export type ServiceRequestType = Tables<'service_requests'> & {
+  clients?: ClientType,
+  serviceRequestHistories?: Tables<'service_request_history'>[]
+};
 
 export type EditableServiceRequestType = Omit<ServiceRequestType, 'id' | 'created_at'>;
 

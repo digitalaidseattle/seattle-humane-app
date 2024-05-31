@@ -1,22 +1,22 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
-import getConfig from 'next/config';
+import { ServiceRequestType } from '@types';
+import { useRouter } from 'next/navigation';
 import { Button } from 'primereact/button';
 import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
 import { InputText } from 'primereact/inputtext';
 import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
-import React, { useEffect, useRef, useState } from 'react';
-import { useRouter } from 'next/navigation';
+import { useEffect, useRef, useState } from 'react';
 import ClientDialog from '../../src/components/ClientDialog';
-import { ClientTicket, clientService } from '../../src/services/ClientService';
+import { clientService } from '../../src/services/ClientService';
 
 function Clients() {
   const { push } = useRouter();
 
   const [tickets, setTickets] = useState([]);
-  const [selectedTickets, setSelectedTickets] = useState(null);
+  const [selectedTickets, setSelectedTickets] = useState<ServiceRequestType[]>([]);
   const [globalFilter, setGlobalFilter] = useState(null);
   const toast = useRef(null);
   const dt = useRef(null);
@@ -37,8 +37,8 @@ function Clients() {
     //     .then(t => setTickets(t));
   };
 
-  const editTicket = (ticket: ClientTicket) => {
-    push(`/client?ticketNo=${ticket.ticketNo}`);
+  const editTicket = (ticket: ServiceRequestType) => {
+    push(`/client?id=${ticket.id}`);
   };
 
   const confirmDeleteTicket = (ticket) => {
@@ -59,38 +59,24 @@ function Clients() {
     </>
   );
 
-  const codeBodyTemplate = (rowData: ClientTicket) => (
+  const categoryBodyTemplate = (rowData: ServiceRequestType) => (
     <>
-      <span className="p-column-title">Code</span>
-      {rowData.ticketNo}
+      <span className="p-column-title">id</span>
+      {rowData.service_category}
     </>
   );
 
-  const typeBodyTemplate = (rowData: ClientTicket) => (
-    <>
-      <span className="p-column-title">Type</span>
-      {rowData.type}
-    </>
-  );
-
-  const nameBodyTemplate = (rowData: ClientTicket) => (
+  const nameBodyTemplate = (rowData: ServiceRequestType) => (
     <>
       <span className="p-column-title">Name</span>
-      {rowData.name}
+      {`${rowData.clients.first_name} ${rowData.clients.last_name}`}
     </>
   );
 
-  const statusBodyTemplate = (rowData: ClientTicket) => (
+  const statusBodyTemplate = (rowData: ServiceRequestType) => (
     <>
       <span className="p-column-title">Status</span>
       {rowData.status}
-    </>
-  );
-
-  const urgencyBodyTemplate = (rowData: ClientTicket) => (
-    <>
-      <span className="p-column-title">Urgency</span>
-      {rowData.urgency}
     </>
   );
 
@@ -123,7 +109,7 @@ function Clients() {
             value={tickets}
             selection={selectedTickets}
             onSelectionChange={(e) => setSelectedTickets(e.value)}
-            dataKey="ticketNo"
+            dataKey="id"
             paginator
             rows={10}
             rowsPerPageOptions={[5, 10, 25]}
@@ -135,11 +121,11 @@ function Clients() {
             header={header}
           >
             <Column selectionMode="multiple" headerStyle={{ width: '4rem' }} />
+            <Column header="service_category" sortable body={categoryBodyTemplate} headerStyle={{ minWidth: '15rem' }} />
             <Column header="Status" body={statusBodyTemplate} />
-            <Column header="Urgency" body={urgencyBodyTemplate} />
-            <Column field="name" header="Name" sortable headerStyle={{ minWidth: '15rem' }} />
-            <Column field="email" header="Email" sortable headerStyle={{ minWidth: '15rem' }} />
-            <Column field="phone" header="Phone" sortable headerStyle={{ minWidth: '15rem' }} />
+            <Column header="Name" sortable body={nameBodyTemplate} headerStyle={{ minWidth: '15rem' }} />
+            <Column field="clients.email" header="Email" headerStyle={{ minWidth: '15rem' }} />
+            <Column field="clients.phone" header="Phone" headerStyle={{ minWidth: '15rem' }} />
             <Column body={actionBodyTemplate} headerStyle={{ minWidth: '10rem' }} />
           </DataTable>
 
