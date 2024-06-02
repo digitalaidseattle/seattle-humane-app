@@ -6,13 +6,8 @@
  */
 
 import { AppConstants } from 'src/constants';
-import {
-  AppConstantType,
-  EditableAnimalType,
-  EditableClientType,
-  EditableServiceRequestType,
-} from '@types';
-import { mockTicket } from '@hooks/__mocks__/useTicketById';
+import type { AppConstantType } from '@types';
+import { mockAnimal, mockClient, mockTicket } from '@hooks/__mocks__/useTicketById';
 import { recentTickets } from '@hooks/__mocks__/useRecentTickets';
 import ClientService, { clientService } from '../../../src/services/ClientService';
 import supabaseClient from '../../../utils/supabaseClient';
@@ -71,30 +66,81 @@ afterEach(() => {
 
 describe('ClientService', () => {
   describe('createClient()', () => {
-    const ticket = {} as EditableServiceRequestType;
-    const client = {} as EditableClientType;
-    const animal = {} as EditableAnimalType;
-
     it('should throw error if client information is missing', async () => {
       // arrange
       mockSupabaseClient.setTestData(null);
       // act & assert
-      await expect(ClientService.createClient(client))
+      await expect(ClientService.createClient(null))
         .rejects.toThrow();
     });
+    it('should save the client to the DB', async () => {
+      //* Arrange
+      mockSupabaseClient.setTestData(mockClient);
+
+      //* Act
+      const mockClientInput = { ...mockClient };
+      delete mockClientInput.id;
+      const actual = await ClientService.createClient(mockClientInput);
+
+      //* Assert
+      expect(mockSupabaseClient.from('clients').insert)
+        .toHaveBeenCalledWith(expect.arrayContaining(
+          [expect.objectContaining(mockClientInput)],
+        ));
+      expect(actual).toBe(mockClient);
+    });
+  });
+  describe('createAnimal()', () => {
     it('should throw error if animal information is missing', async () => {
       // arrange
       mockSupabaseClient.setTestData(null);
       // act & assert
-      await expect(ClientService.createAnimal(animal, ''))
+      await expect(ClientService.createAnimal(null, ''))
         .rejects.toThrow();
     });
+    it('should save the animal to the DB', async () => {
+      //* Arrange
+      mockSupabaseClient.setTestData(mockAnimal);
+
+      //* Act
+      const mockAnimalInput = { ...mockAnimal };
+      delete mockAnimalInput.id;
+      const actual = await ClientService.createAnimal(mockAnimalInput, mockClient.id);
+
+      //* Assert
+      expect(mockSupabaseClient.from('pets').insert)
+        .toHaveBeenCalledWith(expect.arrayContaining(
+          [expect.objectContaining(mockAnimalInput)],
+        ));
+      expect(actual).toBe(mockAnimal);
+    });
+  });
+  describe('createTicket()', () => {
     it('should throw error if ticket information is missing', async () => {
       // arrange
       mockSupabaseClient.setTestData(null);
       // act & assert
-      await expect(ClientService.createTicket(ticket, '', ''))
+      await expect(ClientService.createTicket(null, '', ''))
         .rejects.toThrow();
+    });
+    it('should save the ticket to the DB', async () => {
+      //* Arrange
+      mockSupabaseClient.setTestData(mockTicket);
+
+      //* Act
+      const mockTicketlInput = { ...mockTicket };
+      delete mockTicketlInput.id;
+      delete mockTicketlInput.log_id;
+      delete mockTicketlInput.created_at;
+      const actual = await ClientService
+        .createTicket(mockTicketlInput, mockClient.id, mockAnimal.id);
+
+      //* Assert
+      expect(mockSupabaseClient.from('service_requests').insert)
+        .toHaveBeenCalledWith(expect.arrayContaining(
+          [expect.objectContaining(mockTicketlInput)],
+        ));
+      expect(actual).toBe(mockTicket);
     });
   });
   describe('static getTicket()', () => {
