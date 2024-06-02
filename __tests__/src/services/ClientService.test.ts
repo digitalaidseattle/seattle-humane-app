@@ -12,6 +12,8 @@ import {
   EditableClientType,
   EditableServiceRequestType,
 } from '@types';
+import { mockTicket } from '@hooks/__mocks__/useTicketById';
+import { recentTickets } from '@hooks/__mocks__/useRecentTickets';
 import ClientService, { clientService } from '../../../src/services/ClientService';
 import supabaseClient from '../../../utils/supabaseClient';
 
@@ -98,7 +100,7 @@ describe('ClientService', () => {
   describe('static getTicket()', () => {
     it('returns the ticket from the db', async () => {
       // Arrange
-      const expectedTicket = { id: '123abc' };
+      const expectedTicket = mockTicket;
       mockSupabaseClient.setTestData(expectedTicket);
       // Act
       const actualTicket = await ClientService.getTicket(expectedTicket.id);
@@ -116,7 +118,7 @@ describe('ClientService', () => {
   describe('static getRecentTickets()', () => {
     it('returns recent tickets from the db', async () => {
       // Arrange
-      const expectedTickets = [{ id: '123abc' }, { id: '456def' }];
+      const expectedTickets = recentTickets;
       mockSupabaseClient.setTestData(expectedTickets);
       // Act
       const actualTicket = await ClientService.getRecentTickets();
