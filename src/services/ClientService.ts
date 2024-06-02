@@ -266,12 +266,12 @@ class ClientService {
     ClientService.throwIfInvalidInput('client', client);
     const {
 
-      first_name, last_name, email, phone,
+      first_name, last_name, email, phone, zip_code,
     } = client;
     const { data: newClient, error } = await supabaseClient
       .from('clients')
       .insert([{
-        first_name, last_name, email, phone,
+        first_name, last_name, email, phone, zip_code,
       }])
       .select()
       .single();
@@ -287,6 +287,8 @@ class ClientService {
         name: animal.name,
         species_id: animal.species_id,
         client_id: clientId,
+        age: animal.age,
+        weight: animal.weight,
       }])
       .select()
       .single();
