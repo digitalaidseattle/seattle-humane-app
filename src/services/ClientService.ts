@@ -465,29 +465,6 @@ class ClientService {
     if (error) throw new Error(error.message);
     return teamMembers;
   }
-
-  static async getTeamMemberById(
-    id: TeamMemberType['id'],
-  ): Promise<TeamMemberType> {
-    try {
-      const { data, error } = await supabaseClient
-        .from('team_members')
-        .select('*')
-        .eq('id', id)
-        .maybeSingle();
-
-      if (error) {
-        console.log('ERROR IN GET TEAMMEMBER BY ID:', error);
-        throw error;
-      }
-
-      if (!data) throw new Error('No team member found with the provided ID');
-
-      return data;
-    } catch (error) {
-      throw error;
-    }
-  }
 }
 
 const clientService = new ClientService();
