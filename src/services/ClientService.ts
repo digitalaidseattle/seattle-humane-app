@@ -213,12 +213,12 @@ class ClientService {
 
       // Check if animal exists and create one if not
       // TODO: HOW TO IDENTIFY UNIQUE ANIMAL? NAME / SPECIES / CLIENT_ID?
-      if (!animal.species_id) throw new Error('Animal species is required');
+      if (!animal.species) throw new Error('Animal species is required');
       const { data: existingAnimal, error: animalError } = await supabaseClient
         .from('pets')
         .select('*')
         .eq('name', animal.name)
-        .eq('species_id', animal.species_id)
+        .eq('species', animal.species)
         .eq('client_id', clientId)
         .maybeSingle();
 
@@ -245,8 +245,8 @@ class ClientService {
     ticket: (keyof ServiceRequestType)[]
   } = {
       client: ['first_name', 'last_name', 'email', 'phone'],
-      animal: ['name', 'age', 'weight', 'species_id'],
-      ticket: ['service_category_id', 'request_source_id', 'team_member_id'],
+      animal: ['name', 'age', 'weight', 'species'],
+      ticket: ['service_category', 'request_source', 'team_member_id'],
     };
 
   static throwIfInvalidInput(
@@ -285,7 +285,7 @@ class ClientService {
       .from('pets')
       .insert([{
         name: animal.name,
-        species_id: animal.species_id,
+        species: animal.species,
         client_id: clientId,
       }])
       .select()
@@ -306,8 +306,8 @@ class ClientService {
         client_id: clientId,
         pet_id: petId,
         description: ticket.description,
-        service_category_id: ticket.service_category_id,
-        request_source_id: ticket.request_source_id,
+        service_category: ticket.service_category,
+        request_source: ticket.request_source,
         team_member_id: ticket.team_member_id,
       }])
       .select()
