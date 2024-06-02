@@ -5,12 +5,13 @@ import { EditableAnimalType, EditableClientType, EditableServiceRequestType } fr
 import { useEffect, useState } from 'react';
 import ClientService from 'src/services/ClientService';
 
+export type UseTicketByIdState = {
+  client: EditableClientType,
+  animal: EditableAnimalType,
+  ticket: EditableServiceRequestType
+};
 export default function useTicketById(ticketId: string) {
-  const [state, setState] = useState<{
-    client: EditableClientType,
-    animal: EditableAnimalType,
-    ticket: EditableServiceRequestType
-  }>({
+  const [state, setState] = useState<UseTicketByIdState>({
     client: defaultClientInformation,
     animal: defaultPetInformation,
     ticket: defaultServiceInformation,

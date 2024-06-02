@@ -51,6 +51,10 @@ const layoutContextValue = {
 };
 
 jest.mock('next/router', () => jest.requireActual('next-router-mock'));
+jest.mock('next/navigation', () => ({
+  usePathname: jest.fn(),
+  useSearchParams: jest.fn().mockReturnValue(new URLSearchParams()),
+}));
 
 describe('Navigation/Menu Top Bar - Href Checks', () => {
   test('Animal button has correct href attribute', () => {

@@ -40,6 +40,7 @@ jest.mock('@supabase/supabase-js', () => ({
       lte: jest.fn().mockReturnThis(),
       update: jest.fn().mockReturnThis(),
       insert: jest.fn().mockReturnThis(),
+      limit: jest.fn().mockReturnThis(),
       error: null,
     };
   }),
@@ -92,6 +93,42 @@ describe('ClientService', () => {
       // act & assert
       await expect(ClientService.createTicket(ticket, '', ''))
         .rejects.toThrow();
+    });
+  });
+  describe('static getTicket()', () => {
+    it('returns the ticket from the db', async () => {
+      // Arrange
+      const expectedTicket = { id: '123abc' };
+      mockSupabaseClient.setTestData(expectedTicket);
+      // Act
+      const actualTicket = await ClientService.getTicket(expectedTicket.id);
+      // Assert
+      expect(actualTicket).toBe(expectedTicket);
+    });
+    it('throws errors from the db', async () => {
+      // Arrange
+      const expectedErrorMessage = 'Internal DB Error';
+      mockSupabaseClient.setTestError(new Error(expectedErrorMessage));
+      // Act & Assert
+      await expect(ClientService.getTicket('')).rejects.toThrow(expectedErrorMessage);
+    });
+  });
+  describe('static getRecentTickets()', () => {
+    it('returns recent tickets from the db', async () => {
+      // Arrange
+      const expectedTickets = [{ id: '123abc' }, { id: '456def' }];
+      mockSupabaseClient.setTestData(expectedTickets);
+      // Act
+      const actualTicket = await ClientService.getRecentTickets();
+      // Assert
+      expect(actualTicket).toBe(expectedTickets);
+    });
+    it('throws errors from the db', async () => {
+      // Arrange
+      const expectedErrorMessage = 'Internal DB Error';
+      mockSupabaseClient.setTestError(new Error(expectedErrorMessage));
+      // Act & Assert
+      await expect(ClientService.getRecentTickets()).rejects.toThrow(expectedErrorMessage);
     });
   });
   it.each([
