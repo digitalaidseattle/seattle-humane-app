@@ -9,7 +9,7 @@ values
   ('Surgery', 'surgery', 'category', TRUE, now(), now()),
   ('Vaccination', 'vaccination', 'category', TRUE, now(), now());
 
-insert into app_constants
+insert into team_members
   (first_name, last_name, email)
 values
   ('admin', 'admin', 'example@example.com');
