@@ -8,3 +8,8 @@ values
   ('Phone Call', 'phone call', 'source', TRUE, now(), now()),
   ('Surgery', 'surgery', 'category', TRUE, now(), now()),
   ('Vaccination', 'vaccination', 'category', TRUE, now(), now());
+
+insert into app_constants
+  (first_name, last_name, email)
+values
+  ('admin', 'admin', 'example@example.com');
