@@ -23,7 +23,7 @@ interface Item {
 }
 
 function AppMenu() {
-  const [dialog, showDialog] = useState('');
+  const [dialogVisible, setDialogVisible] = useState(false);
   const { user } = useContext(UserContext);
   const { contextPath } = getConfig().publicRuntimeConfig;
   const router = useRouter();
@@ -31,7 +31,7 @@ function AppMenu() {
   const searchParams = useSearchParams();
   const ticketId = searchParams.get('ticket');
   const onClose = () => {
-    showDialog('');
+    setDialogVisible(false);
     const newSearchParams = new URLSearchParams(searchParams.toString());
     newSearchParams.delete('ticket');
     router.push(`${pathname}?${newSearchParams.toString()}`);
@@ -55,7 +55,7 @@ function AppMenu() {
         key: 'newServiceRequest',
         class: 'new-request-icon',
         command: () => {
-          if (!dialog) showDialog('newServiceRequest');
+          if (!dialogVisible) setDialogVisible(true);
         },
       },
       {
@@ -84,7 +84,7 @@ function AppMenu() {
       {/* Modal opening and closing */}
       <ServiceRequestDialog
         ticketId={ticketId}
-        visible={dialog === 'newServiceRequest' || !!ticketId}
+        visible={dialogVisible || !!ticketId}
         onClose={onClose}
       />
     </>
