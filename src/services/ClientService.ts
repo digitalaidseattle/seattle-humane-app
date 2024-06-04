@@ -383,30 +383,6 @@ class ClientService {
     }
   }
 
-  static async getAnimalByKeyValue<T extends keyof AnimalType>(
-    key: T,
-    value: AnimalType[T],
-  ): Promise<AnimalType> {
-    try {
-      const { data, error } = await supabaseClient
-        .from('pets')
-        .select('*')
-        .eq(key, value)
-        .maybeSingle();
-
-      if (error) {
-        console.log(`ERROR IN GET PET BY ${key}:`, error);
-        throw error;
-      }
-
-      if (!data) throw new Error(`No pet found with the provided ${key}`);
-
-      return data;
-    } catch (error) {
-      throw error;
-    }
-  }
-
   getTicket(id: string): Promise<ClientTicket> {
     return Promise.resolve(this.tickets.find((t) => t.ticketNo == id));
   }

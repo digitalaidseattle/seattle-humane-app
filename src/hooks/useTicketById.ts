@@ -1,6 +1,7 @@
 import { defaultClientInformation } from '@context/serviceRequest/clientInformationContext';
 import { defaultPetInformation } from '@context/serviceRequest/petInformationContext';
 import { defaultServiceInformation } from '@context/serviceRequest/serviceInformationContext';
+import AnimalService from '@services/AnimalService';
 import { EditableAnimalType, EditableClientType, EditableServiceRequestType } from '@types';
 import { useEffect, useState } from 'react';
 import ClientService from 'src/services/ClientService';
@@ -28,7 +29,7 @@ export default function useTicketById(ticketId: string) {
        */
       const [client, animal] = await Promise.all([
         ClientService.getClientByKeyValue('id', ticket.client_id),
-        ClientService.getAnimalByKeyValue('id', ticket.pet_id),
+        AnimalService.get('id', ticket.pet_id),
       ]);
       setState({ ticket, client, animal });
     };

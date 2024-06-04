@@ -1,10 +1,13 @@
 import { mockAnimal, mockClient, mockTicket } from '@hooks/__mocks__/useTicketById';
 import useTicketById from '@hooks/useTicketById';
+import AnimalService from '@services/AnimalService';
 import ClientService from '@services/ClientService';
 import { renderHook, waitFor } from '@testing-library/react';
 
 jest.mock('@services/ClientService');
 const mockedClientService = jest.mocked(ClientService);
+jest.mock('@services/AnimalService');
+const mockedAnimalService = jest.mocked(AnimalService);
 
 beforeAll(() => {
   // Setup mock ClientService
@@ -18,11 +21,11 @@ beforeAll(() => {
     return null;
   };
   mockedClientService.getClientByKeyValue.mockImplementation(mockGetClientByKeyValue);
-  const mockGetAnimalByKeyValue: typeof ClientService.getAnimalByKeyValue = async (key, value) => {
+  const mockGetAnimal: typeof AnimalService.get = async (key, value) => {
     if (key === 'id' && value === mockAnimal.id) return mockAnimal as any;
     return null;
   };
-  mockedClientService.getAnimalByKeyValue.mockImplementation(mockGetAnimalByKeyValue);
+  mockedAnimalService.get.mockImplementation(mockGetAnimal);
 });
 
 it('returns the ticket, client and pet from the db', async () => {
