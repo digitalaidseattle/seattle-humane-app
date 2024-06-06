@@ -2,7 +2,6 @@
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-throw-literal */
 /* eslint-disable no-useless-catch */
-/* eslint-disable eqeqeq */
 /* eslint-disable class-methods-use-this */
 /* eslint-disable max-classes-per-file */
 /**
@@ -24,161 +23,20 @@ import {
 } from '@types';
 import supabaseClient from '../../utils/supabaseClient';
 
-enum RequestType {
-  clientNew = 'client-new',
-  clientUpdate = 'client-new',
-  animalNew = 'animal-new',
-  animalUpdate = 'animal-update',
-}
+type PageInfo<T> = {
+  totalRowCount: number
+  rows: T[]
+};
 
-enum TicketType {
-  walkin = 'walk-in',
-  email = 'email',
-  phone = 'phone',
-  other = 'other',
-}
-
-class ServiceCategory {
-  id: string;
-
-  name: string;
-
-  constructor(input: any) {
-    this.id = input.id;
-    this.name = input.name;
-  }
-}
-
-class ServiceStatus {
-  id: string;
-
-  code: string;
-
-  name: string;
-
-  constructor(input: any) {
-    this.id = input.id;
-    this.code = input.code;
-    this.name = input.name;
-  }
-}
-const statuses: ServiceStatus[] = [
-  new ServiceStatus({ name: 'New', code: 'new' }),
-  new ServiceStatus({ name: 'In-progress', code: 'update' }),
-  new ServiceStatus({ name: 'Close', code: 'closed' }),
-  new ServiceStatus({ name: 'Blocked', code: 'blocked' }),
-];
-
-class NewClientRequest {
-  requestType: RequestType = RequestType.clientNew;
-
-  ticketNo: string;
-
-  type: TicketType;
-
-  name: string;
-
-  email: string;
-
-  phone: string;
-
-  summary: string;
-
-  description: string;
-
-  date: Date;
-
-  representative: string;
-
-  constructor(data: any) {
-    this.ticketNo = data.ticketNo;
-    this.type = data.type;
-    this.name = data.name;
-    this.email = data.email;
-    this.phone = data.phone;
-    this.summary = data.summary;
-    this.description = data.description;
-    this.representative = data.representative;
-    this.date = data.date ? data.date : new Date();
-  }
-}
-
-class UpdateClientRequest {
-  requestType: RequestType = RequestType.clientUpdate;
-
-  ticketNo: string;
-
-  ticket: ClientTicket;
-
-  date: Date;
-
-  representative: string;
-
-  constructor(ticket: any, date: Date, representative: string) {
-    this.ticketNo = ticket.ticketNo;
-    this.ticket = ticket;
-    this.date = date || new Date();
-  }
-}
-
-class ChangeLog {
-  date: Date;
-
-  representative: string;
-
-  description: string;
-
-  constructor(data: any) {
-    this.date = data.date ? data.date : new Date();
-    this.description = data.description;
-    this.representative = data.representative;
-  }
-}
-
-class ClientTicket {
-  ticketNo: string;
-
-  type: TicketType;
-
-  status: string;
-
-  name: string;
-
-  email: string;
-
-  phone: string;
-
-  summary: string;
-
-  description: string;
-
-  urgency: number;
-
-  changeLog: ChangeLog[] = [];
-
-  serviceCategoryId: string;
-
-  constructor(data: any) {
-    this.ticketNo = data.ticketNo;
-    this.type = data.type;
-    this.name = data.name;
-    this.status = data.status;
-    this.urgency = data.urgency;
-    this.email = data.email;
-    this.phone = data.phone;
-    this.summary = data.summary;
-    this.description = data.description;
-    this.serviceCategoryId = data.serviceCategoryId;
-  }
-}
+type QueryModel = {
+  page: number
+  pageSize: number,
+  sortField: string,
+  sortDirection: string
+};
 
 class ClientService {
   // constructor(private supabaseClient: SupabaseClient) { }
-
-  // TODO remove when in prod
-  tickets: ClientTicket[] = [
-    new ClientTicket({ ticketNo: '1234', type: 'email', name: 'John Doe' }),
-  ];
 
   appConstants: Map<AppConstants, AppConstantType[]> = new Map();
 
@@ -233,7 +91,7 @@ class ClientService {
       const ticket = await ClientService.createTicket(request, clientId, animalId);
       return ticket;
     } catch (error) {
-      console.log('ERROR AT NEW REQUEST CREATION:', error);
+      console.error('ERROR AT NEW REQUEST CREATION:', error);
       throw error;
     }
     // TODO: ChangeLog not currently implemented
@@ -325,7 +183,7 @@ class ClientService {
         .maybeSingle();
 
       if (error) {
-        console.log('ERROR IN GET CLIENT BY EMAIL:', error);
+        console.error('ERROR IN GET CLIENT BY EMAIL:', error);
         throw error;
       }
 
@@ -337,20 +195,36 @@ class ClientService {
     }
   }
 
-  getTicket(id: string): Promise<ClientTicket> {
-    return Promise.resolve(this.tickets.find((t) => t.ticketNo == id));
+  async getTicket(id: string): Promise<ServiceRequestType> {
+    return supabaseClient.from('service_requests')
+      .select('*, service_request_history(*), clients(*)')
+      .eq('id', id)
+      .single()
+      .then((resp) => resp.data ?? undefined);
   }
 
-  getTickets(): Promise<ClientTicket[]> {
-    return Promise.resolve(this.tickets);
-    // return fetch(this.contextPath + '/demo/data/countries.json', { headers: { 'Cache-Control': 'no-cache' } })
-    //   .then((res) => res.json())
-    //   .then((d) => d.data);
+  async getTickets(count: number = 10): Promise<ServiceRequestType[]> {
+    return supabaseClient.from('service_requests')
+      .select('*, clients(*)')
+      .limit(count)
+      .then((resp) => resp.data ?? undefined);
   }
 
-  update(ticket: ClientTicket): Promise<ClientTicket> {
-    this.tickets = this.tickets.map((obj) => (ticket.ticketNo === obj.ticketNo ? ticket : obj));
-    return Promise.resolve(this.tickets.find((t) => t.ticketNo == ticket.ticketNo));
+  async query(query: QueryModel): Promise<PageInfo<ServiceRequestType>> {
+    const offset = query.page ? query.page * query.pageSize : 0;
+    return supabaseClient.from('service_requests')
+      .select('*', { count: 'exact' })
+      .range(offset, offset + query.pageSize - 1)
+      .order(query.sortField, { ascending: query.sortDirection === 'asc' })
+      .then((resp) => ({
+        rows: resp.data as ServiceRequestType[],
+        totalRowCount: resp.count || 0,
+      }));
+  }
+
+  update(ticket: ServiceRequestType): Promise<ServiceRequestType> {
+    // this.tickets = this.tickets.map((obj) => (ticket.ticketNo === obj.ticketNo ? ticket : obj));
+    return Promise.resolve(null);
   }
 
   async getAppConstants(type: AppConstants) {
@@ -365,31 +239,6 @@ class ClientService {
     return this.appConstants.get(type);
   }
 
-  async getServiceStatuses(): Promise<AppConstantType[]> {
-    const response = await supabaseClient
-      .from('app_constants')
-      .select('*')
-      .eq('type', AppConstants.Status);
-    return response.data;
-  }
-
-  async getServiceCategories(): Promise<AppConstantType[]> {
-    // For Testing without DB
-    // const tempCategories: ServiceCategory[] = [
-    //   new ServiceCategory({ id: 'id_1', name: 'Cat One' }),
-    //   new ServiceCategory({ id: 'id_2', name: 'Cat Two' }),
-    //   new ServiceCategory({ id: 'id_3', name: 'Dog Adoption' }),
-    //   new ServiceCategory({ id: 'id_4', name: 'Pet Fostering' })
-    // ]
-    // return Promise.resolve(tempCategories);
-
-    const response = await supabaseClient
-      .from('app_constants')
-      .select('*')
-      .eq('type', AppConstants.Category);
-    return response.data;
-  }
-
   async getTeamMembers(): Promise<TeamMemberType[]> {
     const { data: teamMembers, error } = await supabaseClient
       .from('team_members')
@@ -401,11 +250,5 @@ class ClientService {
 
 const clientService = new ClientService();
 export default ClientService;
-export {
-  ClientTicket,
-  NewClientRequest,
-  ServiceCategory,
-  ServiceStatus,
-  TicketType,
-  clientService,
-};
+export { clientService };
+export type { PageInfo, QueryModel };

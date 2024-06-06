@@ -94,29 +94,6 @@ describe('ClientService', () => {
         .rejects.toThrow();
     });
   });
-  it.each([
-    // [label suffix for test, AppConstant type, ClientService method name]
-    ['service categories', AppConstants.Category, 'getServiceCategories'],
-    ['service statuses', AppConstants.Status, 'getServiceStatuses'],
-  ])('should get %s', async (label, appConstantType, methodName: 'getServiceCategories' | 'getServiceStatuses') => {
-    // Arrange
-    const expectedAppConstants: AppConstantType[] = [{ test: 1 }] as any;
-    mockSupabaseClient.setTestData(expectedAppConstants);
-
-    // Act
-    const returnedAppConstants = await clientService[methodName]();
-
-    // Assert
-    expect(mockSupabaseClient.from).toHaveBeenCalledWith('app_constants');
-    expect(mockSupabaseClient.from('app_constants').select).toHaveBeenCalledWith('*');
-    expect(mockSupabaseClient.from('app_constants').select('').eq).toHaveBeenCalledWith('type', appConstantType);
-    /**
-     * 'toBe' checks for reference equality to ensure
-     * getServiceCategories function returns the exact
-     * array instance that the query returns
-     */
-    expect(returnedAppConstants).toBe(expectedAppConstants);
-  });
   describe('getTeamMembers', () => {
     it('should get team members', async () => {
       //* Arrange

@@ -27,6 +27,7 @@ jest.mock('@context/serviceRequest/serviceInformationContext', () => {
     pet_id: '',
     service_category: '',
     request_source: '',
+    status: '',
     description: '',
     team_member_id: '',
   };
@@ -48,14 +49,7 @@ jest.mock('@context/serviceRequest/serviceInformationContext', () => {
 });
 
 //* Mocking the client service module to isolate the test
-jest.mock('src/services/ClientService', () => ({
-  TicketType: {
-    email: 'email',
-    phone: 'phone',
-    walkin: 'walk-in',
-  },
-}));
-
+jest.mock('src/services/ClientService');
 jest.mock('src/hooks/useAppConstants');
 jest.mock('src/hooks/useTeamMembers');
 
@@ -109,7 +103,7 @@ describe('ServiceInformationSection', () => {
     radioButtons = [];
     source.forEach((opt) => {
       const radioButton = screen.queryByLabelText(opt.label);
-      radioButtons.push([radioButton, 'request_source', opt.label, opt.id]);
+      radioButtons.push([radioButton, 'request_source', opt.label, opt.value]);
     });
 
     dropdowns = [screen.queryByTitle(labels.Category)];
