@@ -12,7 +12,7 @@ export default function useRecentTickets() {
       setTickets(data);
     };
     getTickets();
-  });
+  }, []);
 
   return tickets;
 }
