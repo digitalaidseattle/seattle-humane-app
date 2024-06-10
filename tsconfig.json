@@ -19,6 +19,9 @@
     "isolatedModules": true,
     "jsx": "preserve",
     "paths": {
+      "@services/*": [
+        "src/services/*"
+      ],
       "@components/*": [
         "src/components/*"
       ],

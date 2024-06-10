@@ -5,6 +5,8 @@ import ServiceRequestDialog from '@components/serviceRequest/ServiceRequestDialo
 import { defaultClientInformation } from '@context/serviceRequest/clientInformationContext';
 import { defaultPetInformation } from '@context/serviceRequest/petInformationContext';
 import { defaultServiceInformation } from '@context/serviceRequest/serviceInformationContext';
+import { mockAnimal, mockClient, mockTicket } from '@hooks/__mocks__/useTicketById';
+import useTicketById from '@hooks/useTicketById';
 import '@testing-library/jest-dom';
 import {
   fireEvent, render, screen, waitFor,
@@ -23,8 +25,9 @@ jest.mock('src/services/ClientService', () => {
   };
 });
 
+jest.mock('src/hooks/useTicketById');
+const mockUseTicketById = jest.mocked(useTicketById);
 jest.mock('src/hooks/useAppConstants');
-
 jest.mock('src/hooks/useTeamMembers');
 
 const SaveCancelLabels = {
@@ -40,15 +43,15 @@ const labelsOfFormFieldsToTest = [
 const testId = 'serviceRequestDialog';
 describe('ServiceRequestDialog', () => {
   const mockOnClose = jest.fn();
-  function PageComponent({ showOnOpen }) {
+  function PageComponent({ showOnOpen, ticketId }) {
     const [visible, setVisible] = useState(showOnOpen);
     mockOnClose.mockImplementation(() => setVisible(false));
-    return <ServiceRequestDialog visible={visible} onClose={mockOnClose} />;
+    return <ServiceRequestDialog ticketId={ticketId} visible={visible} onClose={mockOnClose} />;
   }
 
-  function setup(showOnOpen = false) {
+  function setup(showOnOpen = false, ticketId = null) {
     render(
-      <PageComponent showOnOpen={showOnOpen} />,
+      <PageComponent showOnOpen={showOnOpen} ticketId={ticketId} />,
     );
   }
 
@@ -120,9 +123,9 @@ describe('ServiceRequestDialog', () => {
 
   it('should debounce calls to save', async () => {
     /*
-    * Note the FormConfirmationButtons' Save button *should* prevent multiple clicks when the form is busy
-    * but in case that changes in the future, the form should still debouce the save
-    */
+      * Note the FormConfirmationButtons' Save button *should* prevent multiple clicks when the form is busy
+      * but in case that changes in the future, the form should still debouce the save
+      */
     //* Arrange
     let resolve;
     clientService.newRequest = jest.fn()
@@ -156,5 +159,35 @@ describe('ServiceRequestDialog', () => {
     await waitFor(() => reject(new Error(testError)));
     const errorMessage = await screen.findByText(testError);
     expect(errorMessage).toBeInTheDocument();
+  });
+  describe('when in read-only mode', () => {
+    beforeEach(() => {
+      setup(true, mockTicket.id);
+    });
+    const getFields = async () => {
+      const firstName = await screen.findByDisplayValue(mockClient.first_name);
+      const petName = await screen.findByDisplayValue(mockAnimal.name);
+      const description = await screen.findByDisplayValue(mockTicket.description);
+      return [firstName, petName, description];
+    };
+    it('should load the ticket from the hook', async () => {
+      //* Arrange
+      // Spot check that client/pet/ticket sections are displaying data
+      // Assumption is each section has its own exhaustive tests for each individual field
+      const fields = await getFields();
+
+      //* Assert
+      expect(mockUseTicketById).toHaveBeenCalledWith(mockTicket.id);
+      fields.forEach((field) => expect(field).toBeInTheDocument());
+    });
+    it('should disable the controls', async () => {
+      //* Arrange
+      // Spot check that client/pet/ticket sections are disabled
+      // Assumption is each section has its own exhaustive tests for each individual field
+      const fields = await getFields();
+
+      //* Assert
+      fields.forEach((field) => expect(field).toBeDisabled());
+    });
   });
 });

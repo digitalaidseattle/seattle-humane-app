@@ -3,6 +3,8 @@
 /* eslint-disable max-classes-per-file */
 import getConfig from 'next/config';
 import { v4 as uuidv4 } from 'uuid';
+import supabaseClient from 'utils/supabaseClient';
+import { AnimalType } from '@types';
 import { NewClientRequest } from './ClientService';
 
 enum RequestType {
@@ -125,8 +127,26 @@ class AnimalService {
   // TODO remove when in prod
   tickets: ClientTicket[] = [];
 
-  constructor() {
-    this.contextPath = getConfig().publicRuntimeConfig.contextPath;
+  static async get<T extends keyof AnimalType>(
+    key: T,
+    value: AnimalType[T],
+  ): Promise<AnimalType> {
+    const { data, error } = await supabaseClient
+      .from('pets')
+      .select('*')
+      .eq(key, value)
+      .maybeSingle();
+
+    if (error) {
+      console.log(`ERROR IN GET PET BY ${key}:`, error);
+      // Disabled because error is already an Error object
+      // eslint-disable-next-line @typescript-eslint/no-throw-literal
+      throw error;
+    }
+
+    if (!data) throw new Error(`No pet found with the provided ${key}`);
+
+    return data;
   }
 
   newRequest(request: NewClientRequest): Promise<ClientTicket> {
@@ -163,6 +183,7 @@ class AnimalService {
 }
 
 const animalService = new AnimalService();
+export default AnimalService;
 export {
   NewAnimalRecord, ClientTicket, TicketType, animalService,
 };

@@ -266,12 +266,12 @@ class ClientService {
     ClientService.throwIfInvalidInput('client', client);
     const {
 
-      first_name, last_name, email, phone,
+      first_name, last_name, email, phone, zip_code,
     } = client;
     const { data: newClient, error } = await supabaseClient
       .from('clients')
       .insert([{
-        first_name, last_name, email, phone,
+        first_name, last_name, email, phone, zip_code,
       }])
       .select()
       .single();
@@ -287,6 +287,8 @@ class ClientService {
         name: animal.name,
         species: animal.species,
         client_id: clientId,
+        age: animal.age,
+        weight: animal.weight,
       }])
       .select()
       .single();
@@ -316,6 +318,26 @@ class ClientService {
     return newTicket;
   }
 
+  static async getTicket(ticketId: ServiceRequestType['id']) {
+    const { data: ticket, error } = await supabaseClient
+      .from('service_requests')
+      .select()
+      .eq('id', ticketId)
+      .single();
+    if (error) throw new Error(`${error.message}`);
+    return ticket;
+  }
+
+  static async getRecentTickets() {
+    const { data: tickets, error } = await supabaseClient
+      .from('service_requests')
+      .select()
+      .order('created_at', { ascending: false })
+      .limit(10);
+    if (error) throw new Error(`${error.message}`);
+    return tickets;
+  }
+
   async getClientByEmail(email: string): Promise<ClientType> {
     try {
       const { data, error } = await supabaseClient
@@ -330,6 +352,30 @@ class ClientService {
       }
 
       if (!data) throw new Error('No client found with this email');
+
+      return data;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  static async getClientByKeyValue<T extends keyof ClientType>(
+    key: T,
+    value: ClientType[T],
+  ): Promise<ClientType> {
+    try {
+      const { data, error } = await supabaseClient
+        .from('clients')
+        .select('*')
+        .eq(key, value)
+        .maybeSingle();
+
+      if (error) {
+        console.log(`ERROR IN GET CLIENT BY ${key}:`, error);
+        throw error;
+      }
+
+      if (!data) throw new Error(`No client found with the provided ${key}`);
 
       return data;
     } catch (error) {
