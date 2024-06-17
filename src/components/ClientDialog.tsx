@@ -38,7 +38,7 @@ const defaultClient: EditableClientType = {
 
 const defaultAnimal: EditableAnimalType = {
   name: '',
-  species_id: '',
+  species: '',
   age: 0,
   weight: 0,
 };
@@ -46,11 +46,11 @@ const defaultAnimal: EditableAnimalType = {
 const defaultRequest: EditableServiceRequestType = {
   client_id: null,
   pet_id: null,
-  service_category_id: '',
-  request_source_id: '',
+  service_category: '',
+  request_source: '',
+  status: '',
   description: '',
   team_member_id: null,
-  log_id: '',
 };
 
 interface ClientDialogProps {
@@ -79,7 +79,6 @@ function ClientDialog(props: ClientDialogProps) {
   const saveClientDialog = () => {
     setBusy(true);
     // type handle separate to support RadioButton
-
     clientService.newRequest({
       ...request,
       // TODO not sure how we want to handle these ids, needs lookup control?
@@ -167,7 +166,7 @@ function ClientDialog(props: ClientDialogProps) {
           >
             <PetInformationSection
               disabled={busy}
-              show={['name', 'species_id']}
+              show={['name', 'species']}
             />
           </PetInformationProvider>
           <ServiceInformationProvider
@@ -176,7 +175,7 @@ function ClientDialog(props: ClientDialogProps) {
           >
             <ServiceInformationSection
               disabled={busy}
-              show={['service_category_id']}
+              show={['service_category']}
             />
           </ServiceInformationProvider>
         </div>

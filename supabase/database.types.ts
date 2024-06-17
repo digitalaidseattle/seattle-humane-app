@@ -100,7 +100,7 @@ export type Database = {
           client_id: string | null
           id: string
           name: string | null
-          species_id: string | null
+          species: string | null
           weight: number | null
         }
         Insert: {
@@ -108,7 +108,7 @@ export type Database = {
           client_id?: string | null
           id?: string
           name?: string | null
-          species_id?: string | null
+          species?: string | null
           weight?: number | null
         }
         Update: {
@@ -116,7 +116,7 @@ export type Database = {
           client_id?: string | null
           id?: string
           name?: string | null
-          species_id?: string | null
+          species?: string | null
           weight?: number | null
         }
         Relationships: [
@@ -127,11 +127,43 @@ export type Database = {
             referencedRelation: "clients"
             referencedColumns: ["id"]
           },
+        ]
+      }
+      service_request_history: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          service_request_id: string | null
+          team_member_id: string | null
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          service_request_id?: string | null
+          team_member_id?: string | null
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          service_request_id?: string | null
+          team_member_id?: string | null
+        }
+        Relationships: [
           {
-            foreignKeyName: "public_pets_species_id_fkey"
-            columns: ["species_id"]
+            foreignKeyName: "public_service_request_history_team_member_id_fkey"
+            columns: ["team_member_id"]
             isOneToOne: false
-            referencedRelation: "app_constants"
+            referencedRelation: "team_members"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_service_request_service_request_id_fkey"
+            columns: ["service_request_id"]
+            isOneToOne: false
+            referencedRelation: "service_requests"
             referencedColumns: ["id"]
           },
         ]
@@ -142,10 +174,10 @@ export type Database = {
           created_at: string
           description: string | null
           id: string
-          log_id: string | null
           pet_id: string | null
-          request_source_id: string | null
-          service_category_id: string | null
+          request_source: string | null
+          service_category: string | null
+          status: string | null
           team_member_id: string | null
         }
         Insert: {
@@ -153,10 +185,10 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
-          log_id?: string | null
           pet_id?: string | null
-          request_source_id?: string | null
-          service_category_id?: string | null
+          request_source?: string | null
+          service_category?: string | null
+          status?: string | null
           team_member_id?: string | null
         }
         Update: {
@@ -164,10 +196,10 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
-          log_id?: string | null
           pet_id?: string | null
-          request_source_id?: string | null
-          service_category_id?: string | null
+          request_source?: string | null
+          service_category?: string | null
+          status?: string | null
           team_member_id?: string | null
         }
         Relationships: [
@@ -183,20 +215,6 @@ export type Database = {
             columns: ["pet_id"]
             isOneToOne: false
             referencedRelation: "pets"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "public_service_requests_request_source_id_fkey"
-            columns: ["request_source_id"]
-            isOneToOne: false
-            referencedRelation: "app_constants"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "public_service_requests_service_category_id_fkey"
-            columns: ["service_category_id"]
-            isOneToOne: false
-            referencedRelation: "app_constants"
             referencedColumns: ["id"]
           },
           {

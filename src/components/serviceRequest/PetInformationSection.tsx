@@ -3,7 +3,8 @@ import InputRadio from '@components/InputRadio';
 import InputText from '@components/InputText';
 import { PetInfoActionType, PetInformationContext, PetInformationDispatchContext } from '@context/serviceRequest/petInformationContext';
 import { EditableAnimalType } from '@types';
-import { useAppConstants } from 'src/services/useAppConstants';
+import useAppConstants from '@hooks/useAppConstants';
+import { AppConstants } from 'src/constants';
 
 // TODO externalize to localization file
 export const petInformationLabels = {
@@ -34,7 +35,7 @@ interface PetInformationSectionProps {
 export default function PetInformationSection(props: PetInformationSectionProps) {
   const {
     disabled,
-    show = ['name', 'species_id', 'age', 'weight'],
+    show = ['name', 'species', 'age', 'weight'],
   } = props;
 
   const visibleFields = new Set<keyof EditableAnimalType>(show);
@@ -43,14 +44,14 @@ export default function PetInformationSection(props: PetInformationSectionProps)
   const formData = useContext(PetInformationContext);
   const dispatch = useContext(PetInformationDispatchContext);
   //* Options for multi-choice controls
-  const { data: speciesOptions } = useAppConstants('species');
+  const speciesOptions = useAppConstants(AppConstants.Species);
 
   //* Map onChange handlers to dispatch
   const setFormData = (partialStateUpdate: Partial<EditableAnimalType>) => dispatch(
     { type: PetInfoActionType.Update, partialStateUpdate },
   );
   const setName = (name: EditableAnimalType['name']) => setFormData({ name });
-  const setSpecies = (species_id: EditableAnimalType['species_id']) => setFormData({ species_id });
+  const setSpecies = (species: EditableAnimalType['species']) => setFormData({ species });
   const setAge = (age: EditableAnimalType['age']) => setFormData({ age });
   const setWeight = (weight: EditableAnimalType['weight']) => setFormData({ weight });
 
@@ -76,7 +77,7 @@ export default function PetInformationSection(props: PetInformationSectionProps)
               />
             </div>
           )}
-        {visibleFields.has('species_id')
+        {visibleFields.has('species')
           && (
             <div className="grid col-12">
               <div className="col-fixed mr-3">{petInformationLabels.Species}</div>
@@ -86,11 +87,11 @@ export default function PetInformationSection(props: PetInformationSectionProps)
                     id={`species-${spec.value}`}
                     key={spec.value}
                     label={spec.label}
-                    value={spec.value}
+                    value={spec.id}
                     disabled={disabled}
                     name={`species-${spec.value}`}
                     onChange={(e) => setSpecies(e.target.value)}
-                    checked={formData.species_id === spec.value}
+                    checked={spec.id && formData.species === spec.id}
                   />
                 ))
                   : null}
