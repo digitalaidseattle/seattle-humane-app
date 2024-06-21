@@ -21,6 +21,7 @@ import {
   EditableAnimalType,
   AppConstantType,
   TeamMemberType,
+  ServiceRequestSummary,
 } from '@types';
 import supabaseClient from '../../utils/supabaseClient';
 
@@ -326,6 +327,41 @@ class ClientService {
       .single();
     if (error) throw new Error(`${error.message}`);
     return ticket;
+  }
+
+  static async getServiceRequestSummary(): Promise<ServiceRequestSummary[]> {
+    const { data, error } = await supabaseClient
+      .from('service_requests')
+
+      .select(`
+      id,
+      description,
+      created_at,
+      app_constants!service_category_id(label),
+      clients(first_name),
+      pets(name),
+      team_members(first_name)
+      `)
+      .order('created_at', { ascending: false })
+      .limit(10);
+    if (error) throw new Error(`${error.message}`);
+
+    const summaries = data.map(({
+      clients, pets, team_members, app_constants, ...rest
+    }) => ({
+      client: clients.first_name,
+      pet: pets.name,
+      team_member: team_members.first_name,
+      /*
+      * For some reason Supabase types thing app_constants is an array.
+      * Perhaps someone with Postgres expertise can look into
+      * 'disambiguation' when mulitple foreign keys match a relationship
+      * like the one we have with service requests to app_constants.
+      * @ts-ignore */
+      category: app_constants.label,
+      ...rest,
+    }));
+    return summaries;
   }
 
   static async getRecentTickets() {
