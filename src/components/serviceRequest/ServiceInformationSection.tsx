@@ -48,7 +48,7 @@ interface ServiceInformationSectionProps {
 export default function ServiceInformationSection(props: ServiceInformationSectionProps) {
   const {
     disabled,
-    show = ['service_category_id', 'request_source_id', 'description', 'team_member_id'],
+    show = ['service_category', 'request_source', 'description', 'team_member_id'],
   } = props;
 
   const visibleFields = new Set<keyof EditableServiceRequestType>(show);
@@ -65,8 +65,8 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
   const setFormData = (partialStateUpdate: Partial<EditableServiceRequestType>) => dispatch(
     { type: ServiceInfoActionType.Update, partialStateUpdate },
   );
-  const setCategory = (service_category_id: EditableServiceRequestType['service_category_id']) => setFormData({ service_category_id });
-  const setSource = (request_source_id: EditableServiceRequestType['request_source_id']) => setFormData({ request_source_id });
+  const setCategory = (service_category: EditableServiceRequestType['service_category']) => setFormData({ service_category });
+  const setSource = (request_source: EditableServiceRequestType['request_source']) => setFormData({ request_source });
   const setServiceDescription = (description: EditableServiceRequestType['description']) => setFormData({ description });
   const setAssignedTo = (team_member_id: EditableServiceRequestType['team_member_id']) => setFormData({ team_member_id });
 
@@ -79,13 +79,13 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
         </h3>
       </div>
       <div className="col-12 grid row-gap-3 pl-5">
-        {visibleFields.has('service_category_id')
+        {visibleFields.has('service_category')
           && (
             <div className="col-6">
               <div className="col-fixed mr-3">{serviceInformationLabels.Category}</div>
               <Dropdown
-                id="service_category_id"
-                value={formData.service_category_id}
+                id="service_category"
+                value={formData.service_category}
                 title={serviceInformationLabels.Category}
                 className="w-full md:w-14rem"
                 onChange={(e) => setCategory(e.target.value)}
@@ -94,21 +94,21 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
               />
             </div>
           )}
-        {visibleFields.has('request_source_id')
+        {visibleFields.has('request_source')
           && (
             <div className="grid col-12">
               <div className="col-fixed mr-3">{serviceInformationLabels.Source}</div>
               <div className="flex flex-wrap gap-3">
                 {sources ? sources.map((opt) => (
                   <InputRadio
-                    id={`request_source_id-${opt.value}`}
+                    id={`request_source-${opt.value}`}
                     key={opt.value}
                     label={opt.label}
                     value={opt.id}
                     disabled={disabled}
-                    name={`request_source_id-${opt.value}`}
+                    name={`request_source-${opt.value}`}
                     onChange={(e) => setSource(e.target.value)}
-                    checked={opt.id && formData.request_source_id === opt.id}
+                    checked={opt.id && formData.request_source === opt.id}
                   />
                 ))
                   : null}

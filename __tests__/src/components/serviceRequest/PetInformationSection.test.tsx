@@ -15,7 +15,7 @@ jest.mock('@context/serviceRequest/petInformationContext', () => {
   // eslint-disable-next-line @typescript-eslint/no-shadow
   const defaultPetInformation: EditableAnimalType = {
     name: '',
-    species_id: '',
+    species: '',
     age: 0,
     weight: 0,
   };
@@ -161,7 +161,7 @@ describe('PetInformationSection', () => {
       expect.anything(), // We are only concerned with the action, not the previous state
       expect.objectContaining({
         type: 'Update',
-        partialStateUpdate: { species_id: opt.id },
+        partialStateUpdate: { species: opt.id },
       }),
     );
   });
