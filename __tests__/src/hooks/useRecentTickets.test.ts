@@ -8,7 +8,7 @@ const mockedClientService = jest.mocked(ClientService);
 
 beforeAll(() => {
   // Setup mock ClientService
-  mockedClientService.getRecentTickets.mockImplementation(async () => recentTickets);
+  mockedClientService.getServiceRequestSummary.mockImplementation(async () => recentTickets);
 });
 
 it('returns the tickets from the db', async () => {
@@ -16,7 +16,7 @@ it('returns the tickets from the db', async () => {
   const { result } = renderHook(useRecentTickets);
   //* Assert
   await waitFor(() => {
-    expect(mockedClientService.getRecentTickets).toHaveBeenCalled();
+    expect(mockedClientService.getServiceRequestSummary).toHaveBeenCalled();
     expect(result.current).toEqual(recentTickets);
   });
 });

@@ -17,16 +17,16 @@ export const mockAnimal: AnimalType = {
   name: 'Sparky',
   age: 5,
   weight: 10,
-  species_id: data.species[0].id,
+  species: data.species[0].value,
 };
 export const mockTicket: ServiceRequestType = {
   id: '123abc',
   client_id: mockClient.id,
   pet_id: mockAnimal.id,
-  service_category_id: data.category[0].id,
-  request_source_id: data.source[0].id,
+  service_category: data.category[0].value,
+  request_source: data.source[0].value,
+  status: data.status[0].value,
   team_member_id: john.id,
-  log_id: '',
   description: 'Cleaning service',
   created_at: '',
 };
