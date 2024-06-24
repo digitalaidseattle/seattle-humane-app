@@ -337,7 +337,7 @@ class ClientService {
       id,
       description,
       created_at,
-      app_constants!service_category_id(label),
+      service_category,
       clients(first_name),
       pets(name),
       team_members(first_name)
@@ -346,19 +346,20 @@ class ClientService {
       .limit(10);
     if (error) throw new Error(`${error.message}`);
 
+    const { data: constants, error: categoryError } = await supabaseClient
+      .from('app_constants')
+      .select('*')
+      .eq('type', 'category');
+    if (categoryError) throw new Error(categoryError.message);
+    const categoryMap = new Map(constants.map((constant) => ([constant.id, constant.label])));
+
     const summaries = data.map(({
-      clients, pets, team_members, app_constants, ...rest
+      clients, pets, team_members, service_category, ...rest
     }) => ({
       client: clients.first_name,
       pet: pets.name,
       team_member: team_members.first_name,
-      /*
-      * For some reason Supabase types thing app_constants is an array.
-      * Perhaps someone with Postgres expertise can look into
-      * 'disambiguation' when mulitple foreign keys match a relationship
-      * like the one we have with service requests to app_constants.
-      * @ts-ignore */
-      category: app_constants.label,
+      category: categoryMap.get(service_category),
       ...rest,
     }));
     return summaries;
