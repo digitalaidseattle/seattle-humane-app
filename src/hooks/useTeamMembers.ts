@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { clientService } from 'src/services/ClientService';
+import * as DataService from '@services/DataService';
 
 type Option = {
   value: string
@@ -11,7 +11,7 @@ export default function useTeamMembers() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const teamMembers = await clientService.getTeamMembers();
+      const teamMembers = await DataService.getTeamMembers();
       const newOptions: Option[] = [];
       teamMembers.forEach((r) => {
         if (typeof r === 'object') {

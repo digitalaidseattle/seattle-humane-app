@@ -27,6 +27,7 @@ jest.mock('@context/serviceRequest/serviceInformationContext', () => {
     pet_id: '',
     service_category: '',
     request_source: '',
+    status: '',
     description: '',
     team_member_id: '',
   };
@@ -46,15 +47,6 @@ jest.mock('@context/serviceRequest/serviceInformationContext', () => {
       .mockImplementation((state, action) => ({ ...state, ...action.partialStateUpdate })),
   };
 });
-
-//* Mocking the client service module to isolate the test
-jest.mock('src/services/ClientService', () => ({
-  TicketType: {
-    email: 'email',
-    phone: 'phone',
-    walkin: 'walk-in',
-  },
-}));
 
 jest.mock('src/hooks/useAppConstants');
 jest.mock('src/hooks/useTeamMembers');

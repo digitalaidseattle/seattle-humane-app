@@ -1,5 +1,5 @@
 /**
- *  ClientService.test.ts
+ *  DataService.test.ts
  *
  *  @copyright 2024 Digital Aid Seattle
  *
@@ -14,7 +14,7 @@ import {
 } from '@types';
 import { mockTicket } from '@hooks/__mocks__/useTicketById';
 import { recentTickets } from '@hooks/__mocks__/useRecentTickets';
-import ClientService, { clientService } from '../../../src/services/ClientService';
+import * as DataService from '@services/DataService';
 import supabaseClient from '../../../utils/supabaseClient';
 
 // Idea for mock from https://stackoverflow.com/questions/77411385/how-to-mock-supabase-api-select-requests-in-nodejs
@@ -69,7 +69,7 @@ afterEach(() => {
   mockSupabaseClient.setTestError(null);
 });
 
-describe('ClientService', () => {
+describe('DataService', () => {
   describe('createClient()', () => {
     const ticket = {} as EditableServiceRequestType;
     const client = {} as EditableClientType;
@@ -79,21 +79,21 @@ describe('ClientService', () => {
       // arrange
       mockSupabaseClient.setTestData(null);
       // act & assert
-      await expect(ClientService.createClient(client))
+      await expect(DataService.createClient(client))
         .rejects.toThrow();
     });
     it('should throw error if animal information is missing', async () => {
       // arrange
       mockSupabaseClient.setTestData(null);
       // act & assert
-      await expect(ClientService.createAnimal(animal, ''))
+      await expect(DataService.createAnimal(animal, ''))
         .rejects.toThrow();
     });
     it('should throw error if ticket information is missing', async () => {
       // arrange
       mockSupabaseClient.setTestData(null);
       // act & assert
-      await expect(ClientService.createTicket(ticket, '', ''))
+      await expect(DataService.createTicket(ticket, '', ''))
         .rejects.toThrow();
     });
   });
@@ -103,7 +103,7 @@ describe('ClientService', () => {
       const expectedTicket = mockTicket;
       mockSupabaseClient.setTestData(expectedTicket);
       // Act
-      const actualTicket = await ClientService.getTicket(expectedTicket.id);
+      const actualTicket = await DataService.getTicket(expectedTicket.id);
       // Assert
       expect(actualTicket).toBe(expectedTicket);
     });
@@ -112,7 +112,7 @@ describe('ClientService', () => {
       const expectedErrorMessage = 'Internal DB Error';
       mockSupabaseClient.setTestError(new Error(expectedErrorMessage));
       // Act & Assert
-      await expect(ClientService.getTicket('')).rejects.toThrow(expectedErrorMessage);
+      await expect(DataService.getTicket('')).rejects.toThrow(expectedErrorMessage);
     });
   });
   describe('static getRecentTickets()', () => {
@@ -121,7 +121,7 @@ describe('ClientService', () => {
       const expectedTickets = recentTickets;
       mockSupabaseClient.setTestData(expectedTickets);
       // Act
-      const actualTicket = await ClientService.getRecentTickets();
+      const actualTicket = await DataService.getRecentTickets();
       // Assert
       expect(actualTicket).toBe(expectedTickets);
     });
@@ -130,20 +130,20 @@ describe('ClientService', () => {
       const expectedErrorMessage = 'Internal DB Error';
       mockSupabaseClient.setTestError(new Error(expectedErrorMessage));
       // Act & Assert
-      await expect(ClientService.getRecentTickets()).rejects.toThrow(expectedErrorMessage);
+      await expect(DataService.getRecentTickets()).rejects.toThrow(expectedErrorMessage);
     });
   });
   it.each([
-    // [label suffix for test, AppConstant type, ClientService method name]
-    ['service categories', AppConstants.Category, 'getServiceCategories'],
-    ['service statuses', AppConstants.Status, 'getServiceStatuses'],
-  ])('should get %s', async (label, appConstantType, methodName: 'getServiceCategories' | 'getServiceStatuses') => {
+    // [label suffix for test, AppConstant type, DataService method name]
+    ['service categories', AppConstants.Category],
+    ['service statuses', AppConstants.Status],
+  ])('should get %s', async (label, appConstantType) => {
     // Arrange
     const expectedAppConstants: AppConstantType[] = [{ test: 1 }] as any;
     mockSupabaseClient.setTestData(expectedAppConstants);
 
     // Act
-    const returnedAppConstants = await clientService[methodName]();
+    const returnedAppConstants = await DataService.getAppConstants(appConstantType);
 
     // Assert
     expect(mockSupabaseClient.from).toHaveBeenCalledWith('app_constants');
@@ -151,7 +151,7 @@ describe('ClientService', () => {
     expect(mockSupabaseClient.from('app_constants').select('').eq).toHaveBeenCalledWith('type', appConstantType);
     /**
      * 'toBe' checks for reference equality to ensure
-     * getServiceCategories function returns the exact
+     * getAppConstants function returns the exact
      * array instance that the query returns
      */
     expect(returnedAppConstants).toBe(expectedAppConstants);
@@ -163,7 +163,7 @@ describe('ClientService', () => {
       mockSupabaseClient.setTestData(expected);
 
       //* Act
-      const actual = await clientService.getTeamMembers();
+      const actual = await DataService.getTeamMembers();
 
       //* Assert
       expect(mockSupabaseClient.from).toHaveBeenCalledWith('team_members');
@@ -185,7 +185,7 @@ describe('ClientService', () => {
       mockSupabaseClient.setTestError(error);
 
       //* Act & Assert
-      await expect(clientService.getTeamMembers()).rejects.toThrow(error.message);
+      await expect(DataService.getTeamMembers()).rejects.toThrow(error.message);
     });
   });
 });

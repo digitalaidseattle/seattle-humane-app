@@ -1,18 +1,17 @@
-import { useEffect, useReducer, useState } from 'react';
 import { Dialog } from 'primereact/dialog';
 import FormConfirmationButtons from '@components/FormConfirmationButtons';
 import {
-  ClientInfoActionType, ClientInformationProvider, clientInfoReducer, defaultClientInformation,
+  ClientInformationProvider,
 } from '@context/serviceRequest/clientInformationContext';
 import {
-  petInfoReducer, defaultPetInformation, PetInfoActionType, PetInformationProvider,
+  PetInformationProvider,
 } from '@context/serviceRequest/petInformationContext';
 import {
-  serviceInfoReducer, defaultServiceInformation, ServiceInfoActionType, ServiceInformationProvider,
+  ServiceInformationProvider,
 } from '@context/serviceRequest/serviceInformationContext';
-import { clientService } from 'src/services/ClientService';
-import { ServiceRequestType } from '@types';
-import useTicketById from '@hooks/useTicketById';
+import useServiceRequestForm from '@hooks/useServiceRequestForm';
+import type { ServiceRequestType } from '@types';
+import { useState, useEffect } from 'react';
 import ClientInformationSection from './ClientInformationSection';
 import PetInformationSection from './PetInformationSection';
 import ServiceInformationSection from './ServiceInformationSection';
@@ -23,7 +22,7 @@ export const serviceRequestLabels = {
 };
 
 /** Props for the ServiceRequestDialog */
-interface ServiceRequestDialogProps {
+export interface ServiceRequestDialogProps {
   /** Flag to show/hide the modal */
   visible: boolean
   /** Callback for the hide dialog button */
@@ -38,16 +37,31 @@ interface ServiceRequestDialogProps {
  */
 function ServiceRequestDialog({ visible, onClose, ticketId }: ServiceRequestDialogProps) {
   const {
-    disabled, readOnly, close, save, message, showDialog, hideDialog, client, pet, ticket,
+    disabled, readOnly, clearForm, save, message, client, pet, ticket,
     clientInformationDispatch, petInformationDispatch, serviceInformationDispatch,
-    // eslint-disable-next-line @typescript-eslint/no-use-before-define
-  } = useServiceRequestDialogState({ visible, onClose, ticketId });
+  } = useServiceRequestForm(ticketId);
+
+  const [showDialog, setShowDialog] = useState(false);
+
+  useEffect(() => {
+    setShowDialog(visible);
+  }, [visible]);
+
+  const hideDialog = () => {
+    clearForm();
+    onClose();
+  };
+
+  const onSaveClicked = async () => {
+    const success = await save();
+    if (success) hideDialog();
+  };
 
   const dialogFooter = (
     <FormConfirmationButtons
       disabled={disabled}
-      onCancelClicked={close}
-      onSaveClicked={save}
+      onCancelClicked={hideDialog}
+      onSaveClicked={onSaveClicked}
       saving={disabled}
     />
   );
@@ -89,89 +103,6 @@ function ServiceRequestDialog({ visible, onClose, ticketId }: ServiceRequestDial
       </div>
     </Dialog>
   );
-}
-
-function useServiceRequestDialogState({ visible, onClose, ticketId }: ServiceRequestDialogProps) {
-  const [showDialog, setShowDialog] = useState(false);
-  const [busy, setBusy] = useState(false);
-  const [message, setMessage] = useState('');
-  const [readOnly, setReadOnly] = useState(false);
-  const { client: savedClient, animal: savedAnimal, ticket: savedTicket } = useTicketById(ticketId);
-
-  useEffect(() => {
-    setShowDialog(visible);
-  }, [visible]);
-
-  const hideDialog = () => {
-    onClose();
-  };
-
-  //* Get state and dispatchers for the from sections
-  const [
-    newClient, clientInformationDispatch,
-  ] = useReducer(clientInfoReducer, defaultClientInformation);
-
-  const [
-    newPet, petInformationDispatch,
-  ] = useReducer(petInfoReducer, defaultPetInformation);
-
-  const [
-    newTicket, serviceInformationDispatch,
-  ] = useReducer(serviceInfoReducer, defaultServiceInformation);
-
-  const dataState = { client: newClient, pet: newPet, ticket: newTicket };
-  if (ticketId) {
-    if (!readOnly) setReadOnly(true);
-    dataState.client = savedClient;
-    dataState.pet = savedAnimal;
-    dataState.ticket = savedTicket;
-  } else {
-    if (readOnly) setReadOnly(false);
-    dataState.client = newClient;
-    dataState.pet = newPet;
-    dataState.ticket = newTicket;
-  }
-
-  const close = () => {
-    //* Clear form data
-    clientInformationDispatch({ type: ClientInfoActionType.Clear });
-    petInformationDispatch({ type: PetInfoActionType.Clear });
-    serviceInformationDispatch({ type: ServiceInfoActionType.Clear });
-    setMessage('');
-    hideDialog();
-  };
-
-  const save = async () => {
-    if (busy) return;
-    setBusy(true);
-    // TODO add error handling scenario
-    try {
-      await clientService.newRequest(
-        newTicket,
-        newClient,
-        newPet,
-      );
-      close();
-    } catch (e) {
-      setMessage(e.message);
-    } finally {
-      setBusy(false);
-    }
-  };
-
-  return {
-    readOnly,
-    disabled: readOnly || busy,
-    close,
-    save,
-    showDialog,
-    hideDialog,
-    message,
-    clientInformationDispatch,
-    petInformationDispatch,
-    serviceInformationDispatch,
-    ...dataState,
-  };
 }
 
 export default ServiceRequestDialog;

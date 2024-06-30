@@ -2,28 +2,23 @@ import { clientInformationLabels } from '@components/serviceRequest/ClientInform
 import { petInformationLabels } from '@components/serviceRequest/PetInformationSection';
 import { serviceInformationLabels } from '@components/serviceRequest/ServiceInformationSection';
 import ServiceRequestDialog from '@components/serviceRequest/ServiceRequestDialog';
-import { defaultClientInformation } from '@context/serviceRequest/clientInformationContext';
-import { defaultPetInformation } from '@context/serviceRequest/petInformationContext';
 import { defaultServiceInformation } from '@context/serviceRequest/serviceInformationContext';
 import { mockAnimal, mockClient, mockTicket } from '@hooks/__mocks__/useTicketById';
 import useTicketById from '@hooks/useTicketById';
+import * as DataService from '@services/DataService';
 import '@testing-library/jest-dom';
 import {
   fireEvent, render, screen, waitFor,
 } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { useState } from 'react';
-import { clientService } from 'src/services/ClientService';
 
-//* Mock clientService
-jest.mock('src/services/ClientService', () => {
-  const orig = jest.requireActual('src/services/ClientService');
-  return {
-    ...orig,
-    clientService: {
-      newRequest: jest.fn(),
-    },
-  };
-});
+jest.mock('@services/DataService');
+const mockedDataService = jest.mocked(DataService);
+mockedDataService.getClientByIdOrEmail = jest.fn().mockResolvedValue(mockClient);
+mockedDataService.getPetByOwner = jest.fn().mockResolvedValue(mockAnimal);
+const mockedCreateTicket = jest.fn().mockResolvedValue(mockTicket);
+mockedDataService.createTicket = mockedCreateTicket;
 
 jest.mock('src/hooks/useTicketById');
 const mockUseTicketById = jest.mocked(useTicketById);
@@ -42,6 +37,10 @@ const labelsOfFormFieldsToTest = [
 ];
 const testId = 'serviceRequestDialog';
 describe('ServiceRequestDialog', () => {
+  afterEach(() => {
+    jest.clearAllMocks();
+  });
+
   const mockOnClose = jest.fn();
   function PageComponent({ showOnOpen, ticketId }) {
     const [visible, setVisible] = useState(showOnOpen);
@@ -78,20 +77,40 @@ describe('ServiceRequestDialog', () => {
     expect(mockOnClose).toHaveBeenCalledTimes(1);
   });
 
-  it('should call the service to create a new request when save is pressed', async () => {
+  it('should create new ticket when save is pressed, looking up existing owners and pets,', async () => {
     //* Arrange
     setup(true);
 
     //* Act
+    // Type the client email
+    await userEvent.type(
+      screen.queryByLabelText(clientInformationLabels.Email),
+      mockClient.email,
+    );
+    // Type the pet name
+    await userEvent.type(
+      screen.queryByLabelText(petInformationLabels.Name),
+      mockAnimal.name,
+    );
+    // Type the ticket description
+    await userEvent.type(
+      screen.queryByLabelText(serviceInformationLabels.ServiceDescription),
+      mockTicket.description,
+    );
     fireEvent.click(screen.queryByLabelText(SaveCancelLabels.Save));
-    await waitFor(() => expect(clientService.newRequest).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(mockedCreateTicket)
+      .toHaveBeenCalledTimes(1));
 
     //* Assert
-    expect(clientService.newRequest).toHaveBeenNthCalledWith(
+    expect(mockedDataService.getClientByIdOrEmail)
+      .toHaveBeenNthCalledWith(1, 'email', mockClient.email);
+    expect(mockedDataService.getPetByOwner)
+      .toHaveBeenNthCalledWith(1, mockClient.id, mockAnimal.name);
+    expect(mockedDataService.createTicket).toHaveBeenNthCalledWith(
       1,
-      expect.objectContaining(defaultServiceInformation),
-      expect.objectContaining(defaultClientInformation),
-      expect.objectContaining(defaultPetInformation),
+      { ...defaultServiceInformation, description: mockTicket.description },
+      mockClient.id,
+      mockAnimal.id,
     );
   });
 
@@ -99,13 +118,13 @@ describe('ServiceRequestDialog', () => {
     //* Arrange
     // Capture resolve to "pause" the promise and check that fields are disabled
     let resolve;
-    clientService.newRequest = jest.fn()
+    mockedCreateTicket
       .mockImplementation(async () => new Promise((r) => { resolve = r; }));
     setup(true);
 
     //* Act
     fireEvent.click(screen.queryByLabelText(SaveCancelLabels.Save));
-    await waitFor(() => expect(clientService.newRequest).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(mockedCreateTicket).toHaveBeenCalledTimes(1));
 
     //* Assert
     // Use the async method findBy* instead of queryBy* to allow for async state updates
@@ -128,7 +147,7 @@ describe('ServiceRequestDialog', () => {
       */
     //* Arrange
     let resolve;
-    clientService.newRequest = jest.fn()
+    mockedCreateTicket
       .mockImplementation(async () => new Promise((r) => { resolve = r; }));
     setup(true);
 
@@ -140,20 +159,21 @@ describe('ServiceRequestDialog', () => {
     await waitFor(() => resolve());
 
     //* Assert
-    expect(clientService.newRequest).toHaveBeenCalledTimes(1);
+    expect(mockedCreateTicket).toHaveBeenCalledTimes(1);
   });
 
   it('should show errors in the dialog', async () => {
     //* Arrange
     let reject;
-    clientService.newRequest = jest.fn()
+    mockedCreateTicket
       .mockImplementation(async () => new Promise((_undefined, r) => { reject = r; }));
     const testError = 'Test fetch failed';
     setup(true);
 
     //* Act
     fireEvent.click(screen.queryByLabelText(SaveCancelLabels.Save));
-    await waitFor(() => expect(clientService.newRequest).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(mockedCreateTicket)
+      .toHaveBeenCalledTimes(1));
 
     //* Assert
     await waitFor(() => reject(new Error(testError)));

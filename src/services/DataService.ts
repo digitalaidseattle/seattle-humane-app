@@ -1,0 +1,151 @@
+/**
+ *  DataService.ts
+ *
+ *  @copyright 2024 Digital Aid Seattle
+ *
+ */
+import { AppConstants } from 'src/constants';
+import type {
+  ClientType,
+  ServiceRequestType,
+  AnimalType,
+  EditableServiceRequestType,
+  EditableClientType,
+  EditableAnimalType,
+  AppConstantType,
+  TeamMemberType,
+} from '@types';
+import supabaseClient from '@utils/supabaseClient';
+import throwIfMissingRequiredFields from '@utils/throwIfMissingRequiredFields';
+
+export async function createClient(client: EditableClientType) {
+  throwIfMissingRequiredFields('client', client);
+  const { data: newClient, error } = await supabaseClient
+    .from('clients')
+    .insert([{
+      first_name: client.first_name,
+      last_name: client.last_name,
+      email: client.email,
+      phone: client.phone,
+      zip_code: client.zip_code,
+    }])
+    .select()
+    .single();
+  if (error) throw new Error(error.message);
+  return newClient;
+}
+
+export async function createAnimal(animal: EditableAnimalType, clientId: ClientType['id']) {
+  throwIfMissingRequiredFields('animal', animal);
+  const { data: newAnimal, error } = await supabaseClient
+    .from('pets')
+    .insert([{
+      name: animal.name,
+      species: animal.species,
+      client_id: clientId,
+      age: animal.age,
+      weight: animal.weight,
+    }])
+    .select()
+    .single();
+  if (error) throw new Error(error.message);
+  return newAnimal;
+}
+
+export async function createTicket(
+  ticket: EditableServiceRequestType,
+  clientId: ClientType['id'],
+  petId: AnimalType['id'],
+) {
+  throwIfMissingRequiredFields('ticket', ticket);
+  const { data: newTicket, error } = await supabaseClient
+    .from('service_requests')
+    .insert([{
+      client_id: clientId,
+      pet_id: petId,
+      description: ticket.description,
+      service_category: ticket.service_category,
+      request_source: ticket.request_source,
+      team_member_id: ticket.team_member_id,
+    }])
+    .select()
+    .single();
+  if (error) throw new Error(error.message);
+  return newTicket;
+}
+
+export async function getTicket(ticketId: ServiceRequestType['id']) {
+  const { data: ticket, error } = await supabaseClient
+    .from('service_requests')
+    .select()
+    .eq('id', ticketId)
+    .single();
+  if (error) throw new Error(error.message);
+  return ticket;
+}
+
+export async function getRecentTickets() {
+  const { data: tickets, error } = await supabaseClient
+    .from('service_requests')
+    .select()
+    .order('created_at', { ascending: false })
+    .limit(10);
+  if (error) throw new Error(error.message);
+  return tickets;
+}
+
+export async function getClientByIdOrEmail<T extends keyof Pick<ClientType, 'id' | 'email'>>(
+  key: T,
+  value: ClientType[T],
+): Promise<ClientType> {
+  const { data, error } = await supabaseClient
+    .from('clients')
+    .select('*')
+    .eq(key, value)
+    .maybeSingle();
+  if (error) throw new Error(error.message);
+  return data;
+}
+
+export async function getPetById(id: AnimalType['id']): Promise<AnimalType> {
+  const { data, error } = await supabaseClient
+    .from('pets')
+    .select('*')
+    .eq('id', id)
+    .maybeSingle();
+  if (error) throw new Error(error.message);
+  return data;
+}
+
+export async function getPetByOwner(clientId: ClientType['id'], petName: AnimalType['name']): Promise<AnimalType> {
+  const { data, error } = await supabaseClient
+    .from('pets')
+    .select('*')
+    .eq('client_id', clientId)
+    .eq('name', petName)
+    .maybeSingle();
+  if (error) throw new Error(error.message);
+  return data;
+}
+
+const appConstants: Map<AppConstants, AppConstantType[]> = new Map();
+
+export async function getAppConstants(type: AppConstants) {
+  if (!appConstants.has(type)) {
+    const { data: constants, error } = await supabaseClient
+      .from('app_constants')
+      .select('*')
+      .eq('type', type);
+    if (error) throw new Error(error.message);
+    appConstants.set(type, constants);
+  }
+  return appConstants.get(type);
+}
+
+export async function getTeamMembers(): Promise<TeamMemberType[]> {
+  const { data: teamMembers, error } = await supabaseClient
+    .from('team_members')
+    .select();
+  if (error) throw new Error(error.message);
+  return teamMembers;
+}

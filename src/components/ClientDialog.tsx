@@ -19,7 +19,7 @@ import {
 import {
   ServiceInfoActionType, ServiceInformationProvider, defaultServiceInformation, serviceInfoReducer,
 } from '@context/serviceRequest/serviceInformationContext';
-import { clientService } from '../services/ClientService';
+import * as DataService from '../services/DataService';
 import {
   EditableAnimalType, EditableClientType, EditableServiceRequestType, ServiceRequestType,
 } from '../types';
@@ -77,18 +77,7 @@ function ClientDialog(props: ClientDialogProps) {
   };
 
   const saveClientDialog = () => {
-    setBusy(true);
-    // type handle separate to support RadioButton
-    clientService.newRequest({
-      ...request,
-      // TODO not sure how we want to handle these ids, needs lookup control?
-      pet_id: null,
-      team_member_id: null,
-    }, client, animal)
-      .then((requestResponse) => props.onClose(requestResponse))
-      // TODO - handle all sorts of errors: client exists, animal exists, request exists, etc.
-      .catch((err) => props.onClose(null))
-      .finally(() => setBusy(false));
+    // TODO implement client creation
     requestDispatch({ type: ServiceInfoActionType.Clear });
     clientDispatch({ type: ClientInfoActionType.Clear });
     animalDispatch({ type: PetInfoActionType.Clear });
@@ -107,7 +96,7 @@ function ClientDialog(props: ClientDialogProps) {
       // The request to DB for client will trigger 1sec after staff stops typing
       timeoutId.current = setTimeout(async () => {
         try {
-          const clientResponse = await clientService.getClientByEmail(value);
+          const clientResponse = await DataService.getClientByIdOrEmail('email', value);
 
           if (clientResponse !== null) {
             clientDispatch({
