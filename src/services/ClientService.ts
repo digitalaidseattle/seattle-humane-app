@@ -354,8 +354,9 @@ class ClientService {
     const categoryMap = new Map(constants.map((constant) => ([constant.id, constant.label])));
 
     const summaries = data.map(({
-      clients, pets, team_members, service_category, ...rest
+      clients, pets, team_members, service_category, id, ...rest
     }) => ({
+      id,
       client: clients.first_name,
       pet: pets.name,
       team_member: team_members.first_name,
