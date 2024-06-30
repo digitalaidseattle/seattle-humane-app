@@ -17,8 +17,7 @@ jest.mock('@services/DataService');
 const mockedDataService = jest.mocked(DataService);
 mockedDataService.getClientByIdOrEmail = jest.fn().mockResolvedValue(mockClient);
 mockedDataService.getPetByOwner = jest.fn().mockResolvedValue(mockAnimal);
-const mockedCreateTicket = jest.fn().mockResolvedValue(mockTicket);
-mockedDataService.createTicket = mockedCreateTicket;
+mockedDataService.createTicket = jest.fn().mockResolvedValue(mockTicket);
 
 jest.mock('src/hooks/useTicketById');
 const mockUseTicketById = jest.mocked(useTicketById);
@@ -98,7 +97,7 @@ describe('ServiceRequestDialog', () => {
       mockTicket.description,
     );
     fireEvent.click(screen.queryByLabelText(SaveCancelLabels.Save));
-    await waitFor(() => expect(mockedCreateTicket)
+    await waitFor(() => expect(mockedDataService.createTicket)
       .toHaveBeenCalledTimes(1));
 
     //* Assert
@@ -118,13 +117,13 @@ describe('ServiceRequestDialog', () => {
     //* Arrange
     // Capture resolve to "pause" the promise and check that fields are disabled
     let resolve;
-    mockedCreateTicket
+    mockedDataService.createTicket
       .mockImplementation(async () => new Promise((r) => { resolve = r; }));
     setup(true);
 
     //* Act
     fireEvent.click(screen.queryByLabelText(SaveCancelLabels.Save));
-    await waitFor(() => expect(mockedCreateTicket).toHaveBeenCalledTimes(1));
+    await waitFor(() => expect(mockedDataService.createTicket).toHaveBeenCalledTimes(1));
 
     //* Assert
     // Use the async method findBy* instead of queryBy* to allow for async state updates
@@ -147,7 +146,7 @@ describe('ServiceRequestDialog', () => {
       */
     //* Arrange
     let resolve;
-    mockedCreateTicket
+    mockedDataService.createTicket
       .mockImplementation(async () => new Promise((r) => { resolve = r; }));
     setup(true);
 
@@ -159,20 +158,20 @@ describe('ServiceRequestDialog', () => {
     await waitFor(() => resolve());
 
     //* Assert
-    expect(mockedCreateTicket).toHaveBeenCalledTimes(1);
+    expect(mockedDataService.createTicket).toHaveBeenCalledTimes(1);
   });
 
   it('should show errors in the dialog', async () => {
     //* Arrange
     let reject;
-    mockedCreateTicket
+    mockedDataService.createTicket
       .mockImplementation(async () => new Promise((_undefined, r) => { reject = r; }));
     const testError = 'Test fetch failed';
     setup(true);
 
     //* Act
     fireEvent.click(screen.queryByLabelText(SaveCancelLabels.Save));
-    await waitFor(() => expect(mockedCreateTicket)
+    await waitFor(() => expect(mockedDataService.createTicket)
       .toHaveBeenCalledTimes(1));
 
     //* Assert
