@@ -4,6 +4,7 @@ import React, {
 } from 'react';
 import ServiceRequestDialog from '@components/serviceRequest/ServiceRequestDialog';
 import { useRouter } from 'next/router';
+import { usePathname, useSearchParams } from 'next/navigation';
 import AppMenuitem from './AppMenuitem';
 import { MenuProvider } from './context/menucontext';
 import { UserContext } from '../src/context/usercontext';
@@ -22,11 +23,20 @@ interface Item {
 }
 
 function AppMenu() {
-  const [dialog, showDialog] = useState('');
-  const onClose = () => showDialog('');
+  const [dialogVisible, setDialogVisible] = useState(false);
   const { user } = useContext(UserContext);
   const { contextPath } = getConfig().publicRuntimeConfig;
   const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+  const ticketId = searchParams.get('ticket');
+  const onClose = () => {
+    setDialogVisible(false);
+    const newSearchParams = new URLSearchParams(searchParams.toString());
+    newSearchParams.delete('ticket');
+    router.push(`${pathname}?${newSearchParams.toString()}`);
+  };
+
   const models: { items: (Item)[] }[] = [{
     items: [
 
@@ -45,7 +55,7 @@ function AppMenu() {
         key: 'newServiceRequest',
         class: 'new-request-icon',
         command: () => {
-          if (!dialog) showDialog('newServiceRequest');
+          if (!dialogVisible) setDialogVisible(true);
         },
       },
       {
@@ -73,7 +83,8 @@ function AppMenu() {
       </MenuProvider>
       {/* Modal opening and closing */}
       <ServiceRequestDialog
-        visible={dialog === 'newServiceRequest'}
+        ticketId={ticketId}
+        visible={dialogVisible || !!ticketId}
         onClose={onClose}
       />
     </>

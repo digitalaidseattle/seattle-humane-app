@@ -59,6 +59,10 @@ const layoutContextValue = {
 };
 
 jest.mock('next/router', () => jest.requireActual('next-router-mock'));
+jest.mock('next/navigation', () => ({
+  usePathname: jest.fn(),
+  useSearchParams: jest.fn().mockReturnValue(new URLSearchParams()),
+}));
 jest.mock('src/hooks/useAppConstants');
 jest.mock('src/hooks/useTeamMembers');
 
@@ -93,6 +97,7 @@ describe('Menu Items Check', () => {
         <ServiceRequestDialog
           visible={dialog === 'newServiceRequest'}
           onClose={onClose}
+          ticketId=""
         />
       </LayoutContext.Provider>,
     );

@@ -16,6 +16,7 @@ import { Button } from 'primereact/button';
 import { Chart } from 'primereact/chart';
 import { Menu } from 'primereact/menu';
 import { useContext, useEffect, useRef } from 'react';
+import RecentTickets from '@components/RecentTickets';
 import { LayoutContext } from '../layout/context/layoutcontext';
 
 const lineData = {
@@ -188,7 +189,7 @@ const Dashboard: React.FC = () => {
       <div className="col-12 xl:col-6">
         <div className="card">
           <h5>Recent Client Tickets</h5>
-
+          <RecentTickets />
         </div>
         <div className="card">
           <div className="flex justify-content-between align-items-center mb-5">
@@ -315,7 +316,7 @@ const Dashboard: React.FC = () => {
                 <span className="text-700">
                   {' '}
                   has purchased a blue t-shirt for
-                                  {' '}
+                  {' '}
                   <span className="text-blue-500">79$</span>
                 </span>
               </span>
@@ -345,7 +346,7 @@ const Dashboard: React.FC = () => {
                 <span className="text-700">
                   {' '}
                   has purchased a black jacket for
-                                  {' '}
+                  {' '}
                   <span className="text-blue-500">59$</span>
                 </span>
               </span>
