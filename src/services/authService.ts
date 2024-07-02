@@ -46,8 +46,8 @@ function signInWithAzure() {
 
 function signInWithEmail() {
   return supabaseClient.auth.signInWithPassword({
-    email: 'example@email.com',
-    password: 'example-password',
+    email: 'user1@example.com',
+    password: 'password123',
   });
 }
 
