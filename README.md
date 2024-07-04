@@ -51,7 +51,7 @@ Install:
 
 1. Open VS code.
 
-1. From VS code, open the command palette using `⇧⌘P` on Mac or `Ctrl+Shift+P` on Windows and type:
+1. (Optional but recommended!) From VS code, open the command palette using `⇧⌘P` on Mac or `Ctrl+Shift+P` on Windows and type:
     ```
     Dev Containers: Open Folder in Container...
     ```
@@ -60,7 +60,7 @@ Install:
 
 1. Open a shell and install dependecies by running:
     ```bash
-    npm install
+    yarn install
     ```
 
 ### Setup Environment Variables
