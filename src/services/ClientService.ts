@@ -23,7 +23,7 @@ import {
   TeamMemberType,
   ServiceRequestSummary,
 } from '@types';
-import supabaseClient from '../../utils/supabaseClient';
+import supabaseClient from '@utils/supabaseClient';
 
 enum RequestType {
   clientNew = 'client-new',

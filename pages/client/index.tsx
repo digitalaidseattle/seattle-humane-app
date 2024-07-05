@@ -23,7 +23,7 @@ import { AppConstantType } from '@types';
 import {
   ClientTicket,
   clientService,
-} from '../../src/services/ClientService';
+} from '@services/ClientService';
 
 function Client() {
   const { push } = useRouter();

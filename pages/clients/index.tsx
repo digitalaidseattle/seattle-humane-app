@@ -9,8 +9,8 @@ import { Toast } from 'primereact/toast';
 import { Toolbar } from 'primereact/toolbar';
 import React, { useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import ClientDialog from '../../src/components/ClientDialog';
-import { ClientTicket, clientService } from '../../src/services/ClientService';
+import ClientDialog from '@components/ClientDialog';
+import { ClientTicket, clientService } from '@services/ClientService';
 
 function Clients() {
   const { push } = useRouter();

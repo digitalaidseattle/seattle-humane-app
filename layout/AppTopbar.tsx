@@ -9,9 +9,9 @@ import React, {
   useState,
 } from 'react';
 import Image from 'next/image';
-import ClientDialog from '../src/components/ClientDialog';
+import ClientDialog from '@components/ClientDialog';
 import { LayoutContext } from './context/layoutcontext';
-import { UserContext } from '../src/context/usercontext';
+import { UserContext } from '@context/usercontext';
 import AppMenu from './AppMenu';
 
 const AppTopbar = forwardRef((_props, ref) => {

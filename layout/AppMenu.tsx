@@ -7,8 +7,8 @@ import { useRouter } from 'next/router';
 import { usePathname, useSearchParams } from 'next/navigation';
 import AppMenuitem from './AppMenuitem';
 import { MenuProvider } from './context/menucontext';
-import { UserContext } from '../src/context/usercontext';
-import authService from '../src/services/authService';
+import { UserContext } from '@context/usercontext';
+import authService from '@services/authService';
 
 // import pawIcon from '/images/paw.svg';
 interface Item {
