@@ -30,6 +30,20 @@ export const mockTicket: ServiceRequestType = {
   description: 'Cleaning service',
   created_at: '',
 };
+export const mockSummary: ServiceRequestType = {
+  id: '123abc',
+  client_id: mockClient.id,
+  pet_id: mockAnimal.id,
+  service_category_id: data.category[0].id,
+  request_source_id: data.source[0].id,
+  team_member_id: john.id,
+  log_id: '',
+  description: 'Cleaning service',
+  created_at: '',
+  client: mockClient.id,
+  pet: mockAnimal.id,
+  team_member: john.id,
+};
 const useTicketById: (id: string) => UseTicketByIdState = jest.fn(() => ({
   ticket: mockTicket,
   client: mockClient,

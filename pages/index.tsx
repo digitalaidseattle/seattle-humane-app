@@ -188,12 +188,11 @@ const Dashboard: React.FC = () => {
 
       <div className="col-12 xl:col-6">
         <div className="card">
-          <h5>Recent Client Tickets</h5>
-          <RecentTickets />
+          <h5>My Cases</h5>
         </div>
         <div className="card">
           <div className="flex justify-content-between align-items-center mb-5">
-            <h5>Best Selling Products</h5>
+            <h5>Recently Closes Cases</h5>
             <div>
               <Button type="button" icon="pi pi-ellipsis-v" className="p-button-rounded p-button-text p-button-plain" onClick={(event) => menu1.current.toggle(event)} />
               <Menu
@@ -285,13 +284,13 @@ const Dashboard: React.FC = () => {
 
       <div className="col-12 xl:col-6">
         <div className="card">
-          <h5>Sales Overview</h5>
-          <Chart type="line" data={lineData} options={lineOptions} />
+          <h5>All Open Cases</h5>
+          <RecentTickets />
         </div>
 
         <div className="card">
           <div className="flex align-items-center justify-content-between mb-4">
-            <h5>Notifications</h5>
+            <h5>New Unassigned Cases</h5>
             <div>
               <Button type="button" icon="pi pi-ellipsis-v" className="p-button-rounded p-button-text p-button-plain" onClick={(event) => menu2.current.toggle(event)} />
               <Menu
