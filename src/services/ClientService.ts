@@ -23,6 +23,166 @@ import {
 } from '@types';
 import supabaseClient from '../../utils/supabaseClient';
 
+enum RequestType {
+  clientNew = 'client-new',
+  clientUpdate = 'client-new',
+  animalNew = 'animal-new',
+  animalUpdate = 'animal-update',
+}
+
+enum TicketType {
+  walkin = 'walk-in',
+  email = 'email',
+  phone = 'phone',
+  other = 'other',
+}
+
+class ServiceCategory {
+  id: string;
+
+  name: string;
+
+  constructor(input: any) {
+    this.id = input.id;
+    this.name = input.name;
+  }
+}
+
+class ServiceStatus {
+  id: string;
+
+  code: string;
+
+  name: string;
+
+  constructor(input: any) {
+    this.id = input.id;
+    this.code = input.code;
+    this.name = input.name;
+  }
+}
+const statuses: ServiceStatus[] = [
+  new ServiceStatus({ name: 'New', code: 'new' }),
+  new ServiceStatus({ name: 'In-progress', code: 'update' }),
+  new ServiceStatus({ name: 'Close', code: 'closed' }),
+  new ServiceStatus({ name: 'Blocked', code: 'blocked' }),
+];
+
+class NewClientRequest {
+  requestType: RequestType = RequestType.clientNew;
+
+  ticketNo: string;
+
+  type: TicketType;
+
+  name: string;
+
+  email: string;
+
+  phone: string;
+
+  summary: string;
+
+  description: string;
+
+  date: Date;
+
+  representative: string;
+
+  constructor(data: any) {
+    this.ticketNo = data.ticketNo;
+    this.type = data.type;
+    this.name = data.name;
+    this.email = data.email;
+    this.phone = data.phone;
+    this.summary = data.summary;
+    this.description = data.description;
+    this.representative = data.representative;
+    this.date = data.date ? data.date : new Date();
+  }
+}
+
+class UpdateClientRequest {
+  requestType: RequestType = RequestType.clientUpdate;
+
+  ticketNo: string;
+
+  ticket: ClientTicket;
+
+  date: Date;
+
+  representative: string;
+
+  constructor(ticket: any, date: Date, representative: string) {
+    this.ticketNo = ticket.ticketNo;
+    this.ticket = ticket;
+    this.date = date || new Date();
+  }
+}
+
+class ChangeLog {
+  date: Date;
+
+  representative: string;
+
+  description: string;
+
+  constructor(data: any) {
+    this.date = data.date ? data.date : new Date();
+    this.description = data.description;
+    this.representative = data.representative;
+  }
+}
+
+class ClientTicket {
+  ticketNo: string;
+
+  type: TicketType;
+
+  status: string;
+
+  name: string;
+
+  email: string;
+
+  phone: string;
+
+  summary: string;
+
+  description: string;
+
+  urgency: number;
+
+  changeLog: ChangeLog[] = [];
+
+  serviceCategoryId: string;
+
+  constructor(data: any) {
+    this.ticketNo = data.ticketNo;
+    this.type = data.type;
+    this.name = data.name;
+    this.status = data.status;
+    this.urgency = data.urgency;
+    this.email = data.email;
+    this.phone = data.phone;
+    this.summary = data.summary;
+    this.description = data.description;
+    this.serviceCategoryId = data.serviceCategoryId;
+  }
+}
+
+type TableQueryModel = {
+  page: number,
+  pageSize: number,
+  sortField: string,
+  sortDirection: string,
+};
+
+type PageInfo<T> = {
+  totalRowCount: number,
+  rows: T[],
+};
+
 class ClientService {
   // constructor(private supabaseClient: SupabaseClient) { }
 
@@ -174,7 +334,9 @@ class ClientService {
     return ticket;
   }
 
-  static async getServiceRequestSummary(): Promise<ServiceRequestSummary[]> {
+  static async getServiceRequestSummary(
+    query: TableQueryModel,
+  ): Promise<PageInfo<ServiceRequestSummary>> {
     const { data, error } = await supabaseClient
       .from('service_requests')
 
@@ -208,7 +370,11 @@ class ClientService {
       category: categoryMap.get(service_category),
       ...rest,
     }));
-    return summaries;
+
+    return {
+      totalRowCount: 10000,
+      rows: summaries,
+    };
   }
 
   static async getRecentTickets() {
@@ -307,4 +473,9 @@ const clientService = new ClientService();
 export default ClientService;
 export {
   clientService,
+};
+
+export type {
+  TableQueryModel,
+  PageInfo,
 };

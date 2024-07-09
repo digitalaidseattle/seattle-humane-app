@@ -11,10 +11,11 @@ import {
   EditableAnimalType,
   EditableClientType,
   EditableServiceRequestType,
+  ServiceRequestType,
 } from '@types';
 import { mockTicket } from '@hooks/__mocks__/useTicketById';
 import { recentTickets } from '@hooks/__mocks__/useRecentTickets';
-import ClientService, { clientService } from '../../../src/services/ClientService';
+import ClientService, { clientService, PageInfo, TableQueryModel } from '../../../src/services/ClientService';
 import supabaseClient from '../../../utils/supabaseClient';
 
 // Idea for mock from https://stackoverflow.com/questions/77411385/how-to-mock-supabase-api-select-requests-in-nodejs
@@ -124,6 +125,22 @@ describe('ClientService', () => {
       const actualTicket = await ClientService.getRecentTickets();
       // Assert
       expect(actualTicket).toBe(expectedTickets);
+    });
+    it('requests service request history using a correct page', async () => {
+      // Arrange
+      const expectedTickets = recentTickets;
+      mockSupabaseClient.setTestData(expectedTickets);
+      const query: TableQueryModel = {
+        page: 1,
+        pageSize: 1,
+        sortField: 'created_at',
+        sortDirection: 'asc',
+      };
+      // Act
+      // eslint-disable-next-line max-len
+      const actualTicket: PageInfo<ServiceRequestType> = await ClientService.getServiceRequestSummary(query);
+      // Expect
+      expect(actualTicket.rows[0].id).toBe('abc');
     });
     it('throws errors from the db', async () => {
       // Arrange

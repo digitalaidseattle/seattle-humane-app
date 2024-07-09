@@ -9,8 +9,16 @@ export default function useRecentTickets() {
   const params = useSearchParams();
   useEffect(() => {
     const getTickets = async () => {
-      const data = await ClientService.getServiceRequestSummary();
-      setTickets(data);
+      const data = await ClientService.getServiceRequestSummary(
+        {
+          // TODO this needs to use real info
+          page: 0,
+          pageSize: 5,
+          sortField: 'created_at',
+          sortDirection: 'asc',
+        },
+      );
+      setTickets(data.rows);
     };
     getTickets();
   }, [params]);
