@@ -41,9 +41,7 @@ Install:
 
 ## Local Environment Setup
 
-The application requires setup of both a Next.JS frontend and a Supabase backend.
-
-### Setup the frontend environment.
+### Setup NextJS Application
     
 1. Go in the folder you want the project to exist, run:
 
@@ -53,7 +51,7 @@ The application requires setup of both a Next.JS frontend and a Supabase backend
 
 1. Open VS code.
 
-1. From VS code, open the command palette using `⇧⌘P` on Mac or `Ctrl+Shift+P` on Windows and type:
+1. (Optional but recommended!) From VS code, open the command palette using `⇧⌘P` on Mac or `Ctrl+Shift+P` on Windows and type:
     ```
     Dev Containers: Open Folder in Container...
     ```
@@ -62,13 +60,37 @@ The application requires setup of both a Next.JS frontend and a Supabase backend
 
 1. Open a shell and install dependecies by running:
     ```bash
-    npm install
+    yarn install
     ```
+
+### Setup Environment Variables
+
+This setup uses a shared cloud Supabase database for simplicity.
+1. Run the command:
+   ```bash
+   cp .env.local.example .env.local
+   ```
+2. Request the `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` from the team or go to settings > api from the Supabase Dashboard tp get them yourself. Other variables in `.env.local` can be ignored for now.
+
+### Run the application
+1. Run the command in your terminal from the project directory:
+```bash
+   yarn dev
+   ```
+
+## Testing
+
+- To run all tests: `yarn test`.
+- To exclude tests while running your own, you may temporarily put 'x' in front of 'describe' or 'it'. However, DO NOT exclude tests on a PR to a sprint branch.
+
+## Setup Application with Local Database (Optional)
+
+This section is only needed if you want to isolate your database and not use a shared environment.
 
 ### Configure Environmental Variables
 Local setup requires a few one-time steps. In the following steps, you will start Supabase locally and put values from Supabase into your .env.local file.
 
-1. Create a copy of .env.local.example:
+1. Like before, create a copy of .env.local.example:
 
    ```bash
    cp .env.local.example .env.local
@@ -93,7 +115,7 @@ Local setup requires a few one-time steps. In the following steps, you will star
 
 1. Run `supabase stop` to close Supabase when you are done.
 
-#### Configure OAuth Environment Variables (optional)
+#### Configure OAuth Environment Variables
 
 1. If you need to use OAuth, be sure to follow the steps listed in _.env.local.example_ to set the OAuth variables. Once the variables are set, run:
     ```bash
@@ -102,7 +124,7 @@ Local setup requires a few one-time steps. In the following steps, you will star
     supabase start
     ```
 
-### Running the application
+### Running the application and backend locally (optional still)
 
 #### Run the frontend
 
@@ -129,11 +151,6 @@ Local setup requires a few one-time steps. In the following steps, you will star
 1. Run `supabase start`. If Supabase is already running, you can stop it by running `supabase stop` first.
 
 1. Run `supabase stop` when you are done.
-
-## Testing
-
-- To run all tests: `yarn test`.
-- To exclude tests while running your own, you may temporarily put 'x' in front of 'describe' or 'it'. However, DO NOT exclude tests on a PR to a sprint branch.
 
 ## Manually updating Supabase types
 
