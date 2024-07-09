@@ -1,4 +1,3 @@
-// TODO Remove this sprint Demo hook
 import { ServiceRequestSummary } from '@types';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
