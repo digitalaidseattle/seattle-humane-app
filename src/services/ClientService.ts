@@ -334,6 +334,8 @@ class ClientService {
     return ticket;
   }
 
+  // FIXME what is the difference between a serviceRequestSummary
+  // and recent tickets?
   static async getServiceRequestSummary(
     query: TableQueryModel,
   ): Promise<PageInfo<ServiceRequestSummary>> {
@@ -349,6 +351,7 @@ class ClientService {
       pets(name),
       team_members(first_name)
       `)
+      // FIXME this will need to use the query coming in
       .order('created_at', { ascending: false })
       .limit(10);
     if (error) throw new Error(`${error.message}`);
@@ -377,6 +380,7 @@ class ClientService {
     };
   }
 
+  // FIXME is this never used in the code??
   static async getRecentTickets() {
     const { data: tickets, error } = await supabaseClient
       .from('service_requests')

@@ -11,7 +11,7 @@ import {
   EditableAnimalType,
   EditableClientType,
   EditableServiceRequestType,
-  ServiceRequestType,
+  ServiceRequestSummary,
 } from '@types';
 import { mockTicket } from '@hooks/__mocks__/useTicketById';
 import { recentTickets } from '@hooks/__mocks__/useRecentTickets';
@@ -128,8 +128,23 @@ describe('ClientService', () => {
     });
     it('requests service request history using a correct page', async () => {
       // Arrange
-      const expectedTickets = recentTickets;
-      mockSupabaseClient.setTestData(expectedTickets);
+      // FIXME this is very messy. We need to be able to
+      // handle two supabase queries with the mock.
+      const allDatabaseData = [{
+        id: '1',
+        clients: {
+          first_name: 'Max',
+        },
+        pets: {
+          name: 'Blastoise',
+        },
+        team_members: {
+          first_name: 'Minnie',
+        },
+        service_category: '123',
+        label: 'Test Constant',
+      }];
+      mockSupabaseClient.setTestData(allDatabaseData);
       const query: TableQueryModel = {
         page: 1,
         pageSize: 1,
@@ -138,9 +153,9 @@ describe('ClientService', () => {
       };
       // Act
       // eslint-disable-next-line max-len
-      const actualTicket: PageInfo<ServiceRequestType> = await ClientService.getServiceRequestSummary(query);
+      const actualTicket: PageInfo<ServiceRequestSummary> = await ClientService.getServiceRequestSummary(query);
       // Expect
-      expect(actualTicket.rows[0].id).toBe('abc');
+      expect(actualTicket.rows[0].id).toBe('1');
     });
     it('throws errors from the db', async () => {
       // Arrange
