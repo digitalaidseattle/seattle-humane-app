@@ -334,48 +334,61 @@ class ClientService {
     return ticket;
   }
 
-  // FIXME what is the difference between a serviceRequestSummary
-  // and recent tickets?
   static async getServiceRequestSummary(
     query: TableQueryModel,
   ): Promise<PageInfo<ServiceRequestSummary>> {
+    const {
+      page, pageSize, sortField, sortDirection,
+    } = query;
+    const offset = (page - 1) * pageSize;
+
     const { data, error } = await supabaseClient
       .from('service_requests')
-
       .select(`
+        id,
+        description,
+        created_at,
+        service_category,
+        clients (
+          first_name
+        ),
+        pets (
+          name
+        ),
+        team_members (
+          first_name
+        ),
+        app_constants:service_category (
+          value
+        )
+      `)
+      .eq('app_constants.type', 'category')
+      .order(sortField, { ascending: sortDirection === 'asc' })
+      .range(offset, offset + pageSize - 1);
+
+    if (error) throw new Error(`${error.message}`);
+
+    const summaries = data.map(({
+      clients, pets, team_members, app_constants, id, description, created_at,
+    }) => ({
       id,
       description,
       created_at,
-      service_category,
-      clients(first_name),
-      pets(name),
-      team_members(first_name)
-      `)
-      // FIXME this will need to use the query coming in
-      .order('created_at', { ascending: false })
-      .limit(10);
-    if (error) throw new Error(`${error.message}`);
-
-    const { data: constants, error: categoryError } = await supabaseClient
-      .from('app_constants')
-      .select('*')
-      .eq('type', 'category');
-    if (categoryError) throw new Error(categoryError.message);
-    const categoryMap = new Map(constants.map((constant) => ([constant.id, constant.label])));
-
-    const summaries = data.map(({
-      clients, pets, team_members, service_category, id, ...rest
-    }) => ({
-      id,
       client: clients.first_name,
       pet: pets.name,
       team_member: team_members.first_name,
-      category: categoryMap.get(service_category),
-      ...rest,
+      category: app_constants.values,
     }));
 
+    // Fetch the total row count for pagination
+    const { count: totalRowCount, error: countError } = await supabaseClient
+      .from('service_requests')
+      .select('id', { count: 'exact', head: true });
+
+    if (countError) throw new Error(`${countError.message}`);
+
     return {
-      totalRowCount: 10000,
+      totalRowCount,
       rows: summaries,
     };
   }
