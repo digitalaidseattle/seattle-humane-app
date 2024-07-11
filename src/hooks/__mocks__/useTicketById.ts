@@ -30,14 +30,16 @@ export const mockTicket: ServiceRequestType = {
   description: 'Cleaning service',
   created_at: '',
 };
-export const mockSummary: ServiceRequestType = {
+export const mockSummary: ServiceRequestType & {
+  client: string, pet: string, team_member: string
+} = {
   id: '123abc',
   client_id: mockClient.id,
   pet_id: mockAnimal.id,
-  service_category_id: data.category[0].id,
-  request_source_id: data.source[0].id,
+  service_category: data.category[0].value,
+  request_source: data.source[0].value,
+  status: data.status[0].value,
   team_member_id: john.id,
-  log_id: '',
   description: 'Cleaning service',
   created_at: '',
   client: mockClient.id,
