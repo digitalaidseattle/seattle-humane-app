@@ -34,23 +34,6 @@ describe('TicketTable Headers', () => {
     //* Assert
     render(<TicketsTable items={result.current} />);
 
-    /*
-    [{"client": "456def",
-    "client_id": "456def",
-    "created_at": "",
-    "description": "Cleaning service",
-    "id": "147xyz",
-    "log_id": "",
-    "pet": "789ghi",
-    "pet_id": "789ghi",
-    "request_source_id":
-    "phone-id",
-    "service_category_id":
-    "pet_fostering-id",
-    "team_member": "j456",
-    "team_member_id": "j456"}]
-
-    */
     await waitFor(() => {
       // Grabs Elements
       const dateHeader = screen.getAllByText('Date');

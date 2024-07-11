@@ -290,6 +290,10 @@ const Dashboard: React.FC = () => {
 
         <div className="card">
           <div className="flex align-items-center justify-content-between mb-4">
+            {/** New Unassigned Cases might be temporary I talked to kate,
+             * we cannot let these drown with all open case list
+             *  this might be the fixed, I suggested it, but if not we can refactor this table.
+             */}
             <h5>New Unassigned Cases</h5>
             <div>
               <Button type="button" icon="pi pi-ellipsis-v" className="p-button-rounded p-button-text p-button-plain" onClick={(event) => menu2.current.toggle(event)} />
