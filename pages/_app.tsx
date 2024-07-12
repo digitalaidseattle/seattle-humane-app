@@ -1,12 +1,12 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { User } from '@supabase/supabase-js';
 import { useRouter } from 'next/navigation';
-import { LayoutProvider } from '../layout/context/layoutcontext';
-import Layout from '../layout/layout';
+import { LayoutProvider } from '@layout/context/layoutcontext';
+import Layout from '@layout/layout';
 import 'primereact/resources/primereact.css';
 import 'primeflex/primeflex.css';
 import 'primeicons/primeicons.css';
-import '../styles/layout/layout.scss';
+import '@styles/layout/layout.scss';
 import { UserContext } from '@context/usercontext';
 import authService from '@services/authService';
 

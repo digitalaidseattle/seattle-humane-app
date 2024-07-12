@@ -19,10 +19,10 @@ import {
 import {
   ServiceInfoActionType, ServiceInformationProvider, defaultServiceInformation, serviceInfoReducer,
 } from '@context/serviceRequest/serviceInformationContext';
-import { clientService } from '../services/ClientService';
+import { clientService } from '@services/ClientService';
 import {
   EditableAnimalType, EditableClientType, EditableServiceRequestType, ServiceRequestType,
-} from '../types';
+} from '@types';
 import FormConfirmationButtons from './FormConfirmationButtons';
 import ClientInformationSection from './serviceRequest/ClientInformationSection';
 import PetInformationSection from './serviceRequest/PetInformationSection';

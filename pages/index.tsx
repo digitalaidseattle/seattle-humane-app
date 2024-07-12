@@ -17,7 +17,7 @@ import { Chart } from 'primereact/chart';
 import { Menu } from 'primereact/menu';
 import { useContext, useEffect, useRef } from 'react';
 import RecentTickets from '@components/RecentTickets';
-import { LayoutContext } from '../layout/context/layoutcontext';
+import { LayoutContext } from '@layout/context/layoutcontext';
 
 const lineData = {
   labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
