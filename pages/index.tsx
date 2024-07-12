@@ -1,5 +1,5 @@
 /* eslint-disable import/no-duplicates */
-/* eslint-disable react/jsx-indent */
+
 /* eslint-disable @typescript-eslint/no-shadow */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react/function-component-definition */
