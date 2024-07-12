@@ -78,7 +78,7 @@ export function LayoutProvider({ children }) {
     setLayoutState,
     onMenuToggle,
     showProfileSidebar,
-  }), []);
+  }), [showProfileSidebar]);
 
   return <LayoutContext.Provider value={value}>{children}</LayoutContext.Provider>;
 }

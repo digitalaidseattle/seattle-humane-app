@@ -19,6 +19,7 @@ import {
   EditableAnimalType,
   AppConstantType,
   TeamMemberType,
+  ServiceRequestSummary,
 } from '@types';
 import supabaseClient from '../../utils/supabaseClient';
 
@@ -171,6 +172,43 @@ class ClientService {
       .single();
     if (error) throw new Error(`${error.message}`);
     return ticket;
+  }
+
+  static async getServiceRequestSummary(): Promise<ServiceRequestSummary[]> {
+    const { data, error } = await supabaseClient
+      .from('service_requests')
+
+      .select(`
+      id,
+      description,
+      created_at,
+      service_category,
+      clients(first_name),
+      pets(name),
+      team_members(first_name)
+      `)
+      .order('created_at', { ascending: false })
+      .limit(10);
+    if (error) throw new Error(`${error.message}`);
+
+    const { data: constants, error: categoryError } = await supabaseClient
+      .from('app_constants')
+      .select('*')
+      .eq('type', 'category');
+    if (categoryError) throw new Error(categoryError.message);
+    const categoryMap = new Map(constants.map((constant) => ([constant.id, constant.label])));
+
+    const summaries = data.map(({
+      clients, pets, team_members, service_category, id, ...rest
+    }) => ({
+      id,
+      client: clients.first_name,
+      pet: pets.name,
+      team_member: team_members.first_name,
+      category: categoryMap.get(service_category),
+      ...rest,
+    }));
+    return summaries;
   }
 
   static async getRecentTickets() {
