@@ -11,8 +11,8 @@ function OwnerAndPetTemplate({ client, pet, id }) {
   return (
     <div key={id}>
       <Link href={`?ticket=${id}`}>
-        <div className="font-bold">{pet}</div>
-        <div className="capitalize">{client}</div>
+        <div className="font-bold text-gray-900">{pet}</div>
+        <div className="capitalize text-gray-600">{client}</div>
       </Link>
 
     </div>
@@ -22,7 +22,7 @@ function OwnerAndPetTemplate({ client, pet, id }) {
 function CreatedAtTemplate({ created_at, id }) {
   return (
     <span key={id}>
-      <Link href={`?ticket=${id}`}>
+      <Link className="text-gray-900" href={`?ticket=${id}`}>
         {new Date(created_at).toLocaleDateString('en-US', {
           day: '2-digit', month: '2-digit', year: 'numeric',
         })}
@@ -33,28 +33,27 @@ function CreatedAtTemplate({ created_at, id }) {
 
 function descriptionView({ id, description }) {
   return (
-    <Link href={`?ticket=${id}`} key={id}>
+    <Link className="text-gray-900" href={`?ticket=${id}`} key={id}>
       {description}
     </Link>
   );
 }
 function catergoryView({ id, category }) {
   return (
-    <Link href={`?ticket=${id}`} key={id}>
+    <Link className="text-gray-900" href={`?ticket=${id}`} key={id}>
       {category}
     </Link>
   );
 }
 function TeamMemberView({ id, team_member }) {
   return (
-    <Link className="text-red-500" href={`?ticket=${id}`} key={id}>
+    <Link className="text-gray-900" href={`?ticket=${id}`} key={id}>
       {team_member}
     </Link>
   );
 }
 
 function TicketsTable({ items }: TicketsTableProps, i) {
-  console.log('items', items);
   return (
     <DataTable
       value={items}
@@ -64,7 +63,7 @@ function TicketsTable({ items }: TicketsTableProps, i) {
       emptyMessage="No data found."
       className="datatable-responsive"
       currentPageReportTemplate="Showing {first} to {last} of {totalRecords} tickets"
-      rows={5}
+      rows={10}
       key={i}
     >
 

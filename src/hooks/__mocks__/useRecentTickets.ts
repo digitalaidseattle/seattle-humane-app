@@ -1,5 +1,7 @@
 import type { ServiceRequestSummary } from '@types';
-import { mockAnimal, mockClient, mockTicket } from '@hooks/__mocks__/useTicketById';
+import {
+  mockAnimal, mockClient, mockTicket, mockSummary,
+} from '@hooks/__mocks__/useTicketById';
 import { john } from '@hooks/__mocks__/useTeamMembers';
 
 const mockTicketSummary = {
@@ -14,6 +16,13 @@ const mockTicketSummary = {
 export const recentTickets: ServiceRequestSummary[] = [
   mockTicketSummary,
   { ...mockTicketSummary, id: 'abc' },
+];
+
+export const recentCases = [
+  {
+    ...mockSummary,
+    id: '147xyz',
+  },
 ];
 const useRecentTickets: (id: string) => ServiceRequestSummary[] = jest.fn(() => recentTickets);
 
