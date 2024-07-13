@@ -12,7 +12,7 @@ import {
   defaultServiceInformation,
 } from '@context/serviceRequest/serviceInformationContext';
 import { EditableServiceRequestType } from '@types';
-import { john } from 'src/hooks/__mocks__/useTeamMembers';
+import { mockTeamMember2 } from 'src/hooks/__mocks__/useTeamMembers';
 import { data } from '@hooks/__mocks__/useAppConstants';
 
 const { source } = data;
@@ -217,9 +217,9 @@ describe('ServiceInformationSection', () => {
     fireEvent.click(
       within(assignToDropdown).getByRole('button'),
     );
-    fireEvent.click(await screen.findByText(john.label));
+    fireEvent.click(await screen.findByText(mockTeamMember2.email));
 
     //* Assert
-    expect(screen.getByDisplayValue(john.label)).toBeInTheDocument();
+    expect(screen.getByDisplayValue(mockTeamMember2.email)).toBeInTheDocument();
   });
 });

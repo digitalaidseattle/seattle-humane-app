@@ -3,7 +3,7 @@ import { petInformationLabels } from '@components/serviceRequest/PetInformationS
 import { serviceInformationLabels } from '@components/serviceRequest/ServiceInformationSection';
 import ServiceRequestDialog from '@components/serviceRequest/ServiceRequestDialog';
 import { defaultServiceInformation } from '@context/serviceRequest/serviceInformationContext';
-import { mockAnimal, mockClient, mockTicket } from '@hooks/__mocks__/useTicketById';
+import * as MockEntities from '@hooks/__mocks__/useTicketById';
 import useTicketById from '@hooks/useTicketById';
 import * as DataService from '@services/DataService';
 import '@testing-library/jest-dom';
@@ -12,6 +12,8 @@ import {
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { useState } from 'react';
+
+const { mockAnimal, mockClient, mockTicket } = MockEntities;
 
 jest.mock('@services/DataService');
 const mockedDataService = jest.mocked(DataService);

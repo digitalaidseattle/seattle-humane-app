@@ -2,7 +2,7 @@ import type { ServiceRequestSummary } from '@types';
 import {
   mockAnimal, mockClient, mockTicket, mockSummary,
 } from '@hooks/__mocks__/useTicketById';
-import { john } from '@hooks/__mocks__/useTeamMembers';
+import { mockTeamMember1 } from '@hooks/__mocks__/useTeamMembers';
 
 const mockTicketSummary = {
   id: mockTicket.id,
@@ -10,7 +10,7 @@ const mockTicketSummary = {
   created_at: mockTicket.created_at,
   client: mockClient.first_name,
   pet: mockAnimal.name,
-  team_member: john.label,
+  team_member: mockTeamMember1.first_name,
 };
 
 export const recentTickets: ServiceRequestSummary[] = [

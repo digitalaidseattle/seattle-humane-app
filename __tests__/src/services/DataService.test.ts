@@ -12,10 +12,11 @@ import {
   EditableClientType,
   EditableServiceRequestType,
 } from '@types';
-import { mockTicket } from '@hooks/__mocks__/useTicketById';
+import { mockAnimal, mockClient, mockTicket } from '@hooks/__mocks__/useTicketById';
 import { recentTickets } from '@hooks/__mocks__/useRecentTickets';
 import * as DataService from '@services/DataService';
 import supabaseClient from '../../../utils/supabaseClient';
+import { mockTeamMember1 } from '@hooks/__mocks__/useTeamMembers';
 
 // Idea for mock from https://stackoverflow.com/questions/77411385/how-to-mock-supabase-api-select-requests-in-nodejs
 jest.mock('@supabase/supabase-js', () => ({
@@ -115,22 +116,52 @@ describe('DataService', () => {
       await expect(DataService.getTicket('')).rejects.toThrow(expectedErrorMessage);
     });
   });
-  describe('static getRecentTickets()', () => {
+  describe('static getServiceRequestSummary()', () => {
     it('returns recent tickets from the db', async () => {
       // Arrange
       const expectedTickets = recentTickets;
-      mockSupabaseClient.setTestData(expectedTickets);
+      /**
+       * TODO research a better way to mock consecutive queries to supabase client
+       * here the first query simply returns all the data used in subsequent queries
+       * so this test is tightly coupled with the implementation.
+       * Would be better to somehow do mockSupabaseClient.mockDataOnce(...)
+       * or mockSupabaseClient.mockQueryOnce(...)
+       */
+      // add clients, pets, teammebers and the app constant label to the mock tickets
+      const expectedQueryResults = expectedTickets.map((ticket) => ({
+        ...ticket,
+        clients: { first_name: mockClient.first_name },
+        pets: { name: mockAnimal.name },
+        team_members: { first_name: mockTeamMember1.first_name },
+        service_category: ticket.id,
+        label: 'mock app constant label',
+      }))
+      mockSupabaseClient.setTestData(expectedQueryResults);
+      const expectedServiceRequestSummary = expectedQueryResults.map((data) => {
+        const {
+          clients, pets, team_members, id, label, ...ticket
+        } = data;
+        return {
+          id: id,
+          client: clients.first_name,
+          pet: pets.name,
+          team_member: team_members.first_name,
+          category: label,
+          created_at: ticket.created_at,
+          description: ticket.description,
+        }
+      })
       // Act
-      const actualTicket = await DataService.getRecentTickets();
+      const actualTicket = await DataService.getServiceRequestSummary();
       // Assert
-      expect(actualTicket).toBe(expectedTickets);
+      expect(actualTicket).toEqual(expectedServiceRequestSummary);
     });
     it('throws errors from the db', async () => {
       // Arrange
       const expectedErrorMessage = 'Internal DB Error';
       mockSupabaseClient.setTestError(new Error(expectedErrorMessage));
       // Act & Assert
-      await expect(DataService.getRecentTickets()).rejects.toThrow(expectedErrorMessage);
+      await expect(DataService.getServiceRequestSummary()).rejects.toThrow(expectedErrorMessage);
     });
   });
   it.each([

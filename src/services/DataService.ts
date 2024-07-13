@@ -14,6 +14,7 @@ import type {
   EditableAnimalType,
   AppConstantType,
   TeamMemberType,
+  ServiceRequestSummary,
 } from '@types';
 import supabaseClient from '@utils/supabaseClient';
 import throwIfMissingRequiredFields from '@utils/throwIfMissingRequiredFields';
@@ -84,14 +85,41 @@ export async function getTicket(ticketId: ServiceRequestType['id']) {
   return ticket;
 }
 
-export async function getRecentTickets() {
-  const { data: tickets, error } = await supabaseClient
+export async function getServiceRequestSummary(): Promise<ServiceRequestSummary[]> {
+  const { data, error } = await supabaseClient
     .from('service_requests')
-    .select()
+
+    .select(`
+    id,
+    description,
+    created_at,
+    service_category,
+    clients(first_name),
+    pets(name),
+    team_members(first_name)
+    `)
     .order('created_at', { ascending: false })
     .limit(10);
-  if (error) throw new Error(error.message);
-  return tickets;
+  if (error) throw new Error(`${error.message}`);
+  const { data: constants, error: categoryError } = await supabaseClient
+    .from('app_constants')
+    .select('*')
+    .eq('type', 'category');
+  if (categoryError) throw new Error(categoryError.message);
+  const categoryMap = new Map(constants.map((constant) => ([constant.id, constant.label])));
+
+  const summaries = data.map(({
+    clients, pets, team_members, service_category, id, ...ticket
+  }) => ({
+    id,
+    client: clients.first_name,
+    pet: pets.name,
+    team_member: team_members.first_name,
+    category: categoryMap.get(service_category),
+    created_at: ticket.created_at,
+    description: ticket.description,
+  }));
+  return summaries;
 }
 
 export async function getClientByIdOrEmail<T extends keyof Pick<ClientType, 'id' | 'email'>>(

@@ -9,7 +9,7 @@ export default function useRecentTickets() {
   const params = useSearchParams();
   useEffect(() => {
     const getTickets = async () => {
-      const data = await DataService.getRecentTickets();
+      const data = await DataService.getServiceRequestSummary();
       setTickets(data);
     };
     getTickets();

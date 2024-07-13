@@ -12,6 +12,7 @@
         "test": "jest"
     },
     "dependencies": {
+        "@faker-js/faker": "^8.4.1",
         "@supabase/auth-helpers-nextjs": "^0.8.7",
         "@supabase/supabase-js": "^2.39.6",
         "chart.js": "^4.2.1",

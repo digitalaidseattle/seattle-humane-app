@@ -7,14 +7,14 @@ import type { ServiceRequestSummary } from '@types';
 
 import { recentCases } from '@hooks/__mocks__/useRecentTickets';
 import useRecentTickets from '@hooks/useRecentTickets';
-import ClientService from '@services/ClientService';
+import * as DataService from '@services/DataService';
 
-jest.mock('@services/ClientService');
-const mockedClientService = jest.mocked(ClientService);
+jest.mock('@services/DataService');
+const mockedDataService = jest.mocked(DataService);
 
 beforeAll(() => {
-  // Setup mock ClientService
-  mockedClientService.getServiceRequestSummary
+  // Setup mock DataService
+  mockedDataService.getServiceRequestSummary
     .mockImplementation(async () => recentCases.map((ticket) => ({
       ...ticket,
       client: ticket.client_id,
