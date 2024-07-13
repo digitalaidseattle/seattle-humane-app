@@ -1,21 +1,11 @@
 // TODO Remove this sprint demo component
 import useRecentTickets from '@hooks/useRecentTickets';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import TicketsTable from './TicketsTable';
 
 export default function RecentTickets() {
-  const pathname = usePathname();
+  // TODO hookup deep link to ticket dialog on click
   const tickets = useRecentTickets();
   return (
-    <ul>
-      {tickets.map(({ id, description, created_at }) => (
-        <li key={id}>
-          <Link href={`${pathname}?ticket=${id}`}>
-            <em>{new Date(created_at).toLocaleDateString()}</em>
-            <span className="ml-3 text-lg">{description}</span>
-          </Link>
-        </li>
-      ))}
-    </ul>
+    <TicketsTable items={tickets} />
   );
 }

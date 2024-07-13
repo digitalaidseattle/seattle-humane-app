@@ -1,6 +1,6 @@
 import React from 'react';
 
-function Animals() {
+function Reports() {
   return (
     <div className="grid flex">
       <div className="col-12">
@@ -12,4 +12,4 @@ function Animals() {
   );
 }
 
-export default Animals;
+export default Reports;
