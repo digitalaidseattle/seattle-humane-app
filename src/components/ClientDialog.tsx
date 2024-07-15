@@ -23,10 +23,10 @@ import { clientService } from '@services/ClientService';
 import {
   EditableAnimalType, EditableClientType, EditableServiceRequestType, ServiceRequestType,
 } from '@types';
-import FormConfirmationButtons from './FormConfirmationButtons';
-import ClientInformationSection from './serviceRequest/ClientInformationSection';
-import PetInformationSection from './serviceRequest/PetInformationSection';
-import ServiceInformationSection from './serviceRequest/ServiceInformationSection';
+import FormConfirmationButtons from '@components/FormConfirmationButtons';
+import ClientInformationSection from '@components/serviceRequest/ClientInformationSection';
+import PetInformationSection from '@components/serviceRequest/PetInformationSection';
+import ServiceInformationSection from '@components/serviceRequest/ServiceInformationSection';
 
 const defaultClient: EditableClientType = {
   first_name: '',
