@@ -52,10 +52,10 @@ function TeamMemberView({ id, team_member }) {
     </Link>
   );
 }
-function urgentView({ id, urgent }) {
+function UrgentView({ id, urgent }) {
   return (
     <Link className="text-gray-900" href={`?ticket=${id}`} key={id}>
-      {urgent}
+      {urgent ? 'Urgent' : ''}
     </Link>
   );
 }
@@ -75,7 +75,7 @@ function TicketsTable({ items }: TicketsTableProps, i) {
     >
 
       <Column body={OwnerAndPetTemplate} header="Owner" />
-      <Column field="urgent" body={urgentView} header="Urgent" />
+      <Column field="urgent" body={UrgentView} header="Urgent" />
       <Column field="category" header="Category" body={catergoryView} className="font-bold" />
       <Column field="description" header="Description" body={descriptionView} className="font-bold" />
       <Column body={CreatedAtTemplate} header="Date" className="font-bold" />

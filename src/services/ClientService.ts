@@ -185,7 +185,8 @@ class ClientService {
       service_category,
       clients(first_name),
       pets(name),
-      team_members(first_name)
+      team_members(first_name),
+      urgent
       `)
       .order('created_at', { ascending: false })
       .limit(10);
