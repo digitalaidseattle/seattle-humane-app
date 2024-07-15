@@ -4,7 +4,7 @@
   "parserOptions": {
     "project": "./tsconfig.json"
   },
-  "plugins": ["@typescript-eslint"],
+  "plugins": ["@typescript-eslint", "path-alias"],
   "rules": {
     "react/require-default-props": "off", // Since we do not use prop-types
     "react/jsx-max-props-per-line": "warn",
@@ -15,7 +15,8 @@
       "ignoreRegExpLiterals": true,
       "ignoreStrings": true,
       "ignoreTemplateLiterals": true
-    }]
+    }],
+    "path-alias/no-relative": "error"
   },
   "ignorePatterns": ["**/*.js", "**/*.jsx"],
   "reportUnusedDisableDirectives": true
