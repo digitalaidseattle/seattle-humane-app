@@ -51,6 +51,7 @@ const defaultRequest: EditableServiceRequestType = {
   status: '',
   description: '',
   team_member_id: null,
+  urgent: false,
 };
 
 interface ClientDialogProps {
