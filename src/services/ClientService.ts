@@ -21,7 +21,7 @@ import {
   TeamMemberType,
   ServiceRequestSummary,
 } from '@types';
-import supabaseClient from '../../utils/supabaseClient';
+import supabaseClient from '@utils/supabaseClient';
 
 class ClientService {
   // constructor(private supabaseClient: SupabaseClient) { }

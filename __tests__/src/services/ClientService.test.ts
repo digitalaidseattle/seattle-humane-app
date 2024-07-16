@@ -14,8 +14,8 @@ import {
 } from '@types';
 import { mockTicket } from '@hooks/__mocks__/useTicketById';
 import { recentTickets } from '@hooks/__mocks__/useRecentTickets';
-import ClientService, { clientService } from '../../../src/services/ClientService';
-import supabaseClient from '../../../utils/supabaseClient';
+import ClientService, { clientService } from '@services/ClientService';
+import supabaseClient from '@utils/supabaseClient';
 
 // Idea for mock from https://stackoverflow.com/questions/77411385/how-to-mock-supabase-api-select-requests-in-nodejs
 jest.mock('@supabase/supabase-js', () => ({

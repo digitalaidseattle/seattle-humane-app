@@ -1,9 +1,9 @@
 // LoginPage.test.js
 import { render, screen } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import LoginPage from '../../pages/auth/login/index';
-import { LayoutProvider } from '../../layout/context/layoutcontext';
-import { UserContext } from '../../src/context/usercontext';
+import LoginPage from '@pages/auth/login/index';
+import { LayoutProvider } from '@layout/context/layoutcontext';
+import { UserContext } from '@context/usercontext';
 import { useRouter } from 'next/router';
 import { publicRuntimeConfig } from '../../next.config';
 
@@ -17,7 +17,7 @@ jest.mock('next/config', () => () => ({
   },
 }));
 
-jest.mock('../../utils/supabaseClient', () => ({
+jest.mock('@utils/supabaseClient', () => ({
   auth: {
     onAuthStateChange: jest.fn(),
     getUser: jest.fn(),

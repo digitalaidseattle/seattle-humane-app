@@ -1,6 +1,6 @@
 import { clientService } from 'src/services/ClientService';
 import { renderHook, waitFor } from '@testing-library/react';
-import useAppConstants from '../../../src/hooks/useAppConstants';
+import useAppConstants from '@hooks/useAppConstants';
 
 jest.mock('src/services/ClientService');
 const mockClientService = jest.mocked(clientService);

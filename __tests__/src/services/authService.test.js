@@ -1,8 +1,8 @@
 // authService.test.js
-import authService from '../../../src/services/authService'
-import supabaseClient from '../../../utils/supabaseClient';
+import authService from '@services/authService'
+import supabaseClient from '@utils/supabaseClient';
 
-jest.mock('../../../utils/supabaseClient', () => ({
+jest.mock('@utils/supabaseClient', () => ({
   auth: {
     signOut: jest.fn(),
     getUser: jest.fn(),
