@@ -1,6 +1,6 @@
 import getConfig from 'next/config';
 import React, { useContext } from 'react';
-import { LayoutContext } from './context/layoutcontext';
+import { LayoutContext } from '@layout/context/layoutcontext';
 
 function AppFooter() {
   const { layoutConfig } = useContext(LayoutContext);

@@ -11,8 +11,8 @@ import React, {
 import Image from 'next/image';
 import ClientDialog from '@components/ClientDialog';
 import { UserContext } from '@context/usercontext';
-import { LayoutContext } from './context/layoutcontext';
-import AppMenu from './AppMenu';
+import { LayoutContext } from '@layout/context/layoutcontext';
+import AppMenu from '@layout/AppMenu';
 
 const AppTopbar = forwardRef((_props, ref) => {
   const { layoutState, showProfileSidebar } = useContext(LayoutContext);

@@ -1,7 +1,7 @@
 import { ServiceRequestSummary } from '@types';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import ClientService from 'src/services/ClientService';
+import ClientService from '@services/ClientService';
 
 export default function useRecentTickets() {
   const [tickets, setTickets] = useState<(ServiceRequestSummary)[]>([]);
