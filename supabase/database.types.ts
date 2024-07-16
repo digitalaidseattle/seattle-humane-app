@@ -179,6 +179,7 @@ export type Database = {
           service_category: string | null
           status: string | null
           team_member_id: string | null
+          urgent: boolean
         }
         Insert: {
           client_id?: string | null
@@ -190,6 +191,7 @@ export type Database = {
           service_category?: string | null
           status?: string | null
           team_member_id?: string | null
+          urgent?: boolean
         }
         Update: {
           client_id?: string | null
@@ -201,6 +203,7 @@ export type Database = {
           service_category?: string | null
           status?: string | null
           team_member_id?: string | null
+          urgent?: boolean
         }
         Relationships: [
           {
