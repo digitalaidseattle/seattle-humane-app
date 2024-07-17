@@ -96,7 +96,8 @@ export async function getServiceRequestSummary(): Promise<ServiceRequestSummary[
     service_category,
     clients(first_name),
     pets(name),
-    team_members(first_name)
+    team_members(first_name),
+    urgent
     `)
     .order('created_at', { ascending: false })
     .limit(10);
@@ -118,6 +119,7 @@ export async function getServiceRequestSummary(): Promise<ServiceRequestSummary[
     category: categoryMap.get(service_category),
     created_at: ticket.created_at,
     description: ticket.description,
+    urgent: ticket.urgent,
   }));
   return summaries;
 }
