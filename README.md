@@ -157,3 +157,66 @@ Local setup requires a few one-time steps. In the following steps, you will star
 - To login to supabase: npx supabase login.
 - To update type file: npx supabase gen types typescript --project-id "liuebfxbxugpfsfwbkks" --schema public > supabase/database.types.ts
 
+## FAQ
+
+### 1. Developing in Windows 
+
+Dev containers on Windows rely on Docker via WSL (Windows Subsystem for Linux). When developing in a dev container (not in WSL), your repo is stored on a windows drive. Docker links to this via WSL, slowing down changes and builds, and breaking HMR in tools like Vite and Next.js. Cloning the repo inside WSL speeds this up, enabling Docker to work faster and support HMR.
+
+Non WSL change flow: Dev container -> Docker (WSL) -> windows filesystem
+
+WSL Flow: Dev container -> Docker (WSL)
+
+Follow these steps to get setup for development on windows
+
+__i. Dev container setup in WSL__
+
+Install these prerequisites on windows:
+    
+- [Visual Studio Code](https://code.visualstudio.com/download)
+
+- Enable WSL 2 by following the [WSL 2 installation guide](https://learn.microsoft.com/windows/wsl/install)
+
+- Ubuntu (or your preferred Linux distribution) from the [Microsoft store](https://www.microsoft.com/p/ubuntu/9nblggh4msv6)
+
+- [Docker Desktop Stable 2.3.0.2](https://docs.docker.com/docker-for-windows/wsl-tech-preview/#download)
+
+Then follow all the directions [here](https://code.visualstudio.com/blogs/2020/07/01/containers-wsl) to finish setup. 
+
+__ii. Clone repo inside the WSL filesystem__
+
+Now you should be able to do yarn && yarn dev inside WSL and HMR should work. 
+
+__iii. Local Supabase in WSL__
+
+You will need to install Node and NPM in WSL first. You can do it however you want, but it's recommended that you use NVM** to install/manage them. 
+
+##### \*\*Apt is not updated with the latest Node version so use NVM to reduce headaches for maintaing/upgrading Node versions on Linux.
+
+Follow [these steps](https://nodejs.org/en/download/package-manager) to install NVM on Linux. I copied them down below for convenience
+
+```bash
+# installs nvm (Node Version Manager)
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+
+# download and install Node.js (you may need to restart the terminal)
+nvm install 20
+
+# verifies the right Node.js version is in the environment
+node -v # should print `v20.15.1`
+
+# verifies the right NPM version is in the environment
+npm -v # should print `10.7.0`
+```
+
+__iiii. Install Supabase__
+
+Follow [these instructions](https://github.com/supabase/cli?tab=readme-ov-file#install-the-cli) to install supabase in WSL
+
+__iiiii. Running Supabase Locally__
+
+You will want to run Supabase from outside the dev container but within the repo directory inside WSL. 
+
+Use your favorite command line interpreter to run `supabase start` in WSL inside the repo dir.
+
+I recommend [Windows Terminal from Microsoft Store](https://apps.microsoft.com/detail/9n0dx20hk701?rtc=1&hl=en-us&gl=US)
