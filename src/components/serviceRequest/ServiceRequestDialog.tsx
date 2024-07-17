@@ -12,9 +12,9 @@ import {
 import useServiceRequestForm from '@hooks/useServiceRequestForm';
 import type { ServiceRequestType } from '@types';
 import { useState, useEffect } from 'react';
-import ClientInformationSection from './ClientInformationSection';
-import PetInformationSection from './PetInformationSection';
-import ServiceInformationSection from './ServiceInformationSection';
+import ClientInformationSection from '@components/serviceRequest/ClientInformationSection';
+import PetInformationSection from '@components/serviceRequest/PetInformationSection';
+import ServiceInformationSection from '@components/serviceRequest/ServiceInformationSection';
 
 // TODO externalize to localization file
 export const serviceRequestLabels = {

@@ -1,15 +1,15 @@
 import React from 'react';
 import { fireEvent, render, screen } from '@testing-library/react';
 import ServiceRequestDialog from '@components/serviceRequest/ServiceRequestDialog';
-import { LayoutContext } from '../../layout/context/layoutcontext';
-import AppMenu from '../../layout/AppMenu';
+import { LayoutContext } from '@layout/context/layoutcontext';
+import AppMenu from '@layout/AppMenu';
 import '@testing-library/jest-dom';
 
-jest.mock('../../src/hooks/useAppConstants');
-jest.mock('../../src/hooks/useTeamMembers');
+jest.mock('@hooks/useAppConstants');
+jest.mock('@hooks/useTeamMembers');
 
 // Mock the LayoutContext provider
-jest.mock('../../layout/context/layoutcontext', () => {
+jest.mock('@layout/context/layoutcontext', () => {
   const MockLayoutContext = React.createContext(null);
   return { LayoutContext: MockLayoutContext };
 });

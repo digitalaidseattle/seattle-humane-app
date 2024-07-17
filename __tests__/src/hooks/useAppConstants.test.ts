@@ -1,6 +1,6 @@
 import * as DataService from '@services/DataService';
 import { renderHook, waitFor } from '@testing-library/react';
-import useAppConstants from '../../../src/hooks/useAppConstants';
+import useAppConstants from '@hooks/useAppConstants';
 
 jest.mock('src/services/DataService', () => ({
   getAppConstants: jest.fn(),

@@ -19,14 +19,14 @@ import {
 import {
   ServiceInfoActionType, ServiceInformationProvider, defaultServiceInformation, serviceInfoReducer,
 } from '@context/serviceRequest/serviceInformationContext';
-import * as DataService from '../services/DataService';
+import * as DataService from '@services/DataService';
 import {
   EditableAnimalType, EditableClientType, EditableServiceRequestType, ServiceRequestType,
-} from '../types';
-import FormConfirmationButtons from './FormConfirmationButtons';
-import ClientInformationSection from './serviceRequest/ClientInformationSection';
-import PetInformationSection from './serviceRequest/PetInformationSection';
-import ServiceInformationSection from './serviceRequest/ServiceInformationSection';
+} from '@types';
+import FormConfirmationButtons from '@components/FormConfirmationButtons';
+import ClientInformationSection from '@components/serviceRequest/ClientInformationSection';
+import PetInformationSection from '@components/serviceRequest/PetInformationSection';
+import ServiceInformationSection from '@components/serviceRequest/ServiceInformationSection';
 
 const defaultClient: EditableClientType = {
   first_name: '',
@@ -51,6 +51,7 @@ const defaultRequest: EditableServiceRequestType = {
   status: '',
   description: '',
   team_member_id: null,
+  urgent: false,
 };
 
 interface ClientDialogProps {

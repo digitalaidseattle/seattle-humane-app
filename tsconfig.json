@@ -35,11 +35,14 @@
         "src/types"
       ],
       "@layout/*": [
-        "src/layout/*"
+        "layout/*"
       ],
       "@hooks/*": [
         "src/hooks/*"
-      ]
+      ],
+      "@utils/*":["utils/*"],
+      "@pages/*":["pages/*"],
+      "@styles/*":["styles/*"]
     }
   },
   "include": [

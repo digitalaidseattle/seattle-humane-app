@@ -15,7 +15,7 @@ import {
 import { mockAnimal, mockClient, mockTicket } from '@hooks/__mocks__/useTicketById';
 import { recentTickets } from '@hooks/__mocks__/useRecentTickets';
 import * as DataService from '@services/DataService';
-import supabaseClient from '../../../utils/supabaseClient';
+import supabaseClient from '@utils/supabaseClient';
 import { mockTeamMember1 } from '@hooks/__mocks__/useTeamMembers';
 
 // Idea for mock from https://stackoverflow.com/questions/77411385/how-to-mock-supabase-api-select-requests-in-nodejs
