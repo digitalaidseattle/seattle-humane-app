@@ -22,6 +22,9 @@
       "@services/*": [
         "src/services/*"
       ],
+      "@utils/*": [
+        "utils/*"
+      ],
       "@components/*": [
         "src/components/*"
       ],

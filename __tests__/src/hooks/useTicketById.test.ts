@@ -1,31 +1,28 @@
 import { mockAnimal, mockClient, mockTicket } from '@hooks/__mocks__/useTicketById';
 import useTicketById from '@hooks/useTicketById';
-import AnimalService from '@services/AnimalService';
-import ClientService from '@services/ClientService';
+import * as DataService from '@services/DataService';
 import { renderHook, waitFor } from '@testing-library/react';
 
-jest.mock('@services/ClientService');
-const mockedClientService = jest.mocked(ClientService);
-jest.mock('@services/AnimalService');
-const mockedAnimalService = jest.mocked(AnimalService);
+jest.mock('@services/DataService');
+const mockedDataService = jest.mocked(DataService);
 
 beforeAll(() => {
-  // Setup mock ClientService
-  const mockGetTicket: typeof ClientService.getTicket = async (id) => {
+  // Setup mock DataService
+  const mockGetTicket: typeof DataService.getTicket = async (id) => {
     if (id === mockTicket.id) return mockTicket as any;
     return null;
   };
-  mockedClientService.getTicket.mockImplementation(mockGetTicket);
-  const mockGetClientByKeyValue: typeof ClientService.getClientByKeyValue = async (key, value) => {
+  mockedDataService.getTicket.mockImplementation(mockGetTicket);
+  const mockGetClientByIdOrEmail: typeof DataService.getClientByIdOrEmail = async (key, value) => {
     if (key === 'id' && value === mockClient.id) return mockClient as any;
     return null;
   };
-  mockedClientService.getClientByKeyValue.mockImplementation(mockGetClientByKeyValue);
-  const mockGetAnimal: typeof AnimalService.get = async (key, value) => {
-    if (key === 'id' && value === mockAnimal.id) return mockAnimal as any;
+  mockedDataService.getClientByIdOrEmail.mockImplementation(mockGetClientByIdOrEmail);
+  const mockGetAnimal: typeof DataService.getPetById = async (id) => {
+    if (id === mockAnimal.id) return mockAnimal as any;
     return null;
   };
-  mockedAnimalService.get.mockImplementation(mockGetAnimal);
+  mockedDataService.getPetById.mockImplementation(mockGetAnimal);
 });
 
 it('returns the ticket, client and pet from the db', async () => {
@@ -35,7 +32,7 @@ it('returns the ticket, client and pet from the db', async () => {
   const { result } = renderHook(useTicketById, { initialProps: mockTicket.id });
   // Assert
   await waitFor(() => {
-    expect(mockedClientService.getTicket).toHaveBeenCalledWith(mockTicket.id);
+    expect(mockedDataService.getTicket).toHaveBeenCalledWith(mockTicket.id);
     expect(result.current).toEqual(expected);
   });
 });
