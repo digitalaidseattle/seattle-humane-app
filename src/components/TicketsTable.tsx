@@ -14,7 +14,6 @@ function OwnerAndPetTemplate({ client, pet, urgent, id }) {
         <div className={`font-bold text-${urgent?'red-500':'gray-900'}`}>{pet}</div>
         <div className={`capitalize text-${urgent?'red-400':'gray-600'}`}>{client}</div>
       </Link>
-
     </div>
   );
 }
@@ -72,12 +71,13 @@ function TicketsTable({ items }: TicketsTableProps, i) {
       currentPageReportTemplate="Showing {first} to {last} of {totalRecords} tickets"
       rows={10}
       key={i}
+      removableSort
     >
-      <Column body={OwnerAndPetTemplate} header="Owner" />
-      <Column field="urgent" body={UrgentView} header="Urgent" />
-      <Column field="category" header="Category" body={catergoryView} className="font-bold" />
+      <Column field="pet" body={OwnerAndPetTemplate} header="Owner" sortable />
+      <Column field="urgent" body={UrgentView} header="Urgent" sortable />
+      <Column field="category" header="Category" body={catergoryView} className="font-bold" sortable />
       <Column field="description" header="Description" body={descriptionView} className="font-bold" />
-      <Column body={CreatedAtTemplate} header="Date" className="font-bold" />
+      <Column field="created_at" body={CreatedAtTemplate} header="Date" className="font-bold" sortable />
       <Column field="team_member" body={TeamMemberView} header="Team member" className="font-bold" />
     </DataTable>
   );
