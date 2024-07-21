@@ -7,11 +7,11 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Button } from 'primereact/button';
 import { classNames } from 'primereact/utils';
 import { GetServerSideProps } from 'next';
-import AppConfig from '../../../layout/AppConfig';
-import { LayoutContext } from '../../../layout/context/layoutcontext';
-import authService from '../../../src/services/authService';
-import supabaseClient from '../../../utils/supabaseClient';
-import GoogleIcon from '../../../src/components/GoogleIcon';
+import AppConfig from '@layout/AppConfig';
+import { LayoutContext } from '@layout/context/layoutcontext';
+import authService from '@services/authService';
+import supabaseClient from '@utils/supabaseClient';
+import GoogleIcon from '@components/GoogleIcon';
 
 function LoginPage() {
   const { layoutConfig } = useContext(LayoutContext);

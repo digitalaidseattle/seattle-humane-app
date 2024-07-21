@@ -1,5 +1,5 @@
 /* eslint-disable import/no-duplicates */
-/* eslint-disable react/jsx-indent */
+
 /* eslint-disable @typescript-eslint/no-shadow */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable react/function-component-definition */
@@ -17,7 +17,7 @@ import { Chart } from 'primereact/chart';
 import { Menu } from 'primereact/menu';
 import { useContext, useEffect, useRef } from 'react';
 import RecentTickets from '@components/RecentTickets';
-import { LayoutContext } from '../layout/context/layoutcontext';
+import { LayoutContext } from '@layout/context/layoutcontext';
 
 const lineData = {
   labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
@@ -188,12 +188,11 @@ const Dashboard: React.FC = () => {
 
       <div className="col-12 xl:col-6">
         <div className="card">
-          <h5>Recent Client Tickets</h5>
-          <RecentTickets />
+          <h5>My Cases</h5>
         </div>
         <div className="card">
           <div className="flex justify-content-between align-items-center mb-5">
-            <h5>Best Selling Products</h5>
+            <h5>Recently Closes Cases</h5>
             <div>
               <Button type="button" icon="pi pi-ellipsis-v" className="p-button-rounded p-button-text p-button-plain" onClick={(event) => menu1.current.toggle(event)} />
               <Menu
@@ -285,13 +284,17 @@ const Dashboard: React.FC = () => {
 
       <div className="col-12 xl:col-6">
         <div className="card">
-          <h5>Sales Overview</h5>
-          <Chart type="line" data={lineData} options={lineOptions} />
+          <h5>All Open Cases</h5>
+          <RecentTickets />
         </div>
 
         <div className="card">
           <div className="flex align-items-center justify-content-between mb-4">
-            <h5>Notifications</h5>
+            {/** New Unassigned Cases might be temporary I talked to kate,
+             * we cannot let these drown with all open case list
+             *  this might be the fixed, I suggested it, but if not we can refactor this table.
+             */}
+            <h5>New Unassigned Cases</h5>
             <div>
               <Button type="button" icon="pi pi-ellipsis-v" className="p-button-rounded p-button-text p-button-plain" onClick={(event) => menu2.current.toggle(event)} />
               <Menu

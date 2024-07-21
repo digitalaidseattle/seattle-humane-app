@@ -1,14 +1,14 @@
 import { recentTickets } from '@hooks/__mocks__/useRecentTickets';
 import useRecentTickets from '@hooks/useRecentTickets';
-import ClientService from '@services/ClientService';
+import * as DataService from '@services/DataService';
 import { renderHook, waitFor } from '@testing-library/react';
 
-jest.mock('@services/ClientService');
-const mockedClientService = jest.mocked(ClientService);
+jest.mock('@services/DataService');
+const mockedDataService = jest.mocked(DataService);
 
 beforeAll(() => {
-  // Setup mock ClientService
-  mockedClientService.getRecentTickets.mockImplementation(async () => recentTickets);
+  // Setup mock DataService
+  mockedDataService.getServiceRequestSummary.mockImplementation(async () => recentTickets);
 });
 
 it('returns the tickets from the db', async () => {
@@ -16,7 +16,7 @@ it('returns the tickets from the db', async () => {
   const { result } = renderHook(useRecentTickets);
   //* Assert
   await waitFor(() => {
-    expect(mockedClientService.getRecentTickets).toHaveBeenCalled();
+    expect(mockedDataService.getServiceRequestSummary).toHaveBeenCalled();
     expect(result.current).toEqual(recentTickets);
   });
 });

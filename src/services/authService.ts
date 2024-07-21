@@ -5,7 +5,7 @@
  *
  */
 import { User } from '@supabase/supabase-js';
-import supabaseClient from '../../utils/supabaseClient';
+import supabaseClient from '@utils/supabaseClient';
 
 interface AuthProps {
   initialUser: User

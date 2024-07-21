@@ -22,6 +22,9 @@
       "@services/*": [
         "src/services/*"
       ],
+      "@utils/*": [
+        "utils/*"
+      ],
       "@components/*": [
         "src/components/*"
       ],
@@ -32,11 +35,14 @@
         "src/types"
       ],
       "@layout/*": [
-        "src/layout/*"
+        "layout/*"
       ],
       "@hooks/*": [
         "src/hooks/*"
-      ]
+      ],
+      "@utils/*":["utils/*"],
+      "@pages/*":["pages/*"],
+      "@styles/*":["styles/*"]
     }
   },
   "include": [

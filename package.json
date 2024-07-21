@@ -12,6 +12,7 @@
         "test": "jest"
     },
     "dependencies": {
+        "@faker-js/faker": "^8.4.1",
         "@supabase/auth-helpers-nextjs": "^0.8.7",
         "@supabase/supabase-js": "^2.39.6",
         "chart.js": "^4.2.1",
@@ -28,9 +29,9 @@
         "ts-jest": "^29.1.2",
         "uuid": "^9.0.1"
     },
-    "resolutions": { 
-      "wrap-ansi": "7.0.0",
-      "string-width": "4.2.3" 
+    "resolutions": {
+        "wrap-ansi": "7.0.0",
+        "string-width": "4.2.3"
     },
     "devDependencies": {
         "@next/eslint-plugin-next": "^14.1.2",
@@ -38,16 +39,16 @@
         "@testing-library/react": "^14.2.2",
         "@testing-library/user-event": "^14.5.2",
         "@types/jest": "^29.5.12",
-        "@types/node": "20.8.6",
+        "@types/node": "20.14.8",
         "@typescript-eslint/eslint-plugin": "^6.21.0",
         "@typescript-eslint/parser": "^6.21.0",
-        "babel-jest": "^29.7.0",
         "dotenv": "^16.4.1",
         "eslint": "^8.57.0",
         "eslint-config-airbnb": "^19.0.4",
         "eslint-config-next": "^14.1.2",
         "eslint-plugin-import": "^2.29.1",
         "eslint-plugin-jsx-a11y": "^6.8.0",
+        "eslint-plugin-path-alias": "^2.1.0",
         "eslint-plugin-react": "^7.34.0",
         "eslint-plugin-react-hooks": "^4.6.0",
         "jest": "^29.7.0",
@@ -57,6 +58,6 @@
         "react-test-renderer": "^18.2.0",
         "sass": "^1.58.3",
         "ts-jest": "^29.1.2",
-        "typescript": "5.3.3"
+        "typescript": "5.5.2"
     }
 }

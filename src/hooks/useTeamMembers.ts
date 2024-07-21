@@ -1,18 +1,16 @@
 import { useEffect, useState } from 'react';
-import { clientService } from 'src/services/ClientService';
+import * as DataService from '@services/DataService';
+import { AppConstantType } from '@types';
 
-type Option = {
-  value: string
-  label: string
-};
+export type TeamMeberOption = Pick<AppConstantType, 'label' | 'value'>;
 
 export default function useTeamMembers() {
-  const [options, setOptions] = useState<Option[]>([]);
+  const [options, setOptions] = useState<TeamMeberOption[]>([]);
 
   useEffect(() => {
     const fetchData = async () => {
-      const teamMembers = await clientService.getTeamMembers();
-      const newOptions: Option[] = [];
+      const teamMembers = await DataService.getTeamMembers();
+      const newOptions: TeamMeberOption[] = [];
       teamMembers.forEach((r) => {
         if (typeof r === 'object') {
           newOptions.push({

@@ -1,7 +1,7 @@
 import React from 'react';
 import { render, screen } from '@testing-library/react';
-import { LayoutContext } from '../../layout/context/layoutcontext';
-import AppTopbar from '../../layout/AppTopbar';
+import { LayoutContext } from '@layout/context/layoutcontext';
+import AppTopbar from '@layout/AppTopbar';
 import '@testing-library/jest-dom';
 
 // Mock the LayoutContext provider
@@ -16,7 +16,7 @@ interface LayoutContextType {
   };
   showProfileSidebar: () => void;
 }
-jest.mock('../../layout/context/layoutcontext', () => {
+jest.mock('@layout/context/layoutcontext', () => {
   const MockLayoutContext = React.createContext<LayoutContextType>(null);
   return { LayoutContext: MockLayoutContext };
 });
