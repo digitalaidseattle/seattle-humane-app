@@ -9,7 +9,8 @@
         "export": "next build && next export",
         "lint": "next lint",
         "format": "prettier --write \"**/**/*.{js,ts,tsx}\"",
-        "test": "jest"
+        "test": "jest",
+        "gen-seed-data": "npx tsx supabase/seed.ts > supabase/seed.sql"
     },
     "dependencies": {
         "@faker-js/faker": "^8.4.1",
