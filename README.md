@@ -155,7 +155,7 @@ Local setup requires a few one-time steps. In the following steps, you will star
     ```bash
     npx supabase stop --no-backup
     ```
-    Then run [Run Supabase](#run-supabase)
+    Then [Run Supabase](#run-supabase)
 
 #### Run Supabase
 
