@@ -14,9 +14,11 @@ import {
 } from '@types';
 import { mockAnimal, mockClient, mockTicket } from '@hooks/__mocks__/useTicketById';
 import { recentTickets } from '@hooks/__mocks__/useRecentTickets';
+import { mockTicketsThisWeek } from '@hooks/__mocks__/useTicketsThisWeek';
 import * as DataService from '@services/DataService';
 import supabaseClient from '@utils/supabaseClient';
 import { mockTeamMember1 } from '@hooks/__mocks__/useTeamMembers';
+import { getWeekStartDate } from "@utils/timeUtils";
 
 // Idea for mock from https://stackoverflow.com/questions/77411385/how-to-mock-supabase-api-select-requests-in-nodejs
 jest.mock('@supabase/supabase-js', () => ({
@@ -219,4 +221,46 @@ describe('DataService', () => {
       await expect(DataService.getTeamMembers()).rejects.toThrow(error.message);
     });
   });
+  describe('getTicketsThisWeek', () => {
+    const mockDate = (date: string) => {
+      let mockedDate = new Date(date);
+      jest.setSystemTime(mockedDate);
+    };
+
+    beforeEach(() => {
+      jest.useFakeTimers();
+    });
+
+    afterEach(() => {
+      jest.useRealTimers();
+    });
+    it("should get this week's tickets", async () => {
+      // Arrange
+      mockDate("2024-07-22Z"); // Mock current date as Monday, 22 July 2024
+      const expected = mockTicketsThisWeek.filter((ticket) => parseInt(ticket.id) != 100);
+      mockSupabaseClient.setTestData(expected);
+      const weekStartDate = getWeekStartDate().toISOString(); // Sunday, 21 July 2024
+      
+      // Act
+      const actualTickets = await DataService.getTicketsThisWeek();
+
+      // Assert
+      expect(mockSupabaseClient.from).toHaveBeenCalledWith('service_requests');
+      expect(mockSupabaseClient.from).toHaveBeenCalledTimes(1);
+      expect(mockSupabaseClient.from('service_requests').select).toHaveBeenCalledTimes(1);
+      expect(mockSupabaseClient.from('service_requests').select().gte).toHaveBeenCalledWith('creation_date',weekStartDate);
+      /**
+       * we aren't checking for shape of data returned by getTicketsThisWeek, just need to know it can filter based on created_at column
+       */
+      expect(actualTickets.length).toBe(expected.length);
+    });
+    it("should throw errors returned from supabase", async () => {
+      // Arrange
+      const error = {message: 'Random DB Error'};
+      mockSupabaseClient.setTestError(error);
+      
+      // Act & Assert
+      await expect(DataService.getTicketsThisWeek()).rejects.toThrow(error.message);
+    });
+  })
 });

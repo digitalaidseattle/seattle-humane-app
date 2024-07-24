@@ -18,6 +18,7 @@ import type {
 } from '@types';
 import supabaseClient from '@utils/supabaseClient';
 import throwIfMissingRequiredFields from '@utils/throwIfMissingRequiredFields';
+import { getWeekStartDate } from "@utils/timeUtils";
 
 export async function createClient(client: EditableClientType) {
   throwIfMissingRequiredFields('client', client);
@@ -83,6 +84,16 @@ export async function getTicket(ticketId: ServiceRequestType['id']) {
     .single();
   if (error) throw new Error(error.message);
   return ticket;
+}
+
+export async function getTicketsThisWeek(): Promise<ServiceRequestType[]> {
+  let startOfWeek: Date = getWeekStartDate();
+  const { data, error } = await supabaseClient
+    .from('service_requests')
+    .select()
+    .gte('created_at', startOfWeek.toISOString());
+  if (error) throw new Error(error.message);
+  return data;
 }
 
 export async function getServiceRequestSummary(): Promise<ServiceRequestSummary[]> {
