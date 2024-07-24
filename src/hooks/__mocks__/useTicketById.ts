@@ -36,6 +36,7 @@ export const mockTicket: ServiceRequestType = {
   team_member_id: mockTeamMember2.id,
   description: lorem.sentence(),
   created_at: date.recent().toString(),
+  urgent: !!number.int(1),
 };
 export const mockSummary: ServiceRequestType & {
   client: string, pet: string, team_member: string
@@ -49,9 +50,10 @@ export const mockSummary: ServiceRequestType & {
   team_member_id: mockTeamMember2.id,
   description: mockTicket.description,
   created_at: mockTicket.created_at,
-  client: mockClient.id,
-  pet: mockAnimal.id,
-  team_member: mockTeamMember2.id,
+  client: mockClient.first_name,
+  pet: mockAnimal.name,
+  team_member: mockTeamMember2.first_name,
+  urgent: mockTicket.urgent,
 };
 const useTicketById: (id: string) => UseTicketByIdState = jest.fn(() => ({
   ticket: mockTicket,

@@ -30,6 +30,7 @@ jest.mock('@context/serviceRequest/serviceInformationContext', () => {
     status: '',
     description: '',
     team_member_id: '',
+    urgent: false,
   };
   return {
     defaultServiceInformation: testDefaultServiceInformation,

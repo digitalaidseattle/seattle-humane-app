@@ -149,6 +149,7 @@ describe('DataService', () => {
           category: label,
           created_at: ticket.created_at,
           description: ticket.description,
+          urgent: ticket.urgent,
         }
       })
       // Act
