@@ -39,7 +39,7 @@ _If your PR includes UI changes, please utilize this checklist:_
 - [ ] Color contrast tested?
 
 ## Added/updated tests?
-_We are aiming for 100% statement coverage._
+_There should be 90% statement coverage and the coverage percent increases with each commit, unless a reviewer approves an exception._
 
 - [ ] Yes
 - [ ] No, and this is why: _please replace this line with details on why tests
