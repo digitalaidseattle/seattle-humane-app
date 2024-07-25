@@ -86,6 +86,18 @@ export async function getTicket(ticketId: ServiceRequestType['id']) {
   return ticket;
 }
 
+export async function getAssignedTickets(
+  teamMemberId: TeamMemberType['id']
+): Promise<ServiceRequestType[]> {
+  const { data, error } = await supabaseClient
+    .from('service_requests')
+    .select()
+    .eq('team_member_id', teamMemberId)
+    .order('created_at', { ascending: false });
+  if (error) throw new Error(error.message);
+  return data;
+}
+
 export async function getTicketsThisWeek(): Promise<ServiceRequestType[]> {
   const startOfWeek: Date = getWeekStartDate();
   const { data, error } = await supabaseClient

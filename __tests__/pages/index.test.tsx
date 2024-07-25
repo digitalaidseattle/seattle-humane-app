@@ -8,6 +8,7 @@ import {
 import { mockTicketsThisWeek } from '@hooks/__mocks__/useTicketsThisWeek';
 import * as DataService from '@services/DataService';
 import useTicketsThisWeek from '@hooks/useTicketsThisWeek';
+import useAssignedTickets from '@hooks/useAssignedTickets';
 
 
 afterEach(cleanup);
@@ -46,6 +47,32 @@ describe('Dashboard', () => {
       await waitFor(() => {
         expect(getByText('New Cases This Week')).toBeInTheDocument();
         expect(getByText(result.current.length)).toBeInTheDocument();
+      });
+    });
+  });
+  describe('My Newly Assigned Cases', () => {
+    it('should have the right title', async () => {
+      // Act
+      const {result} = renderHook(() => useAssignedTickets());
+      
+      await waitFor(() => {
+        expect(result.current.length).toBe(0);
+      })
+      // Arrange
+      const {getByText} = render(
+        <div>
+          <span className="block text-500 font-medium mb-3">
+            My Newly Assigned Cases
+          </span>
+          <div className="text-900 font-medium text-xl">
+            {result.current.length}
+          </div>
+        </div>
+      );
+      // Assert
+      await waitFor(() => {
+        expect(getByText('My Newly Assigned Cases')).toBeInTheDocument();
+        expect(getByText('0')).toBeInTheDocument();
       });
     });
   });
