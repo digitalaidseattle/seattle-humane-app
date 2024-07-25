@@ -248,7 +248,7 @@ describe('DataService', () => {
       expect(mockSupabaseClient.from).toHaveBeenCalledWith('service_requests');
       expect(mockSupabaseClient.from).toHaveBeenCalledTimes(1);
       expect(mockSupabaseClient.from('service_requests').select).toHaveBeenCalledTimes(1);
-      expect(mockSupabaseClient.from('service_requests').select().gte).toHaveBeenCalledWith('creation_date',weekStartDate);
+      expect(mockSupabaseClient.from('service_requests').select().gte).toHaveBeenCalledWith('created_at',weekStartDate);
       /**
        * we aren't checking for shape of data returned by getTicketsThisWeek, just need to know it can filter based on created_at column
        */

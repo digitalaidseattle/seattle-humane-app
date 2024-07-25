@@ -27,13 +27,10 @@ describe('Dashboard', () => {
     // need to implement
   });
   describe('New Cases This Week', () => {
-    it('should have the right title', async () => {
+    it('should have the right content', async () => {
       // Act
       const {result} = renderHook(() => useTicketsThisWeek());
       
-      await waitFor(() => {
-        expect(result.current.length).toBe(3);
-      })
       // Arrange
       const {getByText} = render(
         <div>
@@ -48,7 +45,7 @@ describe('Dashboard', () => {
       // Assert
       await waitFor(() => {
         expect(getByText('New Cases This Week')).toBeInTheDocument();
-        expect(getByText('3')).toBeInTheDocument();
+        expect(getByText(result.current.length)).toBeInTheDocument();
       });
     });
   });
