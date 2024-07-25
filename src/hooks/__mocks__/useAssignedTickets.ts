@@ -1,5 +1,5 @@
 import { ServiceRequestType } from '@types';
-import { mockTicket } from "./useTicketById";
+import { mockTicket } from './useTicketById';
 
 export const mockAssignedTickets: ServiceRequestType[] = [
   {
@@ -21,7 +21,7 @@ export const mockAssignedTickets: ServiceRequestType[] = [
 ];
 
 const useAssignedTickets: () => ServiceRequestType[] = jest.fn(
-  () => mockAssignedTickets
+  () => mockAssignedTickets,
 );
 
 export default useAssignedTickets;

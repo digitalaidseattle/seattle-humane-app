@@ -87,7 +87,7 @@ export async function getTicket(ticketId: ServiceRequestType['id']) {
 }
 
 export async function getAssignedTickets(
-  teamMemberId: TeamMemberType['id']
+  teamMemberId: TeamMemberType['id'],
 ): Promise<ServiceRequestType[]> {
   const { data, error } = await supabaseClient
     .from('service_requests')

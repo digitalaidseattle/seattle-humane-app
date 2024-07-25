@@ -51,13 +51,10 @@ describe('Dashboard', () => {
     });
   });
   describe('My Newly Assigned Cases', () => {
-    it('should have the right title', async () => {
+    it('should have the right content', async () => {
       // Act
       const {result} = renderHook(() => useAssignedTickets());
       
-      await waitFor(() => {
-        expect(result.current.length).toBe(0);
-      })
       // Arrange
       const {getByText} = render(
         <div>
@@ -72,7 +69,7 @@ describe('Dashboard', () => {
       // Assert
       await waitFor(() => {
         expect(getByText('My Newly Assigned Cases')).toBeInTheDocument();
-        expect(getByText('0')).toBeInTheDocument();
+        expect(getByText(result.current.length)).toBeInTheDocument();
       });
     });
   });
