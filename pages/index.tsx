@@ -18,7 +18,7 @@ import { Menu } from 'primereact/menu';
 import { useContext, useEffect, useRef } from 'react';
 import RecentTickets from '@components/RecentTickets';
 import { LayoutContext } from '@layout/context/layoutcontext';
-import useTicketsThisWeek from "@hooks/useTicketsThisWeek";
+import useTicketsThisWeek from '@hooks/useTicketsThisWeek';
 
 const lineData = {
   labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
@@ -44,7 +44,7 @@ const lineData = {
 
 const Dashboard: React.FC = () => {
   const [tickets, setTickets] = useState([]);
-  const ticketsThisWeek= useTicketsThisWeek();
+  const ticketsThisWeek = useTicketsThisWeek();
   const menu1 = useRef(null);
   const menu2 = useRef(null);
   const [lineOptions, setLineOptions] = useState(null);

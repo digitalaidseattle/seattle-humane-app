@@ -26,7 +26,7 @@ export const mockTicketsThisWeek: ServiceRequestType[] = [
 ];
 
 const useTicketsThisWeek: () => ServiceRequestType[] = jest.fn(
-  () => mockTicketsThisWeek
+  () => mockTicketsThisWeek,
 );
 
 export default useTicketsThisWeek;

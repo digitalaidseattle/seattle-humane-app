@@ -7,6 +7,4 @@ export function getWeekStartDate():Date {
   return startOfWeek;
 }
 
-export const daysAgo = (n: number) => {
-  return new Date(new Date().setDate(new Date().getDate() - n));
-};
+export const daysAgo = (n: number) => new Date(new Date().setDate(new Date().getDate() - n));
