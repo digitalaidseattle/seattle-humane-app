@@ -45,10 +45,10 @@ function catergoryView({ id, category }) {
     </Link>
   );
 }
-function TeamMemberView({ id, team_member }) {
+function TeamMemberView({ id, team_member }: ServiceRequestSummary) {
   return (
     <Link className="text-gray-900" href={`?ticket=${id}`} key={id}>
-      {team_member}
+      {team_member.first_name}
     </Link>
   );
 }
