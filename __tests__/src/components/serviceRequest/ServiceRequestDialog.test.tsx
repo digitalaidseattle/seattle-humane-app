@@ -3,23 +3,18 @@ import { petInformationLabels } from '@components/serviceRequest/PetInformationS
 import { serviceInformationLabels } from '@components/serviceRequest/ServiceInformationSection';
 import ServiceRequestDialog from '@components/serviceRequest/ServiceRequestDialog';
 import { defaultServiceInformation } from '@context/serviceRequest/serviceInformationContext';
-import * as MockEntities from '@hooks/__mocks__/useTicketById';
 import useTicketById from '@hooks/useTicketById';
-import * as DataService from '@services/DataService';
 import '@testing-library/jest-dom';
 import {
   fireEvent, render, screen, waitFor,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
+import { mockClient, mockPet as mockAnimal, mockTicket } from '@utils/TestData';
 import { useState } from 'react';
-
-const { mockAnimal, mockClient, mockTicket } = MockEntities;
+import * as DataService from '@services/DataService';
 
 jest.mock('@services/DataService');
 const mockedDataService = jest.mocked(DataService);
-mockedDataService.getClientByIdOrEmail = jest.fn().mockResolvedValue(mockClient);
-mockedDataService.getPetByOwner = jest.fn().mockResolvedValue(mockAnimal);
-mockedDataService.createTicket = jest.fn().mockResolvedValue(mockTicket);
 
 jest.mock('src/hooks/useTicketById');
 const mockUseTicketById = jest.mocked(useTicketById);

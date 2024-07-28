@@ -174,6 +174,7 @@ export type Database = {
           created_at: string
           description: string | null
           id: string
+          modified_at: string
           pet_id: string | null
           request_source: string | null
           service_category: string | null
@@ -186,6 +187,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          modified_at?: string
           pet_id?: string | null
           request_source?: string | null
           service_category?: string | null
@@ -198,6 +200,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           id?: string
+          modified_at?: string
           pet_id?: string | null
           request_source?: string | null
           service_category?: string | null

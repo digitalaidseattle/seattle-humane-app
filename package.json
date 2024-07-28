@@ -10,6 +10,9 @@
         "lint": "next lint",
         "format": "prettier --write \"**/**/*.{js,ts,tsx}\"",
         "test": "jest",
+        "db-restart": "npx supabase stop --no-backup && npx supabase start",
+        "gen-db-types": "npx supabase gen types --lang typescript --local > supabase/database.types.ts",
+        "gen-db-migration": "npx supabase db diff", 
         "gen-seed-data": "npx tsx supabase/seed.ts > supabase/seed.sql"
     },
     "dependencies": {
