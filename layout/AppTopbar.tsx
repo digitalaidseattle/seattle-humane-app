@@ -9,10 +9,10 @@ import React, {
   useState,
 } from 'react';
 import Image from 'next/image';
-import ClientDialog from '../src/components/ClientDialog';
-import { LayoutContext } from './context/layoutcontext';
-import { UserContext } from '../src/context/usercontext';
-import AppMenu from './AppMenu';
+import ClientDialog from '@components/ClientDialog';
+import { UserContext } from '@context/usercontext';
+import { LayoutContext } from '@layout/context/layoutcontext';
+import AppMenu from '@layout/AppMenu';
 
 const AppTopbar = forwardRef((_props, ref) => {
   const { layoutState, showProfileSidebar } = useContext(LayoutContext);

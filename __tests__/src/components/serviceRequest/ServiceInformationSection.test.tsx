@@ -12,7 +12,7 @@ import {
   defaultServiceInformation,
 } from '@context/serviceRequest/serviceInformationContext';
 import { EditableServiceRequestType } from '@types';
-import { john } from 'src/hooks/__mocks__/useTeamMembers';
+import { mockTeamMember2 } from 'src/hooks/__mocks__/useTeamMembers';
 import { data } from '@hooks/__mocks__/useAppConstants';
 
 const { source } = data;
@@ -27,6 +27,7 @@ jest.mock('@context/serviceRequest/serviceInformationContext', () => {
     pet_id: '',
     service_category: '',
     request_source: '',
+    status: '',
     description: '',
     team_member_id: '',
   };
@@ -46,15 +47,6 @@ jest.mock('@context/serviceRequest/serviceInformationContext', () => {
       .mockImplementation((state, action) => ({ ...state, ...action.partialStateUpdate })),
   };
 });
-
-//* Mocking the client service module to isolate the test
-jest.mock('src/services/ClientService', () => ({
-  TicketType: {
-    email: 'email',
-    phone: 'phone',
-    walkin: 'walk-in',
-  },
-}));
 
 jest.mock('src/hooks/useAppConstants');
 jest.mock('src/hooks/useTeamMembers');
@@ -225,9 +217,9 @@ describe('ServiceInformationSection', () => {
     fireEvent.click(
       within(assignToDropdown).getByRole('button'),
     );
-    fireEvent.click(await screen.findByText(john.label));
+    fireEvent.click(await screen.findByText(mockTeamMember2.email));
 
     //* Assert
-    expect(screen.getByDisplayValue(john.label)).toBeInTheDocument();
+    expect(screen.getByDisplayValue(mockTeamMember2.email)).toBeInTheDocument();
   });
 });

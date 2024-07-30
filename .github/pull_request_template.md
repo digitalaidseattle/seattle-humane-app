@@ -36,10 +36,10 @@ _Please replace this line with instructions on how to test your changes, as well
 _If your PR includes UI changes, please utilize this checklist:_
 - [ ] Semantic HTML implemented?
 - [ ] Keyboard operability supported?
-- [ ] Color contrast tested?
+- [ ] Color contrast tested? _more info [here](https://webaim.org/articles/contrast/evaluating)_
 
 ## Added/updated tests?
-_We are aiming for 100% statement coverage._
+_There should be 90% statement coverage and the coverage percent increases with each commit, unless a reviewer approves an exception._
 
 - [ ] Yes
 - [ ] No, and this is why: _please replace this line with details on why tests

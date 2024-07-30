@@ -1,7 +1,7 @@
 import { ServiceRequestSummary } from '@types';
 import { useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
-import ClientService from 'src/services/ClientService';
+import * as DataService from '@services/DataService';
 
 export default function useRecentTickets() {
   const [tickets, setTickets] = useState<(ServiceRequestSummary)[]>([]);
@@ -9,7 +9,7 @@ export default function useRecentTickets() {
   const params = useSearchParams();
   useEffect(() => {
     const getTickets = async () => {
-      const data = await ClientService.getServiceRequestSummary();
+      const data = await DataService.getServiceRequestSummary();
       setTickets(data);
     };
     getTickets();

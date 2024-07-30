@@ -7,14 +7,14 @@ import type { ServiceRequestSummary } from '@types';
 
 import { recentCases } from '@hooks/__mocks__/useRecentTickets';
 import useRecentTickets from '@hooks/useRecentTickets';
-import ClientService from '@services/ClientService';
+import * as DataService from '@services/DataService';
 
-jest.mock('@services/ClientService');
-const mockedClientService = jest.mocked(ClientService);
+jest.mock('@services/DataService');
+const mockedDataService = jest.mocked(DataService);
 
 beforeAll(() => {
-  // Setup mock ClientService
-  mockedClientService.getServiceRequestSummary
+  // Setup mock DataService
+  mockedDataService.getServiceRequestSummary
     .mockImplementation(async () => recentCases.map((ticket) => ({
       ...ticket,
       client: ticket.client_id,
@@ -34,23 +34,6 @@ describe('TicketTable Headers', () => {
     //* Assert
     render(<TicketsTable items={result.current} />);
 
-    /*
-    [{"client": "456def",
-    "client_id": "456def",
-    "created_at": "",
-    "description": "Cleaning service",
-    "id": "147xyz",
-    "log_id": "",
-    "pet": "789ghi",
-    "pet_id": "789ghi",
-    "request_source_id":
-    "phone-id",
-    "service_category_id":
-    "pet_fostering-id",
-    "team_member": "j456",
-    "team_member_id": "j456"}]
-
-    */
     await waitFor(() => {
       // Grabs Elements
       const dateHeader = screen.getAllByText('Date');
