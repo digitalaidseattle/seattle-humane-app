@@ -11,6 +11,9 @@ import {
   EditableAnimalType,
   EditableClientType,
   EditableServiceRequestType,
+  PageInfo,
+  ServiceRequestType,
+  TableQueryModel,
 } from '@types';
 import { mockAnimal, mockClient, mockTicket } from '@hooks/__mocks__/useTicketById';
 import { recentTickets } from '@hooks/__mocks__/useRecentTickets';
@@ -158,6 +161,22 @@ describe('DataService', () => {
       // Assert
       expect(actualTicket).toEqual(expectedServiceRequestSummary);
     });
+    it('requests service request history using a correct page', async () => {
+      // Arrange
+      const expectedTickets = recentTickets;
+      mockSupabaseClient.setTestData(expectedTickets);
+      const query: TableQueryModel = {
+        page: 1,
+        pageSize: 1,
+        sortField: 'created_at',
+        sortDirection: 'asc',
+      };
+      // Act
+      // eslint-disable-next-line max-len
+      const actualTicket: PageInfo<ServiceRequestType> = await DataService.getServiceRequestSummary(query);
+      // Expect
+      expect(actualTicket.rows[0].id).toBe('abc');
+    });
     it('throws errors from the db', async () => {
       // Arrange
       const expectedErrorMessage = 'Internal DB Error';
@@ -240,7 +259,7 @@ describe('DataService', () => {
       const expected = mockTicketsThisWeek.filter((ticket) => parseInt(ticket.id) != 100);
       mockSupabaseClient.setTestData(expected);
       const weekStartDate = getWeekStartDate().toISOString(); // Sunday, 21 July 2024
-      
+
       // Act
       const actualTickets = await DataService.getTicketsThisWeek();
 
@@ -248,7 +267,7 @@ describe('DataService', () => {
       expect(mockSupabaseClient.from).toHaveBeenCalledWith('service_requests');
       expect(mockSupabaseClient.from).toHaveBeenCalledTimes(1);
       expect(mockSupabaseClient.from('service_requests').select).toHaveBeenCalledTimes(1);
-      expect(mockSupabaseClient.from('service_requests').select().gte).toHaveBeenCalledWith('created_at',weekStartDate);
+      expect(mockSupabaseClient.from('service_requests').select().gte).toHaveBeenCalledWith('created_at', weekStartDate);
       /**
        * we aren't checking for shape of data returned by getTicketsThisWeek, just need to know it can filter based on created_at column
        */
@@ -256,9 +275,9 @@ describe('DataService', () => {
     });
     it("should throw errors returned from supabase", async () => {
       // Arrange
-      const error = {message: 'Random DB Error'};
+      const error = { message: 'Random DB Error' };
       mockSupabaseClient.setTestError(error);
-      
+
       // Act & Assert
       await expect(DataService.getTicketsThisWeek()).rejects.toThrow(error.message);
     });
