@@ -19,6 +19,7 @@ import * as DataService from '@services/DataService';
 import supabaseClient from '@utils/supabaseClient';
 import { mockTeamMember1 } from '@hooks/__mocks__/useTeamMembers';
 import { getWeekStartDate } from "@utils/timeUtils";
+import { mockAssignedTickets } from "@hooks/__mocks__/useAssignedTickets";
 
 // Idea for mock from https://stackoverflow.com/questions/77411385/how-to-mock-supabase-api-select-requests-in-nodejs
 jest.mock('@supabase/supabase-js', () => ({
@@ -261,6 +262,35 @@ describe('DataService', () => {
       
       // Act & Assert
       await expect(DataService.getTicketsThisWeek()).rejects.toThrow(error.message);
+    });
+  })
+  describe('getAssignedTickets', () => {
+    it("should get tickets assigned to teamMemberId", async () => {
+      // Arrange
+      const expected = mockAssignedTickets.filter((ticket) => parseInt(ticket.team_member_id) != 100);
+      const teamMemberId = '4321';
+      mockSupabaseClient.setTestData(expected);
+
+      // Act
+      const actualTickets = await DataService.getAssignedTickets(teamMemberId);
+
+      // Assert
+      expect(mockSupabaseClient.from).toHaveBeenCalledWith('service_requests');
+      expect(mockSupabaseClient.from).toHaveBeenCalledTimes(1);
+      expect(mockSupabaseClient.from('service_requests').select).toHaveBeenCalledTimes(1);
+      expect(mockSupabaseClient.from('service_requests').select().eq).toHaveBeenCalledWith('team_member_id', teamMemberId);
+      /**
+       * we aren't checking for shape of data returned by getAssignedTickets, just need to know it can filter based on created_at column
+       */
+      expect(actualTickets.length).toBe(expected.length);
+    });
+    it("should throw errors returned from supabase", async () => {
+      // Arrange
+      const error = {message: 'Random DB Error'};
+      mockSupabaseClient.setTestError(error);
+      
+      // Act & Assert
+      await expect(DataService.getAssignedTickets('')).rejects.toThrow(error.message);
     });
   })
 });
