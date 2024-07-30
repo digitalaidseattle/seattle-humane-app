@@ -1,16 +1,8 @@
-import { ServiceRequestSummary } from '@types';
-import { useEffect, useState } from 'react';
 import * as DataService from '@services/DataService';
+import useSWR from 'swr';
 
 export default function useAllTickets() {
-  const [tickets, setTickets] = useState<(ServiceRequestSummary)[]>([]);
-  useEffect(() => {
-    const getTickets = async () => {
-      const data = await DataService.getServiceRequestSummary();
-      setTickets(data);
-    };
-    getTickets();
-  }, []);
+  const { data, mutate, isLoading } = useSWR('dataservice/alltickets', async () => DataService.getServiceRequestSummary());
 
-  return tickets;
+  return { data: data ?? [], isLoading, refresh: () => mutate() };
 }
