@@ -18,7 +18,7 @@ import { mockTicketsThisWeek } from '@hooks/__mocks__/useTicketsThisWeek';
 import * as DataService from '@services/DataService';
 import supabaseClient from '@utils/supabaseClient';
 import { mockTeamMember1 } from '@hooks/__mocks__/useTeamMembers';
-import { getWeekStartDate } from "@utils/timeUtils";
+import { getWeekStartDate } from '@utils/timeUtils';
 
 // Idea for mock from https://stackoverflow.com/questions/77411385/how-to-mock-supabase-api-select-requests-in-nodejs
 jest.mock('@supabase/supabase-js', () => ({
@@ -137,22 +137,24 @@ describe('DataService', () => {
         team_members: { first_name: mockTeamMember1.first_name },
         service_category: ticket.id,
         label: 'mock app constant label',
-      }))
+      }));
       mockSupabaseClient.setTestData(expectedQueryResults);
       const expectedServiceRequestSummary = expectedQueryResults.map((data) => {
         const {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           clients, pets, team_members, id, label, ...ticket
         } = data;
         return {
-          id: id,
+          id,
           client: clients.first_name,
           pet: pets.name,
           team_member: team_members.first_name,
           category: label,
           created_at: ticket.created_at,
           description: ticket.description,
-        }
-      })
+          urgent: ticket.urgent,
+        };
+      });
       // Act
       const actualTicket = await DataService.getServiceRequestSummary();
       // Assert
@@ -223,7 +225,7 @@ describe('DataService', () => {
   });
   describe('getTicketsThisWeek', () => {
     const mockDate = (date: string) => {
-      let mockedDate = new Date(date);
+      const mockedDate = new Date(date);
       jest.setSystemTime(mockedDate);
     };
 
@@ -236,11 +238,11 @@ describe('DataService', () => {
     });
     it("should get this week's tickets", async () => {
       // Arrange
-      mockDate("2024-07-22Z"); // Mock current date as Monday, 22 July 2024
-      const expected = mockTicketsThisWeek.filter((ticket) => parseInt(ticket.id) != 100);
+      mockDate('2024-07-22Z'); // Mock current date as Monday, 22 July 2024
+      const expected = mockTicketsThisWeek.filter((ticket) => parseInt(ticket.id, 10) !== 100);
       mockSupabaseClient.setTestData(expected);
       const weekStartDate = getWeekStartDate().toISOString(); // Sunday, 21 July 2024
-      
+
       // Act
       const actualTickets = await DataService.getTicketsThisWeek();
 
@@ -248,19 +250,19 @@ describe('DataService', () => {
       expect(mockSupabaseClient.from).toHaveBeenCalledWith('service_requests');
       expect(mockSupabaseClient.from).toHaveBeenCalledTimes(1);
       expect(mockSupabaseClient.from('service_requests').select).toHaveBeenCalledTimes(1);
-      expect(mockSupabaseClient.from('service_requests').select().gte).toHaveBeenCalledWith('created_at',weekStartDate);
+      expect(mockSupabaseClient.from('service_requests').select().gte).toHaveBeenCalledWith('created_at', weekStartDate);
       /**
        * we aren't checking for shape of data returned by getTicketsThisWeek, just need to know it can filter based on created_at column
        */
       expect(actualTickets.length).toBe(expected.length);
     });
-    it("should throw errors returned from supabase", async () => {
+    it('should throw errors returned from supabase', async () => {
       // Arrange
-      const error = {message: 'Random DB Error'};
+      const error = { message: 'Random DB Error' };
       mockSupabaseClient.setTestError(error);
-      
+
       // Act & Assert
       await expect(DataService.getTicketsThisWeek()).rejects.toThrow(error.message);
     });
-  })
+  });
 });
