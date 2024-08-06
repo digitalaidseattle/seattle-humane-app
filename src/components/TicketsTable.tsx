@@ -7,11 +7,13 @@ export interface TicketsTableProps {
   items: ServiceRequestSummary[]
 }
 
-function OwnerAndPetTemplate({ client, pet, id, urgent }) {
+function OwnerAndPetTemplate({
+  client, pet, id, urgent,
+}) {
   return (
     <div key={id}>
-        <div className={`font-bold ${urgent? 'text-red-500': 'text-gray-900'}`}>{pet}</div>
-        <div className={`capitalize ${urgent? 'text-red-300': 'text-gray-600'}`}>{client}</div>
+      <div className={`font-bold ${urgent ? 'text-red-500' : 'text-gray-900'}`}>{pet}</div>
+      <div className={`capitalize ${urgent ? 'text-red-300' : 'text-gray-600'}`}>{client}</div>
     </div>
   );
 }
@@ -26,12 +28,11 @@ function CreatedAtTemplate({ created_at, id }) {
   );
 }
 
-
 function UrgentView({ urgent }) {
   return (
-    <>
-      {urgent ? "Urgent" : ""}
-    </>
+    <div>
+      {urgent ? 'Urgent' : ''}
+    </div>
   );
 }
 
@@ -51,11 +52,11 @@ function TicketsTable({ items }: TicketsTableProps) {
       onRowClick={(e) => {
         router.push(`?ticket=${e.data.id}`);
       }}
-      rowClassName={(rowData) => rowData.urgent ? 'text-red-500' : ''}
-      rowHover={true}
+      rowClassName={(rowData) => (rowData.urgent ? 'text-red-500' : '')}
+      rowHover
     >
       <Column body={OwnerAndPetTemplate} header="Owner" />
-      <Column field="urgent" body={UrgentView} header="Urgent" className='font-bold' />
+      <Column field="urgent" body={UrgentView} header="Urgent" className="font-bold" />
       <Column field="category" header="Category" className="font-bold" />
       <Column field="description" header="Description" className="font-bold" />
       <Column body={CreatedAtTemplate} header="Date" className="font-bold" />
