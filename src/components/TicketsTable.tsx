@@ -1,20 +1,19 @@
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
-import Link from 'next/link';
+import { useRouter } from 'next/router';
 import type { ServiceRequestSummary } from '@types';
 
 export interface TicketsTableProps {
   items: ServiceRequestSummary[]
 }
 
-function OwnerAndPetTemplate({ client, pet, id }) {
+function OwnerAndPetTemplate({
+  client, pet, id, urgent,
+}) {
   return (
     <div key={id}>
-      <Link href={`?ticket=${id}`}>
-        <div className="font-bold text-gray-900">{pet}</div>
-        <div className="capitalize text-gray-600">{client}</div>
-      </Link>
-
+      <div className={`font-bold ${urgent ? 'text-red-500' : 'text-gray-900'}`}>{pet}</div>
+      <div className={`capitalize ${urgent ? 'text-red-300' : 'text-gray-600'}`}>{client}</div>
     </div>
   );
 }
@@ -22,45 +21,24 @@ function OwnerAndPetTemplate({ client, pet, id }) {
 function CreatedAtTemplate({ created_at, id }) {
   return (
     <span key={id}>
-      <Link className="text-gray-900" href={`?ticket=${id}`}>
-        {new Date(created_at).toLocaleDateString('en-US', {
-          day: '2-digit', month: '2-digit', year: 'numeric',
-        })}
-      </Link>
+      {new Date(created_at).toLocaleDateString('en-US', {
+        day: '2-digit', month: '2-digit', year: 'numeric',
+      })}
     </span>
   );
 }
 
-function descriptionView({ id, description }) {
+function UrgentView({ urgent }) {
   return (
-    <Link className="text-gray-900" href={`?ticket=${id}`} key={id}>
-      {description}
-    </Link>
-  );
-}
-function catergoryView({ id, category }) {
-  return (
-    <Link className="text-gray-900" href={`?ticket=${id}`} key={id}>
-      {category}
-    </Link>
-  );
-}
-function TeamMemberView({ id, team_member }) {
-  return (
-    <Link className="text-gray-900" href={`?ticket=${id}`} key={id}>
-      {team_member}
-    </Link>
-  );
-}
-function UrgentView({ id, urgent }) {
-  return (
-    <Link className="text-gray-900" href={`?ticket=${id}`} key={id}>
+    <div>
       {urgent ? 'Urgent' : ''}
-    </Link>
+    </div>
   );
 }
 
-function TicketsTable({ items }: TicketsTableProps, i) {
+function TicketsTable({ items }: TicketsTableProps) {
+  const router = useRouter();
+
   return (
     <DataTable
       value={items}
@@ -68,18 +46,21 @@ function TicketsTable({ items }: TicketsTableProps, i) {
       dataKey="id"
       paginator
       emptyMessage="No data found."
-      className="datatable-responsive"
+      className="datatable-responsive cursor-pointer"
       currentPageReportTemplate="Showing {first} to {last} of {totalRecords} tickets"
       rows={10}
-      key={i}
+      onRowClick={(e) => {
+        router.push(`?ticket=${e.data.id}`);
+      }}
+      rowClassName={(rowData) => (rowData.urgent ? 'text-red-500' : '')}
+      rowHover
     >
-
       <Column body={OwnerAndPetTemplate} header="Owner" />
-      <Column field="urgent" body={UrgentView} header="Urgent" />
-      <Column field="category" header="Category" body={catergoryView} className="font-bold" />
-      <Column field="description" header="Description" body={descriptionView} className="font-bold" />
+      <Column field="urgent" body={UrgentView} header="Urgent" className="font-bold" />
+      <Column field="category" header="Category" className="font-bold" />
+      <Column field="description" header="Description" className="font-bold" />
       <Column body={CreatedAtTemplate} header="Date" className="font-bold" />
-      <Column field="team_member" body={TeamMemberView} header="Team member" className="font-bold" />
+      <Column field="team_member" header="Team member" className="font-bold" />
     </DataTable>
   );
 }
