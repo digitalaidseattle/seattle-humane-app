@@ -10,6 +10,12 @@ import useRecentTickets from '@hooks/useRecentTickets';
 import * as DataService from '@services/DataService';
 
 jest.mock('@services/DataService');
+jest.mock('next/router', () => ({
+  useRouter: () => ({
+    push: jest.fn(),
+  }),
+}));
+
 const mockedDataService = jest.mocked(DataService);
 
 beforeAll(() => {
@@ -61,6 +67,7 @@ describe('TicketsTable', () => {
       created_at: '2023-05-01T12:00:00Z',
       pet: 'Sparky',
       client: 'Alice Smith',
+      urgent: false,
     },
     {
       id: '2',
@@ -69,6 +76,7 @@ describe('TicketsTable', () => {
       created_at: '2023-04-15T10:30:00Z',
       pet: 'Buddy',
       client: 'Bob Johnson',
+      urgent: true,
     },
   ];
 
@@ -110,5 +118,10 @@ describe('TicketsTable', () => {
   it('renders empty message when no items', () => {
     render(<TicketsTable items={[]} />);
     expect(screen.getByText('No data found.')).toBeInTheDocument();
+  });
+
+  it('renders Urgent on table if a case is Urgent', () => {
+    render(<TicketsTable items={[]} />);
+    expect(screen.getByText('Urgent')).toBeInTheDocument();
   });
 });

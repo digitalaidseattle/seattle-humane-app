@@ -11,6 +11,7 @@ const mockTicketSummary = {
   client: mockClient.first_name,
   pet: mockAnimal.name,
   team_member: mockTeamMember1.first_name,
+  urgent: mockTicket.urgent,
 };
 
 export const recentTickets: ServiceRequestSummary[] = [
