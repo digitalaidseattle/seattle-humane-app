@@ -46,6 +46,10 @@ _There should be 90% statement coverage and the coverage percent increases with 
       have not been included_
 - [ ] I need help with writing tests
 
+## Can reviewers merge this PR upon approval?
+- [ ] yes, reviewers can merge this PR
+- [ ] no, the author of this PR needs to merge it
+
 ## [optional] Are there any post-deployment tasks we need to perform?
 
 ## [optional] Which Seattle Humane animal would you like to dedicate this PR to?
