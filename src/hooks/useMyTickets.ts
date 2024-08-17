@@ -4,11 +4,13 @@ import { useContext } from 'react';
 import useSWR from 'swr';
 
 export default function useMyTickets() {
-  const { data: tickets, isLoading: loadingAllTickets } = useAllTickets();
+  const {
+    data: tickets, isLoading: loadingAllTickets, isValidating,
+  } = useAllTickets();
   const { user } = useContext(UserContext);
 
-  const { data, mutate, isLoading: loadingMyTickets } = useSWR(
-    () => !loadingAllTickets && 'dataService/myTickets',
+  const { data, isLoading: loadingMyTickets } = useSWR(
+    () => (!loadingAllTickets && !isValidating) && 'dataService/myTickets',
     async () => {
       const myTickets = tickets
         .filter((ticket) => ticket.team_member.email === user.email);
@@ -18,6 +20,5 @@ export default function useMyTickets() {
   return {
     data,
     isLoading: loadingAllTickets || loadingMyTickets,
-    refresh: () => mutate(),
   };
 }

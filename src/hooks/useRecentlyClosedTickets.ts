@@ -4,11 +4,11 @@ import { AppConstants, TicketStatus } from 'src/constants';
 import useSWR from 'swr';
 
 export default function useRecentlyClosedTickets() {
-  const { data: tickets, isLoading: loadingAllTickets } = useAllTickets();
+  const { data: tickets, isLoading: loadingAllTickets, isValidating } = useAllTickets();
   const { data: statuses, isLoading: loadingAppConstants } = useAppConstants(AppConstants.Status);
 
-  const { data, mutate, isLoading: loadingRecentlyClosedTickets } = useSWR(
-    () => (!loadingAllTickets && !loadingAppConstants) && 'dataService/recentlyClosedTickets',
+  const { data, isLoading: loadingRecentlyClosedTickets } = useSWR(
+    () => (!loadingAllTickets && !isValidating && !loadingAppConstants) && 'dataService/recentlyClosedTickets',
     () => {
       const { id: closed } = statuses.find(({ value }) => value === TicketStatus.Closed);
       const recentlyClosedTickets = tickets
@@ -20,6 +20,5 @@ export default function useRecentlyClosedTickets() {
   return {
     data,
     isLoading: loadingAllTickets || loadingRecentlyClosedTickets,
-    refresh: () => mutate(),
   };
 }
