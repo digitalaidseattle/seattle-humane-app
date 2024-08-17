@@ -13,7 +13,7 @@
         "db-restart": "npx supabase stop --no-backup && npx supabase start",
         "gen-db-types": "npx supabase gen types --lang typescript --local > supabase/database.types.ts",
         "gen-db-migration": "npx supabase db diff", 
-        "gen-seed-data": "npx tsx supabase/seed.ts > supabase/seed.sql"
+        "gen-seed-data": "npx --yes tsx supabase/seed.ts > supabase/seed.sql"
     },
     "dependencies": {
         "@faker-js/faker": "^8.4.1",
