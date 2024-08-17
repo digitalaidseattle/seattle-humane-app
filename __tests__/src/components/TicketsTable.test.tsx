@@ -15,19 +15,6 @@ jest.mock('next/router', () => ({
   }),
 }));
 
-const mockedDataService = jest.mocked(DataService);
-
-beforeAll(() => {
-  // Setup mock DataService
-  mockedDataService.getServiceRequestSummary
-    .mockImplementation(async () => recentCases.map((ticket) => ({
-      ...ticket,
-      client: ticket.client_id,
-      pet: ticket.pet_id,
-      team_member: ticket.team_member_id,
-    })));
-});
-
 export interface TicketsTableProps {
   items: ServiceRequestSummary[]
 }

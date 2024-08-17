@@ -62,9 +62,9 @@ const genMockTicket: (idx: number) => ServiceRequestType = (idx: number) => ({
   status: data.status[0].value,
   team_member_id: mockTeamMembers[idx % mockTeamMembers.length].id,
   description: lorem.sentence(),
-  created_at: date.recent().toISOString(),
+  created_at: date.recent({ refDate: '2024-01-01T00:00:00.000Z' }).toISOString(),
   urgent: boolean({ probability: 0.5 }),
-  modified_at: date.recent().toISOString(),
+  modified_at: date.recent({ refDate: '2024-01-01T00:00:00.000Z' }).toISOString(),
 });
 export const mockTickets = Array(5).fill(null).map((_, idx) => genMockTicket(idx));
 export const [mockTicket] = mockTickets;
@@ -93,6 +93,12 @@ export const testGetServiceRequestSummaryFromTicket = (t: ServiceRequestType) =>
   status: t.status,
   modified_at: t.modified_at,
 }) as ServiceRequestSummary;
+
+export const mockTicketsThisWeek = mockTickets.filter((t) => {
+  const ticketDate = new Date(t.created_at);
+  const dateDiff = new Date('2024-01-01T00:00:00.000Z').valueOf() - ticketDate.valueOf();
+  return dateDiff < 7 * 24 * 60 * 60 * 1000;
+});
 
 export const mockServiceRequestSummaries = mockTickets
   .map((t) => testGetServiceRequestSummaryFromTicket(t));

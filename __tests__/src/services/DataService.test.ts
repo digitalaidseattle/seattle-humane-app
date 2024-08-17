@@ -13,14 +13,12 @@ import {
   EditableClientType,
   EditableServiceRequestType,
 } from '@types';
-import { mockAnimal, mockClient, mockTicket } from '@hooks/__mocks__/useTicketById';
-import { recentTickets } from '@hooks/__mocks__/useRecentTickets';
-import { mockTicketsThisWeek } from '@hooks/__mocks__/useTicketsThisWeek';
 import * as DataService from '@services/DataService';
 import supabaseClient from '@utils/supabaseClient';
 import { mockTeamMember1 } from '@hooks/__mocks__/useTeamMembers';
 import {
   mockClient, mockPet, mockTicket, mockTickets,
+  mockTicketsThisWeek,
 } from '@utils/TestData';
 import { getWeekStartDate } from '@utils/timeUtils';
 
@@ -145,7 +143,7 @@ describe('DataService', () => {
       mockSupabaseClient.setTestData(expectedQueryResults);
       const expectedServiceRequestSummary = expectedQueryResults.map((data) => {
         const {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
+
           clients, pets, team_members, id, label, ...ticket
         } = data;
         return {
@@ -233,22 +231,9 @@ describe('DataService', () => {
     });
   });
   describe('getTicketsThisWeek', () => {
-    const mockDate = (date: string) => {
-      const mockedDate = new Date(date);
-      jest.setSystemTime(mockedDate);
-    };
-
-    beforeEach(() => {
-      jest.useFakeTimers();
-    });
-
-    afterEach(() => {
-      jest.useRealTimers();
-    });
     it("should get this week's tickets", async () => {
       // Arrange
-      mockDate('2024-07-22Z'); // Mock current date as Monday, 22 July 2024
-      const expected = mockTicketsThisWeek.filter((ticket) => parseInt(ticket.id, 10) !== 100);
+      const expected = mockTicketsThisWeek;
       mockSupabaseClient.setTestData(expected);
       const weekStartDate = getWeekStartDate().toISOString(); // Sunday, 21 July 2024
 

@@ -3,7 +3,10 @@
 import { ClientType } from '@types';
 import {
   mockClient,
-  mockClients, mockPet, mockPets, mockTicket, mockTickets, testGetServiceRequestSummaryFromTicket,
+  mockClients, mockPet,
+  mockPets, mockTicket,
+  mockTickets, mockTicketsThisWeek,
+  testGetServiceRequestSummaryFromTicket,
 } from '@utils/TestData';
 
 export const createClient = jest.fn().mockResolvedValue(mockClient);
@@ -24,3 +27,5 @@ export const getTicket = jest.fn((id) => mockTickets.find((t) => t.id === id));
 
 // eslint-disable-next-line max-len
 export const getServiceRequestSummary = jest.fn(async () => mockTickets.map((t) => testGetServiceRequestSummaryFromTicket(t)));
+// eslint-disable-next-line max-len
+export const getTicketsThisWeek = jest.fn(() => mockTicketsThisWeek.map((t) => testGetServiceRequestSummaryFromTicket(t)));
