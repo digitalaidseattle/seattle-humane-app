@@ -57,8 +57,8 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
   const formData = useContext(ServiceInformationContext);
   const dispatch = useContext(ServiceInformationDispatchContext);
 
-  const sources = useAppConstants(AppConstants.Source);
-  const categories = useAppConstants(AppConstants.Category);
+  const { data: sources } = useAppConstants(AppConstants.Source);
+  const { data: categories } = useAppConstants(AppConstants.Category);
   const teamMembers = useTeamMembers();
 
   //* Map onChange handlers to dispatch
