@@ -5,10 +5,10 @@ import useSWR from 'swr';
 
 export default function useOpenTickets() {
   const { data: tickets, isLoading: loadingAllTickets } = useAllTickets();
-  const statuses = useAppConstants(AppConstants.Status);
+  const { data: statuses, isLoading: loadingAppConstants } = useAppConstants(AppConstants.Status);
 
   const { data, mutate, isLoading: loadingOpenTickets } = useSWR(
-    () => (!loadingAllTickets) && 'dataService/openTickets',
+    () => (!loadingAllTickets && !loadingAppConstants) && 'dataService/openTickets',
     () => {
       const { id: open } = statuses.find(({ value }) => value === TicketStatus.Open);
       const openTickets = tickets
