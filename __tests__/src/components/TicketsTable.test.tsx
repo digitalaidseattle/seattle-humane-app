@@ -9,6 +9,24 @@ import useAllTickets from '@hooks/useAllTickets';
 import { mockServiceRequestSummaries } from '@utils/TestData';
 
 jest.mock('@services/DataService');
+jest.mock('next/router', () => ({
+  useRouter: () => ({
+    push: jest.fn(),
+  }),
+}));
+
+const mockedDataService = jest.mocked(DataService);
+
+beforeAll(() => {
+  // Setup mock DataService
+  mockedDataService.getServiceRequestSummary
+    .mockImplementation(async () => recentCases.map((ticket) => ({
+      ...ticket,
+      client: ticket.client_id,
+      pet: ticket.pet_id,
+      team_member: ticket.team_member_id,
+    })));
+});
 
 export interface TicketsTableProps {
   items: ServiceRequestSummary[]
@@ -86,5 +104,10 @@ describe('TicketsTable', () => {
   it('renders empty message when no items', () => {
     render(<TicketsTable items={[]} />);
     expect(screen.getByText('No data found.')).toBeInTheDocument();
+  });
+
+  it('renders Urgent on table if a case is Urgent', () => {
+    render(<TicketsTable items={[]} />);
+    expect(screen.getByText('Urgent')).toBeInTheDocument();
   });
 });
