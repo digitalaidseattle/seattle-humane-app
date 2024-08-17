@@ -1,19 +1,8 @@
-import { ServiceRequestSummary } from '@types';
-import { useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
 import * as DataService from '@services/DataService';
+import useSWR from 'swr';
 
-export default function useRecentTickets() {
-  const [tickets, setTickets] = useState<(ServiceRequestSummary)[]>([]);
-  // Hack:  using url change to trigger to get recent tickets
-  const params = useSearchParams();
-  useEffect(() => {
-    const getTickets = async () => {
-      const data = await DataService.getServiceRequestSummary();
-      setTickets(data);
-    };
-    getTickets();
-  }, [params]);
+export default function useAllTickets() {
+  const { data, mutate, isLoading } = useSWR('dataservice/alltickets', async () => DataService.getServiceRequestSummary());
 
-  return tickets;
+  return { data: data ?? [], isLoading, refresh: () => mutate() };
 }
