@@ -48,7 +48,7 @@ interface ServiceInformationSectionProps {
 export default function ServiceInformationSection(props: ServiceInformationSectionProps) {
   const {
     disabled,
-    show = ['service_category', 'request_source', 'description', 'team_member_id'],
+    show = ['service_category', 'request_source', 'status', 'description', 'team_member_id'],
   } = props;
 
   const visibleFields = new Set<keyof EditableServiceRequestType>(show);
@@ -58,6 +58,7 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
   const dispatch = useContext(ServiceInformationDispatchContext);
 
   const { data: sources } = useAppConstants(AppConstants.Source);
+  const { data: statuses } = useAppConstants(AppConstants.Status);
   const { data: categories } = useAppConstants(AppConstants.Category);
   const teamMembers = useTeamMembers();
 
@@ -67,6 +68,7 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
   );
   const setCategory = (service_category: EditableServiceRequestType['service_category']) => setFormData({ service_category });
   const setSource = (request_source: EditableServiceRequestType['request_source']) => setFormData({ request_source });
+  const setStatus = (status: EditableServiceRequestType['status']) => setFormData({ status });
   const setServiceDescription = (description: EditableServiceRequestType['description']) => setFormData({ description });
   const setAssignedTo = (team_member_id: EditableServiceRequestType['team_member_id']) => setFormData({ team_member_id });
 
@@ -109,6 +111,27 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
                     name={`request_source-${opt.value}`}
                     onChange={(e) => setSource(e.target.value)}
                     checked={opt.id && formData.request_source === opt.id}
+                  />
+                ))
+                  : null}
+              </div>
+            </div>
+          )}
+        {visibleFields.has('status')
+          && (
+            <div className="grid col-12">
+              <div className="col-fixed mr-3">{serviceInformationLabels.Status}</div>
+              <div className="flex flex-wrap gap-3">
+                {statuses ? statuses.map((opt) => (
+                  <InputRadio
+                    id={`staus-${opt.value}`}
+                    key={opt.value}
+                    label={opt.label}
+                    value={opt.id}
+                    disabled={disabled}
+                    name={`staus-${opt.value}`}
+                    onChange={(e) => setStatus(e.target.value)}
+                    checked={opt.id && formData.status === opt.id}
                   />
                 ))
                   : null}
