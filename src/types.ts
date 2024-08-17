@@ -32,3 +32,5 @@ export type ServiceRequestSummary = Pick<ServiceRequestType, 'id' | 'description
 export type AppConstantType = Tables<'app_constants'>;
 
 export type TeamMemberType = Tables<'team_members'>;
+
+export type Locale = 'en' | 'es';
