@@ -66,7 +66,7 @@ const genMockTicket: (idx: number) => ServiceRequestType = (idx: number) => ({
   urgent: boolean({ probability: 0.5 }),
   modified_at: date.recent().toISOString(),
 });
-export const mockTickets = Array(10).fill(null).map((_, idx) => genMockTicket(idx));
+export const mockTickets = Array(5).fill(null).map((_, idx) => genMockTicket(idx));
 export const [mockTicket] = mockTickets;
 // #endregion
 

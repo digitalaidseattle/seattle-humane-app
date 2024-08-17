@@ -3,7 +3,7 @@ import { AppConstants, TicketStatus } from 'src/constants';
 export default function useAppConstants(type: string) {
   // moved data declaration to the bottom for readability
   // eslint-disable-next-line @typescript-eslint/no-use-before-define
-  return MockAppConstants[type];
+  return { data: MockAppConstants[type] };
 }
 
 const emptyRecord = {
