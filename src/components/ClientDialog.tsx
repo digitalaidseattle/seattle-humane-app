@@ -28,32 +28,6 @@ import ClientInformationSection from '@components/serviceRequest/ClientInformati
 import PetInformationSection from '@components/serviceRequest/PetInformationSection';
 import ServiceInformationSection from '@components/serviceRequest/ServiceInformationSection';
 
-const defaultClient: EditableClientType = {
-  first_name: '',
-  last_name: '',
-  email: '',
-  phone: '',
-  zip_code: '',
-};
-
-const defaultAnimal: EditableAnimalType = {
-  name: '',
-  species: '',
-  age: 0,
-  weight: 0,
-};
-
-const defaultRequest: EditableServiceRequestType = {
-  client_id: null,
-  pet_id: null,
-  service_category: '',
-  request_source: '',
-  status: '',
-  description: '',
-  team_member_id: null,
-  urgent: false,
-};
-
 interface ClientDialogProps {
   visible: boolean;
   onClose: (request: ServiceRequestType) => void;
