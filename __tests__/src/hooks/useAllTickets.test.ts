@@ -12,6 +12,6 @@ it('returns the tickets from the db', async () => {
   //* Assert
   await waitFor(() => {
     expect(mockedDataService.getServiceRequestSummary).toHaveBeenCalled();
-    expect(result.current).toEqual(mockServiceRequestSummaries);
+    expect(result.current.data).toEqual(mockServiceRequestSummaries);
   });
 });
