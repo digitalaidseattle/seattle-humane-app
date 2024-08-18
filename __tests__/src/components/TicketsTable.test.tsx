@@ -24,7 +24,7 @@ describe('TicketTable Headers', () => {
     //* Act
     const { result } = renderHook(useAllTickets);
     //* Assert
-    render(<TicketsTable items={result.current} />);
+    render(<TicketsTable items={result.current.data} />);
 
     await waitFor(() => {
       // Grabs Elements

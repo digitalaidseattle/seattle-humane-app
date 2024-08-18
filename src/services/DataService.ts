@@ -68,6 +68,7 @@ export async function createTicket(
       description: ticket.description,
       service_category: ticket.service_category,
       request_source: ticket.request_source,
+      status: ticket.status,
       team_member_id: ticket.team_member_id,
     }])
     .select()

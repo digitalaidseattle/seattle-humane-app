@@ -13,9 +13,9 @@ import {
 } from '@context/serviceRequest/serviceInformationContext';
 import { EditableServiceRequestType } from '@types';
 import { mockTeamMember2 } from 'src/hooks/__mocks__/useTeamMembers';
-import { data } from '@hooks/__mocks__/useAppConstants';
+import { MockAppConstants } from '@hooks/__mocks__/useAppConstants';
 
-const { source } = data;
+const { source } = MockAppConstants;
 
 //* Mocking the service information context module to isolate the test
 jest.mock('@context/serviceRequest/serviceInformationContext', () => {

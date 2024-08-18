@@ -1,5 +1,5 @@
 import { faker } from '@faker-js/faker';
-import { data } from '@hooks/__mocks__/useAppConstants';
+import { MockAppConstants } from '@hooks/__mocks__/useAppConstants';
 import { TeamMeberOption } from '@hooks/useTeamMembers';
 import {
   TeamMemberType, ClientType, AnimalType, ServiceRequestType,
@@ -57,14 +57,14 @@ const genMockTicket: (idx: number) => ServiceRequestType = (idx: number) => ({
   id: string.uuid(),
   client_id: mockClients[idx % mockClients.length].id,
   pet_id: mockPets[idx % mockPets.length].id,
-  service_category: data.category[0].value,
-  request_source: data.source[0].value,
-  status: data.status[0].value,
+  service_category: MockAppConstants.category[0].value,
+  request_source: MockAppConstants.source[0].value,
+  status: MockAppConstants.status[idx % MockAppConstants.status.length].id,
   team_member_id: mockTeamMembers[idx % mockTeamMembers.length].id,
   description: lorem.sentence(),
-  created_at: date.recent({ refDate: '2024-01-01T00:00:00.000Z' }).toISOString(),
+  created_at: date.recent().toISOString(),
   urgent: boolean({ probability: 0.5 }),
-  modified_at: date.recent({ refDate: '2024-01-01T00:00:00.000Z' }).toISOString(),
+  modified_at: date.recent().toISOString(),
 });
 export const mockTickets = Array(5).fill(null).map((_, idx) => genMockTicket(idx));
 export const [mockTicket] = mockTickets;

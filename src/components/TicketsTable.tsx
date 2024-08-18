@@ -6,6 +6,7 @@ import type { ServiceRequestSummary } from '@types';
 
 export interface TicketsTableProps {
   items: ServiceRequestSummary[]
+  loading?: boolean
 }
 
 function OwnerAndPetTemplate({
@@ -45,7 +46,7 @@ function UrgentView({ urgent }) {
   );
 }
 
-function TicketsTable({ items }: TicketsTableProps) {
+function TicketsTable({ items, loading }: TicketsTableProps) {
   const router = useRouter();
 
   return (
@@ -55,6 +56,7 @@ function TicketsTable({ items }: TicketsTableProps) {
       dataKey="id"
       paginator
       emptyMessage="No data found."
+      loading={loading}
       className="datatable-responsive cursor-pointer"
       currentPageReportTemplate="Showing {first} to {last} of {totalRecords} tickets"
       rows={10}

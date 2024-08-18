@@ -15,7 +15,7 @@ describe('useAppConstants tests', () => {
     const { result } = renderHook(useAppConstants, { initialProps: 'TYPE' as any });
     await waitFor(() => {
       expect(mockDataService.getAppConstants).toHaveBeenCalledWith('TYPE');
-      expect(result.current).toEqual(expected);
+      expect(result.current.data).toEqual(expected);
     });
   });
 });

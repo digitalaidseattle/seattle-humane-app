@@ -1,5 +1,6 @@
 // TODO remove after moving to prettier
 
+import { MockAppConstants } from '@hooks/__mocks__/useAppConstants';
 import { ClientType } from '@types';
 import {
   mockClient,
@@ -8,6 +9,7 @@ import {
   mockTickets, mockTicketsThisWeek,
   testGetServiceRequestSummaryFromTicket,
 } from '@utils/TestData';
+import { AppConstants } from 'src/constants';
 
 export const createClient = jest.fn().mockResolvedValue(mockClient);
 
@@ -29,3 +31,5 @@ export const getTicket = jest.fn((id) => mockTickets.find((t) => t.id === id));
 export const getServiceRequestSummary = jest.fn(async () => mockTickets.map((t) => testGetServiceRequestSummaryFromTicket(t)));
 // eslint-disable-next-line max-len
 export const getTicketsThisWeek = jest.fn(() => mockTicketsThisWeek.map((t) => testGetServiceRequestSummaryFromTicket(t)));
+
+export const getAppConstants = jest.fn((type: AppConstants) => MockAppConstants[type]);
