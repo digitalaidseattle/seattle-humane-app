@@ -15,10 +15,9 @@ import {
 } from '@types';
 import * as DataService from '@services/DataService';
 import supabaseClient from '@utils/supabaseClient';
-import { mockTeamMember1 } from '@hooks/__mocks__/useTeamMembers';
 import {
   mockClient, mockPet, mockTicket, mockTickets,
-  mockTicketsThisWeek,
+  mockTicketsThisWeek, mockTeamMember1,
 } from '@utils/TestData';
 import { getWeekStartDate } from '@utils/timeUtils';
 
