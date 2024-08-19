@@ -1,15 +1,15 @@
 import type { ServiceRequestSummary } from '@types';
 import { mockTicket, testGetServiceRequestSummaryFromTicket } from '@utils/TestData';
 
-const mockServicreRequest = testGetServiceRequestSummaryFromTicket(mockTicket);
+const mockServiceRequest = testGetServiceRequestSummaryFromTicket(mockTicket);
 export const recentTickets: ServiceRequestSummary[] = [
-  mockServicreRequest,
-  { ...mockServicreRequest, id: 'abc' },
+  mockServiceRequest,
+  { ...mockServiceRequest, id: 'abc' },
 ];
 
 export const recentCases = [
   {
-    ...mockServicreRequest,
+    ...mockServiceRequest,
     id: '147xyz',
   },
 ];
