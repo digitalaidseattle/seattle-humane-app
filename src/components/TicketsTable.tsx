@@ -1,7 +1,6 @@
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { useRouter } from 'next/router';
-import Link from 'next/link';
 import type { ServiceRequestSummary } from '@types';
 
 export interface TicketsTableProps {
