@@ -1,5 +1,3 @@
-// TODO remove after moving to prettier
-
 import { MockAppConstants } from '@hooks/__mocks__/useAppConstants';
 import { ClientType } from '@types';
 import {
