@@ -104,13 +104,14 @@ while (pets.length < NUM_FAKE_PETS) {
   ]);
 }
 const serviceRequests: [
-  string, number, string, string, string,
+  string, number, number, string, string, string,
   string, string, string, string, string,
 ][] = [];
 while (serviceRequests.length < NUM_FAKE_TICKETS) {
   const pet = getRandomItem(pets);
   serviceRequests.push([
     fakeUUID(),
+    fakeDate({ days: DAYS_AGO_FIRST_SVC_REQ, refDate: new Date() }).valueOf() / 1000,
     fakeDate({ days: DAYS_AGO_FIRST_SVC_REQ, refDate: new Date() }).valueOf() / 1000,
     fakeSentence(),
     pet[4], // owner id
@@ -174,12 +175,12 @@ for (let i = 0; i < pets.length; i += 1) {
 table = 'service_requests';
 console.log(`
 insert into ${table}
-  (id, created_at, description, client_id, pet_id,  team_member_id, service_category, request_source, status, urgent)
+  (id, created_at, modified_at, description, client_id, pet_id,  team_member_id, service_category, request_source, status, urgent)
 values`);
 for (let i = 0; i < serviceRequests.length; i += 1) {
   const delim = (i + 1) === serviceRequests.length ? ';' : ',';
   const [
-    id, date, desc, client_id, pet_id, team_member_id, service_category,
+    id, date, modified_at, desc, client_id, pet_id, team_member_id, service_category,
     request_source, status, urgent] = serviceRequests[i];
-  console.log(`('${id}'::UUID, to_timestamp(${date}), '${desc}', '${client_id}'::UUID, '${pet_id}'::UUID, '${team_member_id}'::UUID, '${service_category}'::UUID, '${request_source}'::UUID, '${status}'::UUID, ${urgent})${delim}`);
+  console.log(`('${id}'::UUID, to_timestamp(${date}), to_timestamp(${modified_at}), '${desc}', '${client_id}'::UUID, '${pet_id}'::UUID, '${team_member_id}'::UUID, '${service_category}'::UUID, '${request_source}'::UUID, '${status}'::UUID, ${urgent})${delim}`);
 }

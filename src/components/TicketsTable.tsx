@@ -5,6 +5,7 @@ import type { ServiceRequestSummary } from '@types';
 
 export interface TicketsTableProps {
   items: ServiceRequestSummary[]
+  loading?: boolean
 }
 
 function OwnerAndPetTemplate({
@@ -28,6 +29,14 @@ function CreatedAtTemplate({ created_at, id }) {
   );
 }
 
+function TeamMemberView({ id, team_member }: ServiceRequestSummary) {
+  return (
+    <span className="text-gray-900" key={id}>
+      {team_member.first_name}
+    </span>
+  );
+}
+
 function UrgentView({ urgent }) {
   return (
     <div>
@@ -36,7 +45,7 @@ function UrgentView({ urgent }) {
   );
 }
 
-function TicketsTable({ items }: TicketsTableProps) {
+function TicketsTable({ items, loading }: TicketsTableProps) {
   const router = useRouter();
 
   return (
@@ -46,6 +55,7 @@ function TicketsTable({ items }: TicketsTableProps) {
       dataKey="id"
       paginator
       emptyMessage="No data found."
+      loading={loading}
       className="datatable-responsive cursor-pointer"
       currentPageReportTemplate="Showing {first} to {last} of {totalRecords} tickets"
       rows={10}
@@ -60,7 +70,7 @@ function TicketsTable({ items }: TicketsTableProps) {
       <Column field="category" header="Category" className="font-bold" />
       <Column field="description" header="Description" className="font-bold" />
       <Column body={CreatedAtTemplate} header="Date" className="font-bold" />
-      <Column field="team_member" header="Team member" className="font-bold" />
+      <Column field="team_member" body={TeamMemberView} header="Team member" className="font-bold" />
     </DataTable>
   );
 }

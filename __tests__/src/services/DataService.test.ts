@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 /**
  *  DataService.test.ts
  *
@@ -12,12 +13,12 @@ import {
   EditableClientType,
   EditableServiceRequestType,
 } from '@types';
-import { mockAnimal, mockClient, mockTicket } from '@hooks/__mocks__/useTicketById';
-import { recentTickets } from '@hooks/__mocks__/useRecentTickets';
-import { mockTicketsThisWeek } from '@hooks/__mocks__/useTicketsThisWeek';
 import * as DataService from '@services/DataService';
 import supabaseClient from '@utils/supabaseClient';
-import { mockTeamMember1 } from '@hooks/__mocks__/useTeamMembers';
+import {
+  mockClient, mockPet, mockTicket, mockTickets,
+  mockTicketsThisWeek, mockTeamMember1,
+} from '@utils/TestData';
 import { getWeekStartDate } from '@utils/timeUtils';
 
 // Idea for mock from https://stackoverflow.com/questions/77411385/how-to-mock-supabase-api-select-requests-in-nodejs
@@ -121,7 +122,7 @@ describe('DataService', () => {
   describe('static getServiceRequestSummary()', () => {
     it('returns recent tickets from the db', async () => {
       // Arrange
-      const expectedTickets = recentTickets;
+      const expectedTickets = mockTickets;
       /**
        * TODO research a better way to mock consecutive queries to supabase client
        * here the first query simply returns all the data used in subsequent queries
@@ -133,26 +134,31 @@ describe('DataService', () => {
       const expectedQueryResults = expectedTickets.map((ticket) => ({
         ...ticket,
         clients: { first_name: mockClient.first_name },
-        pets: { name: mockAnimal.name },
-        team_members: { first_name: mockTeamMember1.first_name },
+        pets: { name: mockPet.name },
+        team_members: { first_name: mockTeamMember1.first_name, email: mockTeamMember1.email },
         service_category: ticket.id,
         label: 'mock app constant label',
       }));
       mockSupabaseClient.setTestData(expectedQueryResults);
       const expectedServiceRequestSummary = expectedQueryResults.map((data) => {
         const {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
+
           clients, pets, team_members, id, label, ...ticket
         } = data;
         return {
           id,
           client: clients.first_name,
           pet: pets.name,
-          team_member: team_members.first_name,
+          team_member: {
+            first_name: team_members.first_name,
+            email: team_members.email,
+          },
           category: label,
           created_at: ticket.created_at,
           description: ticket.description,
           urgent: ticket.urgent,
+          status: ticket.status,
+          modified_at: ticket.modified_at,
         };
       });
       // Act
@@ -224,22 +230,9 @@ describe('DataService', () => {
     });
   });
   describe('getTicketsThisWeek', () => {
-    const mockDate = (date: string) => {
-      const mockedDate = new Date(date);
-      jest.setSystemTime(mockedDate);
-    };
-
-    beforeEach(() => {
-      jest.useFakeTimers();
-    });
-
-    afterEach(() => {
-      jest.useRealTimers();
-    });
     it("should get this week's tickets", async () => {
       // Arrange
-      mockDate('2024-07-22Z'); // Mock current date as Monday, 22 July 2024
-      const expected = mockTicketsThisWeek.filter((ticket) => parseInt(ticket.id, 10) !== 100);
+      const expected = mockTicketsThisWeek;
       mockSupabaseClient.setTestData(expected);
       const weekStartDate = getWeekStartDate().toISOString(); // Sunday, 21 July 2024
 

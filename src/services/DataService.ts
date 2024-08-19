@@ -68,6 +68,7 @@ export async function createTicket(
       description: ticket.description,
       service_category: ticket.service_category,
       request_source: ticket.request_source,
+      status: ticket.status,
       team_member_id: ticket.team_member_id,
     }])
     .select()
@@ -107,11 +108,13 @@ export async function getServiceRequestSummary(): Promise<ServiceRequestSummary[
     service_category,
     clients(first_name),
     pets(name),
-    team_members(first_name),
-    urgent
+    team_members(first_name, email),
+    urgent,
+    status,
+    modified_at
     `)
-    .order('created_at', { ascending: false })
-    .limit(10);
+    .order('created_at', { ascending: false });
+
   if (error) throw new Error(`${error.message}`);
   const { data: constants, error: categoryError } = await supabaseClient
     .from('app_constants')
@@ -126,11 +129,16 @@ export async function getServiceRequestSummary(): Promise<ServiceRequestSummary[
     id,
     client: clients.first_name,
     pet: pets.name,
-    team_member: team_members.first_name,
+    team_member: {
+      first_name: team_members.first_name,
+      email: team_members.email,
+    },
     category: categoryMap.get(service_category),
     created_at: ticket.created_at,
     description: ticket.description,
     urgent: ticket.urgent,
+    status: ticket.status,
+    modified_at: ticket.modified_at,
   }));
   return summaries;
 }

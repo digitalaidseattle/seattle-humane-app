@@ -145,9 +145,9 @@ Local setup requires a few one-time steps. In the following steps, you will star
 1. Use `Ctrl+C` to stop the server when you are done.
 
 #### Generate lots of fake data (optional)
-1. Run 
+1. Open a *[local terminal window](https://stackoverflow.com/questions/59815283/open-local-terminal-in-vscode-when-running-in-ssh-mode?rq=1)* from the seattle-humane-app folder and run: 
     ```bash
-    yarn gen-seed-data
+    npm run gen-seed-data
     ```
     This will overwrite `supabase/seed.sql` and supabase will use the generated data when starting up.
 
