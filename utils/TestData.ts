@@ -1,6 +1,5 @@
 import { faker } from '@faker-js/faker';
 import { MockAppConstants } from '@hooks/__mocks__/useAppConstants';
-import { TeamMeberOption } from '@hooks/useTeamMembers';
 import {
   TeamMemberType, ClientType, AnimalType, ServiceRequestType,
   ServiceRequestSummary,
@@ -24,12 +23,6 @@ export const mockTeamMember1 = mockTeamMembers[0];
 export const mockTeamMember2 = mockTeamMembers[1];
 export const mockTeamMember3 = mockTeamMembers[2];
 export const mockTeamMemberOptions = [mockTeamMember1, mockTeamMember2, mockTeamMember3];
-export default function useTeamMembers(): TeamMeberOption[] {
-  return mockTeamMemberOptions.map((tm) => ({
-    value: tm.id,
-    label: tm.email,
-  }));
-}
 
 const genMockClient: () => ClientType = () => ({
   id: string.uuid(),
