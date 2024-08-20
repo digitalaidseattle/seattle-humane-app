@@ -239,7 +239,8 @@ describe('DataService', () => {
     it("should get this week's tickets", async () => {
       // Arrange
       mockDate('2024-07-22Z'); // Mock current date as Monday, 22 July 2024
-      const expected = mockTicketsThisWeek.filter((ticket) => parseInt(ticket.id, 10) !== 100);
+      // eslint-disable-next-line radix
+      const expected = mockTicketsThisWeek.filter((ticket) => parseInt(ticket.id) !== 100);
       mockSupabaseClient.setTestData(expected);
       const weekStartDate = getWeekStartDate().toISOString(); // Sunday, 21 July 2024
 

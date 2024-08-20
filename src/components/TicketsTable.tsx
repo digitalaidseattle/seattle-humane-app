@@ -39,6 +39,16 @@ function UrgentView({ urgent }) {
 function TicketsTable({ items }: TicketsTableProps) {
   const router = useRouter();
 
+  // Needed to sort urgent column in descending order because it sort alphabetically. 
+  const SortUrgent = (event) => {
+    const { field, order } = event;
+    return event.data.sort((a, b) => {
+      if (a[field] === b[field]) return 0;
+      if (order === 1) return a[field] ? -1 : 1;
+      return a[field] ? 1 : -1;
+    });
+  };
+
   return (
     <DataTable
       value={items}
@@ -54,13 +64,22 @@ function TicketsTable({ items }: TicketsTableProps) {
       }}
       rowClassName={(rowData) => (rowData.urgent ? 'text-red-500' : '')}
       rowHover
+      removableSort
+      sortMode="multiple"
     >
-      <Column body={OwnerAndPetTemplate} header="Owner" />
-      <Column field="urgent" body={UrgentView} header="Urgent" className="font-bold" />
-      <Column field="category" header="Category" className="font-bold" />
+      <Column field="pet" body={OwnerAndPetTemplate} header="Owner" sortable className="pet-sort" />
+      <Column
+        field="urgent"
+        body={UrgentView}
+        header="Urgent"
+        className="font-bold"
+        sortable
+        sortFunction={SortUrgent}
+      />
+      <Column field="category" header="Category" className="font-bold" sortable />
       <Column field="description" header="Description" className="font-bold" />
-      <Column body={CreatedAtTemplate} header="Date" className="font-bold" />
-      <Column field="team_member" header="Team member" className="font-bold" />
+      <Column field="created_at" body={CreatedAtTemplate} header="Date" className="font-bold" sortable />
+      <Column field="team_member" header="Team member" className="font-bold" sortable />
     </DataTable>
   );
 }
