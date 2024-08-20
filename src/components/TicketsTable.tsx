@@ -39,7 +39,7 @@ function UrgentView({ urgent }) {
 function TicketsTable({ items }: TicketsTableProps) {
   const router = useRouter();
 
-  // Needed to sort urgent column in descending order because it sort alphabetically. 
+  // Needed to sort urgent column in descending order because it sort alphabetically.
   const SortUrgent = (event) => {
     const { field, order } = event;
     return event.data.sort((a, b) => {
