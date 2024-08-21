@@ -1,13 +1,12 @@
-import { UserContext } from '@context/usercontext';
+import { useUser } from '@context/usercontext';
 import useAllTickets from '@hooks/useAllTickets';
-import { useContext } from 'react';
 import useSWR from 'swr';
 
 export default function useMyTickets() {
   const {
     data: tickets, isLoading: loadingAllTickets, isValidating,
   } = useAllTickets();
-  const { user } = useContext(UserContext);
+  const { user } = useUser();
 
   const { data, isLoading: loadingMyTickets } = useSWR(
     () => (!loadingAllTickets && !isValidating) && 'dataService/myTickets',
