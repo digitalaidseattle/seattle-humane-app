@@ -8,18 +8,20 @@
         "start": "next start",
         "export": "next build && next export",
         "lint": "eslint --cache",
-				"lint:fix": "eslint --cache --fix",
-				"test": "jest",
-				"setup-git-hooks": "git config --local core.hooksPath .githooks/",
-				"gen-seed-data": "npx tsx supabase/seed.ts > supabase/seed.sql",
-				"postinstall": "husky",
-				"lint-staged": "lint-staged"
+        "lint:fix": "eslint --cache --fix",
+        "test": "jest",
+        "setup-git-hooks": "git config --local core.hooksPath .githooks/",
+        "gen-seed-data": "npx tsx supabase/seed.ts > supabase/seed.sql",
+        "postinstall": "husky install && yarn husky-prep-1 && yarn husky-prep-2",
+        "husky-prep-1":"sudo chmod ug+x .husky/*",
+        "husky-prep-2":"sudo chmod ug+x .git/hooks/*",
+        "lint-staged": "lint-staged"
     },
     "lint-staged": {
-      "*.{js,jsx,ts,tsx}": [
-        "eslint --cache --fix",
-        "eslint --cache"
-      ]
+        "*.{js,jsx,ts,tsx}": [
+            "eslint --cache --fix",
+            "eslint --cache"
+        ]
     },
     "dependencies": {
         "@faker-js/faker": "^8.4.1",
@@ -62,12 +64,11 @@
         "eslint-plugin-path-alias": "^2.1.0",
         "eslint-plugin-react": "^7.34.0",
         "eslint-plugin-react-hooks": "^4.6.0",
-				"husky": "^9.1.5",
+        "husky": "8.0.3",
         "jest": "^29.7.0",
         "jest-environment-jsdom": "^29.7.0",
-				"lint-staged": "^15.2.9",
+        "lint-staged": "14.0.1",
         "next-router-mock": "^0.9.13",
-        "prettier": "2.8.4",
         "react-test-renderer": "^18.2.0",
         "sass": "^1.58.3",
         "ts-jest": "^29.1.2",
