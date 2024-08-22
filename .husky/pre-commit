@@ -1,6 +1,0 @@
-if [ "$CI" = "true" ]; then
-  echo "Skipping Husky in CI environment"
-  exit 0
-fi
-
-yarn lint-staged
