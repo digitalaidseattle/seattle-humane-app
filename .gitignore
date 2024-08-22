@@ -33,6 +33,9 @@ yarn-error.log*
 .vscode/extensions.json
 .vscode/settings.json
 
+# lint cache
+.eslintcache
+
 # misc
 pnpm-lock.yaml
 
