@@ -15,6 +15,7 @@ import { useState, useEffect } from 'react';
 import ClientInformationSection from '@components/serviceRequest/ClientInformationSection';
 import PetInformationSection from '@components/serviceRequest/PetInformationSection';
 import ServiceInformationSection from '@components/serviceRequest/ServiceInformationSection';
+import { mutate } from 'swr';
 
 // TODO externalize to localization file
 export const serviceRequestLabels = {
@@ -54,7 +55,10 @@ function ServiceRequestDialog({ visible, onClose, ticketId }: ServiceRequestDial
 
   const onSaveClicked = async () => {
     const success = await save();
-    if (success) hideDialog();
+    if (success) {
+      mutate('dataservice/alltickets');
+      hideDialog();
+    }
   };
 
   const dialogFooter = (

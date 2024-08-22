@@ -4,9 +4,9 @@ import { createContext, useReducer } from 'react';
 import PetInformationSection, { petInformationLabels as labels } from '@components/serviceRequest/PetInformationSection';
 import { PetInformationProvider, petInfoReducer, defaultPetInformation } from '@context/serviceRequest/petInformationContext';
 import { EditableAnimalType } from '@types';
-import { data } from '@hooks/__mocks__/useAppConstants';
+import { MockAppConstants } from '@hooks/__mocks__/useAppConstants';
 
-const { species } = data;
+const { species } = MockAppConstants;
 //* Mocking the pet information context module to isolate the test
 jest.mock('@context/serviceRequest/petInformationContext', () => {
   const PetInformationContext = createContext(null);

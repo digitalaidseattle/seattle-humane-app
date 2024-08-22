@@ -1,6 +1,6 @@
 import * as DataService from '@services/DataService';
 import { renderHook, waitFor } from '@testing-library/react';
-import { mockTeamMember2 } from '@hooks/__mocks__/useTeamMembers';
+import { mockTeamMember2 } from '@utils/TestData';
 import useTeamMembers from '../../../src/hooks/useTeamMembers';
 
 jest.mock('src/services/DataService', () => ({
