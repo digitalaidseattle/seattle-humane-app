@@ -32,6 +32,7 @@ jobs:
             echo "SUPABASE_AUTH_AZURE_CLIENT_ID=fake_data" >> "$GITHUB_ENV"
             echo "SUPABASE_AUTH_AZURE_SECRET=fake_data" >> "$GITHUB_ENV"
             echo "SUPABASE_AUTH_AZURE_REDIRECT_URI=fake_data" >> "$GITHUB_ENV"
+            echo "SUPABASE_AUTH_AZURE_URI=fake_data" >> "$GITHUB_ENV"
         - run: supabase db start
         - name: Verify generated types match Postgres schema
           run: |

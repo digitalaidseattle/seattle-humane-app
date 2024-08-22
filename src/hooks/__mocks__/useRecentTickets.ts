@@ -1,26 +1,15 @@
 import type { ServiceRequestSummary } from '@types';
-import {
-  mockAnimal, mockClient, mockTicket, mockSummary,
-} from '@hooks/__mocks__/useTicketById';
-import { mockTeamMember1 } from '@hooks/__mocks__/useTeamMembers';
+import { mockTicket, testGetServiceRequestSummaryFromTicket } from '@utils/TestData';
 
-const mockTicketSummary = {
-  id: mockTicket.id,
-  description: mockTicket.description,
-  created_at: mockTicket.created_at,
-  client: mockClient.first_name,
-  pet: mockAnimal.name,
-  team_member: mockTeamMember1.first_name,
-};
-
+const mockServiceRequest = testGetServiceRequestSummaryFromTicket(mockTicket);
 export const recentTickets: ServiceRequestSummary[] = [
-  mockTicketSummary,
-  { ...mockTicketSummary, id: 'abc' },
+  mockServiceRequest,
+  { ...mockServiceRequest, id: 'abc' },
 ];
 
 export const recentCases = [
   {
-    ...mockSummary,
+    ...mockServiceRequest,
     id: '147xyz',
   },
 ];

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 /**
  *  DataService.test.ts
  *
@@ -12,11 +13,13 @@ import {
   EditableClientType,
   EditableServiceRequestType,
 } from '@types';
-import { mockAnimal, mockClient, mockTicket } from '@hooks/__mocks__/useTicketById';
-import { recentTickets } from '@hooks/__mocks__/useRecentTickets';
 import * as DataService from '@services/DataService';
 import supabaseClient from '@utils/supabaseClient';
-import { mockTeamMember1 } from '@hooks/__mocks__/useTeamMembers';
+import {
+  mockClient, mockPet, mockTicket, mockTickets,
+  mockTicketsThisWeek, mockTeamMember1,
+} from '@utils/TestData';
+import { getWeekStartDate } from '@utils/timeUtils';
 
 // Idea for mock from https://stackoverflow.com/questions/77411385/how-to-mock-supabase-api-select-requests-in-nodejs
 jest.mock('@supabase/supabase-js', () => ({
@@ -119,7 +122,7 @@ describe('DataService', () => {
   describe('static getServiceRequestSummary()', () => {
     it('returns recent tickets from the db', async () => {
       // Arrange
-      const expectedTickets = recentTickets;
+      const expectedTickets = mockTickets;
       /**
        * TODO research a better way to mock consecutive queries to supabase client
        * here the first query simply returns all the data used in subsequent queries
@@ -131,26 +134,33 @@ describe('DataService', () => {
       const expectedQueryResults = expectedTickets.map((ticket) => ({
         ...ticket,
         clients: { first_name: mockClient.first_name },
-        pets: { name: mockAnimal.name },
-        team_members: { first_name: mockTeamMember1.first_name },
+        pets: { name: mockPet.name },
+        team_members: { first_name: mockTeamMember1.first_name, email: mockTeamMember1.email },
         service_category: ticket.id,
         label: 'mock app constant label',
-      }))
+      }));
       mockSupabaseClient.setTestData(expectedQueryResults);
       const expectedServiceRequestSummary = expectedQueryResults.map((data) => {
         const {
+
           clients, pets, team_members, id, label, ...ticket
         } = data;
         return {
-          id: id,
+          id,
           client: clients.first_name,
           pet: pets.name,
-          team_member: team_members.first_name,
+          team_member: {
+            first_name: team_members.first_name,
+            email: team_members.email,
+          },
           category: label,
           created_at: ticket.created_at,
           description: ticket.description,
-        }
-      })
+          urgent: ticket.urgent,
+          status: ticket.status,
+          modified_at: ticket.modified_at,
+        };
+      });
       // Act
       const actualTicket = await DataService.getServiceRequestSummary();
       // Assert
@@ -217,6 +227,35 @@ describe('DataService', () => {
 
       //* Act & Assert
       await expect(DataService.getTeamMembers()).rejects.toThrow(error.message);
+    });
+  });
+  describe('getTicketsThisWeek', () => {
+    it("should get this week's tickets", async () => {
+      // Arrange
+      const expected = mockTicketsThisWeek;
+      mockSupabaseClient.setTestData(expected);
+      const weekStartDate = getWeekStartDate().toISOString(); // Sunday, 21 July 2024
+
+      // Act
+      const actualTickets = await DataService.getTicketsThisWeek();
+
+      // Assert
+      expect(mockSupabaseClient.from).toHaveBeenCalledWith('service_requests');
+      expect(mockSupabaseClient.from).toHaveBeenCalledTimes(1);
+      expect(mockSupabaseClient.from('service_requests').select).toHaveBeenCalledTimes(1);
+      expect(mockSupabaseClient.from('service_requests').select().gte).toHaveBeenCalledWith('created_at', weekStartDate);
+      /**
+       * we aren't checking for shape of data returned by getTicketsThisWeek, just need to know it can filter based on created_at column
+       */
+      expect(actualTickets.length).toBe(expected.length);
+    });
+    it('should throw errors returned from supabase', async () => {
+      // Arrange
+      const error = { message: 'Random DB Error' };
+      mockSupabaseClient.setTestError(error);
+
+      // Act & Assert
+      await expect(DataService.getTicketsThisWeek()).rejects.toThrow(error.message);
     });
   });
 });
