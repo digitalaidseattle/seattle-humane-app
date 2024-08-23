@@ -3,6 +3,7 @@
     "version": "9.0.1-SNAPSHOT",
     "private": false,
     "scripts": {
+        "prepare": "husky || true",
         "dev": "next dev",
         "build": "next build",
         "start": "next start",
@@ -12,8 +13,9 @@
         "test": "jest",
         "db-restart": "npx supabase stop --no-backup && npx supabase start",
         "gen-db-types": "npx supabase gen types --lang typescript --local > supabase/database.types.ts",
-        "gen-db-migration": "npx supabase db diff", 
-        "gen-seed-data": "npx --yes tsx supabase/seed.ts > supabase/seed.sql"
+        "gen-db-migration": "npx supabase db diff",
+        "gen-seed-data": "npx --yes tsx supabase/seed.ts > supabase/seed.sql",
+        "lint-staged": "npx lint-staged"
     },
     "dependencies": {
         "@faker-js/faker": "^8.4.1",
@@ -22,6 +24,8 @@
         "chart.js": "^4.2.1",
         "cliui": "^8.0.1",
         "eslint-config-airbnb-typescript": "^17.1.0",
+        "husky": "^9.1.5",
+        "lint-staged": "^15.2.9",
         "next": "^13.5.4",
         "primeflex": "^3.3.0",
         "primeicons": "^6.0.1",
@@ -59,10 +63,11 @@
         "jest": "^29.7.0",
         "jest-environment-jsdom": "^29.7.0",
         "next-router-mock": "^0.9.13",
-        "prettier": "2.8.4",
+        "prettier": "^3.3.3",
         "react-test-renderer": "^18.2.0",
         "sass": "^1.58.3",
         "ts-jest": "^29.1.2",
+        "tsc-files": "^1.1.4",
         "typescript": "5.5.2"
     }
 }
