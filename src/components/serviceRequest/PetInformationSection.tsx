@@ -44,7 +44,7 @@ export default function PetInformationSection(props: PetInformationSectionProps)
   const formData = useContext(PetInformationContext);
   const dispatch = useContext(PetInformationDispatchContext);
   //* Options for multi-choice controls
-  const { data: speciesOptions } = useAppConstants(AppConstants.Species);
+  const speciesOptions = useAppConstants(AppConstants.Species);
 
   //* Map onChange handlers to dispatch
   const setFormData = (partialStateUpdate: Partial<EditableAnimalType>) => dispatch(

@@ -142,7 +142,6 @@ client_id = "env(SUPABASE_AUTH_AZURE_CLIENT_ID)"
 # DO NOT commit your OAuth provider secret to git. Use environment variable substitution instead.
 secret = "env(SUPABASE_AUTH_AZURE_SECRET)"
 redirect_uri = "env(SUPABASE_AUTH_AZURE_REDIRECT_URI)"
-url = "env(SUPABASE_AUTH_AZURE_URI)"
 
 [analytics]
 enabled = false

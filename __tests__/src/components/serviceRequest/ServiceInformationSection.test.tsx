@@ -12,10 +12,10 @@ import {
   defaultServiceInformation,
 } from '@context/serviceRequest/serviceInformationContext';
 import { EditableServiceRequestType } from '@types';
-import { mockTeamMember2 } from '@utils/TestData';
-import { MockAppConstants } from '@hooks/__mocks__/useAppConstants';
+import { mockTeamMember2 } from 'src/hooks/__mocks__/useTeamMembers';
+import { data } from '@hooks/__mocks__/useAppConstants';
 
-const { source } = MockAppConstants;
+const { source } = data;
 
 //* Mocking the service information context module to isolate the test
 jest.mock('@context/serviceRequest/serviceInformationContext', () => {
@@ -30,8 +30,6 @@ jest.mock('@context/serviceRequest/serviceInformationContext', () => {
     status: '',
     description: '',
     team_member_id: '',
-    urgent: false,
-    modified_at: '',
   };
   return {
     defaultServiceInformation: testDefaultServiceInformation,

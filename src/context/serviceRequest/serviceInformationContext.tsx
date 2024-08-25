@@ -15,7 +15,6 @@ export const defaultServiceInformation: EditableServiceRequestType = {
   description: '',
   team_member_id: '',
   urgent: false,
-  modified_at: '',
 };
 
 export enum ServiceInfoActionType { Clear = 'clear', Update = 'update' }

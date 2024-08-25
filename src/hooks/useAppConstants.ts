@@ -1,9 +1,15 @@
+import { useEffect, useState } from 'react';
+import { AppConstantType } from '@types';
 import { AppConstants } from 'src/constants';
 import * as DataService from '@services/DataService';
-import useSWR from 'swr';
 
 export default function useAppConstants(type: AppConstants) {
-  const { data, isLoading } = useSWR(`dataService/appConstants/${type}`, async () => DataService.getAppConstants(type));
+  const [data, setData] = useState<AppConstantType[]>([]);
 
-  return { data: data ?? [], isLoading };
+  useEffect(() => {
+    DataService.getAppConstants(type)
+      .then((resp) => setData(resp));
+  }, [type]);
+
+  return data;
 }

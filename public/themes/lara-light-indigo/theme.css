@@ -2761,7 +2761,7 @@
   outline-offset: -0.15rem;
 }
 .p-datatable.p-datatable-hoverable-rows .p-datatable-tbody > tr:not(.p-highlight):not(.p-datatable-emptymessage):hover {
-  background:	var(--teal-100);
+  background: #e9ecef;
   color: #495057;
 }
 .p-datatable .p-column-resizer-helper {

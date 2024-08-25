@@ -5,15 +5,23 @@ import {
 import TicketsTable from '@components/TicketsTable';
 import type { ServiceRequestSummary } from '@types';
 
-import useAllTickets from '@hooks/useAllTickets';
-import { mockServiceRequestSummaries } from '@utils/TestData';
+import { recentCases } from '@hooks/__mocks__/useRecentTickets';
+import useRecentTickets from '@hooks/useRecentTickets';
+import * as DataService from '@services/DataService';
 
 jest.mock('@services/DataService');
-jest.mock('next/router', () => ({
-  useRouter: () => ({
-    push: jest.fn(),
-  }),
-}));
+const mockedDataService = jest.mocked(DataService);
+
+beforeAll(() => {
+  // Setup mock DataService
+  mockedDataService.getServiceRequestSummary
+    .mockImplementation(async () => recentCases.map((ticket) => ({
+      ...ticket,
+      client: ticket.client_id,
+      pet: ticket.pet_id,
+      team_member: ticket.team_member_id,
+    })));
+});
 
 export interface TicketsTableProps {
   items: ServiceRequestSummary[]
@@ -22,9 +30,9 @@ export interface TicketsTableProps {
 describe('TicketTable Headers', () => {
   it('Checks Headers Presence', async () => {
     //* Act
-    const { result } = renderHook(useAllTickets);
+    const { result } = renderHook(useRecentTickets);
     //* Assert
-    render(<TicketsTable items={result.current.data} />);
+    render(<TicketsTable items={result.current} />);
 
     await waitFor(() => {
       // Grabs Elements
@@ -33,6 +41,7 @@ describe('TicketTable Headers', () => {
       const clientHeader = screen.getAllByText('Owner');
       const teamMemberHeader = screen.getAllByText('Team member');
 
+      expect(result.current).toEqual(recentCases);
       expect(dateHeader[0]).toBeInTheDocument();
       expect(descriptionHeader[0]).toBeInTheDocument();
       expect(clientHeader[0]).toBeInTheDocument();
@@ -44,9 +53,25 @@ describe('TicketTable Headers', () => {
 jest.mock('next/link', () => ({ children }) => children);
 
 describe('TicketsTable', () => {
-  const items = mockServiceRequestSummaries;
-  const row = items[0];
-  const row2 = items[0];
+  const items: ServiceRequestSummary[] = [
+    {
+      id: '1',
+      team_member: 'John Doe',
+      description: 'Cleaning service',
+      created_at: '2023-05-01T12:00:00Z',
+      pet: 'Sparky',
+      client: 'Alice Smith',
+    },
+    {
+      id: '2',
+      team_member: 'Sarah Lee',
+      description: 'Grooming service',
+      created_at: '2023-04-15T10:30:00Z',
+      pet: 'Buddy',
+      client: 'Bob Johnson',
+    },
+  ];
+
   it('renders table headers correctly', () => {
     render(<TicketsTable items={items} />);
     expect(screen.getByText('Owner')).toBeInTheDocument();
@@ -58,43 +83,32 @@ describe('TicketsTable', () => {
 
   it('renders owner and pet names correctly', () => {
     render(<TicketsTable items={items} />);
-    expect(screen.getByText(row.pet)).toBeInTheDocument();
-    expect(screen.getByText(row.client)).toBeInTheDocument();
-    expect(screen.getByText(row2.pet)).toBeInTheDocument();
-    expect(screen.getByText(row2.client)).toBeInTheDocument();
+    expect(screen.getByText('Sparky')).toBeInTheDocument();
+    expect(screen.getByText('Alice Smith')).toBeInTheDocument();
+    expect(screen.getByText('Buddy')).toBeInTheDocument();
+    expect(screen.getByText('Bob Johnson')).toBeInTheDocument();
   });
 
   it('renders description correctly', () => {
     render(<TicketsTable items={items} />);
-    expect(screen.getByText(row.description)).toBeInTheDocument();
-    expect(screen.getByText(row2.description)).toBeInTheDocument();
+    expect(screen.getByText('Cleaning service')).toBeInTheDocument();
+    expect(screen.getByText('Grooming service')).toBeInTheDocument();
   });
 
   it('renders created_at date correctly', () => {
     render(<TicketsTable items={items} />);
-    const [date] = screen.getAllByText(new Date(row.created_at).toLocaleDateString('en-US', {
-      day: '2-digit', month: '2-digit', year: 'numeric',
-    }));
-    const [differentDate] = screen.getAllByText(new Date(items[items.length - 1].created_at).toLocaleDateString('en-US', {
-      day: '2-digit', month: '2-digit', year: 'numeric',
-    }));
-    expect(date).toBeInTheDocument();
-    expect(differentDate).toBeInTheDocument();
+    expect(screen.getByText('05/01/2023')).toBeInTheDocument();
+    expect(screen.getByText('04/15/2023')).toBeInTheDocument();
   });
 
   it('renders team member correctly', () => {
     render(<TicketsTable items={items} />);
-    expect(screen.getByText(row.team_member.first_name)).toBeInTheDocument();
-    expect(screen.getByText(row2.team_member.first_name)).toBeInTheDocument();
+    expect(screen.getByText('John Doe')).toBeInTheDocument();
+    expect(screen.getByText('Sarah Lee')).toBeInTheDocument();
   });
 
   it('renders empty message when no items', () => {
     render(<TicketsTable items={[]} />);
     expect(screen.getByText('No data found.')).toBeInTheDocument();
-  });
-
-  it('renders Urgent on table if a case is Urgent', () => {
-    render(<TicketsTable items={[]} />);
-    expect(screen.getByText('Urgent')).toBeInTheDocument();
   });
 });

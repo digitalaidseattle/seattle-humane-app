@@ -1,9 +1,9 @@
-import { AppConstants, TicketStatus } from 'src/constants';
+import { AppConstants } from 'src/constants';
 
 export default function useAppConstants(type: string) {
   // moved data declaration to the bottom for readability
   // eslint-disable-next-line @typescript-eslint/no-use-before-define
-  return { data: MockAppConstants[type] };
+  return data[type];
 }
 
 const emptyRecord = {
@@ -13,7 +13,7 @@ const emptyRecord = {
   created_at: '',
 };
 
-export const MockAppConstants = {
+export const data = {
   [AppConstants.Species]: [
     {
       ...emptyRecord,
@@ -54,16 +54,16 @@ export const MockAppConstants = {
     {
       ...emptyRecord,
       id: 'open-id',
-      value: TicketStatus.Open,
-      label: TicketStatus.Open.toUpperCase(),
+      value: 'open',
+      label: 'Open',
       type: AppConstants.Status,
       active: true,
     },
     {
       ...emptyRecord,
-      id: 'closed-id',
-      value: TicketStatus.Closed,
-      label: TicketStatus.Closed.toUpperCase(),
+      id: 'in_progress-id',
+      value: 'in_progress',
+      label: 'IN PROGRESS',
       type: AppConstants.Status,
       active: true,
     },
