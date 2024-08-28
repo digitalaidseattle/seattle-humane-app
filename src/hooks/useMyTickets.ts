@@ -10,14 +10,11 @@ export default function useMyTickets() {
 
   const { data, isLoading: loadingMyTickets } = useSWR(
     () => (!loadingAllTickets && !isValidating) && 'dataService/myTickets',
-    async () => {
-      const myTickets = tickets
-        .filter((ticket) => ticket.team_member.email === user.email);
-      return myTickets ?? [];
-    },
+    async () => tickets
+      .filter((ticket) => ticket.team_member.email === user.email),
   );
   return {
-    data,
+    data: data ?? [],
     isLoading: loadingAllTickets || loadingMyTickets,
   };
 }
