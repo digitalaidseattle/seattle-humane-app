@@ -11,6 +11,7 @@ import TicketsTable from '@components/TicketsTable';
 import SampleDashboardStats from '@components/SampleDashbordStats';
 import useRecentlyClosedTickets from '@hooks/useRecentlyClosedTickets';
 import useMyTickets from '@hooks/useMyTickets';
+import QuickSearch from '@components/QuickSearch';
 
 const Dashboard: React.FC = () => {
   const { data: myTickets, isLoading: loadingMyTickets } = useMyTickets();
@@ -23,6 +24,7 @@ const Dashboard: React.FC = () => {
   return (
     <div className="grid">
       <SampleDashboardStats />
+      <QuickSearch />
       <div className="col-12 xl:col-6">
         <div className="card">
           <h5>My Cases</h5>
