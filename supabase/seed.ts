@@ -184,3 +184,5 @@ for (let i = 0; i < serviceRequests.length; i += 1) {
     request_source, status, urgent] = serviceRequests[i];
   console.log(`('${id}'::UUID, to_timestamp(${date}), to_timestamp(${modified_at}), '${desc}', '${client_id}'::UUID, '${pet_id}'::UUID, '${team_member_id}'::UUID, '${service_category}'::UUID, '${request_source}'::UUID, '${status}'::UUID, ${urgent})${delim}`);
 }
+table = 'service_requests_search';
+console.log(`REFRESH MATERIALIZED VIEW ${table}`);

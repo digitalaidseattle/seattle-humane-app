@@ -166,6 +166,13 @@ export type Database = {
             referencedRelation: "service_requests"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "public_service_request_service_request_id_fkey"
+            columns: ["service_request_id"]
+            isOneToOne: false
+            referencedRelation: "service_requests_search"
+            referencedColumns: ["id"]
+          },
         ]
       }
       service_requests: {
@@ -258,7 +265,13 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      service_requests_search: {
+        Row: {
+          id: string | null
+          search_field: unknown | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       [_ in never]: never
@@ -344,6 +357,7 @@ export type Database = {
           owner_id: string | null
           path_tokens: string[] | null
           updated_at: string | null
+          user_metadata: Json | null
           version: string | null
         }
         Insert: {
@@ -357,6 +371,7 @@ export type Database = {
           owner_id?: string | null
           path_tokens?: string[] | null
           updated_at?: string | null
+          user_metadata?: Json | null
           version?: string | null
         }
         Update: {
@@ -370,6 +385,7 @@ export type Database = {
           owner_id?: string | null
           path_tokens?: string[] | null
           updated_at?: string | null
+          user_metadata?: Json | null
           version?: string | null
         }
         Relationships: [
@@ -391,6 +407,7 @@ export type Database = {
           key: string
           owner_id: string | null
           upload_signature: string
+          user_metadata: Json | null
           version: string
         }
         Insert: {
@@ -401,6 +418,7 @@ export type Database = {
           key: string
           owner_id?: string | null
           upload_signature: string
+          user_metadata?: Json | null
           version: string
         }
         Update: {
@@ -411,6 +429,7 @@ export type Database = {
           key?: string
           owner_id?: string | null
           upload_signature?: string
+          user_metadata?: Json | null
           version?: string
         }
         Relationships: [
@@ -546,6 +565,10 @@ export type Database = {
           metadata: Json
           updated_at: string
         }[]
+      }
+      operation: {
+        Args: Record<PropertyKey, never>
+        Returns: string
       }
       search: {
         Args: {
