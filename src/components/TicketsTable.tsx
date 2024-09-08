@@ -31,7 +31,7 @@ function CreatedAtTemplate({ created_at, id }) {
 
 function TeamMemberView({ id, team_member }: ServiceRequestSummary) {
   return (
-    <span className="text-gray-900" key={id}>
+    <span key={id}>
       {team_member.first_name}
     </span>
   );
