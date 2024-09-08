@@ -7,7 +7,7 @@
  */
 import React from 'react';
 import useOpenTickets from '@hooks/useOpenTickets';
-import TicketsTable from '@components/TicketsTable';
+import TicketsTable from '@components/TicketsTable/TicketsTable';
 import SampleDashboardStats from '@components/SampleDashbordStats';
 import useRecentlyClosedTickets from '@hooks/useRecentlyClosedTickets';
 import useMyTickets from '@hooks/useMyTickets';
