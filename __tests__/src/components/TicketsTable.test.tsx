@@ -2,7 +2,7 @@ import '@testing-library/jest-dom';
 import {
   render, screen, renderHook, waitFor,
 } from '@testing-library/react';
-import TicketsTable from '@components/TicketsTable';
+import TicketsTable from '@components/TicketsTable/TicketsTable';
 import type { ServiceRequestSummary } from '@types';
 
 import useAllTickets from '@hooks/useAllTickets';
