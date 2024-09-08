@@ -279,19 +279,7 @@ export type Database = {
       }
     }
     Views: {
-      service_requests_with_translations: {
-        Row: {
-          client: string | null
-          created_at: string | null
-          description: string | null
-          pet: string | null
-          service_category: string | null
-          status: string | null
-          team_member: string | null
-          urgent: boolean | null
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
       [_ in never]: never
