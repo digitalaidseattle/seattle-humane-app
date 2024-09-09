@@ -1,27 +1,10 @@
-import { useEffect, useState } from 'react';
 import * as DataService from '@services/DataService';
-import { AppConstantType } from '@types';
-
-export type TeamMeberOption = Pick<AppConstantType, 'label' | 'value'>;
+import useSWR from 'swr';
 
 export default function useTeamMembers() {
-  const [options, setOptions] = useState<TeamMeberOption[]>([]);
+  const { data, isLoading, isValidating } = useSWR('dataservice/team_members', async () => DataService.getTeamMembers());
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const teamMembers = await DataService.getTeamMembers();
-      const newOptions: TeamMeberOption[] = [];
-      teamMembers.forEach((r) => {
-        if (typeof r === 'object') {
-          newOptions.push({
-            value: r.id,
-            label: r.email,
-          });
-        }
-      });
-      setOptions(newOptions);
-    };
-    fetchData();
-  }, []);
-  return options;
+  return {
+    data: data ?? [], isLoading, isValidating,
+  };
 }
