@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom';
 import {
-  render, screen, renderHook, waitFor,
+  render, screen, renderHook, waitFor, fireEvent,
 } from '@testing-library/react';
 import TicketsTable from '@components/TicketsTable';
 import type { ServiceRequestSummary } from '@types';
@@ -96,5 +96,93 @@ describe('TicketsTable', () => {
   it('renders Urgent on table if a case is Urgent', () => {
     render(<TicketsTable items={[]} />);
     expect(screen.getByText('Urgent')).toBeInTheDocument();
+  });
+
+  it('renders Urgent on table if a case is Urgent', () => {
+    render(<TicketsTable items={[]} />);
+    expect(screen.getByText('Urgent')).toBeInTheDocument();
+  });
+
+  it('should sort the table when column headers are clicked', () => {
+    const mockItemsSort: ServiceRequestSummary[] = [
+      {
+        id: '1',
+        pet: 'Dog',
+        urgent: true,
+        description: 'Annual checkup',
+        created_at: '2023-05-01T12:00:00Z',
+        team_member: { first_name: 'John', email: 'john@example.com' },
+        client: 'Client 1',
+        status: 'Open',
+        modified_at: '2023-05-01T12:00:00Z',
+      },
+      {
+        id: '2',
+        pet: 'Cat',
+        urgent: false,
+        description: 'Rabies shot',
+        created_at: '2023-05-02T12:00:00Z',
+        team_member: { first_name: 'Jane', email: 'jane@example.com' },
+        client: 'Client 2',
+        status: 'Open',
+        modified_at: '2023-05-02T12:00:00Z',
+      },
+      {
+        id: '3',
+        pet: 'Bird',
+        urgent: false,
+        description: 'Wing repair',
+        created_at: '2023-05-03T12:00:00Z',
+        team_member: { first_name: 'Bob', email: 'bob@example.com' },
+        client: 'Client 3',
+        status: 'Open',
+        modified_at: '2023-05-03T12:00:00Z',
+      },
+    ];
+
+    render(<TicketsTable items={mockItemsSort} />);
+
+    // Test sorting by Owner (pet field)
+    // const ownerHeader = screen.getByText('Owner');
+    // fireEvent.click(ownerHeader);
+
+    // const petRows = screen.getAllByRole('row');
+    // expect(petRows[1]).toHaveTextContent('Bird');
+    // expect(petRows[2]).toHaveTextContent('Cat');
+    // expect(petRows[3]).toHaveTextContent('Dog');
+
+    // Test sorting by Urgent
+    const urgentColumn = screen.getAllByText('Urgent');
+    fireEvent.click(urgentColumn[0]);
+
+    const urgentRows = screen.getAllByRole('row');
+    expect(urgentRows[1]).toHaveTextContent('Urgent');
+
+    // Test sorting by Category
+    const categoryHeader = screen.getByText('Category');
+    fireEvent.click(categoryHeader);
+
+    const categoryRows = screen.getAllByRole('row');
+    expect(categoryRows[1]).toHaveTextContent('Annual checkup');
+    expect(categoryRows[2]).toHaveTextContent('Rabies shot');
+    expect(categoryRows[3]).toHaveTextContent('Wing repair');
+
+    // Test sorting by Date
+    const dateHeader = screen.getByText('Date');
+    fireEvent.click(dateHeader);
+
+    const rows = screen.getAllByRole('row');
+    expect(rows[1]).toHaveTextContent('05/01/2023');
+    expect(rows[2]).toHaveTextContent('05/02/2023');
+    expect(rows[3]).toHaveTextContent('05/03/2023');
+
+    // Test sorting by Team member
+    const teamMemberHeader = screen.getByText('Team member');
+    fireEvent.click(teamMemberHeader);
+
+    const teamRows = screen.getAllByRole('row');
+    expect(teamRows[1]).toHaveTextContent('Bob');
+    expect(teamRows[2]).toHaveTextContent('Jane');
+    expect(teamRows[3]).toHaveTextContent('John');
   });
 });
