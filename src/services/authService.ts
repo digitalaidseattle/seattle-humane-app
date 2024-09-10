@@ -23,17 +23,6 @@ function getUser() {
   return supabaseClient.auth.getUser();
 }
 
-function signInWithGoogle() {
-  return supabaseClient.auth.signInWithOAuth(
-    {
-      provider: 'google',
-      options: {
-        redirectTo: window.location.origin,
-      },
-    },
-  );
-}
-
 function signInWithAzure() {
   return supabaseClient.auth.signInWithOAuth({
     provider: 'azure',
@@ -48,7 +37,6 @@ const authService = {
   signOut,
   hasUser,
   getUser,
-  signInWithGoogle,
   signInWithAzure,
 };
 

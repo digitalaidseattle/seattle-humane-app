@@ -28,7 +28,7 @@ The website is built using **Next.js**, a React-based framework for server-side 
 
 **Vercel** is used for deployment, providing a fast and scalable hosting environment for the website. Once a pull request is made, Vercel will automatically deploy a staged version of the website for final approval prior to deploying these changes to the public-facing website. Learn more about Vercel [here](https://vercel.com/docs).
 
-**Supabase** is used for Postgres database services and authentication with Google and Azure accounts via OAuth. 
+**Supabase** is used for Postgres database services and authentication with an Azure account via OAuth. 
 
 
 ## System Requirements

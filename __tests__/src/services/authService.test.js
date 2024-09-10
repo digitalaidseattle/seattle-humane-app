@@ -34,14 +34,6 @@ describe('AuthService', () => {
     expect(user).toEqual(mockUser)
   })
 
-  it('should sign in with Google', async () => {
-    const mockResponse = { user: { id: '1', email: 'test@test.com' }, session: {} }
-    supabaseClient.auth.signInWithOAuth.mockResolvedValueOnce(mockResponse)
-
-    const response = await authService.signInWithGoogle()
-    expect(response).toEqual(mockResponse)
-  })
-
   it('should sign in with Azure', async () => {
     const mockResponse = { user: { id: '1', email: 'test@test.com' }, session: {} }
     supabaseClient.auth.signInWithOAuth.mockResolvedValueOnce(mockResponse)
