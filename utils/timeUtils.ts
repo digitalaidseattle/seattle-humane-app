@@ -1,8 +1,8 @@
 export function getWeekStartDate():Date {
   const now = new Date();
-  const dayOfWeek = now.getUTCDay();
+  const dayOfWeek = now.getDay();
   const startOfWeek = new Date(now);
-  startOfWeek.setDate(now.getUTCDate() - dayOfWeek);
+  startOfWeek.setDate(now.getDate() - dayOfWeek);
   startOfWeek.setHours(0, 0, 0, 0);
   return startOfWeek;
 }
