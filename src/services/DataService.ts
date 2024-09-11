@@ -106,9 +106,9 @@ export async function getServiceRequestSummary(): Promise<ServiceRequestSummary[
     description,
     created_at,
     service_category,
-    clients(first_name),
-    pets(name),
-    team_members(first_name, email),
+    clients(first_name,last_name),
+    pets(name,species),
+    team_members(first_name,last_name, email),
     urgent,
     status,
     modified_at
@@ -119,21 +119,22 @@ export async function getServiceRequestSummary(): Promise<ServiceRequestSummary[
   const { data: constants, error: categoryError } = await supabaseClient
     .from('app_constants')
     .select('*')
-    .eq('type', 'category');
+    .in('type', ['species', 'category']);
   if (categoryError) throw new Error(categoryError.message);
-  const categoryMap = new Map(constants.map((constant) => ([constant.id, constant.label])));
+  const constantsMap = new Map(constants.map((constant) => ([constant.id, constant.label])));
 
   const summaries = data.map(({
     clients, pets, team_members, service_category, id, ...ticket
   }) => ({
     id,
-    client: clients.first_name,
-    pet: pets.name,
+    client: { first_name: clients.first_name, last_name: clients.last_name },
+    pet: { name: pets.name, species: constantsMap.get(pets.species) },
     team_member: {
       first_name: team_members.first_name,
+      last_name: team_members.last_name,
       email: team_members.email,
     },
-    category: categoryMap.get(service_category),
+    category: constantsMap.get(service_category),
     created_at: ticket.created_at,
     description: ticket.description,
     urgent: ticket.urgent,
