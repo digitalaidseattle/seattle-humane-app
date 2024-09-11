@@ -143,13 +143,13 @@ describe('TicketsTable', () => {
     render(<TicketsTable items={mockItemsSort} />);
 
     // Test sorting by Owner (pet field)
-    // const ownerHeader = screen.getByText('Owner');
-    // fireEvent.click(ownerHeader);
+    const ownerHeader = screen.getByText('Owner');
+    fireEvent.click(ownerHeader);
 
-    // const petRows = screen.getAllByRole('row');
-    // expect(petRows[1]).toHaveTextContent('Bird');
-    // expect(petRows[2]).toHaveTextContent('Cat');
-    // expect(petRows[3]).toHaveTextContent('Dog');
+    const petRows = screen.getAllByRole('row');
+    expect(petRows[1]).toHaveTextContent('Bird');
+    expect(petRows[2]).toHaveTextContent('Cat');
+    expect(petRows[3]).toHaveTextContent('Dog');
 
     // Test sorting by Urgent
     const urgentColumn = screen.getAllByText('Urgent');
@@ -184,5 +184,61 @@ describe('TicketsTable', () => {
     expect(teamRows[1]).toHaveTextContent('Bob');
     expect(teamRows[2]).toHaveTextContent('Jane');
     expect(teamRows[3]).toHaveTextContent('John');
+  });
+});
+
+describe('TicketsTable Sorting', () => {
+  const items = mockServiceRequestSummaries;
+
+  it('Testing Pet Sort', () => {
+    render(<TicketsTable items={items} />);
+    const ownerHeader = screen.getByText('Owner');
+    fireEvent.click(ownerHeader);
+
+    const petRows = screen.getAllByRole('row');
+    expect(petRows[1]).toHaveTextContent('Edith Ryan');
+    expect(petRows[2]).toHaveTextContent('Nichole Padberg');
+    expect(petRows[3]).toHaveTextContent('Mercedes');
+  });
+
+  it('Testing Urgent Sort', () => {
+    render(<TicketsTable items={items} />);
+    const urgentColumn = screen.getAllByText('Urgent');
+    fireEvent.click(urgentColumn[0]);
+
+    const urgentRows = screen.getAllByRole('row');
+    expect(urgentRows[1]).toHaveTextContent('Urgent');
+  });
+
+  it('Testing Category Sort', () => {
+    render(<TicketsTable items={items} />);
+    const categoryHeader = screen.getByText('Category');
+    fireEvent.click(categoryHeader);
+
+    const categoryRows = screen.getAllByRole('row');
+    expect(categoryRows[1]).toHaveTextContent('pet_fostering');
+    expect(categoryRows[2]).toHaveTextContent('pet_fostering');
+  });
+
+  it('Testing Date or created_at Sort', () => {
+    render(<TicketsTable items={items} />);
+    const dateHeader = screen.getByText('Date');
+    fireEvent.click(dateHeader);
+
+    const rows = screen.getAllByRole('row');
+    expect(rows[1]).toHaveTextContent('09/09/2024');
+    expect(rows[2]).toHaveTextContent('09/09/2024');
+    expect(rows[3]).toHaveTextContent('09/10/2024');
+  });
+
+  it('Testing Team Member Sort', () => {
+    render(<TicketsTable items={items} />);
+    const teamMemberHeader = screen.getByText('Team member');
+    fireEvent.click(teamMemberHeader);
+
+    const teamRows = screen.getAllByRole('row');
+    expect(teamRows[1]).toHaveTextContent('Dylan');
+    expect(teamRows[2]).toHaveTextContent('Fredy');
+    expect(teamRows[3]).toHaveTextContent('Herta');
   });
 });
