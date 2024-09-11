@@ -1,6 +1,7 @@
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { useRouter } from 'next/router';
+import { useState } from 'react';
 import type { ServiceRequestSummary } from '@types';
 
 export interface TicketsTableProps {
@@ -47,8 +48,8 @@ function UrgentView({ urgent }) {
 
 function TicketsTable({ items, loading }: TicketsTableProps) {
   const router = useRouter();
+  const [dateSortOrder, setDateSortOrder] = useState<1 | 0 | -1>(0); // 0: unsorted, 1: ascending, -1: descending
 
-  //* Sorting function for the urgent column
   const SortUrgent = (event) => {
     const { field, order } = event;
     return event.data.sort((a, b) => {
@@ -56,6 +57,17 @@ function TicketsTable({ items, loading }: TicketsTableProps) {
       if (order === 1) return a[field] ? -1 : 1;
       return a[field] ? 1 : -1;
     });
+  };
+
+  const sortCreatedAt = (event) => {
+    const { data, order } = event;
+    const sorted = [...data].sort((a, b) => {
+      const dateA = new Date(a.created_at).getTime();
+      const dateB = new Date(b.created_at).getTime();
+      return order === 1 ? dateA - dateB : dateB - dateA;
+    });
+    setDateSortOrder(order);
+    return sorted;
   };
 
   return (
@@ -88,9 +100,24 @@ function TicketsTable({ items, loading }: TicketsTableProps) {
       />
       <Column field="category" header="Category" className="font-bold" sortable />
       <Column field="description" header="Description" className="font-bold" />
-      <Column body={CreatedAtTemplate} header="Date" className="font-bold" sortable sortField="created_at" />
-      <Column field="team_member" body={TeamMemberView} header="Team member" className="font-bold" sortable sortField="team_member.first_name" />
+      <Column
+        body={CreatedAtTemplate}
+        header="Date"
+        className="font-bold"
+        sortable
+        sortField="created_at"
+        sortFunction={sortCreatedAt}
+      />
+      <Column
+        field="team_member"
+        body={TeamMemberView}
+        header="Team member"
+        className="font-bold"
+        sortable
+        sortField="team_member.first_name"
+      />
     </DataTable>
   );
+
 }
 export default TicketsTable;
