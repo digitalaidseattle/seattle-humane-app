@@ -25,9 +25,9 @@ export type ServiceRequestType = Tables<'service_requests'>;
 export type EditableServiceRequestType = Omit<ServiceRequestType, 'id' | 'created_at'>;
 
 export type ServiceRequestSummary = Pick<ServiceRequestType, 'id' | 'description' | 'created_at' | 'urgent' | 'status' | 'modified_at'> &
-{ client: ClientType['first_name'] } &
-{ pet: AnimalType['name'] } &
-{ team_member: Pick<TeamMemberType, 'first_name' | 'email'> };
+{ client: Pick<ClientType, 'first_name' | 'last_name'> } &
+{ pet: Pick<AnimalType, 'name' | 'species'> } &
+{ team_member: Pick<TeamMemberType, 'first_name' | 'last_name' | 'email'> };
 
 export type AppConstantType = Tables<'app_constants'>;
 
