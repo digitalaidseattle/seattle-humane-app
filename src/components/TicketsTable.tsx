@@ -1,7 +1,6 @@
 import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { useRouter } from 'next/router';
-import { useState } from 'react';
 import type { ServiceRequestSummary } from '@types';
 
 export interface TicketsTableProps {
@@ -48,7 +47,6 @@ function UrgentView({ urgent }) {
 
 function TicketsTable({ items, loading }: TicketsTableProps) {
   const router = useRouter();
-  const [dateSortOrder, setDateSortOrder] = useState<1 | 0 | -1>(0); // 0: unsorted, 1: ascending, -1: descending
 
   const SortUrgent = (event) => {
     const { field, order } = event;
@@ -66,7 +64,6 @@ function TicketsTable({ items, loading }: TicketsTableProps) {
       const dateB = new Date(b.created_at).getTime();
       return order === 1 ? dateA - dateB : dateB - dateA;
     });
-    setDateSortOrder(order);
     return sorted;
   };
 
@@ -118,6 +115,5 @@ function TicketsTable({ items, loading }: TicketsTableProps) {
       />
     </DataTable>
   );
-
 }
 export default TicketsTable;
