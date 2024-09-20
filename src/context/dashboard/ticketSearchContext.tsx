@@ -16,7 +16,7 @@ export function TicketSearchProvider({
   children,
 }: React.PropsWithChildren) {
   const [search, setSearch] = useState('');
-  const submitSearch = useCallback((newSearch: string) => setSearch(newSearch), []);
+  const submitSearch = useCallback((newSearch: string) => setSearch(newSearch), [setSearch]);
   return (
     <TicketSearchContext.Provider value={search}>
       <TicketSubmitSearchContext.Provider value={submitSearch}>

@@ -46,12 +46,14 @@ export default function SearchField() {
           className="p-button-success"
         />
         <PrimeReactInputText
+          aria-label="search"
           id="search"
           value={searchInput}
           placeholder="Search by name, email, category, team member..."
           onChange={(e) => setSearchInput(e.target.value)}
         />
         <Button
+          type="button"
           icon="pi pi-times"
           className="p-button-secondary"
           aria-label="clear search"
