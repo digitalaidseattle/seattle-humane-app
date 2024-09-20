@@ -152,17 +152,19 @@ export async function getServiceRequestSummary(ids?: string[]): Promise<ServiceR
   return summaries;
 }
 
-export async function searchServiceRequests(searchTerm: string) {
+export async function searchServiceRequests(searchQuery?: string) {
+  if (!searchQuery.trim()) return getServiceRequestSummary();
+
   /**
    * Default to "match all words" by concatenating with "&""
    * https://www.postgresql.org/docs/current/functions-textsearch.html
    */
-  const query = searchTerm.split(' ').filter((word) => word.trim().length > 0).join('&');
-
+  const fullTextSearchQuery = searchQuery.split(' ').filter((word) => word.trim().length > 0).join('&');
   const { data, error } = await supabaseClient
     .from('service_requests_search')
     .select('id')
-    .textSearch('search_field', query);
+    .textSearch('search_field', fullTextSearchQuery);
+
   if (error) throw new Error(`${error.message}`);
   return getServiceRequestSummary(data.map(({ id }) => id));
 }
