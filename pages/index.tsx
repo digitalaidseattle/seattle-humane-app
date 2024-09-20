@@ -8,7 +8,7 @@
 import React from 'react';
 import useOpenTickets from '@hooks/useOpenTickets';
 import TicketsTable from '@components/TicketsTable';
-import SampleDashboardStats from '@components/SampleDashbordStats';
+import DashboardStatCards from '@components/DashboardStatCards';
 import useRecentlyClosedTickets from '@hooks/useRecentlyClosedTickets';
 import useMyTickets from '@hooks/useMyTickets';
 
@@ -22,7 +22,7 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="grid">
-      <SampleDashboardStats />
+      <DashboardStatCards />
       <div className="col-12 xl:col-6">
         <div className="card">
           <h5>My Cases</h5>
