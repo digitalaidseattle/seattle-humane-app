@@ -20,6 +20,8 @@ import supabaseClient from '@utils/supabaseClient';
 import throwIfMissingRequiredFields from '@utils/throwIfMissingRequiredFields';
 import { getWeekStartDate } from '@utils/timeUtils';
 
+const SEARCH_RESULT_LIMIT = 100;
+
 export async function createClient(client: EditableClientType) {
   throwIfMissingRequiredFields('client', client);
   const { data: newClient, error } = await supabaseClient
@@ -97,8 +99,8 @@ export async function getTicketsThisWeek(): Promise<ServiceRequestType[]> {
   return data;
 }
 
-export async function getServiceRequestSummary(): Promise<ServiceRequestSummary[]> {
-  const { data, error } = await supabaseClient
+export async function getServiceRequestSummary(ids?: string[]): Promise<ServiceRequestSummary[]> {
+  let query = supabaseClient
     .from('service_requests')
 
     .select(`
@@ -114,8 +116,15 @@ export async function getServiceRequestSummary(): Promise<ServiceRequestSummary[
     modified_at
     `)
     .order('created_at', { ascending: false });
+  if (ids) {
+    query = query.in('id', ids.slice(undefined, SEARCH_RESULT_LIMIT));
+  }
+  const { data, error } = await query;
 
-  if (error) throw new Error(`${error.message}`);
+  if (error) {
+    console.log('ERROR', error.message, 'ids', ids);
+    throw new Error(`${error.message}`);
+  }
   const { data: constants, error: categoryError } = await supabaseClient
     .from('app_constants')
     .select('*')
@@ -141,6 +150,23 @@ export async function getServiceRequestSummary(): Promise<ServiceRequestSummary[
     modified_at: ticket.modified_at,
   }));
   return summaries;
+}
+
+export async function searchServiceRequests(searchQuery?: string) {
+  if (!searchQuery.trim()) return getServiceRequestSummary();
+
+  /**
+   * Default to "match all words" by concatenating with "&""
+   * https://www.postgresql.org/docs/current/functions-textsearch.html
+   */
+  const fullTextSearchQuery = searchQuery.split(' ').filter((word) => word.trim().length > 0).join('&');
+  const { data, error } = await supabaseClient
+    .from('service_requests_search')
+    .select('id')
+    .textSearch('search_field', fullTextSearchQuery);
+
+  if (error) throw new Error(`${error.message}`);
+  return getServiceRequestSummary(data.map(({ id }) => id));
 }
 
 export async function getClientByIdOrEmail<T extends keyof Pick<ClientType, 'id' | 'email'>>(
