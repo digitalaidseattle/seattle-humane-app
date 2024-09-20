@@ -28,6 +28,8 @@ export const getTicket = jest.fn((id) => mockTickets.find((t) => t.id === id));
 // eslint-disable-next-line max-len
 export const getServiceRequestSummary = jest.fn(async () => mockTickets.map((t) => testGetServiceRequestSummaryFromTicket(t)));
 // eslint-disable-next-line max-len
+export const searchServiceRequests = jest.fn(async () => mockTickets.map((t) => testGetServiceRequestSummaryFromTicket(t)));
+// eslint-disable-next-line max-len
 export const getTicketsThisWeek = jest.fn(() => mockTicketsThisWeek.map((t) => testGetServiceRequestSummaryFromTicket(t)));
 
 export const getAppConstants = jest.fn((type: AppConstants) => MockAppConstants[type]);
