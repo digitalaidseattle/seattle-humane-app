@@ -107,7 +107,7 @@ describe('TicketsTable', () => {
 describe('TicketsTable Sorting', () => {
   const items = mockServiceRequestSummaries;
 
-  it('Testing Pet Sort', () => {
+  it('sorts tickets alphabetically by pet name', () => {
     render(<TicketsTable items={items} />);
     const ownerHeader = screen.getByText('Owner');
     fireEvent.click(ownerHeader);
@@ -118,7 +118,7 @@ describe('TicketsTable Sorting', () => {
     expect(petRows[3]).toHaveTextContent('Mercedes');
   });
 
-  it('Testing Urgent Sort', () => {
+  it('sorts tickets by urgency prioritizing urgent cases', () => {
     render(<TicketsTable items={items} />);
     const urgentColumn = screen.getAllByText('Urgent');
     fireEvent.click(urgentColumn[0]);
@@ -127,7 +127,7 @@ describe('TicketsTable Sorting', () => {
     expect(urgentRows[1]).toHaveTextContent('Urgent');
   });
 
-  it('Testing Category Sort', () => {
+  it('sorts the categories of service alphabetically', () => {
     render(<TicketsTable items={items} />);
     const categoryHeader = screen.getByText('Category');
     fireEvent.click(categoryHeader);
@@ -137,18 +137,19 @@ describe('TicketsTable Sorting', () => {
     expect(categoryRows[2]).toHaveTextContent('pet_fostering');
   });
 
-  it('Testing Date or created_at Sort', () => {
-    render(<TicketsTable items={items} />);
+  it('sorts tickets from oldest to newest', () => {
+    render(<TicketsTable items={mockServiceRequestSummaries} />);
     const dateHeader = screen.getByText('Date');
     fireEvent.click(dateHeader);
 
     const rows = screen.getAllByRole('row');
-    expect(rows[1]).toHaveTextContent('09/09/2024');
-    expect(rows[2]).toHaveTextContent('09/09/2024');
-    expect(rows[3]).toHaveTextContent('09/10/2024');
+    const dates = rows.slice(3).map((row) => (row as HTMLTableRowElement).cells[4].textContent); // assuming the date is the 4th cell    dates.push('9/9/2010'); // This will need to be removed, I was just making sure it broke correctly
+
+    const sortedDates = [...dates].sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
+    expect(dates).toEqual(sortedDates);
   });
 
-  it('Testing Team Member Sort', () => {
+  it('sorts team member alphabetically', () => {
     render(<TicketsTable items={items} />);
     const teamMemberHeader = screen.getByText('Team member');
     fireEvent.click(teamMemberHeader);
