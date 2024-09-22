@@ -1,4 +1,6 @@
+import React, { useState, useEffect, useCallback } from 'react';
 import { Dialog } from 'primereact/dialog';
+import { Button } from 'primereact/button';
 import FormConfirmationButtons from '@components/FormConfirmationButtons';
 import {
   ClientInformationProvider,
@@ -10,8 +12,7 @@ import {
   ServiceInformationProvider,
 } from '@context/serviceRequest/serviceInformationContext';
 import useServiceRequestForm from '@hooks/useServiceRequestForm';
-import type { ServiceRequestType } from '@types';
-import { useState, useEffect } from 'react';
+import type { ServiceRequestType, PetInformationType } from '@types';
 import ClientInformationSection from '@components/serviceRequest/ClientInformationSection';
 import PetInformationSection from '@components/serviceRequest/PetInformationSection';
 import ServiceInformationSection from '@components/serviceRequest/ServiceInformationSection';
@@ -20,6 +21,8 @@ import { mutate } from 'swr';
 // TODO externalize to localization file
 export const serviceRequestLabels = {
   FormHeader: 'SPS Internal Form',
+  AddPet: 'Add Another Pet',
+  RemovePet: 'Remove Pet',
 };
 
 /** Props for the ServiceRequestDialog */
@@ -32,10 +35,6 @@ export interface ServiceRequestDialogProps {
   ticketId: ServiceRequestType['id']
 }
 
-/**
- *
- * @returns A dialog with a controlled form for creating a service request.
- */
 function ServiceRequestDialog({ visible, onClose, ticketId }: ServiceRequestDialogProps) {
   const {
     disabled, readOnly, clearForm, save, message, client, pet, ticket,
@@ -43,23 +42,39 @@ function ServiceRequestDialog({ visible, onClose, ticketId }: ServiceRequestDial
   } = useServiceRequestForm(ticketId);
 
   const [showDialog, setShowDialog] = useState(false);
+  const [pets, setPets] = useState<PetInformationType[]>([]);
 
   useEffect(() => {
     setShowDialog(visible);
   }, [visible]);
 
-  const hideDialog = () => {
-    clearForm();
-    onClose();
-  };
+  useEffect(() => {
+    if (pet) {
+      setPets([pet]);
+    }
+  }, [pet]);
 
-  const onSaveClicked = async () => {
+  const hideDialog = useCallback(() => {
+    clearForm();
+    setPets([]);
+    onClose();
+  }, [clearForm, onClose]);
+
+  const onSaveClicked = useCallback(async () => {
     const success = await save();
     if (success) {
-      mutate('dataservice/alltickets');
+      await mutate('dataservice/alltickets');
       hideDialog();
     }
-  };
+  }, [save, hideDialog]);
+
+  const addPet = useCallback(() => {
+    setPets((prevPets) => [...prevPets, { ...pet, id: `new-pet-${prevPets.length}` }]);
+  }, [pet]);
+
+  const removePet = useCallback((index: number) => {
+    setPets((prevPets) => prevPets.filter((_, i) => i !== index));
+  }, []);
 
   const dialogFooter = (
     <FormConfirmationButtons
@@ -93,9 +108,30 @@ function ServiceRequestDialog({ visible, onClose, ticketId }: ServiceRequestDial
           >
             <ClientInformationSection disabled={disabled} />
           </ClientInformationProvider>
-          <PetInformationProvider state={pet} dispatch={petInformationDispatch}>
-            <PetInformationSection disabled={disabled} />
-          </PetInformationProvider>
+          {pets.map((petInfo, index) => (
+            <div key={petInfo.id || index} className="relative mb-4">
+              <PetInformationProvider
+                state={petInfo}
+                dispatch={(action) => petInformationDispatch(action, index)}
+              >
+                <PetInformationSection disabled={disabled} />
+              </PetInformationProvider>
+              {pets.length > 1 && (
+                <Button
+                  icon="pi pi-times"
+                  onClick={() => removePet(index)}
+                  className="p-button-rounded p-button-danger p-button-text absolute top-0 right-0"
+                  aria-label={serviceRequestLabels.RemovePet}
+                />
+              )}
+            </div>
+          ))}
+          <Button
+            label={serviceRequestLabels.AddPet}
+            icon="pi pi-plus"
+            onClick={addPet}
+            className="p-button-text mt-2 mb-4"
+          />
           <ServiceInformationProvider
             state={ticket}
             dispatch={serviceInformationDispatch}
@@ -103,7 +139,6 @@ function ServiceRequestDialog({ visible, onClose, ticketId }: ServiceRequestDial
             <ServiceInformationSection disabled={disabled} />
           </ServiceInformationProvider>
         </div>
-
       </div>
     </Dialog>
   );
