@@ -99,6 +99,74 @@ export async function getTicketsThisWeek(): Promise<ServiceRequestType[]> {
   return data;
 }
 
+export async function getServiceRequestByEmail(email: string): Promise<(ServiceRequestSummary & {
+  client: {
+    firstName: string,
+    email: string
+  },
+  pets: Omit<AnimalType, 'client_id' | 'id'>,
+  category: string
+})[]> {
+  const query = supabaseClient
+    .from('service_requests')
+
+    .select(`
+    id,
+    description,
+    created_at,
+    service_category,
+    clients(first_name, email),
+    pets(name, species, weight, age),
+    team_members(first_name, email),
+    urgent,
+    status,
+    modified_at
+    `)
+    .order('created_at', { ascending: false });
+
+  const { data, error } = await query;
+
+  if (error) {
+    console.log('ERROR', error.message);
+    throw new Error(`${error.message}`);
+  }
+  const { data: constants, error: categoryError } = await supabaseClient
+    .from('app_constants')
+    .select('*')
+    .eq('type', 'category');
+  if (categoryError) throw new Error(categoryError.message);
+  const categoryMap = new Map(constants.map((constant) => ([constant.id, constant.label])));
+
+  const summaries = data
+    .filter(({ clients }) => clients.email === email)
+    .map(({
+      clients, pets, team_members, service_category, id, ...ticket
+    }) => ({
+      id,
+      client: {
+        firstName: clients.first_name,
+        email: clients.email,
+      },
+      pets: {
+        name: pets.name,
+        speices: pets.species,
+        weight: pets.weight,
+        age: pets.age,
+      },
+      team_member: {
+        first_name: team_members.first_name,
+        email: team_members.email,
+      },
+      category: categoryMap.get(service_category),
+      created_at: ticket.created_at,
+      description: ticket.description,
+      urgent: ticket.urgent,
+      status: ticket.status,
+      modified_at: ticket.modified_at,
+    }));
+  return summaries;
+}
+
 export async function getServiceRequestSummary(ids?: string[]): Promise<ServiceRequestSummary[]> {
   let query = supabaseClient
     .from('service_requests')
