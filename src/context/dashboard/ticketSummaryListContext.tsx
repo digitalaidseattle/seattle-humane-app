@@ -10,7 +10,7 @@ export const TicketSummaryListContext = createContext<ServiceRequestSummary[]>(n
 interface TicketSummaryListProviderProps extends React.PropsWithChildren {
   state: ServiceRequestSummary[],
 }
-
+// TODO: this seems unused, can we remove it?
 export function TicketSummaryListProvider({
   children, state,
 }: TicketSummaryListProviderProps) {
