@@ -180,7 +180,7 @@ export async function getPetByOwner(clientId: ClientType['id'], petName: AnimalT
 
 const appConstants: Map<AppConstants, AppConstantType[]> = new Map();
 
-export async function getAppConstants(type: AppConstants) {
+export async function getAppConstants(type: AppConstants): Promise<AppConstantType[]> {
   if (!appConstants.has(type)) {
     const { data: constants, error } = await supabaseClient
       .from('app_constants')
