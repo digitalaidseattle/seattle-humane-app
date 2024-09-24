@@ -94,13 +94,10 @@ describe('TicketsTable', () => {
   });
 
   it('renders Urgent on table if a case is Urgent', () => {
-    render(<TicketsTable items={[]} />);
-    expect(screen.getByText('Urgent')).toBeInTheDocument();
-  });
-
-  it('renders Urgent on table if a case is Urgent', () => {
-    render(<TicketsTable items={[]} />);
-    expect(screen.getByText('Urgent')).toBeInTheDocument();
+    const urgentItem = { ...items[0], urgent: true };
+    render(<TicketsTable items={[urgentItem]} />);
+    const urgentCell = screen.getByRole('cell', { name: 'Urgent' });
+    expect(urgentCell).toBeInTheDocument();
   });
 });
 
