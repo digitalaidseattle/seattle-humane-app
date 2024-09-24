@@ -78,6 +78,7 @@ export const testGetServiceRequestSummaryFromTicket = (t: ServiceRequestType) =>
   created_at: t.created_at,
   client: clientIdMap.get(t.client_id).first_name,
   pet: animalIdMap.get(t.pet_id).name,
+  category: t.service_category,
   team_member: {
     first_name: teamMemberIdMap.get(t.team_member_id).first_name,
     email: teamMemberIdMap.get(t.team_member_id).email,
