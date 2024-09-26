@@ -62,7 +62,7 @@ export function UrgentFilterTemplate(
   return (
     <TriStateCheckbox
       value={value}
-      onChange={(e) => filterApplyCallback(e.value)}
+      onChange={(e) => filterApplyCallback(e.target.value)}
     />
   );
 }
@@ -174,20 +174,6 @@ export function HeaderTemplate({
       />
       <OverlayPanel ref={op} showCloseIcon>
         <div className="flex justify-content-end align-items-center gap-2">
-          <div className="flex gap-2">
-            {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-            <label htmlFor="urgent_filter_control">Urgent</label>
-            <TriStateCheckbox
-              id="urgent_filter_control"
-              aria-label="Urgent"
-              value={filters.global_urgent.value}
-              onChange={(e) => {
-                const nFilters = { ...filters };
-                nFilters.global_urgent.value = e.value;
-                setFilters(nFilters);
-              }}
-            />
-          </div>
           {filters.global_species.filterOptions.map(
             (option) => (
               <div key={option} className="flex gap-2">
