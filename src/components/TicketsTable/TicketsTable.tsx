@@ -18,8 +18,6 @@ import {
   OwnerAndPetTemplate,
   TeamMemberBodyTemplate,
   TeamMemberFilterTemplate,
-  UrgentBodyTemplate,
-  UrgentFilterTemplate,
 } from './Templates';
 
 export interface TicketsTableProps {
@@ -53,12 +51,12 @@ function TicketsTable({ items, loading }: TicketsTableProps) {
   const { data: teamMemberOptions } = useTeamMembers();
   const [filteredItems, setFilteredItems] = useState(items);
   const defaultExternalFilters: TicketsTableFilters = {
+    global_urgent: { value: null },
     owner_and_pet: { value: '' },
     global_species: { value: [], filterOptions: speciesOptions.map((op) => op.label) },
   };
   const defaultFilters: DataTableFilterMeta = {
     global: { value: null, matchMode: FilterMatchMode.CONTAINS },
-    urgent: { value: null, matchMode: FilterMatchMode.EQUALS },
     category: { value: null, matchMode: FilterMatchMode.IN },
     'team_member.email': { value: null, matchMode: FilterMatchMode.IN },
     created_at: { value: null, matchMode: FilterMatchMode.CUSTOM },
@@ -78,6 +76,13 @@ function TicketsTable({ items, loading }: TicketsTableProps) {
     let filterValue;
 
     // external filtering
+    // urgent
+    filterValue = nExternalFilters.global_urgent.value;
+    if (filterValue !== null) {
+      nFilteredItems = nFilteredItems.filter((item) => item.urgent === filterValue);
+      filteredState = true;
+    }
+
     // client & pet
     filterValue = nExternalFilters.owner_and_pet.value.toLowerCase();
     if (filterValue !== '') {
@@ -171,7 +176,6 @@ function TicketsTable({ items, loading }: TicketsTableProps) {
         externalFilters,
       })}
     >
-      <Column header="Urgent" field="urgent" body={UrgentBodyTemplate} filter filterElement={UrgentFilterTemplate} dataType="boolean" />
       <Column header="Name" field="client.first_name" body={OwnerAndPetTemplate} filter showClearButton={false} showFilterMatchModes={false} filterElement={(options) => OwnerAndPetFilterTemplate({ options, handler: ownerAndPetFilterHandler })} filterPlaceholder="Name" />
       <Column header="Category" field="category" filter showFilterMatchModes={false} filterElement={(options) => CategoryFilterTemplate({ options, optionList: categoryOptions })} className="w-3" />
       <Column header="Date" field="created_at" body={CreatedAtBodyTemplate} filter filterElement={CreatedAtFilterTemplate} dataType="date" showFilterMatchModes={false} />

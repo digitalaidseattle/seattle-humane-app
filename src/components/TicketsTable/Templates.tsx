@@ -44,13 +44,19 @@ export function OwnerAndPetTemplate({
   id, client, pet, urgent,
 }: ServiceRequestSummary) {
   return (
-    <div key={id}>
-      <div className={`${urgent ? 'text-red-500' : 'text-gray-900'}`}>
-        {client.first_name}
-        {' '}
-        {client.last_name}
+    <div key={id} className={`${urgent ? 'text-red-500' : 'text-gray-900'} flex justify-content-start align-items-center gap-2`}>
+      <i
+        aria-label={`${urgent ? 'urgent' : ''}`}
+        className={`${urgent ? 'pi pi-exclamation-triangle' : ''}`}
+      />
+      <div>
+        <div>
+          {client.first_name}
+          {' '}
+          {client.last_name}
+        </div>
+        <div className={`font-normal ${urgent ? 'text-red-500' : 'text-gray-900'}`}>{pet.name}</div>
       </div>
-      <div className={`font-normal ${urgent ? 'text-red-500' : 'text-gray-900'}`}>{pet.name}</div>
     </div>
   );
 }
@@ -62,7 +68,7 @@ export function UrgentFilterTemplate(
   return (
     <TriStateCheckbox
       value={value}
-      onChange={(e) => filterApplyCallback(e.target.value)}
+      onChange={(e) => filterApplyCallback(e.value)}
     />
   );
 }
@@ -102,7 +108,7 @@ function ItemTemplate(field: string) { return <span className="capitalize">{fiel
 
 export function TeamMemberFilterTemplate(
   { options, optionList }:
-  { options: ColumnFilterElementTemplateOptions, optionList: TeamMemberType[] },
+    { options: ColumnFilterElementTemplateOptions, optionList: TeamMemberType[] },
 ) {
   const itemTemplate = (item: TeamMemberType) => ItemTemplate([item.first_name, item.last_name].join(' '));
   return (
@@ -121,7 +127,7 @@ export function TeamMemberFilterTemplate(
 
 export function CategoryFilterTemplate(
   { options, optionList }:
-  { options: ColumnFilterElementTemplateOptions, optionList: AppConstantType[] },
+    { options: ColumnFilterElementTemplateOptions, optionList: AppConstantType[] },
 ) {
   const itemTemplate = (item: AppConstantType) => ItemTemplate(item.label);
   return (
@@ -140,7 +146,7 @@ export function CategoryFilterTemplate(
 }
 
 export function OwnerAndPetFilterTemplate({ options, handler }:
-{ options: ColumnFilterElementTemplateOptions, handler: ChangeEventHandler }) {
+  { options: ColumnFilterElementTemplateOptions, handler: ChangeEventHandler }) {
   const nHandler = (e) => {
     handler(e);
     options.filterApplyCallback(e.target.value);
@@ -174,6 +180,20 @@ export function HeaderTemplate({
       />
       <OverlayPanel ref={op} showCloseIcon>
         <div className="flex justify-content-end align-items-center gap-2">
+          <div className="flex gap-2">
+            {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+            <label htmlFor="urgent_filter_control">Urgent</label>
+            <TriStateCheckbox
+              id="urgent_filter_control"
+              aria-label="Urgent"
+              value={filters.global_urgent.value}
+              onChange={(e) => {
+                const nFilters = { ...filters };
+                nFilters.global_urgent.value = e.value;
+                setFilters(nFilters);
+              }}
+            />
+          </div>
           {filters.global_species.filterOptions.map(
             (option) => (
               <div key={option} className="flex gap-2">
