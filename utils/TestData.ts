@@ -72,20 +72,33 @@ mockPets.forEach((pet) => animalIdMap.set(pet.id, pet));
 const teamMemberIdMap = new Map<string, TeamMemberType>();
 mockTeamMembers.forEach((teamMember) => teamMemberIdMap.set(teamMember.id, teamMember));
 
-export const testGetServiceRequestSummaryFromTicket = (t: ServiceRequestType) => ({
-  id: t.id,
-  description: t.description,
-  created_at: t.created_at,
-  client: clientIdMap.get(t.client_id).first_name,
-  pet: animalIdMap.get(t.pet_id).name,
-  team_member: {
-    first_name: teamMemberIdMap.get(t.team_member_id).first_name,
-    email: teamMemberIdMap.get(t.team_member_id).email,
-  },
-  urgent: t.urgent,
-  status: t.status,
-  modified_at: t.modified_at,
-}) as ServiceRequestSummary;
+export const testGetServiceRequestSummaryFromTicket: (t: ServiceRequestType) => ServiceRequestSummary = (t: ServiceRequestType) => {
+  const client = clientIdMap.get(t.client_id);
+  const pet = animalIdMap.get(t.pet_id);
+  const team_member = teamMemberIdMap.get(t.team_member_id);
+  let request: ServiceRequestSummary = {
+    id: t.id,
+    description: t.description,
+    created_at: t.created_at,
+    client: {
+      first_name: client.first_name,
+      last_name: client.last_name
+    },
+    pet: {
+      name: pet.name,
+      species: pet.species
+    },
+    team_member: {
+      first_name: team_member.first_name,
+      last_name: team_member.last_name,
+      email: team_member.email
+    },
+    urgent: t.urgent,
+    status: t.status,
+    modified_at: t.modified_at,
+  }
+  return request;
+};
 
 export const mockTicketsThisWeek = mockTickets.filter((t) => {
   const ticketDate = new Date(t.created_at);
