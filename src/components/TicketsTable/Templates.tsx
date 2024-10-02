@@ -108,7 +108,7 @@ function ItemTemplate(field: string) { return <span className="capitalize">{fiel
 
 export function TeamMemberFilterTemplate(
   { options, optionList }:
-    { options: ColumnFilterElementTemplateOptions, optionList: TeamMemberType[] },
+  { options: ColumnFilterElementTemplateOptions, optionList: TeamMemberType[] },
 ) {
   const itemTemplate = (item: TeamMemberType) => ItemTemplate([item.first_name, item.last_name].join(' '));
   return (
@@ -127,7 +127,7 @@ export function TeamMemberFilterTemplate(
 
 export function CategoryFilterTemplate(
   { options, optionList }:
-    { options: ColumnFilterElementTemplateOptions, optionList: AppConstantType[] },
+  { options: ColumnFilterElementTemplateOptions, optionList: AppConstantType[] },
 ) {
   const itemTemplate = (item: AppConstantType) => ItemTemplate(item.label);
   return (
@@ -146,7 +146,7 @@ export function CategoryFilterTemplate(
 }
 
 export function OwnerAndPetFilterTemplate({ options, handler }:
-  { options: ColumnFilterElementTemplateOptions, handler: ChangeEventHandler }) {
+{ options: ColumnFilterElementTemplateOptions, handler: ChangeEventHandler }) {
   const nHandler = (e) => {
     handler(e);
     options.filterApplyCallback(e.target.value);

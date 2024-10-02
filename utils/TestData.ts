@@ -72,7 +72,7 @@ mockPets.forEach((pet) => animalIdMap.set(pet.id, pet));
 const teamMemberIdMap = new Map<string, TeamMemberType>();
 mockTeamMembers.forEach((teamMember) => teamMemberIdMap.set(teamMember.id, teamMember));
 
-export const testGetServiceRequestSummaryFromTicket: (t: ServiceRequestType) => ServiceRequestSummary = (t: ServiceRequestType) => {
+export const testGetServiceRequestSummaryFromTicket = (t: ServiceRequestType) => {
   const client = clientIdMap.get(t.client_id);
   const pet = animalIdMap.get(t.pet_id);
   const team_member = teamMemberIdMap.get(t.team_member_id);
