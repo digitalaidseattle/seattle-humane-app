@@ -29,12 +29,12 @@ describe('TicketTable Headers', () => {
     await waitFor(() => {
       // Grabs Elements
       const dateHeader = screen.getAllByText('Date');
-      const descriptionHeader = screen.getAllByText('Description');
-      const clientHeader = screen.getAllByText('Owner');
+      const categoryHeader = screen.getAllByText('Category');
+      const clientHeader = screen.getAllByText('Name');
       const teamMemberHeader = screen.getAllByText('Team member');
 
       expect(dateHeader[0]).toBeInTheDocument();
-      expect(descriptionHeader[0]).toBeInTheDocument();
+      expect(categoryHeader[0]).toBeInTheDocument();
       expect(clientHeader[0]).toBeInTheDocument();
       expect(teamMemberHeader[0]).toBeInTheDocument();
     });
@@ -49,25 +49,28 @@ describe('TicketsTable', () => {
   const row2 = items[0];
   it('renders table headers correctly', () => {
     render(<TicketsTable items={items} />);
-    expect(screen.getByText('Owner')).toBeInTheDocument();
+    expect(screen.getByText('Name')).toBeInTheDocument();
     expect(screen.getByText('Category')).toBeInTheDocument();
-    expect(screen.getByText('Description')).toBeInTheDocument();
     expect(screen.getByText('Date')).toBeInTheDocument();
     expect(screen.getByText('Team member')).toBeInTheDocument();
   });
 
   it('renders owner and pet names correctly', () => {
-    render(<TicketsTable items={items} />);
-    expect(screen.getByText(row.pet)).toBeInTheDocument();
-    expect(screen.getByText(row.client)).toBeInTheDocument();
-    expect(screen.getByText(row2.pet)).toBeInTheDocument();
-    expect(screen.getByText(row2.client)).toBeInTheDocument();
+    let customRow = [{
+      ...items[0],
+      pet: { name: 'bobby', species: 'dog' },
+      client: { first_name: 'richard', last_name: 'richardson' },
+    }];
+    render(<TicketsTable items={customRow} />);
+    const petNameDiv = screen.getByLabelText('pet-name');
+    expect(petNameDiv).toBeInTheDocument();
+    expect(petNameDiv).toHaveTextContent('bobby');
+    expect(screen.getByText('richard richardson')).toBeInTheDocument();
   });
 
-  it('renders description correctly', () => {
-    render(<TicketsTable items={items} />);
-    expect(screen.getByText(row.description)).toBeInTheDocument();
-    expect(screen.getByText(row2.description)).toBeInTheDocument();
+  it('renders category correctly', () => {
+    render(<TicketsTable items={[{ ...items[0], category: 'vaccination' }]} />);
+    expect(screen.getByText('vaccination')).toBeInTheDocument();
   });
 
   it('renders created_at date correctly', () => {
@@ -93,8 +96,10 @@ describe('TicketsTable', () => {
     expect(screen.getByText('No data found.')).toBeInTheDocument();
   });
 
-  it('renders Urgent on table if a case is Urgent', () => {
-    render(<TicketsTable items={[]} />);
-    expect(screen.getByText('Urgent')).toBeInTheDocument();
+  it('renders urgent tickets correctly', () => {
+    render(<TicketsTable items={[{ ...items[0], urgent: true }]} />);
+    const urgentIcon = screen.getByLabelText('urgent');
+    expect(urgentIcon).toBeInTheDocument();
+    expect(urgentIcon).toHaveClass('pi pi-exclamation-triangle');
   });
 });

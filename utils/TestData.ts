@@ -78,8 +78,8 @@ export const testGetServiceRequestSummaryFromTicket = (t: ServiceRequestType) =>
   const team_member = teamMemberIdMap.get(t.team_member_id);
   let request: ServiceRequestSummary = {
     id: t.id,
-    description: t.description,
     created_at: t.created_at,
+    category: t.service_category,
     client: {
       first_name: client.first_name,
       last_name: client.last_name

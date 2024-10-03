@@ -50,12 +50,12 @@ export function OwnerAndPetTemplate({
         className={`${urgent ? 'pi pi-exclamation-triangle' : ''}`}
       />
       <div>
-        <div>
+        <div aria-label='client-name'>
           {client.first_name}
           {' '}
           {client.last_name}
         </div>
-        <div className={`font-normal ${urgent ? 'text-red-500' : 'text-gray-900'}`}>{pet.name}</div>
+        <div className={`font-normal ${urgent ? 'text-red-500' : 'text-gray-900'}`} aria-label='pet-name'>{pet.name}</div>
       </div>
     </div>
   );

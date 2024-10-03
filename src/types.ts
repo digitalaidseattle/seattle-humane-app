@@ -24,7 +24,8 @@ export type ServiceRequestType = Tables<'service_requests'>;
 
 export type EditableServiceRequestType = Omit<ServiceRequestType, 'id' | 'created_at'>;
 
-export type ServiceRequestSummary = Pick<ServiceRequestType, 'id' | 'description' | 'created_at' | 'urgent' | 'status' | 'modified_at'> &
+export type ServiceRequestSummary = Pick<ServiceRequestType, 'id' | 'created_at' | 'urgent' | 'status' | 'modified_at'> &
+{ category: ServiceRequestType['service_category'] } &
 { client: Pick<ClientType, 'first_name' | 'last_name'> } &
 { pet: Pick<AnimalType, 'name' | 'species'> } &
 { team_member: Pick<TeamMemberType, 'first_name' | 'last_name' | 'email'> };
