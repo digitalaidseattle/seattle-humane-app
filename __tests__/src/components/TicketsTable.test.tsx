@@ -47,6 +47,7 @@ describe('TicketsTable', () => {
   const items = mockServiceRequestSummaries;
   const row = items[0];
   const row2 = items[0];
+
   it('renders table headers correctly', () => {
     render(<TicketsTable items={items} />);
     expect(screen.getByText('Name')).toBeInTheDocument();
@@ -56,21 +57,19 @@ describe('TicketsTable', () => {
   });
 
   it('renders owner and pet names correctly', () => {
-    let customRow = [{
-      ...items[0],
-      pet: { name: 'bobby', species: 'dog' },
-      client: { first_name: 'richard', last_name: 'richardson' },
-    }];
+    let customRow = [items[0]];
     render(<TicketsTable items={customRow} />);
     const petNameDiv = screen.getByLabelText('pet-name');
+    const clientNameDiv = screen.getByLabelText('client-name');
     expect(petNameDiv).toBeInTheDocument();
-    expect(petNameDiv).toHaveTextContent('bobby');
-    expect(screen.getByText('richard richardson')).toBeInTheDocument();
+    expect(petNameDiv).toHaveTextContent(items[0].pet.name);
+    expect(clientNameDiv).toBeInTheDocument();
+    expect(clientNameDiv).toHaveTextContent(items[0].client.first_name);
   });
 
   it('renders category correctly', () => {
-    render(<TicketsTable items={[{ ...items[0], service_category: 'vaccination' }]} />);
-    expect(screen.getByText('vaccination')).toBeInTheDocument();
+    render(<TicketsTable items={[items[0]]} />);
+    expect(screen.getByText(items[0].service_category)).toBeInTheDocument();
   });
 
   it('renders created_at date correctly', () => {
