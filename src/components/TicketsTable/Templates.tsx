@@ -1,3 +1,4 @@
+import useAppConstants from '@hooks/useAppConstants';
 import { AppConstantType, ServiceRequestSummary, TeamMemberType } from '@types';
 import { Button } from 'primereact/button';
 import { Calendar } from 'primereact/calendar';
@@ -8,7 +9,8 @@ import { MultiSelect, MultiSelectChangeEvent } from 'primereact/multiselect';
 import { OverlayPanel } from 'primereact/overlaypanel';
 import { SelectButton } from 'primereact/selectbutton';
 import { TriStateCheckbox } from 'primereact/tristatecheckbox';
-import { ChangeEvent, ChangeEventHandler, useRef } from 'react';
+import { ChangeEvent, useRef } from 'react';
+import { AppConstants } from 'src/constants';
 
 /* ---------------------- BODY TEMPLATES ---------------------- */
 // TODO: consolidate these into one dynamic template
@@ -88,7 +90,7 @@ function ItemTemplate(field: string) { return <span className="capitalize">{fiel
 
 export function TeamMemberFilterTemplate(
   { options, optionList }:
-    { options: ColumnFilterElementTemplateOptions, optionList: TeamMemberType[] },
+  { options: ColumnFilterElementTemplateOptions, optionList: TeamMemberType[] },
 ) {
   const itemTemplate = (item: TeamMemberType) => ItemTemplate([item.first_name, item.last_name].join(' '));
   return (
@@ -107,7 +109,7 @@ export function TeamMemberFilterTemplate(
 
 export function CategoryFilterTemplate(
   { options, optionList }:
-    { options: ColumnFilterElementTemplateOptions, optionList: AppConstantType[] },
+  { options: ColumnFilterElementTemplateOptions, optionList: AppConstantType[] },
 ) {
   const itemTemplate = (item: AppConstantType) => ItemTemplate(item.label);
   return (
@@ -126,70 +128,71 @@ export function CategoryFilterTemplate(
 }
 
 export function OwnerAndPetFilterTemplate({ options, externalFilterHandler }:
-  { options: ColumnFilterElementTemplateOptions, externalFilterHandler: (e: ChangeEvent, options: ColumnFilterElementTemplateOptions['filterApplyCallback']) => void }) {
-
+{ options: ColumnFilterElementTemplateOptions, externalFilterHandler: (e: ChangeEvent, options: ColumnFilterElementTemplateOptions['filterApplyCallback']) => void }) {
   return (
     <InputText
       name="name search"
       value={options.value}
-      onChange={e => externalFilterHandler(e, options.filterApplyCallback)}
+      onChange={(e) => externalFilterHandler(e, options.filterApplyCallback)}
       placeholder="Name"
     />
   );
 }
 
 export function HeaderTemplate({
-  resetHandler, filtersActive, filters, setFilters,
+  resetHandler, areFiltersActive, filters, setFilters,
 }) {
   const op = useRef<OverlayPanel>(null);
+  const {
+    data: speciesOptions,
+    isLoading: speciesListLoading,
+  } = useAppConstants(AppConstants.Species);
   return (
     <div className="flex justify-content-between align-items-center">
-      <Button className="flex gap-2" onClick={resetHandler} outlined={!filtersActive}>
-        <i className={`pi pi-filter${filtersActive ? '-slash' : ''}`} />
+      <Button className="flex gap-2" onClick={resetHandler} outlined={!areFiltersActive}>
+        <i className={`pi pi-filter${areFiltersActive ? '-slash' : ''}`} />
         {' '}
         Clear
       </Button>
       <Button
         onClick={(e) => op.current?.toggle(e)}
-        outlined={!filtersActive}
+        outlined={!areFiltersActive}
         icon="pi pi-filter"
         aria-label="global filter menu"
       />
-      <OverlayPanel ref={op} showCloseIcon>
+      <OverlayPanel aria-label="global filter menu overlay" ref={op} showCloseIcon>
         <div className="flex justify-content-end align-items-center gap-2">
           <div className="flex gap-2">
             {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
-            <label htmlFor="urgent_filter_control">Urgent</label>
+            <label>Urgent</label>
             <TriStateCheckbox
               id="urgent_filter_control"
               aria-label="Urgent"
-              value={filters.global_urgent.value}
+              value={filters.global_urgent}
               onChange={(e) => {
                 const nFilters = { ...filters };
-                nFilters.global_urgent.value = e.value;
+                nFilters.global_urgent = e.value;
                 setFilters(nFilters);
               }}
             />
           </div>
-          {filters.global_species.filterOptions.map(
+          {!speciesListLoading && speciesOptions.map(
             (option) => (
-              <div key={option} className="flex gap-2">
-                <label
-                  htmlFor={`${option}_filter_control`}
-                  className="capitalize"
-                >
-                  {option}
+              <div key={option.label} className="flex gap-2">
+                {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
+                <label className="capitalize">
+                  {option.label}
                 </label>
                 <Checkbox
-                  id={`${option}_filter_control`}
-                  checked={filters.global_species.value.includes(option)}
-                  value={option}
+                  aria-label={option.label}
+                  checked={filters.global_species.includes(option.label)}
+                  value={option.label}
                   onChange={(e) => {
                     const nFilters = { ...filters };
-                    let { value } = nFilters.global_species;
-                    if (e.target.checked) value = [...value, e.target.value];
-                    else value = value.filter((item) => item !== e.target.value);
-                    nFilters.global_species.value = value;
+                    let speciesFilter = nFilters.global_species;
+                    if (e.target.checked) speciesFilter = [...speciesFilter, e.target.value];
+                    else speciesFilter = speciesFilter.filter((item) => item !== e.target.value);
+                    nFilters.global_species = speciesFilter;
                     setFilters(nFilters);
                   }}
                 />
