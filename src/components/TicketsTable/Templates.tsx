@@ -1,3 +1,4 @@
+import useAppConstants from '@hooks/useAppConstants';
 import { AppConstantType, ServiceRequestSummary, TeamMemberType } from '@types';
 import { Button } from 'primereact/button';
 import { Calendar } from 'primereact/calendar';
@@ -9,6 +10,7 @@ import { OverlayPanel } from 'primereact/overlaypanel';
 import { SelectButton } from 'primereact/selectbutton';
 import { TriStateCheckbox } from 'primereact/tristatecheckbox';
 import { ChangeEvent, ChangeEventHandler, useRef } from 'react';
+import { AppConstants } from 'src/constants';
 
 /* ---------------------- BODY TEMPLATES ---------------------- */
 // TODO: consolidate these into one dynamic template
@@ -139,23 +141,27 @@ export function OwnerAndPetFilterTemplate({ options, externalFilterHandler }:
 }
 
 export function HeaderTemplate({
-  resetHandler, filtersActive, filters, setFilters,
+  resetHandler, areFiltersActive, filters, setFilters,
 }) {
   const op = useRef<OverlayPanel>(null);
+  const {
+    data: speciesOptions,
+    isLoading: speciesListLoading,
+  } = useAppConstants(AppConstants.Species);
   return (
     <div className="flex justify-content-between align-items-center">
-      <Button className="flex gap-2" onClick={resetHandler} outlined={!filtersActive}>
-        <i className={`pi pi-filter${filtersActive ? '-slash' : ''}`} />
+      <Button className="flex gap-2" onClick={resetHandler} outlined={!areFiltersActive}>
+        <i className={`pi pi-filter${areFiltersActive ? '-slash' : ''}`} />
         {' '}
         Clear
       </Button>
       <Button
         onClick={(e) => op.current?.toggle(e)}
-        outlined={!filtersActive}
+        outlined={!areFiltersActive}
         icon="pi pi-filter"
         aria-label="global filter menu"
       />
-      <OverlayPanel ref={op} showCloseIcon>
+      <OverlayPanel aria-label="global filter menu overlay" ref={op} showCloseIcon>
         <div className="flex justify-content-end align-items-center gap-2">
           <div className="flex gap-2">
             {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
@@ -163,33 +169,32 @@ export function HeaderTemplate({
             <TriStateCheckbox
               id="urgent_filter_control"
               aria-label="Urgent"
-              value={filters.global_urgent.value}
+              value={filters.global_urgent}
               onChange={(e) => {
                 const nFilters = { ...filters };
-                nFilters.global_urgent.value = e.value;
+                nFilters.global_urgent = e.value;
                 setFilters(nFilters);
               }}
             />
           </div>
-          {filters.global_species.filterOptions.map(
+          {speciesOptions.map(
             (option) => (
-              <div key={option} className="flex gap-2">
+              <div key={option.label} className="flex gap-2">
                 <label
-                  htmlFor={`${option}_filter_control`}
                   className="capitalize"
                 >
-                  {option}
+                  {option.label}
                 </label>
                 <Checkbox
-                  id={`${option}_filter_control`}
-                  checked={filters.global_species.value.includes(option)}
-                  value={option}
+                  aria-label={option.label}
+                  checked={filters.global_species.includes(option.label)}
+                  value={option.label}
                   onChange={(e) => {
                     const nFilters = { ...filters };
-                    let { value } = nFilters.global_species;
-                    if (e.target.checked) value = [...value, e.target.value];
-                    else value = value.filter((item) => item !== e.target.value);
-                    nFilters.global_species.value = value;
+                    let speciesFilter = nFilters.global_species;
+                    if (e.target.checked) speciesFilter = [...speciesFilter, e.target.value];
+                    else speciesFilter = speciesFilter.filter((item) => item !== e.target.value);
+                    nFilters.global_species = speciesFilter;
                     setFilters(nFilters);
                   }}
                 />
