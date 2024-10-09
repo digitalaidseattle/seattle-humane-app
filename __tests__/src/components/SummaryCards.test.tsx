@@ -1,7 +1,7 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 import '@testing-library/jest-dom';
-import SampleDashboardStats from '@components/SampleDashbordStats';
+import SummaryCards from '@components/SummaryCards';
 import useMyTickets from '@hooks/useMyTickets';
 import useTicketsThisWeek from '@hooks/useTicketsThisWeek';
 
@@ -13,7 +13,7 @@ describe('SampleDashboardStats Component', () => {
     (useMyTickets as jest.Mock).mockReturnValue({ data: [{}, {}, {}] });
     (useTicketsThisWeek as jest.Mock).mockReturnValue([]);
 
-    const { getByText } = render(<SampleDashboardStats />);
+    const { getByText } = render(<SummaryCards />);
     expect(getByText('3')).toBeInTheDocument();
   });
 
@@ -21,7 +21,7 @@ describe('SampleDashboardStats Component', () => {
     (useMyTickets as jest.Mock).mockReturnValue({ data: [] });
     (useTicketsThisWeek as jest.Mock).mockReturnValue([{}, {}, {}, {}]);
 
-    const { getByText } = render(<SampleDashboardStats />);
+    const { getByText } = render(<SummaryCards />);
     expect(getByText('4')).toBeInTheDocument();
   });
 
@@ -29,14 +29,14 @@ describe('SampleDashboardStats Component', () => {
     (useMyTickets as jest.Mock).mockReturnValue({ data: [] });
     (useTicketsThisWeek as jest.Mock).mockReturnValue([{}]);
 
-    const { getByText } = render(<SampleDashboardStats />);
+    const { getByText } = render(<SummaryCards />);
     expect(getByText('0')).toBeInTheDocument();
   });
   it('test_handle_empty_tickets_this_week_data', () => {
     (useMyTickets as jest.Mock).mockReturnValue({ data: [{}] });
     (useTicketsThisWeek as jest.Mock).mockReturnValue([]);
 
-    const { getByText } = render(<SampleDashboardStats />);
+    const { getByText } = render(<SummaryCards />);
     expect(getByText('0')).toBeInTheDocument();
   });
 });
