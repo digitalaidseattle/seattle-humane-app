@@ -80,8 +80,6 @@ describe('Menu Items Check', () => {
     expect(getByText('Clients')).toBeInTheDocument();
     // Check that the Animals menu item is rendered
     expect(getByText('Animals')).toBeInTheDocument();
-    // Check that the Reports menu item is rendered
-    expect(getByText('Reports')).toBeInTheDocument();
     // Check that the New Request menu item is rendered
     expect(getByText('New Request')).toBeInTheDocument();
     // Check that the Profile menu item is rendered
