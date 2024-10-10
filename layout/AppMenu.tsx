@@ -48,7 +48,6 @@ function AppMenu() {
         to: '/animals',
         class: 'animals-icon',
       },
-      { label: 'Reports', icon: 'pi pi-fw pi-book', to: '/reports' },
       {
         label: 'New Request',
         iconSrc: `${contextPath}/images/pawClipboard.svg`,
