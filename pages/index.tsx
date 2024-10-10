@@ -7,8 +7,8 @@
  */
 import React from 'react';
 import useOpenTickets from '@hooks/useOpenTickets';
-import TicketsTable from '@components/TicketsTable';
-import SampleDashboardStats from '@components/SampleDashbordStats';
+import TicketsTable from '@components/TicketsTable/TicketsTable';
+import SummaryCards from '@components/SummaryCards';
 import useRecentlyClosedTickets from '@hooks/useRecentlyClosedTickets';
 import useMyTickets from '@hooks/useMyTickets';
 
@@ -22,19 +22,19 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="grid">
-      <SampleDashboardStats />
+      <SummaryCards />
       <div className="col-12 xl:col-6">
         <div className="card">
           <h5>My Cases</h5>
           <TicketsTable
-            items={myTickets}
+            items={loadingMyTickets ? [] : myTickets}
             loading={loadingMyTickets}
           />
         </div>
         <div className="card">
           <h5>Recently closed cases</h5>
           <TicketsTable
-            items={recentlyClosedTickets}
+            items={loadingRecentlyClosedTickets ? [] : recentlyClosedTickets}
             loading={loadingRecentlyClosedTickets}
           />
         </div>
@@ -44,7 +44,7 @@ const Dashboard: React.FC = () => {
         <div className="card">
           <h5>All open cases</h5>
           <TicketsTable
-            items={openTickets}
+            items={loadingOpenTickets ? [] : openTickets}
             loading={loadingOpenTickets}
           />
         </div>

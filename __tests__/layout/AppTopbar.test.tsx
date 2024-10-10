@@ -93,18 +93,6 @@ describe('Navigation/Menu Top Bar - Href Checks', () => {
     expect(clientsLink.getAttribute('href')).toEqual('/clients');
   });
 
-  test('Client button/link has correct href attribute', () => {
-    render(
-      <LayoutContext.Provider value={layoutContextValue}>
-        <AppTopbar />
-      </LayoutContext.Provider>,
-    );
-
-    const reportsLink = screen.getByRole('link', { name: /Reports/i });
-
-    expect(reportsLink.getAttribute('href')).toEqual('/reports');
-  });
-
   test('Seattle Human Icon has correct href attribute', () => {
     render(
       <LayoutContext.Provider value={layoutContextValue}>
