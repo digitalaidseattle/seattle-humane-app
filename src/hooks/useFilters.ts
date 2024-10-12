@@ -69,8 +69,8 @@ export default function useFilters(items: ServiceRequestSummary[]) {
 
 export function filterByCreatedAt(value, filter) {
   if (!filter || !filter.filterDate) return true;
-  const filterDate = new Date(filter.filterDate);
-  const date = new Date(value);
+  const filterDate = Date.parse(filter.filterDate);
+  const date = Date.parse(value);
   const { sign } = filter;
   if (sign === '>') return date >= filterDate;
   if (sign === '<') return date <= filterDate;
