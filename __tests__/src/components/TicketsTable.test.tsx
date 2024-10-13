@@ -1,18 +1,13 @@
 import '@testing-library/jest-dom';
-import {
-  render, screen, renderHook, waitFor, within,
-  getByTestId,
-  fireEvent, act
-} from '@testing-library/react';
+import { render, screen, fireEvent, prettyDOM, renderHook, waitFor, act } from '@testing-library/react';
 import TicketsTable from '@components/TicketsTable/TicketsTable';
 import type { ServiceRequestSummary } from '@types';
-import useAllTickets from '@hooks/useAllTickets';
-import { mockServiceRequestSummaries, mockTeamMember1, mockTeamMember2 } from '@utils/TestData';
-import { HeaderTemplate } from '@components/TicketsTable/Templates';
-import { useState } from 'react';
+import { mockServiceRequestSummaries } from '@utils/TestData';
 import useAppConstants from '@hooks/useAppConstants';
 import { MockAppConstants } from '@hooks/__mocks__/useAppConstants';
-import { AppConstants } from 'src/constants';
+import userEvent from '@testing-library/user-event';
+import useFilters, { defaultExternalFilters } from '@hooks/useFilters';
+import React from 'react';
 
 jest.mock('@services/DataService');
 
@@ -43,40 +38,10 @@ describe('TicketsTable', () => {
   const items = mockServiceRequestSummaries;
   const row = items[0];
   const row2 = items[0];
-  const exampleCustomRow = {
-    id: "19f34b65-a49f-4e0f-aa80-5c93511a0bea",
-    created_at: "2024-10-06T04:50:38.388Z",
-    service_category: "pet_fostering",
-    client: {
-      first_name: "Terrill",
-      last_name: "Bosco",
-    },
-    pet: {
-      name: "Nichole Padberg",
-      species: "cat",
-    },
-    team_member: {
-      first_name: "Lonny",
-      last_name: "Kiehn",
-      email: "Aron.Rath@gmail.com",
-    },
-    urgent: false,
-    status: "open-id",
-    modified_at: "2024-10-06T08:46:46.532Z",
-  };
-  const Labels = {
-    globalFilterOverlay: 'global filter menu overlay',
-    globalFilterMenuButton: 'global filter menu',
-  }
   function loadTable(tableItems = items) {
     render(
-      <TicketsTable items={tableItems} />
+      <TicketsTable items={tableItems} loading={false} />
     );
-  }
-
-  function filteredTable() {
-    loadTable();
-
   }
 
   it('renders table headers correctly', () => {
@@ -86,57 +51,6 @@ describe('TicketsTable', () => {
     expect(screen.getByText('Date')).toBeInTheDocument();
     expect(screen.getByText('Team member')).toBeInTheDocument();
   });
-
-  const mockDefaultExternalFilters = {
-    global_urgent: { value: null },
-    owner_and_pet: { value: '' },
-    global_species: { value: [], filterOptions: [] },
-  };
-  const mockDefaultFilters = {
-    global: { value: null, matchMode: null },
-    service_category: { value: null, matchMode: null },
-    'team_member.email': { value: null, matchMode: null },
-    created_at: { value: null, matchMode: null },
-    'client.first_name': { value: '', matchMode: null },
-  };
-
-  it('renders global filter controls in header', () => {
-    loadTable();
-    expect(screen.getByText('Clear')).toBeInTheDocument();
-    expect(screen.getByLabelText(Labels.globalFilterMenuButton)).toBeInTheDocument();
-  });
-
-  it('global filter overlay panel visibility', () => {
-    loadTable();
-    expect(screen.queryByLabelText(Labels.globalFilterOverlay)).toBe(null);
-    const button = screen.getByLabelText(Labels.globalFilterMenuButton);
-    fireEvent.click(button);
-    expect(screen.getAllByLabelText(Labels.globalFilterOverlay)[0]).toBeInTheDocument();
-    fireEvent.click(screen.getByLabelText(Labels.globalFilterMenuButton));
-    expect(screen.getAllByLabelText(Labels.globalFilterOverlay)[0]).not.toBeVisible();
-  });
-
-  it('global filter controls visibility', () => {
-    loadTable();
-    const filterButton = screen.getByLabelText(Labels.globalFilterMenuButton);
-    expect(filterButton).toBeInTheDocument();
-    fireEvent.click(filterButton);
-    const globalFilters = ['Urgent', ...MockAppConstants.species.map(i => i.label)];
-    globalFilters.forEach(option => {
-      expect(screen.getAllByLabelText(option)[0]).toBeInTheDocument();
-    });
-  });
-
-  // it('should clear all filters when reset button is clicked', () => {
-  //   const dirtyInternalFilters = { ...mockDefaultFilters, }
-  //   const resetHandler = jest.fn();
-  //   const setFilters = jest.fn();
-  //   // render(<HeaderTemplate resetHandler={resetHandler} filtersActive={true} filters={filters} setFilters={setFilters} />);
-
-  //   fireEvent.click(screen.getByText('Clear'));
-
-  //   expect(resetHandler).toHaveBeenCalled();
-  // });
 
   it('renders owner and pet names correctly', () => {
     loadTable([row]);
@@ -183,3 +97,172 @@ describe('TicketsTable', () => {
     expect(urgentIcon).toHaveClass('pi pi-exclamation-triangle');
   });
 });
+
+describe('TicketsTable filters', () => {
+  const items = mockServiceRequestSummaries;
+  const Labels = {
+    globalFilterOverlay: 'global filter menu overlay',
+    globalFilterMenuButton: 'global filter menu',
+  }
+  function loadTable(tableItems = items) {
+    render(
+      <TicketsTable items={tableItems} loading={false} />
+    );
+  }
+
+  it('renders global filter controls in header', () => {
+    loadTable();
+    expect(screen.getByText('Clear')).toBeInTheDocument();
+    expect(screen.getByLabelText(Labels.globalFilterMenuButton)).toBeInTheDocument();
+  });
+
+  it('global filter overlay panel visibility', () => {
+    loadTable();
+    expect(screen.queryByLabelText(Labels.globalFilterOverlay)).toBe(null);
+    const button = screen.getByLabelText(Labels.globalFilterMenuButton);
+    fireEvent.click(button);
+    expect(screen.getAllByLabelText(Labels.globalFilterOverlay)[0]).toBeInTheDocument();
+    fireEvent.click(screen.getByLabelText(Labels.globalFilterMenuButton));
+    expect(screen.getAllByLabelText(Labels.globalFilterOverlay)[0]).not.toBeVisible();
+  });
+
+  it('global filter controls visibility', () => {
+    loadTable();
+    const filterButton = screen.getByLabelText(Labels.globalFilterMenuButton);
+    expect(filterButton).toBeInTheDocument();
+    fireEvent.click(filterButton);
+    const globalFilters = ['Urgent', ...MockAppConstants.species.map(i => i.label)];
+    globalFilters.forEach(option => {
+      expect(screen.getAllByLabelText(option)[0]).toBeInTheDocument();
+    });
+  });
+
+  it('reset button clears all external filters', async () => {
+    loadTable();
+    // activate overlay
+    const filterButton = screen.getByRole('button', { name: Labels.globalFilterMenuButton });
+
+    expect(filterButton).toBeInTheDocument();
+    fireEvent.click(filterButton);
+
+    // find filter control checkbox
+    const checkboxContainer = screen.getAllByText(/urgent/i)[0];
+
+    expect(checkboxContainer).toBeInTheDocument();
+
+    const checkbox = checkboxContainer.parentElement?.querySelector('[role="checkbox"]');
+    expect(checkbox).toBeInTheDocument();
+
+    // activate filter control checkbox
+    await userEvent.click(checkbox);
+    expect(checkbox).toHaveAttribute('aria-checked', 'true');
+
+    // activate clear filters button
+    const clearButton = screen.getByRole('button', { name: /clear/i });
+    expect(clearButton).toBeInTheDocument();
+    fireEvent.click(clearButton);
+
+    // doulbe check state of filter control checkbox
+    expect(checkbox).toHaveAttribute('aria-checked', 'false');
+  });
+
+  it('should filter by urgent', () => {
+    const noUrgents = items.map(element => {
+      const item = { ...element, urgent: false };
+      return item;
+    });
+    const expected = noUrgents.map(e => ({ ...e }))
+    const client = { first_name: 'jonathan', last_name: 'jostar' }
+    expected[0].client = client;
+    expected[0].urgent = true;
+
+    const filterHook = renderHook(() => useFilters(expected));
+    const { filters, setFilters } = filterHook.result.current;
+
+    // Apply the filter
+    setFilters.external({ ...filters.external, global_urgent: true });
+    filterHook.rerender();
+    // Assert that only urgent items are returned
+    expect(filterHook.result.current.filteredItems).toHaveLength(1);
+    expect(filterHook.result.current.filteredItems[0].client.first_name).toBe('jonathan');
+  });
+
+  it('should filter by species', () => {
+    const notPerry = items.map(element => {
+      const item = { ...element, pet: { name: 'notPerry', species: 'snail' } };
+      return item;
+    });
+    const expected = notPerry.map(e => ({ ...e }))
+    const client = { first_name: 'Phineas', last_name: 'Fletcher' }
+    expected[0].client = client;
+    expected[0].pet = { name: 'PERRY', species: 'platypus' };
+
+    const filterHook = renderHook(() => useFilters(expected));
+    const { filters, setFilters } = filterHook.result.current;
+    setFilters.external({ ...filters.external, global_species: ['platypus'] });
+    filterHook.rerender();
+
+    expect(filterHook.result.current.filteredItems).toHaveLength(1);
+    expect(filterHook.result.current.filteredItems[0].pet.species).toBe('platypus');
+    expect(filterHook.result.current.filteredItems[0].pet.name).toBe('PERRY');
+  });
+
+  it('should filter by firstname/lastname/petname', () => {
+    const notNeo = items.map(element => {
+      const item = {
+        ...element,
+        client: { first_name: 'agent', last_name: 'smith' },
+        pet: { ...element.pet, name: "bobby" }
+      };
+      return item;
+    });
+    const expected = notNeo.map(e => ({ ...e }))
+    let client = { first_name: 'neo', last_name: 'smith' };
+    expected[0].client = client;
+    client = { first_name: 'agent', last_name: 'the-one' }
+    expected[1].client = client;
+    expected[2].pet.name = 'white-rabbit';
+
+    const filterHook = renderHook(() => useFilters(expected));
+    const { filters, setFilters } = filterHook.result.current;
+
+    setFilters.external({ ...filters.external, owner_and_pet: 'neo' });
+    filterHook.rerender();
+
+    expect(filterHook.result.current.filteredItems).toHaveLength(1);
+    expect(filterHook.result.current.filteredItems[0].client.first_name).toBe('neo');
+
+    setFilters.external({ ...filters.external, owner_and_pet: 'the-one' });
+    filterHook.rerender();
+
+    expect(filterHook.result.current.filteredItems).toHaveLength(1);
+    expect(filterHook.result.current.filteredItems[0].client.last_name).toBe('the-one');
+
+    setFilters.external({ ...filters.external, owner_and_pet: 'white-rabbit' });
+    filterHook.rerender();
+
+    expect(filterHook.result.current.filteredItems).toHaveLength(1);
+    expect(filterHook.result.current.filteredItems[0].pet.name).toBe('white-rabbit');
+  });
+
+  it('should clear filters', () => {
+    const filterHook = renderHook(() => useFilters(items));
+    const { filters, setFilters } = filterHook.result.current;
+
+    expect(filterHook.result.current.filters.areFiltersActive).toEqual(false);
+    setFilters.external({
+      ...filters.external,
+      owner_and_pet: 'billy bob joe',
+      global_species: ['cat'],
+      global_urgent: true
+    });
+    filterHook.rerender();
+    expect(filterHook.result.current.filters.areFiltersActive).toEqual(true);
+    expect(filterHook.result.current.filters.external).not.toEqual(defaultExternalFilters);
+    setFilters.clear();
+    filterHook.rerender();
+    expect(filterHook.result.current.filters.areFiltersActive).toEqual(false);
+    expect(filterHook.result.current.filters.external).toEqual(defaultExternalFilters);
+  });
+
+})
