@@ -86,13 +86,11 @@ export function CreatedAtFilterTemplate(
   );
 }
 
-function ItemTemplate(field: string) { return <span className="capitalize">{field}</span>; }
-
 export function TeamMemberFilterTemplate(
   { options, optionList }:
   { options: ColumnFilterElementTemplateOptions, optionList: TeamMemberType[] },
 ) {
-  const itemTemplate = (item: TeamMemberType) => ItemTemplate([item.first_name, item.last_name].join(' '));
+  const itemTemplate = (item: TeamMemberType) => [item.first_name, item.last_name].join(' ');
   return (
     <MultiSelect
       value={options.value}
@@ -103,6 +101,7 @@ export function TeamMemberFilterTemplate(
       onChange={(e: MultiSelectChangeEvent) => options.filterApplyCallback(e.value)}
       placeholder="Team Member"
       maxSelectedLabels={1}
+      className="capitalize"
     />
   );
 }
@@ -111,7 +110,7 @@ export function CategoryFilterTemplate(
   { options, optionList }:
   { options: ColumnFilterElementTemplateOptions, optionList: AppConstantType[] },
 ) {
-  const itemTemplate = (item: AppConstantType) => ItemTemplate(item.label);
+  const itemTemplate = (item: AppConstantType) => item.label;
   return (
     <MultiSelect
       value={options.value}
@@ -121,7 +120,7 @@ export function CategoryFilterTemplate(
       itemTemplate={itemTemplate}
       onChange={(e: MultiSelectChangeEvent) => options.filterApplyCallback(e.value)}
       placeholder="Category"
-      className="p-column-filter"
+      className="p-column-filter capitalize"
       maxSelectedLabels={1}
     />
   );
