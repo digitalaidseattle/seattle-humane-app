@@ -23,38 +23,36 @@ export default function useFilters(items: ServiceRequestSummary[]) {
 
   const filterByUrgent = (request: ServiceRequestSummary) => {
     if (externalFilters.global_urgent) {
-      return request.urgent === externalFilters.global_urgent
+      return request.urgent === externalFilters.global_urgent;
     }
     return passThroughFilter();
   };
   const filterBySpecies = (request: ServiceRequestSummary) => {
     if (externalFilters.global_species.length > 0) {
       return externalFilters.global_species.some(
-        (currentSpeciesFilters) => currentSpeciesFilters.includes(request.pet.species)
-      )
+        (currentSpeciesFilters) => currentSpeciesFilters.includes(request.pet.species),
+      );
     }
-    return passThroughFilter()
+    return passThroughFilter();
   };
   const filterByName = (request: ServiceRequestSummary) => {
-    const filterValue = externalFilters['owner_and_pet'];
+    const filterValue = externalFilters.owner_and_pet;
     if (filterValue) {
       const filteredFieldsContent = [
         request.client.first_name,
         request.client.last_name,
-        request.pet.name
+        request.pet.name,
       ];
       return filteredFieldsContent.some(
-        (name) => name.toLowerCase().includes(filterValue.toLowerCase())
-      )
+        (name) => name.toLowerCase().includes(filterValue.toLowerCase()),
+      );
     }
     return passThroughFilter();
   };
 
-  const filteredItems = useMemo(() => items.filter((item) =>
-    filterByUrgent(item)
+  const filteredItems = useMemo(() => items.filter((item) => filterByUrgent(item)
     && filterBySpecies(item)
-    && filterByName(item)
-  ), [items, externalFilters]);
+    && filterByName(item)), [items, externalFilters]);
 
   const areFiltersActive = useMemo(() => {
     const jsonCompare = (a, b) => JSON.stringify(a) === JSON.stringify(b);
