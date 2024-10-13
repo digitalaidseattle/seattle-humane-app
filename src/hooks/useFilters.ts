@@ -5,8 +5,7 @@ import { useMemo, useState } from 'react';
 
 export function passThroughFilter() { return true; }
 
-type FiltersType = { [key: string]: any };
-export const defaultExternalFilters: FiltersType = {
+export const defaultExternalFilters = {
   global_urgent: null,
   owner_and_pet: '',
   global_species: [],
@@ -19,25 +18,43 @@ export const defaultInternalFilters: DataTableFilterMeta = {
   'client.first_name': { value: '', matchMode: FilterMatchMode.CUSTOM },
 };
 export default function useFilters(items: ServiceRequestSummary[]) {
-  const [externalFilters, setExternalFilters] = useState({ ...defaultExternalFilters });
-  const [internalFilters, setInternalFilters] = useState({ ...defaultInternalFilters });
+  const [externalFilters, setExternalFilters] = useState(defaultExternalFilters);
+  const [internalFilters, setInternalFilters] = useState(defaultInternalFilters);
 
-  const filterByUrgent = (i: ServiceRequestSummary) => (externalFilters.global_urgent
-    ? i.urgent === externalFilters.global_urgent
-    : passThroughFilter());
-  const filterBySpecies = (i: ServiceRequestSummary) => (externalFilters.global_species.length > 0
-    ? externalFilters.global_species.some((o) => o.includes(i.pet.species))
-    : passThroughFilter());
-  const filterByName = (i: ServiceRequestSummary) => (externalFilters.owner_and_pet.toLowerCase()
-    ? [i.client.first_name,
-      i.client.last_name,
-      i.pet.name]
-      .some((n) => n.toLowerCase().includes(externalFilters.owner_and_pet.toLowerCase()))
-    : passThroughFilter());
+  const filterByUrgent = (request: ServiceRequestSummary) => {
+    if (externalFilters.global_urgent) {
+      return request.urgent === externalFilters.global_urgent
+    }
+    return passThroughFilter();
+  };
+  const filterBySpecies = (request: ServiceRequestSummary) => {
+    if (externalFilters.global_species.length > 0) {
+      return externalFilters.global_species.some(
+        (currentSpeciesFilters) => currentSpeciesFilters.includes(request.pet.species)
+      )
+    }
+    return passThroughFilter()
+  };
+  const filterByName = (request: ServiceRequestSummary) => {
+    const filterValue = externalFilters['owner_and_pet'];
+    if (filterValue) {
+      const filteredFieldsContent = [
+        request.client.first_name,
+        request.client.last_name,
+        request.pet.name
+      ];
+      return filteredFieldsContent.some(
+        (name) => name.toLowerCase().includes(filterValue.toLowerCase())
+      )
+    }
+    return passThroughFilter();
+  };
 
-  const filteredItems = useMemo(() => items.filter((item) => filterByUrgent(item)
-      && filterBySpecies(item)
-      && filterByName(item)), [items, externalFilters]);
+  const filteredItems = useMemo(() => items.filter((item) =>
+    filterByUrgent(item)
+    && filterBySpecies(item)
+    && filterByName(item)
+  ), [items, externalFilters]);
 
   const areFiltersActive = useMemo(() => {
     const jsonCompare = (a, b) => JSON.stringify(a) === JSON.stringify(b);
@@ -47,19 +64,19 @@ export default function useFilters(items: ServiceRequestSummary[]) {
       // @ts-expect-error
       const nv = internalFilters[key].value;
       // categories default is null but once cleared it's set to []
-      return jsonCompare(dv, nv === '[]' ? 'null' : nv);
+      return !jsonCompare(dv, nv === '[]' ? 'null' : nv);
     }, [internalFilters, externalFilters]);
     const externalFiltersState = Object.keys(externalFilters)
-      .every((key) => (
-        jsonCompare(defaultExternalFilters[key], externalFilters[key])));
-    return !internalFiltersState || !externalFiltersState;
+      .some((key) => (
+        !jsonCompare(defaultExternalFilters[key], externalFilters[key])));
+    return internalFiltersState || externalFiltersState;
   }, [externalFilters, internalFilters]);
 
   const clearFilters = () => {
-    if (!areFiltersActive) return;
     setInternalFilters(defaultInternalFilters);
     setExternalFilters(defaultExternalFilters);
   };
+
   return {
     filteredItems,
     filters: { internal: internalFilters, external: externalFilters, areFiltersActive },
