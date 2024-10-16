@@ -96,3 +96,48 @@ export const mockTicketsThisWeek = mockTickets.filter((t) => {
 
 export const mockServiceRequestSummaries = mockTickets
   .map((t) => testGetServiceRequestSummaryFromTicket(t));
+
+export const mockItems: ServiceRequestSummary[] = [
+  {
+    id: '1',
+    pet: 'Dog',
+    urgent: true,
+    description: 'Annual checkup',
+    created_at: '2023-05-01T12:00:00Z',
+    team_member: {
+      first_name: 'John',
+      email: 'john@example.com',
+    },
+    client: 'Client 1',
+    status: 'Open',
+    modified_at: '2023-05-01T12:00:00Z',
+  },
+  {
+    id: '2',
+    pet: 'Cat',
+    urgent: false,
+    description: 'Rabies shot',
+    created_at: '2023-05-02T12:00:00Z',
+    team_member: {
+      first_name: 'Jane',
+      email: 'jane@example.com',
+    },
+    client: 'Client 2',
+    status: 'In Progress',
+    modified_at: '2023-05-02T12:00:00Z',
+  },
+  {
+    id: '3',
+    pet: 'Bird',
+    urgent: false,
+    description: 'Wing repair',
+    created_at: '2023-05-03T12:00:00Z',
+    team_member: {
+      first_name: 'Bob',
+      email: 'bob@example.com',
+    },
+    client: 'Client 3',
+    status: 'Closed',
+    modified_at: '2023-05-03T12:00:00Z',
+  },
+];

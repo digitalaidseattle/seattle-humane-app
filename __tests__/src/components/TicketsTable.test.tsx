@@ -6,7 +6,7 @@ import TicketsTable from '@components/TicketsTable';
 import type { ServiceRequestSummary } from '@types';
 
 import useAllTickets from '@hooks/useAllTickets';
-import { mockServiceRequestSummaries } from '@utils/TestData';
+import { mockServiceRequestSummaries, mockItems} from '@utils/TestData';
 
 jest.mock('@services/DataService');
 jest.mock('next/router', () => ({
@@ -135,7 +135,7 @@ describe('TicketsTable Sorting', () => {
   });
 
   it('sorts tickets from oldest to newest', () => {
-    render(<TicketsTable items={mockServiceRequestSummaries} />);
+    render(<TicketsTable items={mockItems} />);
     const dateHeader = screen.getByText('Date');
     fireEvent.click(dateHeader);
 
