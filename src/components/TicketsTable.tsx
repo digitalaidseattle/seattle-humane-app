@@ -48,6 +48,25 @@ function UrgentView({ urgent }) {
 function TicketsTable({ items, loading }: TicketsTableProps) {
   const router = useRouter();
 
+  const SortUrgent = (event) => {
+    const { field, order } = event;
+    return event.data.sort((a, b) => {
+      if (a[field] === b[field]) return 0;
+      if (order === 1) return a[field] ? -1 : 1;
+      return a[field] ? 1 : -1;
+    });
+  };
+
+  const sortCreatedAt = (event) => {
+    const { data, order } = event;
+    const sorted = [...data].sort((a, b) => {
+      const dateA = new Date(a.created_at).getTime();
+      const dateB = new Date(b.created_at).getTime();
+      return order === 1 ? dateA - dateB : dateB - dateA;
+    });
+    return sorted;
+  };
+
   return (
     <DataTable
       value={items}
@@ -64,15 +83,37 @@ function TicketsTable({ items, loading }: TicketsTableProps) {
       }}
       rowClassName={(rowData) => (rowData.urgent ? 'text-red-500' : '')}
       rowHover
+      removableSort
+      sortMode="multiple"
     >
-      <Column body={OwnerAndPetTemplate} header="Owner" />
-      <Column field="urgent" body={UrgentView} header="Urgent" className="font-bold" />
-      <Column field="category" header="Category" className="font-bold" />
+      <Column body={OwnerAndPetTemplate} header="Owner" sortable sortField="pet" />
+      <Column
+        field="urgent"
+        body={UrgentView}
+        header="Urgent"
+        className="font-bold"
+        sortable
+        sortFunction={SortUrgent}
+      />
+      <Column field="category" header="Category" className="font-bold" sortable />
       <Column field="description" header="Description" className="font-bold" />
-      <Column body={CreatedAtTemplate} header="Date" className="font-bold" />
-      <Column field="team_member" body={TeamMemberView} header="Team member" className="font-bold" />
+      <Column
+        body={CreatedAtTemplate}
+        header="Date"
+        className="font-bold"
+        sortable
+        sortField="created_at"
+        sortFunction={sortCreatedAt}
+      />
+      <Column
+        field="team_member"
+        body={TeamMemberView}
+        header="Team member"
+        className="font-bold"
+        sortable
+        sortField="team_member.first_name"
+      />
     </DataTable>
   );
 }
-
 export default TicketsTable;

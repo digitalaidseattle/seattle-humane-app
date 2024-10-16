@@ -1,12 +1,12 @@
 import '@testing-library/jest-dom';
 import {
-  render, screen, renderHook, waitFor,
+  render, screen, renderHook, waitFor, fireEvent,
 } from '@testing-library/react';
 import TicketsTable from '@components/TicketsTable';
 import type { ServiceRequestSummary } from '@types';
 
 import useAllTickets from '@hooks/useAllTickets';
-import { mockServiceRequestSummaries } from '@utils/TestData';
+import { mockServiceRequestSummaries, mockItems} from '@utils/TestData';
 
 jest.mock('@services/DataService');
 jest.mock('next/router', () => ({
@@ -94,7 +94,66 @@ describe('TicketsTable', () => {
   });
 
   it('renders Urgent on table if a case is Urgent', () => {
-    render(<TicketsTable items={[]} />);
-    expect(screen.getByText('Urgent')).toBeInTheDocument();
+    const urgentItem = { ...items[0], urgent: true };
+    render(<TicketsTable items={[urgentItem]} />);
+    const urgentCell = screen.getByRole('cell', { name: 'Urgent' });
+    expect(urgentCell).toBeInTheDocument();
+  });
+});
+
+describe('TicketsTable Sorting', () => {
+  const items = mockServiceRequestSummaries;
+
+  it('sorts tickets alphabetically by pet name', () => {
+    render(<TicketsTable items={items} />);
+    const ownerHeader = screen.getByText('Owner');
+    fireEvent.click(ownerHeader);
+
+    const petRows = screen.getAllByRole('row');
+    expect(petRows[1]).toHaveTextContent('Edith Ryan');
+    expect(petRows[2]).toHaveTextContent('Nichole Padberg');
+    expect(petRows[3]).toHaveTextContent('Mercedes');
+  });
+
+  it('sorts tickets by urgency prioritizing urgent cases', () => {
+    render(<TicketsTable items={items} />);
+    const urgentColumn = screen.getAllByText('Urgent');
+    fireEvent.click(urgentColumn[0]);
+
+    const urgentRows = screen.getAllByRole('row');
+    expect(urgentRows[1]).toHaveTextContent('Urgent');
+  });
+
+  it('sorts the categories of service alphabetically', () => {
+    render(<TicketsTable items={items} />);
+    const categoryHeader = screen.getByText('Category');
+    fireEvent.click(categoryHeader);
+
+    const categoryRows = screen.getAllByRole('row');
+    expect(categoryRows[1]).toHaveTextContent('pet_fostering');
+    expect(categoryRows[2]).toHaveTextContent('pet_fostering');
+  });
+
+  it('sorts tickets from oldest to newest', () => {
+    render(<TicketsTable items={mockItems} />);
+    const dateHeader = screen.getByText('Date');
+    fireEvent.click(dateHeader);
+
+    const rows = screen.getAllByRole('row');
+    const dates = rows.slice(3).map((row) => (row as HTMLTableRowElement).cells[4].textContent); // assuming the date is the 4th cell    dates.push('9/9/2010'); // This will need to be removed, I was just making sure it broke correctly
+
+    const sortedDates = [...dates].sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
+    expect(dates).toEqual(sortedDates);
+  });
+
+  it('sorts team member alphabetically', () => {
+    render(<TicketsTable items={items} />);
+    const teamMemberHeader = screen.getByText('Team member');
+    fireEvent.click(teamMemberHeader);
+
+    const teamRows = screen.getAllByRole('row');
+    expect(teamRows[1]).toHaveTextContent('Dylan');
+    expect(teamRows[2]).toHaveTextContent('Fredy');
+    expect(teamRows[3]).toHaveTextContent('Herta');
   });
 });
