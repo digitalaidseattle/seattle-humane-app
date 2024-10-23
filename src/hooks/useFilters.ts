@@ -44,7 +44,7 @@ export default function useFilters(items: ServiceRequestSummary[]) {
         request.pet.name,
       ].join(' ');
       return filterValues.some(
-        (filterValue) => cellValue.toLowerCase().includes(filterValue.toLowerCase())
+        (filterValue) => cellValue.toLowerCase().includes(filterValue.toLowerCase()),
       );
     }
     return passThroughFilter();
