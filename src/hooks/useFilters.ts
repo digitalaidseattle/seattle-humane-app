@@ -36,15 +36,15 @@ export default function useFilters(items: ServiceRequestSummary[]) {
     return passThroughFilter();
   };
   const filterByName = (request: ServiceRequestSummary) => {
-    const filterValue = externalFilters.owner_and_pet;
-    if (filterValue) {
-      const filteredFieldsContent = [
+    const filterValues = externalFilters.owner_and_pet.split(' ');
+    if (filterValues) {
+      const cellValue = [
         request.client.first_name,
         request.client.last_name,
         request.pet.name,
-      ];
-      return filteredFieldsContent.some(
-        (name) => name.toLowerCase().includes(filterValue.toLowerCase()),
+      ].join(' ');
+      return filterValues.some(
+        (filterValue) => cellValue.toLowerCase().includes(filterValue.toLowerCase())
       );
     }
     return passThroughFilter();
