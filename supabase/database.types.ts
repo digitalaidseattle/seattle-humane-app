@@ -183,9 +183,9 @@ export type Database = {
           id: string
           modified_at: string
           pet_id: string | null
-          request_source: string | null
-          service_category: string | null
-          status: string | null
+          request_source: string
+          service_category: string
+          status: string
           team_member_id: string | null
           urgent: boolean
         }
@@ -196,9 +196,9 @@ export type Database = {
           id?: string
           modified_at?: string
           pet_id?: string | null
-          request_source?: string | null
-          service_category?: string | null
-          status?: string | null
+          request_source: string
+          service_category: string
+          status: string
           team_member_id?: string | null
           urgent?: boolean
         }
@@ -209,9 +209,9 @@ export type Database = {
           id?: string
           modified_at?: string
           pet_id?: string | null
-          request_source?: string | null
-          service_category?: string | null
-          status?: string | null
+          request_source?: string
+          service_category?: string
+          status?: string
           team_member_id?: string | null
           urgent?: boolean
         }
@@ -231,10 +231,31 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
+            foreignKeyName: "public_service_requests_service_category_fkey"
+            columns: ["service_category"]
+            isOneToOne: false
+            referencedRelation: "app_constants"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "public_service_requests_status_fkey"
+            columns: ["status"]
+            isOneToOne: false
+            referencedRelation: "app_constants"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "public_service_requests_team_member_id_fkey"
             columns: ["team_member_id"]
             isOneToOne: false
             referencedRelation: "team_members"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "request_source_fkey"
+            columns: ["request_source"]
+            isOneToOne: false
+            referencedRelation: "app_constants"
             referencedColumns: ["id"]
           },
         ]
@@ -680,5 +701,20 @@ export type Enums<
   ? Database[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
   : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
     ? PublicSchema["Enums"][PublicEnumNameOrOptions]
+    : never
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends
+    | keyof PublicSchema["CompositeTypes"]
+    | { schema: keyof Database },
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    schema: keyof Database
+  }
+    ? keyof Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"]
+    : never = never,
+> = PublicCompositeTypeNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicCompositeTypeNameOrOptions["schema"]]["CompositeTypes"][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof PublicSchema["CompositeTypes"]
+    ? PublicSchema["CompositeTypes"][PublicCompositeTypeNameOrOptions]
     : never
 
