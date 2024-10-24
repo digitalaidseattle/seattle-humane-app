@@ -56,7 +56,7 @@ const Dashboard: React.FC = () => {
         </div>
       </TicketSearchProvider>
     </div>
-  )
+  );
 };
 
 export default Dashboard;
