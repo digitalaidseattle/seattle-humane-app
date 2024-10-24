@@ -20,6 +20,8 @@ import supabaseClient from '@utils/supabaseClient';
 import throwIfMissingRequiredFields from '@utils/throwIfMissingRequiredFields';
 import { getWeekStartDate } from '@utils/timeUtils';
 
+const SEARCH_RESULT_LIMIT = 100;
+
 export async function createClient(client: EditableClientType) {
   throwIfMissingRequiredFields('client', client);
   const { data: newClient, error } = await supabaseClient
@@ -97,8 +99,8 @@ export async function getTicketsThisWeek(): Promise<ServiceRequestType[]> {
   return data;
 }
 
-export async function getServiceRequestSummary(): Promise<ServiceRequestSummary[]> {
-  const { data, error } = await supabaseClient
+export async function getServiceRequestSummary(ids?: string[]): Promise<ServiceRequestSummary[]> {
+  let query = supabaseClient
     .from('service_requests')
 
     .select(`
@@ -106,34 +108,42 @@ export async function getServiceRequestSummary(): Promise<ServiceRequestSummary[
     description,
     created_at,
     service_category,
-    clients(first_name),
-    pets(name),
-    team_members(first_name, email),
+    clients(first_name,last_name),
+    pets(name,species),
+    team_members(first_name,last_name, email),
     urgent,
     status,
     modified_at
     `)
     .order('created_at', { ascending: false });
+  if (ids) {
+    query = query.in('id', ids.slice(undefined, SEARCH_RESULT_LIMIT));
+  }
+  const { data, error } = await query;
 
-  if (error) throw new Error(`${error.message}`);
+  if (error) {
+    console.log('ERROR', error.message, 'ids', ids);
+    throw new Error(`${error.message}`);
+  }
   const { data: constants, error: categoryError } = await supabaseClient
     .from('app_constants')
     .select('*')
-    .eq('type', 'category');
+    .in('type', ['species', 'category']);
   if (categoryError) throw new Error(categoryError.message);
-  const categoryMap = new Map(constants.map((constant) => ([constant.id, constant.label])));
+  const constantsMap = new Map(constants.map((constant) => ([constant.id, constant.label])));
 
   const summaries = data.map(({
     clients, pets, team_members, service_category, id, ...ticket
   }) => ({
     id,
-    client: clients.first_name,
-    pet: pets.name,
+    client: { first_name: clients.first_name, last_name: clients.last_name },
+    pet: { name: pets.name, species: constantsMap.get(pets.species) },
     team_member: {
       first_name: team_members.first_name,
+      last_name: team_members.last_name,
       email: team_members.email,
     },
-    category: categoryMap.get(service_category),
+    service_category: constantsMap.get(service_category),
     created_at: ticket.created_at,
     description: ticket.description,
     urgent: ticket.urgent,
@@ -141,6 +151,23 @@ export async function getServiceRequestSummary(): Promise<ServiceRequestSummary[
     modified_at: ticket.modified_at,
   }));
   return summaries;
+}
+
+export async function searchServiceRequests(searchQuery?: string) {
+  if (!searchQuery.trim()) return getServiceRequestSummary();
+
+  /**
+   * Default to "match all words" by concatenating with "&""
+   * https://www.postgresql.org/docs/current/functions-textsearch.html
+   */
+  const fullTextSearchQuery = searchQuery.split(' ').filter((word) => word.trim().length > 0).join('&');
+  const { data, error } = await supabaseClient
+    .from('service_requests_search')
+    .select('id')
+    .textSearch('search_field', fullTextSearchQuery);
+
+  if (error) throw new Error(`${error.message}`);
+  return getServiceRequestSummary(data.map(({ id }) => id));
 }
 
 export async function getClientByIdOrEmail<T extends keyof Pick<ClientType, 'id' | 'email'>>(

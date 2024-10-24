@@ -7,10 +7,12 @@
  */
 import React from 'react';
 import useOpenTickets from '@hooks/useOpenTickets';
-import TicketsTable from '@components/TicketsTable';
-import SampleDashboardStats from '@components/SampleDashbordStats';
+import TicketsTable from '@components/TicketsTable/TicketsTable';
 import useRecentlyClosedTickets from '@hooks/useRecentlyClosedTickets';
 import useMyTickets from '@hooks/useMyTickets';
+import SampleDashboardStats from '@components/SampleDashbordStats';
+import SearchField from '@components/dashboard/SearchField';
+import { TicketSearchProvider } from '@context/dashboard/ticketSearchContext';
 
 const Dashboard: React.FC = () => {
   const { data: myTickets, isLoading: loadingMyTickets } = useMyTickets();
@@ -23,32 +25,36 @@ const Dashboard: React.FC = () => {
   return (
     <div className="grid">
       <SampleDashboardStats />
-      <div className="col-12 xl:col-6">
-        <div className="card">
-          <h5>My Cases</h5>
-          <TicketsTable
-            items={myTickets}
-            loading={loadingMyTickets}
-          />
+      <TicketSearchProvider>
+        <div className="card col-12">
+          <SearchField />
         </div>
-        <div className="card">
-          <h5>Recently closed cases</h5>
-          <TicketsTable
-            items={recentlyClosedTickets}
-            loading={loadingRecentlyClosedTickets}
-          />
+        <div className="col-10 xl:col-6">
+          <div className="card">
+            <h5>My Cases</h5>
+            <TicketsTable
+              items={loadingMyTickets ? [] : myTickets}
+              loading={loadingMyTickets}
+            />
+          </div>
+          <div className="card">
+            <h5>Recently closed cases</h5>
+            <TicketsTable
+              items={loadingRecentlyClosedTickets ? [] : recentlyClosedTickets}
+              loading={loadingRecentlyClosedTickets}
+            />
+          </div>
         </div>
-      </div>
-
-      <div className="col-12 xl:col-6">
-        <div className="card">
-          <h5>All open cases</h5>
-          <TicketsTable
-            items={openTickets}
-            loading={loadingOpenTickets}
-          />
+        <div className="card col-10 xl:col-6">
+          <div className="card">
+            <h5>All open cases</h5>
+            <TicketsTable
+              items={loadingOpenTickets ? [] : openTickets}
+              loading={loadingOpenTickets}
+            />
+          </div>
         </div>
-      </div>
+      </TicketSearchProvider>
     </div>
   );
 };
