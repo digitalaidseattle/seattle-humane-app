@@ -1,7 +1,7 @@
 import emailIsValid  from "@utils/dataValidationUtils";
 
 describe("dataValidationUtils", () => {
-  describe("emailIsInvalid", () => {
+  describe("emailIsValid", () => {
 
     it("should allow valid email", () => {
       const actual = emailIsValid('text@domain.co');
