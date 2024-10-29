@@ -72,21 +72,33 @@ mockPets.forEach((pet) => animalIdMap.set(pet.id, pet));
 const teamMemberIdMap = new Map<string, TeamMemberType>();
 mockTeamMembers.forEach((teamMember) => teamMemberIdMap.set(teamMember.id, teamMember));
 
-export const testGetServiceRequestSummaryFromTicket = (t: ServiceRequestType) => ({
-  id: t.id,
-  description: t.description,
-  created_at: t.created_at,
-  client: clientIdMap.get(t.client_id).first_name,
-  pet: animalIdMap.get(t.pet_id).name,
-  category: t.service_category,
-  team_member: {
-    first_name: teamMemberIdMap.get(t.team_member_id).first_name,
-    email: teamMemberIdMap.get(t.team_member_id).email,
-  },
-  urgent: t.urgent,
-  status: t.status,
-  modified_at: t.modified_at,
-}) as ServiceRequestSummary;
+export const testGetServiceRequestSummaryFromTicket = (t: ServiceRequestType) => {
+  const client = clientIdMap.get(t.client_id);
+  const pet = animalIdMap.get(t.pet_id);
+  const teamMember = teamMemberIdMap.get(t.team_member_id);
+  const request: ServiceRequestSummary = {
+    id: t.id,
+    created_at: t.created_at,
+    service_category: t.service_category,
+    client: {
+      first_name: client.first_name,
+      last_name: client.last_name,
+    },
+    pet: {
+      name: pet.name,
+      species: pet.species,
+    },
+    team_member: {
+      first_name: teamMember.first_name,
+      last_name: teamMember.last_name,
+      email: teamMember.email,
+    },
+    urgent: t.urgent,
+    status: t.status,
+    modified_at: t.modified_at,
+  };
+  return request;
+};
 
 export const mockTicketsThisWeek = mockTickets.filter((t) => {
   const ticketDate = new Date(t.created_at);
@@ -96,48 +108,3 @@ export const mockTicketsThisWeek = mockTickets.filter((t) => {
 
 export const mockServiceRequestSummaries = mockTickets
   .map((t) => testGetServiceRequestSummaryFromTicket(t));
-
-export const mockItems: ServiceRequestSummary[] = [
-  {
-    id: '1',
-    pet: 'Dog',
-    urgent: true,
-    description: 'Annual checkup',
-    created_at: '2023-05-01T12:00:00Z',
-    team_member: {
-      first_name: 'John',
-      email: 'john@example.com',
-    },
-    client: 'Client 1',
-    status: 'Open',
-    modified_at: '2023-05-01T12:00:00Z',
-  },
-  {
-    id: '2',
-    pet: 'Cat',
-    urgent: false,
-    description: 'Rabies shot',
-    created_at: '2023-05-02T12:00:00Z',
-    team_member: {
-      first_name: 'Jane',
-      email: 'jane@example.com',
-    },
-    client: 'Client 2',
-    status: 'In Progress',
-    modified_at: '2023-05-02T12:00:00Z',
-  },
-  {
-    id: '3',
-    pet: 'Bird',
-    urgent: false,
-    description: 'Wing repair',
-    created_at: '2023-05-03T12:00:00Z',
-    team_member: {
-      first_name: 'Bob',
-      email: 'bob@example.com',
-    },
-    client: 'Client 3',
-    status: 'Closed',
-    modified_at: '2023-05-03T12:00:00Z',
-  },
-];

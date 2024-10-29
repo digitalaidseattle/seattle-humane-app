@@ -1,60 +1,50 @@
 import { DataTable } from 'primereact/datatable';
-import { Column } from 'primereact/column';
+import { Column, ColumnFilterElementTemplateOptions } from 'primereact/column';
 import { useRouter } from 'next/router';
 import type { ServiceRequestSummary } from '@types';
+import { FilterService } from 'primereact/api';
+import { ChangeEvent } from 'react';
+import useAppConstants from '@hooks/useAppConstants';
+import { AppConstants } from 'src/constants';
+import useTeamMembersAll from '@hooks/useTeamMembersAll';
+import useFilters, { filterByCreatedAt, passThroughFilter } from '@hooks/useFilters';
+import {
+  CategoryFilterTemplate,
+  CreatedAtBodyTemplate,
+  CreatedAtFilterTemplate,
+  HeaderTemplate,
+  OwnerAndPetFilterTemplate,
+  OwnerAndPetTemplate,
+  TeamMemberBodyTemplate,
+  TeamMemberFilterTemplate,
+} from './Templates';
 
 export interface TicketsTableProps {
   items: ServiceRequestSummary[]
   loading?: boolean
 }
 
-function OwnerAndPetTemplate({
-  client, pet, id, urgent,
-}) {
-  return (
-    <div key={id}>
-      <div className={`font-bold ${urgent ? 'text-red-500' : 'text-gray-900'}`}>{pet}</div>
-      <div className={`capitalize ${urgent ? 'text-red-300' : 'text-gray-600'}`}>{client}</div>
-    </div>
-  );
-}
+FilterService.register('custom_created_at', filterByCreatedAt);
 
-function CreatedAtTemplate({ created_at, id }) {
-  return (
-    <span key={id}>
-      {new Date(created_at).toLocaleDateString('en-US', {
-        day: '2-digit', month: '2-digit', year: 'numeric',
-      })}
-    </span>
-  );
-}
-
-function TeamMemberView({ id, team_member }: ServiceRequestSummary) {
-  return (
-    <span className="text-gray-900" key={id}>
-      {team_member.first_name}
-    </span>
-  );
-}
-
-function UrgentView({ urgent }) {
-  return (
-    <div>
-      {urgent ? 'Urgent' : ''}
-    </div>
-  );
-}
+// disable datatable filtering for the first column (client.first_name)
+// but keeps it registered to datatable interal state that filter changes are synced.
+FilterService.register('custom_client.first_name', passThroughFilter);
 
 function TicketsTable({ items, loading }: TicketsTableProps) {
   const router = useRouter();
+  const { data: categoryOptions } = useAppConstants(AppConstants.Category);
+  const { data: teamMemberOptions } = useTeamMembersAll();
+  const { filteredItems, filters, setFilters } = useFilters(items || []);
 
-  const SortUrgent = (event) => {
-    const { field, order } = event;
-    return event.data.sort((a, b) => {
-      if (a[field] === b[field]) return 0;
-      if (order === 1) return a[field] ? -1 : 1;
-      return a[field] ? 1 : -1;
-    });
+  const ownerAndPetFilterHandler = (
+    e: ChangeEvent<HTMLInputElement>,
+    internalFilterCB: ColumnFilterElementTemplateOptions['filterApplyCallback'],
+  ) => {
+    const nExternalFilters = { ...filters.external };
+    nExternalFilters.owner_and_pet = e.target.value;
+    setFilters.external(nExternalFilters);
+    // this sets options.value which is the input state
+    internalFilterCB(e.target.value);
   };
 
   const sortCreatedAt = (event) => {
@@ -67,9 +57,17 @@ function TicketsTable({ items, loading }: TicketsTableProps) {
     return sorted;
   };
 
+  const header = HeaderTemplate({
+    resetHandler: setFilters.clear,
+    areFiltersActive: filters.areFiltersActive,
+    filters: filters.external,
+    setFilters: setFilters.external,
+  });
+
   return (
     <DataTable
-      value={items}
+      header={header}
+      value={filteredItems}
       paginatorTemplate="FirstPageLink PrevPageLink PageLinks NextPageLink LastPageLink CurrentPageReport RowsPerPageDropdown"
       dataKey="id"
       paginator
@@ -78,42 +76,27 @@ function TicketsTable({ items, loading }: TicketsTableProps) {
       className="datatable-responsive cursor-pointer"
       currentPageReportTemplate="Showing {first} to {last} of {totalRecords} tickets"
       rows={10}
-      onRowClick={(e) => {
-        router.push(`?ticket=${e.data.id}`);
-      }}
-      rowClassName={(rowData) => (rowData.urgent ? 'text-red-500' : '')}
+      onRowClick={(e) => router.push(`?ticket=${e.data.id}`)}
+      rowClassName={(rowData) => `${rowData.urgent ? 'text-red-500' : ''} font-bold capitalize`}
       rowHover
-      removableSort
-      sortMode="multiple"
+      filters={filters.internal}
+      filterDisplay="menu"
+      onFilter={(event) => setFilters.internal(event.filters as any)}
     >
-      <Column body={OwnerAndPetTemplate} header="Owner" sortable sortField="pet" />
-      <Column
-        field="urgent"
-        body={UrgentView}
-        header="Urgent"
-        className="font-bold"
-        sortable
-        sortFunction={SortUrgent}
-      />
-      <Column field="category" header="Category" className="font-bold" sortable />
-      <Column field="description" header="Description" className="font-bold" />
-      <Column
-        body={CreatedAtTemplate}
-        header="Date"
-        className="font-bold"
+      <Column header="Name" sortable sortField="client.first_name"
+        field="client.first_name" body={OwnerAndPetTemplate} filter showClearButton={false} showFilterMatchModes={false} filterElement={(options) => OwnerAndPetFilterTemplate({ options, externalFilterHandler: ownerAndPetFilterHandler })} filterPlaceholder="Name" />
+      <Column header="Category" field="service_category" filter showFilterMatchModes={false} filterElement={(options) => CategoryFilterTemplate({ options, optionList: categoryOptions })} className="w-3" />
+      <Column header="Date"
         sortable
         sortField="created_at"
         sortFunction={sortCreatedAt}
-      />
-      <Column
-        field="team_member"
-        body={TeamMemberView}
-        header="Team member"
-        className="font-bold"
+        field="created_at" body={CreatedAtBodyTemplate} filter filterElement={CreatedAtFilterTemplate} dataType="date" showFilterMatchModes={false} />
+      <Column header="Team member"
         sortable
         sortField="team_member.first_name"
-      />
+        field="team_member.first_name" filterField="team_member.email" body={TeamMemberBodyTemplate} filter showFilterMatchModes={false} filterElement={(options) => TeamMemberFilterTemplate({ options, optionList: teamMemberOptions })} className="min-w-6" />
     </DataTable>
   );
 }
+
 export default TicketsTable;
