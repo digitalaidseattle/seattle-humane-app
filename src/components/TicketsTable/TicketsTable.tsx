@@ -83,18 +83,59 @@ function TicketsTable({ items, loading }: TicketsTableProps) {
       filterDisplay="menu"
       onFilter={(event) => setFilters.internal(event.filters as any)}
     >
-      <Column header="Name" sortable sortField="client.first_name"
-        field="client.first_name" body={OwnerAndPetTemplate} filter showClearButton={false} showFilterMatchModes={false} filterElement={(options) => OwnerAndPetFilterTemplate({ options, externalFilterHandler: ownerAndPetFilterHandler })} filterPlaceholder="Name" />
-      <Column header="Category" field="service_category" filter showFilterMatchModes={false} filterElement={(options) => CategoryFilterTemplate({ options, optionList: categoryOptions })} className="w-3" />
-      <Column header="Date"
+      <Column
+        header="Name"
+        sortable
+        sortField="client.first_name"
+        field="client.first_name"
+        body={OwnerAndPetTemplate}
+        filter
+        showClearButton={false}
+        showFilterMatchModes={false}
+        filterElement={(options) => OwnerAndPetFilterTemplate({
+          options,
+          externalFilterHandler: ownerAndPetFilterHandler,
+        })}
+        filterPlaceholder="Name"
+      />
+      <Column
+        header="Category"
+        field="service_category"
+        filter
+        showFilterMatchModes={false}
+        filterElement={(options) => CategoryFilterTemplate({
+          options,
+          optionList: categoryOptions,
+        })}
+        className="w-3"
+      />
+      <Column
+        header="Date"
         sortable
         sortField="created_at"
         sortFunction={sortCreatedAt}
-        field="created_at" body={CreatedAtBodyTemplate} filter filterElement={CreatedAtFilterTemplate} dataType="date" showFilterMatchModes={false} />
-      <Column header="Team member"
+        field="created_at"
+        body={CreatedAtBodyTemplate}
+        filter
+        filterElement={CreatedAtFilterTemplate}
+        dataType="date"
+        showFilterMatchModes={false}
+      />
+      <Column
+        header="Team member"
         sortable
         sortField="team_member.first_name"
-        field="team_member.first_name" filterField="team_member.email" body={TeamMemberBodyTemplate} filter showFilterMatchModes={false} filterElement={(options) => TeamMemberFilterTemplate({ options, optionList: teamMemberOptions })} className="min-w-6" />
+        field="team_member.first_name"
+        filterField="team_member.email"
+        body={TeamMemberBodyTemplate}
+        filter
+        showFilterMatchModes={false}
+        filterElement={(options) => TeamMemberFilterTemplate({
+          options,
+          optionList: teamMemberOptions,
+        })}
+        className="min-w-6"
+      />
     </DataTable>
   );
 }
