@@ -100,6 +100,7 @@ function TicketsTable({ items, loading }: TicketsTableProps) {
       />
       <Column
         header="Category"
+        sortable
         field="service_category"
         filter
         showFilterMatchModes={false}
