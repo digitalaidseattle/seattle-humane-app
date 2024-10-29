@@ -120,14 +120,22 @@ describe('TicketsTable', () => {
       expect(rows[3]).toHaveTextContent('Matt');
     });
 
-    it('sorts the categories of service alphabetically', () => {
-      render(<TicketsTable items={items} />);
+    it('sorts the service category alphabetically', () => {
+      let customItems = JSON.parse(JSON.stringify(items));
+      customItems = customItems.map(i => {
+        i.service_category = 'Vaccination';
+        return i;
+      });
+      customItems[3].service_category = 'Surgery';
+      render(<TicketsTable items={customItems} />);
       const categoryHeader = screen.getByText('Category');
       fireEvent.click(categoryHeader);
+      
+      const rows = screen.getAllByRole('row');
+      const categories = rows.slice(3).map((row) => (row as HTMLTableRowElement).cells[1].textContent);
 
-      const categoryRows = screen.getAllByRole('row');
-      expect(categoryRows[1]).toHaveTextContent('pet_fostering');
-      expect(categoryRows[2]).toHaveTextContent('pet_fostering');
+      const sortedCategories = [...categories].sort();
+      expect(categories).toEqual(sortedCategories);
     });
 
     it('sorts tickets from oldest to newest', () => {
