@@ -2,11 +2,11 @@ import '@testing-library/jest-dom';
 import {
   render, screen, renderHook, waitFor, fireEvent,
 } from '@testing-library/react';
-import TicketsTable from '@components/TicketsTable';
+import TicketsTable from '@components/TicketsTable/TicketsTable';
 import type { ServiceRequestSummary } from '@types';
 
 import useAllTickets from '@hooks/useAllTickets';
-import { mockServiceRequestSummaries, mockItems} from '@utils/TestData';
+import { mockServiceRequestSummaries, mockItems } from '@utils/TestData';
 
 jest.mock('@services/DataService');
 jest.mock('next/router', () => ({
