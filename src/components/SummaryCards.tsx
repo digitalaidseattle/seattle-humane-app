@@ -1,7 +1,7 @@
 import useMyTickets from '@hooks/useMyTickets';
 import useTicketsThisWeek from '@hooks/useTicketsThisWeek';
 
-export default function SampleDashboardStats() {
+export default function SummaryCards() {
   const ticketsThisWeek = useTicketsThisWeek();
   const myTickets = useMyTickets();
 
