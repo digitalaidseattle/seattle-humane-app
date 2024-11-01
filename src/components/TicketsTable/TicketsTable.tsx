@@ -47,6 +47,16 @@ function TicketsTable({ items, loading }: TicketsTableProps) {
     internalFilterCB(e.target.value);
   };
 
+  const sortCreatedAt = (event) => {
+    const { data, order } = event;
+    const sorted = [...data].sort((a, b) => {
+      const dateA = new Date(a.created_at).getTime();
+      const dateB = new Date(b.created_at).getTime();
+      return order === 1 ? dateA - dateB : dateB - dateA;
+    });
+    return sorted;
+  };
+
   const header = HeaderTemplate({
     resetHandler: setFilters.clear,
     areFiltersActive: filters.areFiltersActive,
@@ -73,10 +83,60 @@ function TicketsTable({ items, loading }: TicketsTableProps) {
       filterDisplay="menu"
       onFilter={(event) => setFilters.internal(event.filters as any)}
     >
-      <Column header="Name" field="client.first_name" body={OwnerAndPetTemplate} filter showClearButton={false} showFilterMatchModes={false} filterElement={(options) => OwnerAndPetFilterTemplate({ options, externalFilterHandler: ownerAndPetFilterHandler })} filterPlaceholder="Name" />
-      <Column header="Category" field="service_category" filter showFilterMatchModes={false} filterElement={(options) => CategoryFilterTemplate({ options, optionList: categoryOptions })} className="w-3" />
-      <Column header="Date" field="created_at" body={CreatedAtBodyTemplate} filter filterElement={CreatedAtFilterTemplate} dataType="date" showFilterMatchModes={false} />
-      <Column header="Team member" field="team_member.first_name" filterField="team_member.email" body={TeamMemberBodyTemplate} filter showFilterMatchModes={false} filterElement={(options) => TeamMemberFilterTemplate({ options, optionList: teamMemberOptions })} className="min-w-6" />
+      <Column
+        header="Name"
+        sortable
+        sortField="client.first_name"
+        field="client.first_name"
+        body={OwnerAndPetTemplate}
+        filter
+        showClearButton={false}
+        showFilterMatchModes={false}
+        filterElement={(options) => OwnerAndPetFilterTemplate({
+          options,
+          externalFilterHandler: ownerAndPetFilterHandler,
+        })}
+        filterPlaceholder="Name"
+      />
+      <Column
+        header="Category"
+        sortable
+        field="service_category"
+        filter
+        showFilterMatchModes={false}
+        filterElement={(options) => CategoryFilterTemplate({
+          options,
+          optionList: categoryOptions,
+        })}
+        className="w-3"
+      />
+      <Column
+        header="Date"
+        sortable
+        sortField="created_at"
+        sortFunction={sortCreatedAt}
+        field="created_at"
+        body={CreatedAtBodyTemplate}
+        filter
+        filterElement={CreatedAtFilterTemplate}
+        dataType="date"
+        showFilterMatchModes={false}
+      />
+      <Column
+        header="Team member"
+        sortable
+        sortField="team_member.first_name"
+        field="team_member.first_name"
+        filterField="team_member.email"
+        body={TeamMemberBodyTemplate}
+        filter
+        showFilterMatchModes={false}
+        filterElement={(options) => TeamMemberFilterTemplate({
+          options,
+          optionList: teamMemberOptions,
+        })}
+        className="min-w-6"
+      />
     </DataTable>
   );
 }
