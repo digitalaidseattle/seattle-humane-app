@@ -1,7 +1,7 @@
 import React, { useContext, useState } from 'react';
 import InputText from '@components//InputText';
 import { ClientInfoActionType, ClientInformationContext, ClientInformationDispatchContext } from '@context/serviceRequest/clientInformationContext';
-import { EditableClientType } from '@types';
+import { ClientType, EditableClientType } from '@types';
 import emailIsValid from '@utils/dataValidationUtils';
 
 // TODO externalize to localization file
@@ -51,7 +51,7 @@ export default function ClientInformationSection(props: ClientInformationSection
   };
   const visibleFields = new Set<keyof EditableClientType>(show);
 
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<{ [key in keyof ClientType]?: boolean }>({});
   const setError = (field: string, error: boolean) => {
     setErrors((p) => ({ ...p, [field]: error }));
   };
