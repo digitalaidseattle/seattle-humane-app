@@ -13,7 +13,7 @@ describe("dataValidationUtils", () => {
       expect(actual).toBe(false);
     });
 
-    it("souldn't contain any spaces", () => {
+    it("shouldn't contain any spaces", () => {
       const actual = emailIsValid('te xt@domain.com')
       expect(actual).toEqual(false);
     });
