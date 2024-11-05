@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react';
 import InputRadio from '@components/InputRadio';
 import InputText from '@components/InputText';
 import { PetInfoActionType, PetInformationContext, PetInformationDispatchContext } from '@context/serviceRequest/petInformationContext';
-import { EditableAnimalType } from '@types';
+import { AnimalType, EditableAnimalType } from '@types';
 import useAppConstants from '@hooks/useAppConstants';
 import { AppConstants } from 'src/constants';
 
@@ -45,7 +45,7 @@ export default function PetInformationSection(props: PetInformationSectionProps)
   const dispatch = useContext(PetInformationDispatchContext);
   //* Options for multi-choice controls
   const { data: speciesOptions } = useAppConstants(AppConstants.Species);
-  const [errors, setErrors] = useState({});
+  const [errors, setErrors] = useState<{ [key in keyof AnimalType]?: boolean }>({});
   const setError = (field: string, error: boolean) => {
     setErrors((p) => ({ ...p, [field]: error }));
   };
