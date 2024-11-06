@@ -50,7 +50,7 @@ describe('ClientInformationSection', () => {
   let lastNameInput = null;
   let emailInput = null;
   let phoneNumberInput = null;
-  let postalCodeInput = null;
+  let zipCodeInput = null;
   const previousyUsedRadioButtons = [];
   let textInputs = [];
 
@@ -79,14 +79,14 @@ describe('ClientInformationSection', () => {
     lastNameInput = screen.queryByLabelText(labels.LastName);
     emailInput = screen.queryByLabelText(labels.Email);
     phoneNumberInput = screen.queryByLabelText(labels.PhoneNumber);
-    postalCodeInput = screen.queryByLabelText(labels.PostalCode);
+    zipCodeInput = screen.queryByLabelText(labels.ZipCode);
     // Putting all inputs in an array for more consice assertions via loops
     textInputs = [
       firstNameInput,
       lastNameInput,
       emailInput,
       phoneNumberInput,
-      postalCodeInput,
+      zipCodeInput,
     ];
   }
 

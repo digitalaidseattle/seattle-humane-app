@@ -10,11 +10,15 @@ exports[`InputText should render a text input with the provided value prop 1`] =
     fake-label
   </label>
   <input
+    aria-describedby="help-text"
     class="p-inputtext p-component p-filled"
     data-pc-name="inputtext"
     data-pc-section="root"
     id="fake-id"
     value="fake-value"
+  />
+  <small
+    id="help-text"
   />
 </div>
 `;
