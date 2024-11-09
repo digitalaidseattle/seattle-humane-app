@@ -133,9 +133,19 @@ describe('DataService', () => {
       // add clients, pets, teammebers and the app constant label to the mock tickets
       const expectedQueryResults = expectedTickets.map((ticket) => ({
         ...ticket,
-        clients: { first_name: mockClient.first_name },
-        pets: { name: mockPet.name },
-        team_members: { first_name: mockTeamMember1.first_name, email: mockTeamMember1.email },
+        clients: {
+          first_name: mockClient.first_name,
+          last_name: mockClient.last_name,
+        },
+        pets: {
+          name: mockPet.name,
+          species: ticket.id,
+        },
+        team_members: {
+          first_name: mockTeamMember1.first_name,
+          last_name: mockTeamMember1.last_name,
+          email: mockTeamMember1.email,
+        },
         service_category: ticket.id,
         label: 'mock app constant label',
       }));
@@ -147,13 +157,20 @@ describe('DataService', () => {
         } = data;
         return {
           id,
-          client: clients.first_name,
-          pet: pets.name,
+          client: {
+            first_name: clients.first_name,
+            last_name: clients.last_name,
+          },
+          pet: {
+            name: pets.name,
+            species: label,
+          },
           team_member: {
             first_name: team_members.first_name,
+            last_name: team_members.last_name,
             email: team_members.email,
           },
-          category: label,
+          service_category: label,
           created_at: ticket.created_at,
           description: ticket.description,
           urgent: ticket.urgent,

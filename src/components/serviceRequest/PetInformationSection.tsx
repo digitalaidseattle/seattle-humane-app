@@ -1,8 +1,8 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import InputRadio from '@components/InputRadio';
 import InputText from '@components/InputText';
 import { PetInfoActionType, PetInformationContext, PetInformationDispatchContext } from '@context/serviceRequest/petInformationContext';
-import { EditableAnimalType } from '@types';
+import { AnimalType, EditableAnimalType } from '@types';
 import useAppConstants from '@hooks/useAppConstants';
 import { AppConstants } from 'src/constants';
 
@@ -45,6 +45,10 @@ export default function PetInformationSection(props: PetInformationSectionProps)
   const dispatch = useContext(PetInformationDispatchContext);
   //* Options for multi-choice controls
   const { data: speciesOptions } = useAppConstants(AppConstants.Species);
+  const [errors, setErrors] = useState<{ [key in keyof AnimalType]?: boolean }>({});
+  const setError = (field: string, error: boolean) => {
+    setErrors((p) => ({ ...p, [field]: error }));
+  };
 
   //* Map onChange handlers to dispatch
   const setFormData = (partialStateUpdate: Partial<EditableAnimalType>) => dispatch(
@@ -54,6 +58,13 @@ export default function PetInformationSection(props: PetInformationSectionProps)
   const setSpecies = (species: EditableAnimalType['species']) => setFormData({ species });
   const setAge = (age: EditableAnimalType['age']) => setFormData({ age });
   const setWeight = (weight: EditableAnimalType['weight']) => setFormData({ weight });
+  const validate = (fieldName: string) => {
+    // empty field check
+    if (fieldName === 'name') {
+      const name = formData[fieldName];
+      setError(fieldName, !name);
+    }
+  };
 
   return (
     <div className="grid">
@@ -74,6 +85,8 @@ export default function PetInformationSection(props: PetInformationSectionProps)
                 label={petInformationLabels.Name}
                 placeholder={petInformationLabels.Name}
                 onChange={(e) => setName(e.target.value)}
+                onBlur={() => validate('name')}
+                invalid={errors.name}
               />
             </div>
           )}
