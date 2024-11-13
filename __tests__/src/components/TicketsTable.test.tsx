@@ -1,5 +1,7 @@
 import '@testing-library/jest-dom';
-import { render, screen, fireEvent, within, prettyDOM, waitFor } from '@testing-library/react';
+import {
+  render, screen, fireEvent, within, prettyDOM, waitFor,
+} from '@testing-library/react';
 import TicketsTable from '@components/TicketsTable/TicketsTable';
 import type { ServiceRequestSummary } from '@types';
 import { mockServiceRequestSummaries } from '@utils/TestData';
@@ -22,7 +24,7 @@ const useAppConstantsMock = jest.mocked(useAppConstants);
 beforeEach(() => {
   jest.clearAllMocks();
   useAppConstantsMock.mockImplementation((type) => ({
-    data: MockAppConstants[type] || [], isLoading: false
+    data: MockAppConstants[type] || [], isLoading: false,
   }));
 });
 
@@ -38,13 +40,13 @@ describe('TicketsTable', () => {
   const row2 = items[0];
   function loadTable(tableItems = items) {
     render(
-      <TicketsTable items={tableItems} loading={false} />
+      <TicketsTable items={tableItems} loading={false} />,
     );
   }
   const Labels = {
     globalFilterOverlay: 'global filter menu overlay',
     globalFilterMenuButton: 'global filter menu',
-  }
+  };
 
   it('renders table headers correctly', () => {
     loadTable();
@@ -92,7 +94,6 @@ describe('TicketsTable', () => {
     expect(screen.getByText('No data found.')).toBeInTheDocument();
   });
 
-
   it('renders urgent tickets correctly', () => {
     loadTable([{ ...row, urgent: true }]);
     const urgentIcon = screen.getByLabelText('urgent');
@@ -122,7 +123,7 @@ describe('TicketsTable', () => {
 
     it('sorts the service category alphabetically', () => {
       let customItems = JSON.parse(JSON.stringify(items));
-      customItems = customItems.map(i => {
+      customItems = customItems.map((i) => {
         i.service_category = 'Vaccination';
         return i;
       });
@@ -130,7 +131,7 @@ describe('TicketsTable', () => {
       render(<TicketsTable items={customItems} />);
       const categoryHeader = screen.getByText('Category');
       fireEvent.click(categoryHeader);
-      
+
       const rows = screen.getAllByRole('row');
       const categories = rows.slice(3).map((row) => (row as HTMLTableRowElement).cells[1].textContent);
 
@@ -184,8 +185,8 @@ describe('TicketsTable', () => {
       const filterButton = screen.getByLabelText(Labels.globalFilterMenuButton);
       expect(filterButton).toBeInTheDocument();
       fireEvent.click(filterButton);
-      const globalFilters = ['Urgent', ...MockAppConstants.species.map(i => i.label)];
-      globalFilters.forEach(option => {
+      const globalFilters = ['Urgent', ...MockAppConstants.species.map((i) => i.label)];
+      globalFilters.forEach((option) => {
         expect(screen.getAllByLabelText(option)[0]).toBeInTheDocument();
       });
     });
@@ -220,9 +221,7 @@ describe('TicketsTable', () => {
     });
 
     it('should filter category (internal)', async () => {
-      const modifiedItems = items.map(item => {
-        return { ...item, service_category: MockAppConstants.category[0].label };
-      });
+      const modifiedItems = items.map((item) => ({ ...item, service_category: MockAppConstants.category[0].label }));
       const expectedCategory = MockAppConstants.category[1];
       const unexpectedCategory = MockAppConstants.category[0];
       modifiedItems[0].service_category = expectedCategory.label;
@@ -239,7 +238,7 @@ describe('TicketsTable', () => {
       // trigger dropdown
       await userEvent.click(dropdownContainer);
       // check dropdown options
-      MockAppConstants.category.forEach(option => {
+      MockAppConstants.category.forEach((option) => {
         const results = screen.getAllByText(new RegExp(option.label, 'i'));
         const dropdownOption = results[results.length - 1];
         expect(dropdownOption).toBeInTheDocument();
@@ -260,7 +259,7 @@ describe('TicketsTable', () => {
       waitFor(() => {
         fireEvent.click(filterMenuButton);
       });
-      // search for other categories 
+      // search for other categories
       // TODO: the test isn't triggering filtering functionality for some reason, but it works exactly right on UI
       const expectedSearchResults = screen.getAllByRole('cell', { name: new RegExp(expectedCategory.label, 'i') });
       // const unexpectedSearchResults = screen.getAllByText(new RegExp(unexpectedCategory.label, 'i'));
@@ -274,6 +273,98 @@ describe('TicketsTable', () => {
       // expect(rows).toHaveLength(1);
       // expect(unexpectedSearchResults[0]).toBeVisible();
       // expect(unexpectedSearchResults).toHaveLength(0);
+    });
+  });
+  describe('Global Search', () => {
+    it('renders global search input', () => {
+      render(<TicketsTable items={mockServiceRequestSummaries} />);
+      const searchInput = screen.getByPlaceholderText('Search all fields');
+      expect(searchInput).toBeInTheDocument();
+    });
+
+    it('filters table data based on global search input', async () => {
+      const testItems: ServiceRequestSummary[] = [
+        {
+          id: '1',
+          service_category: 'Checkup',
+          created_at: '2023-01-01T00:00:00Z',
+          urgent: false,
+          status: 'Open',
+          modified_at: '2023-01-01T00:00:00Z',
+          client: { first_name: 'John', last_name: 'Doe' },
+          pet: { name: 'Fluffy', species: 'Dog' },
+          team_member: { first_name: 'Dr. Smith', last_name: 'Johnson', email: 'smith@example.com' },
+        },
+        {
+          id: '2',
+          service_category: 'Vaccination',
+          created_at: '2023-01-02T00:00:00Z',
+          urgent: true,
+          status: 'Scheduled',
+          modified_at: '2023-01-02T00:00:00Z',
+          client: { first_name: 'Jane', last_name: 'Smith' },
+          pet: { name: 'Buddy', species: 'Cat' },
+          team_member: { first_name: 'Dr. Johnson', last_name: 'Brown', email: 'johnson@example.com' },
+        },
+      ];
+
+      render(<TicketsTable items={testItems} />);
+      const searchInput = screen.getByPlaceholderText('Search all fields');
+
+      // Search by client name
+      await userEvent.type(searchInput, 'John');
+      expect(screen.getByText('John')).toBeInTheDocument();
+      expect(screen.queryByText('Jane')).not.toBeInTheDocument();
+
+      // Clear search
+      await userEvent.clear(searchInput);
+
+      // Search by pet name
+      await userEvent.type(searchInput, 'Buddy');
+      expect(screen.getByText('Buddy')).toBeInTheDocument();
+      expect(screen.queryByText('Fluffy')).not.toBeInTheDocument();
+
+      // Clear search
+      await userEvent.clear(searchInput);
+
+      // Search by service category
+      await userEvent.type(searchInput, 'Vaccination');
+      expect(screen.getByText('Vaccination')).toBeInTheDocument();
+      expect(screen.queryByText('Checkup')).not.toBeInTheDocument();
+
+      // Clear search
+      await userEvent.clear(searchInput);
+
+      // Search by team member name
+      await userEvent.type(searchInput, 'Dr. Smith');
+      expect(screen.getByText('Dr. Smith')).toBeInTheDocument();
+      expect(screen.queryByText('Dr. Johnson')).not.toBeInTheDocument();
+    });
+
+    it('clears global search when reset button is clicked', async () => {
+      render(<TicketsTable items={mockServiceRequestSummaries} />);
+      const searchInput = screen.getByPlaceholderText('Search all fields');
+      const resetButton = screen.getByText('Clear');
+
+      await userEvent.type(searchInput, 'test search');
+      expect(searchInput).toHaveValue('test search');
+
+      fireEvent.click(resetButton);
+      expect(searchInput).toHaveValue('');
+    });
+
+    it('updates areFiltersActive when global search is used', async () => {
+      render(<TicketsTable items={mockServiceRequestSummaries} />);
+      const searchInput = screen.getByPlaceholderText('Search all fields');
+      const filterButton = screen.getByLabelText('global filter menu');
+
+      expect(filterButton).toHaveAttribute('aria-expanded', 'false');
+
+      await userEvent.type(searchInput, 'test search');
+      expect(filterButton).toHaveAttribute('aria-expanded', 'true');
+
+      await userEvent.clear(searchInput);
+      expect(filterButton).toHaveAttribute('aria-expanded', 'false');
     });
   });
 });
