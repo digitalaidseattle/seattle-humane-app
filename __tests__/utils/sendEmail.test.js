@@ -1,4 +1,4 @@
-import { sendEmail } from "@utils/sendEmail";
+import sendEmail from "@utils/sendEmail";
 import { Resend } from "resend";
 
 jest.mock('resend', () => {

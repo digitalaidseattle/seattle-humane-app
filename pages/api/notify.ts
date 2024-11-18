@@ -1,25 +1,24 @@
-
 import { NextApiRequest, NextApiResponse } from 'next';
 import { Resend } from 'resend';
 import ServiceRequestNotification from '@components/email-templates/ServiceRequestNotification';
 import { ServiceRequestSummary } from '@types';
-import { sendEmail } from '@utils/sendEmail';
+import sendEmail from '@utils/sendEmail';
 
 type RequestBody = {
   category: ServiceRequestSummary['service_category'],
   urgent: ServiceRequestSummary['urgent'],
   createdAt: ServiceRequestSummary['created_at'],
-}
+};
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
   if (req.method !== 'POST') {
-    return res.status(405).json({ error: "Method not allowed. Use POST." });
+    return res.status(405).json({ error: 'Method not allowed. Use POST.' });
   }
 
   try {
     const { category, urgent, createdAt }: RequestBody = req.body;
     if (!category || urgent === undefined || !createdAt) {
-      return res.status(400).json({ error: "Missing required fields: category, urgent, or createdAt." });
+      return res.status(400).json({ error: 'Missing required fields: category, urgent, or createdAt.' });
     }
     const { RESEND_FROM_EMAIL, RESEND_TO_EMAIL, RESEND_API_KEY } = process.env;
     if (!RESEND_FROM_EMAIL || !RESEND_TO_EMAIL || !RESEND_API_KEY) {
