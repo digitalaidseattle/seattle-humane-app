@@ -12,7 +12,7 @@ export default function ServiceRequestNotification(
   return (
     <div>
       <h3>
-        Heya! There&apos;s a new
+        Heya! There&apos;s a new {' '}
         {urgent && 'URGENT'}
         {' '}
         client service request waiting for you in the dashboard!
