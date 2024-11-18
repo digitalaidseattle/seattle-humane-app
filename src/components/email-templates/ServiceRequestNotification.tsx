@@ -18,11 +18,11 @@ export default function ServiceRequestNotification(
         client service request waiting for you in the dashboard!
       </h3>
       <h4>
-        Service Category:
+        Service Category:{' '}
         {category}
       </h4>
       <h4>
-        Created on:
+        Created on:{' '}
         {createdAt}
       </h4>
     </div>
