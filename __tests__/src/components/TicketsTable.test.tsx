@@ -277,7 +277,7 @@ describe('TicketsTable', () => {
   });
   describe('Global Search', () => {
     it('renders global search input', () => {
-      render(<TicketsTable items={mockServiceRequestSummaries} />);
+      render(<TicketsTable items={mockServiceRequestSummaries} allowGlobalFiltering />);
       const searchInput = screen.getByPlaceholderText('Search all fields');
       expect(searchInput).toBeInTheDocument();
     });

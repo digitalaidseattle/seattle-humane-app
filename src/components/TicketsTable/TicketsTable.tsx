@@ -3,11 +3,12 @@ import { Column, ColumnFilterElementTemplateOptions } from 'primereact/column';
 import { useRouter } from 'next/router';
 import type { ServiceRequestSummary } from '@types';
 import { FilterService } from 'primereact/api';
-import { ChangeEvent } from 'react';
+import { ChangeEvent, useState } from 'react';
 import useAppConstants from '@hooks/useAppConstants';
 import { AppConstants } from 'src/constants';
 import useTeamMembersAll from '@hooks/useTeamMembersAll';
 import useFilters, { filterByCreatedAt, passThroughFilter } from '@hooks/useFilters';
+import { InputText } from 'primereact/inputtext';
 import {
   CategoryFilterTemplate,
   CreatedAtBodyTemplate,
@@ -22,6 +23,7 @@ import {
 export interface TicketsTableProps {
   items: ServiceRequestSummary[]
   loading?: boolean
+  allowGlobalFiltering?: boolean
 }
 
 FilterService.register('custom_created_at', filterByCreatedAt);
@@ -30,11 +32,12 @@ FilterService.register('custom_created_at', filterByCreatedAt);
 // but keeps it registered to datatable interal state that filter changes are synced.
 FilterService.register('custom_client.first_name', passThroughFilter);
 
-function TicketsTable({ items, loading }: TicketsTableProps) {
+function TicketsTable({ items, loading, allowGlobalFiltering }: TicketsTableProps) {
   const router = useRouter();
   const { data: categoryOptions } = useAppConstants(AppConstants.Category);
   const { data: teamMemberOptions } = useTeamMembersAll();
   const { filteredItems, filters, setFilters } = useFilters(items || []);
+  const [globalFilterValue, setGlobalFilterValue] = useState<string>('');
 
   const ownerAndPetFilterHandler = (
     e: ChangeEvent<HTMLInputElement>,
@@ -57,12 +60,26 @@ function TicketsTable({ items, loading }: TicketsTableProps) {
     return sorted;
   };
 
-  const header = HeaderTemplate({
-    resetHandler: setFilters.clear,
-    areFiltersActive: filters.areFiltersActive,
-    filters: filters.external,
-    setFilters: setFilters.external,
-  });
+  const header = (
+    <div className="table-header">
+      <HeaderTemplate
+        resetHandler={setFilters.clear}
+        areFiltersActive={filters.areFiltersActive}
+        filters={filters.external}
+        setFilters={setFilters.external}
+      />
+      {allowGlobalFiltering && (
+        <span className="p-input-icon-left global-filter-input">
+          <i className="pi pi-search" />
+          <InputText
+            value={globalFilterValue}
+            onChange={(e) => setGlobalFilterValue(e.target.value)}
+            placeholder="Search all fields"
+          />
+        </span>
+      )}
+    </div>
+  );
 
   return (
     <DataTable
@@ -76,9 +93,10 @@ function TicketsTable({ items, loading }: TicketsTableProps) {
       className="datatable-responsive cursor-pointer"
       currentPageReportTemplate="Showing {first} to {last} of {totalRecords} tickets"
       rows={10}
+      rowHover
       onRowClick={(e) => router.push(`?ticket=${e.data.id}`)}
       rowClassName={(rowData) => `${rowData.urgent ? 'text-red-500' : ''} font-bold capitalize`}
-      rowHover
+      globalFilter={globalFilterValue} // Bind global filter value
       filters={filters.internal}
       filterDisplay="menu"
       onFilter={(event) => setFilters.internal(event.filters as any)}
