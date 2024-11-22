@@ -46,6 +46,7 @@ const Dashboard: React.FC = () => {
           <TicketsTable
             items={loadingOpenTickets ? [] : openTickets}
             loading={loadingOpenTickets}
+            allowGlobalFiltering
           />
         </div>
       </div>
