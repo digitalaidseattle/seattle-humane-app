@@ -41,14 +41,6 @@ function AppMenu() {
     items: [
 
       { label: 'Dashboard', icon: 'pi pi-fw pi-chart-line', to: '/' },
-      { label: 'Clients', icon: 'pi pi-fw pi-users', to: '/clients' },
-      {
-        label: 'Animals',
-        iconSrc: `${contextPath}/images/paw.svg`,
-        to: '/animals',
-        class: 'animals-icon',
-      },
-      { label: 'Reports', icon: 'pi pi-fw pi-book', to: '/reports' },
       {
         label: 'New Request',
         iconSrc: `${contextPath}/images/pawClipboard.svg`,
@@ -59,7 +51,7 @@ function AppMenu() {
         },
       },
       {
-        label: 'Profile',
+        label: 'Logout',
         icon: 'pi pi-user',
         to: '/auth/login',
         title: user?.email || 'user',
