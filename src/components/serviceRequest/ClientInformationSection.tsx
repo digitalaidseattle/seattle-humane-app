@@ -85,7 +85,7 @@ export default function ClientInformationSection(props: ClientInformationSection
     }
     if (fieldName === 'phone') {
       const { phone } = formData;
-      setError(fieldName, phone.length < 9);
+      setError(fieldName, phone.length < 10);
     }
   };
 
@@ -149,7 +149,7 @@ export default function ClientInformationSection(props: ClientInformationSection
             <div className="col-6">
               <InputText
                 id="phone"
-                maxLength={9}
+                maxLength={10}
                 value={formData.phone}
                 disabled={disabled}
                 label={clientInformationLabels.PhoneNumber}
