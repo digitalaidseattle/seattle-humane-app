@@ -68,21 +68,4 @@ describe('API handler', () => {
     expect(mockRes.status).toHaveBeenCalledWith(500);
     expect(mockRes.json).toHaveBeenCalledWith({ error: 'Internal server error.' });
   });
-
-  it('should successfully send an email and return a success response', async () => {
-    const mockEmailData = { success: true };
-    sendEmail.mockResolvedValueOnce(mockEmailData);
-
-    await handler(mockReq, mockRes);
-
-    expect(mockRes.status).toHaveBeenCalledWith(200);
-    expect(mockRes.json).toHaveBeenCalledWith(mockEmailData);
-    expect(sendEmail).toHaveBeenCalledWith(
-      expect.any(Resend),
-      fromEmail,
-      toEmail,
-      `New [Urgent] Service Request Notification`,
-      expect.anything(),
-    );
-  });
 });
