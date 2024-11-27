@@ -4,10 +4,9 @@ import useTicketsThisWeek from '@hooks/useTicketsThisWeek';
 export default function SummaryCards() {
   const ticketsThisWeek = useTicketsThisWeek();
   const myTickets = useMyTickets();
-
   return (
     <div className="grid col-12">
-      <div className="col-12 lg:col-6 xl:col-3">
+      <div className="col-12 lg:col-6">
         <div className="card mb-0">
           <div className="flex justify-content-between mb-3">
             <div>
@@ -20,7 +19,7 @@ export default function SummaryCards() {
           </div>
         </div>
       </div>
-      <div className="col-12 lg:col-6 xl:col-3">
+      <div className="col-12 lg:col-6">
         <div className="card mb-0">
           <div className="flex justify-content-between mb-3">
             <div>
