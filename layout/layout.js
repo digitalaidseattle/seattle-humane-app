@@ -107,12 +107,12 @@ const Layout = (props) => {
             <Head>
                 <title>Seattle Humane</title>
                 <meta charSet="UTF-8" />
-                <meta name="description" content="The ultimate collection of design-agnostic, flexible and accessible React UI Components." />
+                <meta name="description" content="A tool for handling incoming requests to the Seattle Humane Animal Shelter." />
                 <meta name="robots" content="index, follow" />
                 <meta name="viewport" content="initial-scale=1, width=device-width" />
                 <meta property="og:type" content="website"></meta>
                 <meta property="og:title" content="Seattle Humane"></meta>
-                <meta property="og:description" content="The ultimate collection of design-agnostic, flexible and accessible React UI Components." />
+                <meta property="og:description" content="A tool for handling incoming requests to the Seattle Humane Animal Shelter." />
                 <meta property="og:ttl" content="604800"></meta>
                 <link rel="icon" href={`${contextPath}/favicon.ico`} type="image/x-icon"></link>
             </Head>
