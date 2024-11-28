@@ -15,6 +15,7 @@ export default function useOpenTickets() {
         .filter((ticket) => ticket.status === open);
       return openTickets ?? [];
     },
+    { refreshInterval: 30000 }, // refresh every 30 seconds
   );
   return {
     data,
