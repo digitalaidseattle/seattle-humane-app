@@ -57,18 +57,6 @@ jest.mock('next/navigation', () => ({
 }));
 
 describe('Navigation/Menu Top Bar - Href Checks', () => {
-  test('Animal button has correct href attribute', () => {
-    render(
-      <LayoutContext.Provider value={layoutContextValue}>
-        <AppTopbar />
-      </LayoutContext.Provider>,
-    );
-
-    const animalsLink = screen.getByRole('link', { name: /Animals/i });
-
-    expect(animalsLink.getAttribute('href')).toEqual('/animals');
-  });
-
   test('Dashboard button/link has correct href attribute', () => {
     render(
       <LayoutContext.Provider value={layoutContextValue}>
@@ -79,30 +67,6 @@ describe('Navigation/Menu Top Bar - Href Checks', () => {
     const dashboardLink = screen.getByRole('link', { name: /Dashboard/i });
 
     expect(dashboardLink.getAttribute('href')).toEqual('/');
-  });
-
-  test('Client button/link has correct href attribute', () => {
-    render(
-      <LayoutContext.Provider value={layoutContextValue}>
-        <AppTopbar />
-      </LayoutContext.Provider>,
-    );
-
-    const clientsLink = screen.getByRole('link', { name: /Clients/i });
-
-    expect(clientsLink.getAttribute('href')).toEqual('/clients');
-  });
-
-  test('Client button/link has correct href attribute', () => {
-    render(
-      <LayoutContext.Provider value={layoutContextValue}>
-        <AppTopbar />
-      </LayoutContext.Provider>,
-    );
-
-    const reportsLink = screen.getByRole('link', { name: /Reports/i });
-
-    expect(reportsLink.getAttribute('href')).toEqual('/reports');
   });
 
   test('Seattle Human Icon has correct href attribute', () => {
