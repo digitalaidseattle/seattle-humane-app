@@ -1,0 +1,7 @@
+@media screen and (min-width: 1600px) {
+    .xxl\:col-6 {
+        flex: 0 0 auto;
+        padding: 0.5rem;
+        width: 50%;
+    }
+}
