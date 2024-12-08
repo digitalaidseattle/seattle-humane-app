@@ -61,23 +61,38 @@ function ServiceRequestDialog({ visible, onClose, ticketId }: ServiceRequestDial
     }
   };
 
+  const onEditClicked = () => {
+    // TODO: add edit logic, set readOnly to false
+    // eslint-disable-next-line no-alert
+    alert('edit btn clicked');
+  };
+
+  const checkForExistingData = () => {
+    // if there is data present, show edit btn
+  };
+
+  // ! Edit btn should only appear in Dialog that has existing data
+  // ! Cancel and Save btns should appear only in a new request
   const dialogFooter = (
     <FormConfirmationButtons
       disabled={disabled}
       onCancelClicked={hideDialog}
       onSaveClicked={onSaveClicked}
+      onEditClicked={onEditClicked}
       saving={disabled}
     />
   );
 
   return (
+    // FIXME: only show the Edit btn on forms with data
     <Dialog
       data-testid="serviceRequestDialog"
       visible={showDialog}
       style={{ width: '850px' }}
       header={serviceRequestLabels.FormHeader}
       modal
-      footer={!readOnly && dialogFooter}
+      // footer={!readOnly && dialogFooter}
+      footer={dialogFooter}
       onHide={hideDialog}
     >
       <div className="col-12 md:col-12">
@@ -91,6 +106,7 @@ function ServiceRequestDialog({ visible, onClose, ticketId }: ServiceRequestDial
             state={client}
             dispatch={clientInformationDispatch}
           >
+            {/* // ! Here is where you will toggle form inputs to editable */}
             <ClientInformationSection disabled={disabled} />
           </ClientInformationProvider>
           <PetInformationProvider state={pet} dispatch={petInformationDispatch}>

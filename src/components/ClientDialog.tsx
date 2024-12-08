@@ -58,6 +58,11 @@ function ClientDialog(props: ClientDialogProps) {
     animalDispatch({ type: PetInfoActionType.Clear });
   };
 
+  const editEnabled = () => {
+    // TODO: add edit logic
+    alert('edit btn clicked')
+  }
+
   const timeoutId = useRef(null);
 
   const autoFillClient = (type: string, value: string) => {
@@ -100,6 +105,7 @@ function ClientDialog(props: ClientDialogProps) {
       saving={busy}
       onCancelClicked={hideClientDialog}
       onSaveClicked={saveClientDialog}
+      onEditClicked={editEnabled}
     />
   );
 
