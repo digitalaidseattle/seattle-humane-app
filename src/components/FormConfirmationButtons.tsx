@@ -52,6 +52,7 @@ export default function FormConfirmationButtons(props: FormConfirmationButtonsPr
 
   // handler for toggling Edit btn text between 'edit' & 'save'
   const handleEditClick = () => {
+    // TODO check the value of isEditing, when 'save' is clicked alert values to user
     setIsEditing((prev) => !prev); // Toggle edit state
     if (onEditClicked) {
       onEditClicked(); // Call the handler if provided

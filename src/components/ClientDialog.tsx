@@ -58,10 +58,12 @@ function ClientDialog(props: ClientDialogProps) {
     animalDispatch({ type: PetInfoActionType.Clear });
   };
 
-  const editEnabled = () => {
-    // TODO: add edit logic
-    alert('edit btn clicked')
-  }
+  // FIXME: may not be necessary in this file
+  const onEditClicked = () => {
+    // TODO: add edit logic, set readOnly to false
+    // eslint-disable-next-line no-alert
+    alert('edit btn clicked');
+  };
 
   const timeoutId = useRef(null);
 
@@ -105,7 +107,8 @@ function ClientDialog(props: ClientDialogProps) {
       saving={busy}
       onCancelClicked={hideClientDialog}
       onSaveClicked={saveClientDialog}
-      onEditClicked={editEnabled}
+      onEditClicked={onEditClicked}
+
       showButtons={{ cancel: true, save: true, edit: true }}
     />
   );

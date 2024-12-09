@@ -43,7 +43,7 @@ function ServiceRequestDialog({ visible, onClose, ticketId }: ServiceRequestDial
   } = useServiceRequestForm(ticketId);
 
   // TODO delete console log
-  console.log('disabled value: ' + disabled);
+  // console.log('disabled value: ' + disabled);
   console.log(client);
   // console.log(pet);
   // console.log(ticket);
@@ -68,26 +68,33 @@ function ServiceRequestDialog({ visible, onClose, ticketId }: ServiceRequestDial
   };
 
   const onEditClicked = () => {
-    // TODO: add edit logic, set readOnly to false
-    // eslint-disable-next-line no-alert
-    alert('edit btn clicked');
+    // TODO: add edit mode logic, set readOnly to false
   };
 
-  const checkForExistingData = () => {
-    // if there is data present, show edit btn
+  const isNewRequest = (obj: any): boolean => {
+    /* Check for client.id, this differentiates
+    an open case from a new request */
+
+    if (obj.id) {
+      return false;
+    } return true;
   };
 
-  // ! Edit btn should only appear in Dialog that has existing data
-  // ! Cancel and Save btns should appear only in a new request
   const dialogFooter = (
-    // FIXME: only show the Edit btn on forms with data
     <FormConfirmationButtons
-      disabled={disabled}
+      disabled={false}
+      saving={disabled}
       onCancelClicked={hideDialog}
       onSaveClicked={onSaveClicked}
       onEditClicked={onEditClicked}
-      saving={disabled}
-      showButtons={{ cancel: true, save: true, edit: true }}
+      showButtons={
+        {
+          // FIXME: Is inverting the return value best practices?
+          cancel: isNewRequest(client),
+          save: isNewRequest(client),
+          edit: !isNewRequest(client),
+        }
+        }
     />
   );
 
