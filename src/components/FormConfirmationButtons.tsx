@@ -18,6 +18,12 @@ interface FormConfirmationButtonsProps {
   disabled: boolean
   /** Whether to show the save button loading state */
   saving: boolean
+  /** Flag to show or hide buttons dynamically */
+  showButtons: {
+    cancel?: boolean;
+    save?: boolean;
+    edit?: boolean;
+  };
 }
 
 /**
@@ -25,14 +31,15 @@ interface FormConfirmationButtonsProps {
  * @param props {@link FormConfirmationButtonsProps}
  * @returns Controlled Cancel and Save button elements
  */
+
 export default function FormConfirmationButtons(props: FormConfirmationButtonsProps) {
-  const [editBtnText, setEditBtnText] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
 
   // TODO localize
   const Labels = {
     Cancel: 'Cancel',
     Save: 'Save',
-    Edit: editBtnText ? 'Edit' : 'Save',
+    Edit: isEditing ? 'Save' : 'Edit',
   };
 
   const {
@@ -40,11 +47,12 @@ export default function FormConfirmationButtons(props: FormConfirmationButtonsPr
     saveLabel = Labels.Save, onSaveClicked,
     editLabel = Labels.Edit, onEditClicked,
     disabled, saving,
+    showButtons = { cancel: true, save: true, edit: true },
   } = props;
 
   // handler for toggling Edit btn text between 'edit' & 'save'
   const handleEditClick = () => {
-    setEditBtnText((prev) => !prev); // Toggle edit state
+    setIsEditing((prev) => !prev); // Toggle edit state
     if (onEditClicked) {
       onEditClicked(); // Call the handler if provided
     }
@@ -52,9 +60,33 @@ export default function FormConfirmationButtons(props: FormConfirmationButtonsPr
 
   return (
     <>
-      <Button label={cancelLabel} disabled={disabled} icon="pi pi-times" className="p-button-text" onClick={onCancelClicked} />
-      <Button label={saveLabel} disabled={disabled} icon="pi pi-check" className="p-button-text" loading={saving} onClick={onSaveClicked} />
-      <Button label={editLabel} disabled={disabled} className="p-button-text" onClick={handleEditClick} />
+      {showButtons.cancel && (
+        <Button
+          label={cancelLabel}
+          disabled={disabled}
+          icon="pi pi-times"
+          className="p-button-text"
+          onClick={onCancelClicked}
+        />
+      )}
+      {showButtons.save && !isEditing && (
+        <Button
+          label={saveLabel}
+          disabled={disabled}
+          icon="pi pi-check"
+          className="p-button-text"
+          loading={saving}
+          onClick={onSaveClicked}
+        />
+      )}
+      {showButtons.edit && (
+        <Button
+          label={editLabel}
+          disabled={disabled}
+          className="p-button-text"
+          onClick={handleEditClick}
+        />
+      )}
     </>
   );
 }

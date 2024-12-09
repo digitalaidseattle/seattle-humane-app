@@ -42,6 +42,12 @@ function ServiceRequestDialog({ visible, onClose, ticketId }: ServiceRequestDial
     clientInformationDispatch, petInformationDispatch, serviceInformationDispatch,
   } = useServiceRequestForm(ticketId);
 
+  // TODO delete console log
+  console.log('disabled value: ' + disabled);
+  console.log(client);
+  // console.log(pet);
+  // console.log(ticket);
+
   const [showDialog, setShowDialog] = useState(false);
 
   useEffect(() => {
@@ -74,17 +80,18 @@ function ServiceRequestDialog({ visible, onClose, ticketId }: ServiceRequestDial
   // ! Edit btn should only appear in Dialog that has existing data
   // ! Cancel and Save btns should appear only in a new request
   const dialogFooter = (
+    // FIXME: only show the Edit btn on forms with data
     <FormConfirmationButtons
       disabled={disabled}
       onCancelClicked={hideDialog}
       onSaveClicked={onSaveClicked}
       onEditClicked={onEditClicked}
       saving={disabled}
+      showButtons={{ cancel: true, save: true, edit: true }}
     />
   );
 
   return (
-    // FIXME: only show the Edit btn on forms with data
     <Dialog
       data-testid="serviceRequestDialog"
       visible={showDialog}

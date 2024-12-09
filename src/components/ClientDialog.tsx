@@ -106,6 +106,7 @@ function ClientDialog(props: ClientDialogProps) {
       onCancelClicked={hideClientDialog}
       onSaveClicked={saveClientDialog}
       onEditClicked={editEnabled}
+      showButtons={{ cancel: true, save: true, edit: true }}
     />
   );
 
