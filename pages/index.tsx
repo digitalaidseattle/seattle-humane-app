@@ -22,8 +22,8 @@ const Dashboard: React.FC = () => {
 
   return (
     <div className="grid">
-      <SummaryCards />
-      <div className="col-12 xl:col-6">
+      <div className="col-12 xxl:col-6">
+        <SummaryCards />
         <div className="card">
           <h5>My Cases</h5>
           <TicketsTable
@@ -40,7 +40,7 @@ const Dashboard: React.FC = () => {
         </div>
       </div>
 
-      <div className="col-12 xl:col-6">
+      <div className="col-12 xxl:col-6">
         <div className="card">
           <h5>All open cases</h5>
           <TicketsTable
