@@ -38,7 +38,8 @@
     },
     "resolutions": {
         "wrap-ansi": "7.0.0",
-        "string-width": "4.2.3"
+        "string-width": "4.2.3",
+        "eslint-plugin-react-hooks": "4.6.2"
     },
     "devDependencies": {
         "@next/eslint-plugin-next": "^14.1.2",
