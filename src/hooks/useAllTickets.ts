@@ -7,7 +7,7 @@ export default function useAllTickets() {
   } = useSWR(
     'dataservice/alltickets',
     async () => DataService.getServiceRequestSummary(),
-    { refreshInterval: 30000 }, // refresh every 30 seconds
+    { refreshInterval: 120000 }, // refresh every 2 minutes
   );
 
   return {

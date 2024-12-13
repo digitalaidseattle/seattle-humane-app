@@ -51,7 +51,7 @@ describe('useRecentlyClosedTickets', () => {
       expect.stringMatching('dataservice/alltickets'),
       expect.any(Function),
       expect.objectContaining({
-        refreshInterval: 30000,
+        refreshInterval: 120000,
       }),
     );
   });
