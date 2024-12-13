@@ -44,13 +44,26 @@ describe('useMyTickets', () => {
     expect(result.current.data).toEqual(mockMyTickets);
   });
 
-  it('sets up auto-refresh with correct interval', () => {
+  it('sets up auto-refresh with correct interval', async () => {
+    // Arrange
+    const mockMyTickets = mockServiceRequestSummaries
+      .filter((t) => t.team_member.email === mockTeamMember1.email);
+
+    (useSWR as jest.Mock).mockReturnValue({
+      data: mockMyTickets,
+      isLoading: false,
+    });
+
     // Act
-    renderHook(useMyTickets, { wrapper });
+    const { result } = renderHook(useMyTickets, { wrapper });
 
     // Assert
+    await waitFor(() => {
+      expect(result.current.isLoading).toBe(false);
+    });
+    // check if all tickets is called - this is what is called first
     expect(useSWR).toHaveBeenCalledWith(
-      'dataservice/mytickets',
+      'dataservice/alltickets',
       expect.any(Function),
       expect.objectContaining({
         refreshInterval: 30000,

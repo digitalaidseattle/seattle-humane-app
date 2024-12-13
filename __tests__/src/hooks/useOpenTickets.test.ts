@@ -48,8 +48,9 @@ describe('useOpenTickets', () => {
     renderHook(useOpenTickets);
 
     // Assert
+    // check all tickets - this is called as a part of the function
     expect(useSWR).toHaveBeenCalledWith(
-      'dataservice/opentickets',
+      'dataservice/alltickets',
       expect.any(Function),
       expect.objectContaining({
         refreshInterval: 30000,
