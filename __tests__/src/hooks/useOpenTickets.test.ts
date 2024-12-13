@@ -42,19 +42,4 @@ describe('useOpenTickets', () => {
     const lastTicketTimestamp = new Date(lastTicket.created_at).valueOf();
     expect(firstTicketTimestamp).toBeGreaterThan(lastTicketTimestamp);
   });
-
-  it('sets up auto-refresh with correct interval', () => {
-    // Act
-    renderHook(useOpenTickets);
-
-    // Assert
-    // check all tickets - this is called as a part of the function
-    expect(useSWR).toHaveBeenCalledWith(
-      'dataservice/alltickets',
-      expect.any(Function),
-      expect.objectContaining({
-        refreshInterval: 120000,
-      }),
-    );
-  });
 });

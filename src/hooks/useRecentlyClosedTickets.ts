@@ -16,7 +16,6 @@ export default function useRecentlyClosedTickets() {
         .sort((a, b) => new Date(b.modified_at).valueOf() - new Date(a.modified_at).valueOf());
       return recentlyClosedTickets ?? [];
     },
-    { refreshInterval: 120000 }, // refresh every 2 minutes
   );
   return {
     data,

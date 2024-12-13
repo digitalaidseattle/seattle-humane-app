@@ -12,7 +12,6 @@ export default function useMyTickets() {
     () => (!loadingAllTickets && !isValidating) && 'dataservice/mytickets',
     async () => tickets
       .filter((ticket) => ticket.team_member.email === user.email),
-    { refreshInterval: 120000 }, // refresh every 2 minutes
   );
   return {
     data: data ?? [],

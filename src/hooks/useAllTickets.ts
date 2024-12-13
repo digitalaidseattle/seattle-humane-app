@@ -1,16 +1,19 @@
+import { useMemo } from 'react';
 import * as DataService from '@services/DataService';
 import useSWR from 'swr';
 
 export default function useAllTickets() {
   const {
-    data, isLoading, isValidating,
+    data: fetchedData, isLoading, isValidating,
   } = useSWR(
     'dataservice/alltickets',
     async () => DataService.getServiceRequestSummary(),
-    { refreshInterval: 120000 }, // refresh every 2 minutes
+    { refreshInterval: 10000 },
   );
 
+  const data = useMemo(() => fetchedData ?? [], [fetchedData]);
+
   return {
-    data: data ?? [], isLoading, isValidating,
+    data, isLoading, isValidating,
   };
 }

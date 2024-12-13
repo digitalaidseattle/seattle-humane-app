@@ -33,7 +33,7 @@ describe('useAllTickets', () => {
       'dataservice/alltickets',
       expect.any(Function),
       expect.objectContaining({
-        refreshInterval: 120000,
+        refreshInterval: 10000,
       }),
     );
   });

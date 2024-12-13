@@ -41,18 +41,4 @@ describe('useRecentlyClosedTickets', () => {
     expect(new Date(firstTicket.created_at).valueOf())
       .toBeGreaterThan(new Date(lastTicket.created_at).valueOf());
   });
-
-  it('sets up auto-refresh with correct interval', () => {
-    // Act
-    renderHook(useRecentlyClosedTickets);
-
-    // Assert
-    expect(useSWR).toHaveBeenCalledWith(
-      expect.stringMatching('dataservice/alltickets'),
-      expect.any(Function),
-      expect.objectContaining({
-        refreshInterval: 120000,
-      }),
-    );
-  });
 });
