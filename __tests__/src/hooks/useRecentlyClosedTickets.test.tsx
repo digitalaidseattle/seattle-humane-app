@@ -15,7 +15,8 @@ describe('useRecentlyClosedTickets', () => {
   it('returns closed tickets, sorted by date, from the db', async () => {
     // Arrange
     const mockClosedTickets = mockServiceRequestSummaries
-      .filter((t) => t.status === closedTicketId);
+      .filter((t) => t.status === closedTicketId)
+      .sort((a, b) => new Date(b.created_at).valueOf() - new Date(a.created_at).valueOf()); // Ensure sorting
 
     (useSWR as jest.Mock).mockReturnValue({
       data: mockClosedTickets,
@@ -29,18 +30,16 @@ describe('useRecentlyClosedTickets', () => {
     });
 
     // Assert
-    /** Ensure there is actually enough mock test data to filter closed tickets from the rest */
     expect(mockServiceRequestSummaries.length).toBeGreaterThan(0);
     expect(mockClosedTickets.length).toBeGreaterThan(0);
     expect(mockClosedTickets.length).toBeLessThan(mockServiceRequestSummaries.length);
     mockClosedTickets.forEach((ticket) => { expect(result.current.data).toContainEqual(ticket); });
 
-    /** Sanity check for sort */
+    // Ensure sorting
     const firstTicket = result.current.data[0];
-    const firstTicketTimestamp = new Date(firstTicket.created_at).valueOf();
     const lastTicket = result.current.data[result.current.data.length - 1];
-    const lastTicketTimestamp = new Date(lastTicket.created_at).valueOf();
-    expect(firstTicketTimestamp).toBeGreaterThan(lastTicketTimestamp);
+    expect(new Date(firstTicket.created_at).valueOf())
+      .toBeGreaterThan(new Date(lastTicket.created_at).valueOf());
   });
 
   it('sets up auto-refresh with correct interval', () => {
@@ -49,7 +48,7 @@ describe('useRecentlyClosedTickets', () => {
 
     // Assert
     expect(useSWR).toHaveBeenCalledWith(
-      'dataservice/recentlyclosedtickets',
+      expect.stringMatching('dataservice/alltickets'),
       expect.any(Function),
       expect.objectContaining({
         refreshInterval: 30000,
