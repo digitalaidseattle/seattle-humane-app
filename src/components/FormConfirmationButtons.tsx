@@ -1,23 +1,24 @@
-import { useState } from 'react';
-import { Button } from 'primereact/button';
+/* eslint-disable jsx-quotes */
+/* eslint-disable @typescript-eslint/quotes */
+import { Button } from "primereact/button";
 
 interface FormConfirmationButtonsProps {
   /** The label for the Cancel button */
-  cancelLabel?: string
+  cancelLabel?: string;
   /** The handler for the Cancel button press */
-  onCancelClicked: () => void
+  onCancelClicked: () => void;
   /** The label for the Save button */
-  saveLabel?: string
+  saveLabel?: string;
   /** The handler for the Save button press */
-  onSaveClicked: () => void
+  onSaveClicked: () => void;
   /** The label for the Edit button */
-  editLabel?: string
+  editLabel?: string;
   /** The handler for the Edit button press */
-  onEditClicked: () => void
+  onEditClicked: () => void;
   /** Flag to enable/disable the buttons */
-  disabled: boolean
+  disabled: boolean;
   /** Whether to show the save button loading state */
-  saving: boolean
+  saving: boolean;
   /** Flag to show or hide buttons dynamically */
   showButtons: {
     cancel?: boolean;
@@ -32,32 +33,28 @@ interface FormConfirmationButtonsProps {
  * @returns Controlled Cancel and Save button elements
  */
 
-export default function FormConfirmationButtons(props: FormConfirmationButtonsProps) {
-  const [isEditing, setIsEditing] = useState(false);
-
+export default function FormConfirmationButtons(
+  props: FormConfirmationButtonsProps
+) {
   // TODO localize
+  // FIXME: isEditing should be a prop and only change when btn is pressed and or successfully saved
   const Labels = {
-    Cancel: 'Cancel',
-    Save: 'Save',
-    Edit: isEditing ? 'Save' : 'Edit',
+    Cancel: "Cancel",
+    Save: "Save",
+    Edit: "Edit",
   };
 
   const {
-    cancelLabel = Labels.Cancel, onCancelClicked,
-    saveLabel = Labels.Save, onSaveClicked,
-    editLabel = Labels.Edit, onEditClicked,
-    disabled, saving,
+    cancelLabel = Labels.Cancel,
+    onCancelClicked,
+    saveLabel = Labels.Save,
+    onSaveClicked,
+    editLabel = Labels.Edit,
+    onEditClicked,
+    disabled,
+    saving,
     showButtons = { cancel: true, save: true, edit: true },
   } = props;
-
-  // handler for toggling Edit btn text between 'edit' & 'save'
-  const handleEditClick = () => {
-    // TODO check the value of isEditing, when 'save' is clicked alert values to user
-    setIsEditing((prev) => !prev); // Toggle edit state
-    if (onEditClicked) {
-      onEditClicked(); // Call the handler if provided
-    }
-  };
 
   return (
     <>
@@ -65,17 +62,17 @@ export default function FormConfirmationButtons(props: FormConfirmationButtonsPr
         <Button
           label={cancelLabel}
           disabled={disabled}
-          icon="pi pi-times"
-          className="p-button-text"
+          icon='pi pi-times'
+          className='p-button-text'
           onClick={onCancelClicked}
         />
       )}
-      {showButtons.save && !isEditing && (
+      {showButtons.save && (
         <Button
           label={saveLabel}
           disabled={disabled}
-          icon="pi pi-check"
-          className="p-button-text"
+          icon='pi pi-check'
+          className='p-button-text'
           loading={saving}
           onClick={onSaveClicked}
         />
@@ -84,8 +81,8 @@ export default function FormConfirmationButtons(props: FormConfirmationButtonsPr
         <Button
           label={editLabel}
           disabled={disabled}
-          className="p-button-text"
-          onClick={handleEditClick}
+          className='p-button-text'
+          onClick={onEditClicked}
         />
       )}
     </>

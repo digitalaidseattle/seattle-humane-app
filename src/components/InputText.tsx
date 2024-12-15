@@ -1,17 +1,23 @@
-import { InputTextProps as PrimeReactInputTextProps, InputText as PrimeReactInputText } from 'primereact/inputtext';
-import { InputMaskProps as PrimeReactInputMaskProps, InputMask as PrimeReactInputMask } from 'primereact/inputmask';
-import { ReactNode } from 'react';
+import {
+  InputTextProps as PrimeReactInputTextProps,
+  InputText as PrimeReactInputText,
+} from "primereact/inputtext";
+import {
+  InputMaskProps as PrimeReactInputMaskProps,
+  InputMask as PrimeReactInputMask,
+} from "primereact/inputmask";
+import { ReactNode } from "react";
 
 /** The properties for the InputText component */
 export interface InputTextProps extends PrimeReactInputTextProps {
   /** The label for the element */
-  label: string,
-  helpText?: ReactNode,
-  invalid?: boolean,
+  label: string;
+  helpText?: ReactNode;
+  invalid?: boolean;
 }
 export interface InputMaskProps extends PrimeReactInputMaskProps {
-  label: string,
-  invalid?: boolean,
+  label: string;
+  invalid?: boolean;
 }
 
 /**
@@ -36,31 +42,25 @@ export default function InputText(props: InputTextProps) {
     maxLength,
   } = props;
   return (
-    <div className="flex flex-column gap-2">
-      <label
-        htmlFor={id}
-        className={invalid && 'p-error'}
-      >
+    <div className='flex flex-column gap-2'>
+      <label htmlFor={id} className={invalid && "p-error"}>
         {label}
       </label>
       <PrimeReactInputText
         id={id}
-        className={invalid && 'p-invalid'}
+        className={invalid && "p-invalid"}
         placeholder={placeholder}
         value={value}
         disabled={disabled}
         type={type}
         onChange={(...args) => !disabled && onChange(...args)}
-        aria-describedby="help-text"
+        aria-describedby='help-text'
         onBlur={onBlur}
         onFocus={onFocus}
         keyfilter={keyfilter}
         maxLength={maxLength}
       />
-      <small
-        id="help-text"
-        className={invalid && 'p-error'}
-      >
+      <small id='help-text' className={invalid && "p-error"}>
         {helpText}
       </small>
     </div>
@@ -68,14 +68,20 @@ export default function InputText(props: InputTextProps) {
 }
 export function InputMask(props: InputMaskProps) {
   const {
-    id, value, type, onChange, disabled, label, placeholder, mask, invalid, onBlur,
+    id,
+    value,
+    type,
+    onChange,
+    disabled,
+    label,
+    placeholder,
+    mask,
+    invalid,
+    onBlur,
   } = props;
   return (
-    <div className="flex flex-column gap-2">
-      <label
-        htmlFor={id}
-        className={invalid && 'p-error'}
-      >
+    <div className='flex flex-column gap-2'>
+      <label htmlFor={id} className={invalid && "p-error"}>
         {label}
       </label>
       <PrimeReactInputMask
@@ -87,7 +93,7 @@ export function InputMask(props: InputMaskProps) {
         mask={mask}
         onBlur={onBlur}
         onChange={(...args) => !disabled && onChange(...args)}
-        className={invalid && 'p-invalid'}
+        className={invalid && "p-invalid"}
         autoClear={false}
       />
     </div>

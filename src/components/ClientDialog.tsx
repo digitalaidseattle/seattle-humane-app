@@ -1,32 +1,42 @@
 /* eslint-disable react/destructuring-assignment */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /**
-* ClientDialog.js
-*
-* @2023 Digital Aid Seattle
-*/
+ * ClientDialog.js
+ *
+ * @2023 Digital Aid Seattle
+ */
 
-import { Dialog } from 'primereact/dialog';
-import React, {
-  useEffect, useState, useRef, useReducer,
-} from 'react';
+import { Dialog } from "primereact/dialog";
+import React, { useEffect, useState, useRef, useReducer } from "react";
 import {
-  ClientInfoActionType, ClientInformationProvider, clientInfoReducer, defaultClientInformation,
-} from '@context/serviceRequest/clientInformationContext';
+  ClientInfoActionType,
+  ClientInformationProvider,
+  clientInfoReducer,
+  defaultClientInformation,
+} from "@context/serviceRequest/clientInformationContext";
 import {
-  PetInfoActionType, PetInformationProvider, defaultPetInformation, petInfoReducer,
-} from '@context/serviceRequest/petInformationContext';
+  PetInfoActionType,
+  PetInformationProvider,
+  defaultPetInformation,
+  petInfoReducer,
+} from "@context/serviceRequest/petInformationContext";
 import {
-  ServiceInfoActionType, ServiceInformationProvider, defaultServiceInformation, serviceInfoReducer,
-} from '@context/serviceRequest/serviceInformationContext';
-import * as DataService from '@services/DataService';
+  ServiceInfoActionType,
+  ServiceInformationProvider,
+  defaultServiceInformation,
+  serviceInfoReducer,
+} from "@context/serviceRequest/serviceInformationContext";
+import * as DataService from "@services/DataService";
 import {
-  EditableAnimalType, EditableClientType, EditableServiceRequestType, ServiceRequestType,
-} from '@types';
-import FormConfirmationButtons from '@components/FormConfirmationButtons';
-import ClientInformationSection from '@components/serviceRequest/ClientInformationSection';
-import PetInformationSection from '@components/serviceRequest/PetInformationSection';
-import ServiceInformationSection from '@components/serviceRequest/ServiceInformationSection';
+  EditableAnimalType,
+  EditableClientType,
+  EditableServiceRequestType,
+  ServiceRequestType,
+} from "@types";
+import FormConfirmationButtons from "@components/FormConfirmationButtons";
+import ClientInformationSection from "@components/serviceRequest/ClientInformationSection";
+import PetInformationSection from "@components/serviceRequest/PetInformationSection";
+import ServiceInformationSection from "@components/serviceRequest/ServiceInformationSection";
 
 interface ClientDialogProps {
   visible: boolean;
@@ -38,9 +48,18 @@ function ClientDialog(props: ClientDialogProps) {
   const [clientDialog, setClientDialog] = useState(false);
 
   //* Get state and dispatchers for the from sections
-  const [request, requestDispatch] = useReducer(serviceInfoReducer, defaultServiceInformation);
-  const [client, clientDispatch] = useReducer(clientInfoReducer, defaultClientInformation);
-  const [animal, animalDispatch] = useReducer(petInfoReducer, defaultPetInformation);
+  const [request, requestDispatch] = useReducer(
+    serviceInfoReducer,
+    defaultServiceInformation
+  );
+  const [client, clientDispatch] = useReducer(
+    clientInfoReducer,
+    defaultClientInformation
+  );
+  const [animal, animalDispatch] = useReducer(
+    petInfoReducer,
+    defaultPetInformation
+  );
 
   useEffect(() => {
     setClientDialog(props.visible);
@@ -62,7 +81,7 @@ function ClientDialog(props: ClientDialogProps) {
   const onEditClicked = () => {
     // TODO: add edit logic, set readOnly to false
     // eslint-disable-next-line no-alert
-    alert('edit btn clicked');
+    alert("edit btn clicked");
   };
 
   const timeoutId = useRef(null);
@@ -70,7 +89,7 @@ function ClientDialog(props: ClientDialogProps) {
   const autoFillClient = (type: string, value: string) => {
     // REVIEW: This could also be solved with an onBlur call, so that the check
     // against the DB only happens when user leaves the email field.
-    if (type === 'email') {
+    if (type === "email") {
       if (timeoutId.current) {
         clearTimeout(timeoutId.current);
       }
@@ -78,7 +97,10 @@ function ClientDialog(props: ClientDialogProps) {
       // The request to DB for client will trigger 1sec after staff stops typing
       timeoutId.current = setTimeout(async () => {
         try {
-          const clientResponse = await DataService.getClientByIdOrEmail('email', value);
+          const clientResponse = await DataService.getClientByIdOrEmail(
+            "email",
+            value
+          );
 
           if (clientResponse !== null) {
             clientDispatch({
@@ -91,7 +113,9 @@ function ClientDialog(props: ClientDialogProps) {
               },
             });
           }
-        } catch (error) { console.log(error); }
+        } catch (error) {
+          console.log(error);
+        }
       }, 1000);
     }
   };
@@ -108,7 +132,6 @@ function ClientDialog(props: ClientDialogProps) {
       onCancelClicked={hideClientDialog}
       onSaveClicked={saveClientDialog}
       onEditClicked={onEditClicked}
-
       showButtons={{ cancel: true, save: true, edit: true }}
     />
   );
@@ -116,32 +139,23 @@ function ClientDialog(props: ClientDialogProps) {
   return (
     <Dialog
       visible={clientDialog}
-      style={{ width: '650px' }}
-      header="Client Request"
+      style={{ width: "650px" }}
+      header='Client Request'
       modal
-      className="p-fluid"
+      className='p-fluid'
       footer={clientDialogFooter}
       onHide={hideClientDialog}
     >
-      <div className="col-12 md:col-12">
-        <div className="card p-fluid">
-          <ClientInformationProvider
-            state={client}
-            dispatch={clientDispatch}
-          >
+      <div className='col-12 md:col-12'>
+        <div className='card p-fluid'>
+          <ClientInformationProvider state={client} dispatch={clientDispatch}>
             <ClientInformationSection
               disabled={busy}
-              show={['first_name', 'last_name', 'email', 'phone']}
+              show={["first_name", "last_name", "email", "phone"]}
             />
           </ClientInformationProvider>
-          <PetInformationProvider
-            state={animal}
-            dispatch={animalDispatch}
-          >
-            <PetInformationSection
-              disabled={busy}
-              show={['name', 'species']}
-            />
+          <PetInformationProvider state={animal} dispatch={animalDispatch}>
+            <PetInformationSection disabled={busy} show={["name", "species"]} />
           </PetInformationProvider>
           <ServiceInformationProvider
             state={request}
@@ -149,7 +163,7 @@ function ClientDialog(props: ClientDialogProps) {
           >
             <ServiceInformationSection
               disabled={busy}
-              show={['service_category']}
+              show={["service_category"]}
             />
           </ServiceInformationProvider>
         </div>

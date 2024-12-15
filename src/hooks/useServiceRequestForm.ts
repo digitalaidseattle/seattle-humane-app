@@ -1,38 +1,56 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
-import { useReducer, useState } from 'react';
+import { useReducer, useState } from "react";
 import {
-  ClientInfoActionType, clientInfoReducer, defaultClientInformation,
-} from '@context/serviceRequest/clientInformationContext';
+  ClientInfoActionType,
+  clientInfoReducer,
+  defaultClientInformation,
+} from "@context/serviceRequest/clientInformationContext";
 import {
-  petInfoReducer, defaultPetInformation, PetInfoActionType,
-} from '@context/serviceRequest/petInformationContext';
+  petInfoReducer,
+  defaultPetInformation,
+  PetInfoActionType,
+} from "@context/serviceRequest/petInformationContext";
 import {
-  serviceInfoReducer, defaultServiceInformation, ServiceInfoActionType,
-} from '@context/serviceRequest/serviceInformationContext';
-import useTicketById from '@hooks/useTicketById';
-import * as DataService from '@services/DataService';
+  serviceInfoReducer,
+  defaultServiceInformation,
+  ServiceInfoActionType,
+} from "@context/serviceRequest/serviceInformationContext";
+import useTicketById from "@hooks/useTicketById";
+import * as DataService from "@services/DataService";
 import {
-  EditableAnimalType, EditableClientType, EditableServiceRequestType, ServiceRequestType,
-} from '@types';
+  EditableAnimalType,
+  EditableClientType,
+  EditableServiceRequestType,
+  ServiceRequestType,
+} from "@types";
 
-export default function useServiceRequestForm(ticketId: ServiceRequestType['id']) {
+export default function useServiceRequestForm(
+  ticketId: ServiceRequestType["id"]
+) {
   const [busy, setBusy] = useState(false);
-  const [message, setMessage] = useState('');
+  const [message, setMessage] = useState("");
   const [readOnly, setReadOnly] = useState(false);
-  const { client: savedClient, animal: savedAnimal, ticket: savedTicket } = useTicketById(ticketId);
+  const {
+    client: savedClient,
+    animal: savedAnimal,
+    ticket: savedTicket,
+  } = useTicketById(ticketId);
 
   //* Get state and dispatchers for the from sections
-  const [
-    newClient, clientInformationDispatch,
-  ] = useReducer(clientInfoReducer, defaultClientInformation);
+  const [newClient, clientInformationDispatch] = useReducer(
+    clientInfoReducer,
+    defaultClientInformation
+  );
 
-  const [
-    newPet, petInformationDispatch,
-  ] = useReducer(petInfoReducer, defaultPetInformation);
+  const [newPet, petInformationDispatch] = useReducer(
+    petInfoReducer,
+    defaultPetInformation
+  );
 
-  const [
-    newTicket, serviceInformationDispatch,
-  ] = useReducer(serviceInfoReducer, defaultServiceInformation);
+  const [newTicket, serviceInformationDispatch] = useReducer(
+    serviceInfoReducer,
+    defaultServiceInformation
+  );
 
   const dataState = { client: newClient, pet: newPet, ticket: newTicket };
   if (ticketId) {
@@ -51,7 +69,7 @@ export default function useServiceRequestForm(ticketId: ServiceRequestType['id']
     clientInformationDispatch({ type: ClientInfoActionType.Clear });
     petInformationDispatch({ type: PetInfoActionType.Clear });
     serviceInformationDispatch({ type: ServiceInfoActionType.Clear });
-    setMessage('');
+    setMessage("");
   };
 
   const save = async () => {
@@ -59,11 +77,7 @@ export default function useServiceRequestForm(ticketId: ServiceRequestType['id']
     setBusy(true);
     // TODO add error handling scenario
     try {
-      await handleTicketCreation(
-        newTicket,
-        newClient,
-        newPet,
-      );
+      await handleTicketCreation(newTicket, newClient, newPet);
       return true;
     } catch (e) {
       setMessage(e.message);
@@ -89,15 +103,17 @@ export default function useServiceRequestForm(ticketId: ServiceRequestType['id']
 async function handleTicketCreation(
   request: EditableServiceRequestType,
   client: EditableClientType,
-  animal: EditableAnimalType,
-)
-  : Promise<ServiceRequestType> {
+  animal: EditableAnimalType
+): Promise<ServiceRequestType> {
   let animalId: string;
   let clientId: string;
 
   // Check if client exists and create one if not
   // No Upsert operations currently in the supabaseClient library AFAIK
-  const existingClient = await DataService.getClientByIdOrEmail('email', client.email);
+  const existingClient = await DataService.getClientByIdOrEmail(
+    "email",
+    client.email
+  );
   // TODO: Deal with modifying client information if it already exists
   if (!existingClient) {
     const newClient = await DataService.createClient(client);
