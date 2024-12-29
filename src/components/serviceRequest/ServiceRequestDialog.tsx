@@ -1,20 +1,20 @@
 /* eslint-disable @typescript-eslint/quotes */
-import { Dialog } from "primereact/dialog";
-import FormConfirmationButtons from "@components/FormConfirmationButtons";
-import { ClientInformationProvider } from "@context/serviceRequest/clientInformationContext";
-import { PetInformationProvider } from "@context/serviceRequest/petInformationContext";
-import { ServiceInformationProvider } from "@context/serviceRequest/serviceInformationContext";
-import useServiceRequestForm from "@hooks/useServiceRequestForm";
-import type { ServiceRequestType } from "@types";
-import { useState, useEffect } from "react";
-import ClientInformationSection from "@components/serviceRequest/ClientInformationSection";
-import PetInformationSection from "@components/serviceRequest/PetInformationSection";
-import ServiceInformationSection from "@components/serviceRequest/ServiceInformationSection";
-import { mutate } from "swr";
+import { Dialog } from 'primereact/dialog';
+import FormConfirmationButtons from '@components/FormConfirmationButtons';
+import { ClientInformationProvider } from '@context/serviceRequest/clientInformationContext';
+import { PetInformationProvider } from '@context/serviceRequest/petInformationContext';
+import { ServiceInformationProvider } from '@context/serviceRequest/serviceInformationContext';
+import useServiceRequestForm from '@hooks/useServiceRequestForm';
+import type { ServiceRequestType } from '@types';
+import { useState, useEffect } from 'react';
+import ClientInformationSection from '@components/serviceRequest/ClientInformationSection';
+import PetInformationSection from '@components/serviceRequest/PetInformationSection';
+import ServiceInformationSection from '@components/serviceRequest/ServiceInformationSection';
+import { mutate } from 'swr';
 
 // TODO externalize to localization file
 export const serviceRequestLabels = {
-  FormHeader: "SPS Internal Form",
+  FormHeader: 'SPS Internal Form',
 };
 
 /** Props for the ServiceRequestDialog */
@@ -24,7 +24,7 @@ export interface ServiceRequestDialogProps {
   /** Callback for the hide dialog button */
   onClose: () => void;
   /** The ID of the ticket */
-  ticketId: ServiceRequestType["id"];
+  ticketId: ServiceRequestType['id'];
 }
 
 /**
@@ -73,7 +73,7 @@ function ServiceRequestDialog({
   const onSaveClicked = async () => {
     const success = await save();
     if (success) {
-      mutate("dataservice/alltickets");
+      mutate('dataservice/alltickets');
       hideDialog();
       // if save successful, exit edit mode
       setEditMode(false);
@@ -115,7 +115,7 @@ function ServiceRequestDialog({
         save: isNewRequest(client),
         edit: !isNewRequest(client),
       }}
-      editLabel={editMode ? "Save" : "Edit"}
+      editLabel={editMode ? 'Save' : 'Edit'}
     />
   );
 
@@ -123,7 +123,7 @@ function ServiceRequestDialog({
     <Dialog
       data-testid='serviceRequestDialog'
       visible={showDialog}
-      style={{ width: "850px" }}
+      style={{ width: '850px' }}
       header={serviceRequestLabels.FormHeader}
       modal
       // footer={!readOnly && dialogFooter}

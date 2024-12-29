@@ -1,34 +1,34 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
-import { useReducer, useState } from "react";
+import { useReducer, useState } from 'react';
 import {
   ClientInfoActionType,
   clientInfoReducer,
   defaultClientInformation,
-} from "@context/serviceRequest/clientInformationContext";
+} from '@context/serviceRequest/clientInformationContext';
 import {
   petInfoReducer,
   defaultPetInformation,
   PetInfoActionType,
-} from "@context/serviceRequest/petInformationContext";
+} from '@context/serviceRequest/petInformationContext';
 import {
   serviceInfoReducer,
   defaultServiceInformation,
   ServiceInfoActionType,
-} from "@context/serviceRequest/serviceInformationContext";
-import useTicketById from "@hooks/useTicketById";
-import * as DataService from "@services/DataService";
+} from '@context/serviceRequest/serviceInformationContext';
+import useTicketById from '@hooks/useTicketById';
+import * as DataService from '@services/DataService';
 import {
   EditableAnimalType,
   EditableClientType,
   EditableServiceRequestType,
   ServiceRequestType,
-} from "@types";
+} from '@types';
 
 export default function useServiceRequestForm(
-  ticketId: ServiceRequestType["id"]
+  ticketId: ServiceRequestType['id']
 ) {
   const [busy, setBusy] = useState(false);
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState('');
   const [readOnly, setReadOnly] = useState(false);
   const {
     client: savedClient,
@@ -69,7 +69,7 @@ export default function useServiceRequestForm(
     clientInformationDispatch({ type: ClientInfoActionType.Clear });
     petInformationDispatch({ type: PetInfoActionType.Clear });
     serviceInformationDispatch({ type: ServiceInfoActionType.Clear });
-    setMessage("");
+    setMessage('');
   };
 
   const save = async () => {
@@ -111,7 +111,7 @@ async function handleTicketCreation(
   // Check if client exists and create one if not
   // No Upsert operations currently in the supabaseClient library AFAIK
   const existingClient = await DataService.getClientByIdOrEmail(
-    "email",
+    'email',
     client.email
   );
   // TODO: Deal with modifying client information if it already exists

@@ -6,37 +6,37 @@
  * @2023 Digital Aid Seattle
  */
 
-import { Dialog } from "primereact/dialog";
-import React, { useEffect, useState, useRef, useReducer } from "react";
+import { Dialog } from 'primereact/dialog';
+import React, { useEffect, useState, useRef, useReducer } from 'react';
 import {
   ClientInfoActionType,
   ClientInformationProvider,
   clientInfoReducer,
   defaultClientInformation,
-} from "@context/serviceRequest/clientInformationContext";
+} from '@context/serviceRequest/clientInformationContext';
 import {
   PetInfoActionType,
   PetInformationProvider,
   defaultPetInformation,
   petInfoReducer,
-} from "@context/serviceRequest/petInformationContext";
+} from '@context/serviceRequest/petInformationContext';
 import {
   ServiceInfoActionType,
   ServiceInformationProvider,
   defaultServiceInformation,
   serviceInfoReducer,
-} from "@context/serviceRequest/serviceInformationContext";
-import * as DataService from "@services/DataService";
+} from '@context/serviceRequest/serviceInformationContext';
+import * as DataService from '@services/DataService';
 import {
   EditableAnimalType,
   EditableClientType,
   EditableServiceRequestType,
   ServiceRequestType,
-} from "@types";
-import FormConfirmationButtons from "@components/FormConfirmationButtons";
-import ClientInformationSection from "@components/serviceRequest/ClientInformationSection";
-import PetInformationSection from "@components/serviceRequest/PetInformationSection";
-import ServiceInformationSection from "@components/serviceRequest/ServiceInformationSection";
+} from '@types';
+import FormConfirmationButtons from '@components/FormConfirmationButtons';
+import ClientInformationSection from '@components/serviceRequest/ClientInformationSection';
+import PetInformationSection from '@components/serviceRequest/PetInformationSection';
+import ServiceInformationSection from '@components/serviceRequest/ServiceInformationSection';
 
 interface ClientDialogProps {
   visible: boolean;
@@ -81,7 +81,7 @@ function ClientDialog(props: ClientDialogProps) {
   const onEditClicked = () => {
     // TODO: add edit logic, set readOnly to false
     // eslint-disable-next-line no-alert
-    alert("edit btn clicked");
+    alert('edit btn clicked');
   };
 
   const timeoutId = useRef(null);
@@ -89,7 +89,7 @@ function ClientDialog(props: ClientDialogProps) {
   const autoFillClient = (type: string, value: string) => {
     // REVIEW: This could also be solved with an onBlur call, so that the check
     // against the DB only happens when user leaves the email field.
-    if (type === "email") {
+    if (type === 'email') {
       if (timeoutId.current) {
         clearTimeout(timeoutId.current);
       }
@@ -98,7 +98,7 @@ function ClientDialog(props: ClientDialogProps) {
       timeoutId.current = setTimeout(async () => {
         try {
           const clientResponse = await DataService.getClientByIdOrEmail(
-            "email",
+            'email',
             value
           );
 
@@ -139,7 +139,7 @@ function ClientDialog(props: ClientDialogProps) {
   return (
     <Dialog
       visible={clientDialog}
-      style={{ width: "650px" }}
+      style={{ width: '650px' }}
       header='Client Request'
       modal
       className='p-fluid'
@@ -151,11 +151,11 @@ function ClientDialog(props: ClientDialogProps) {
           <ClientInformationProvider state={client} dispatch={clientDispatch}>
             <ClientInformationSection
               disabled={busy}
-              show={["first_name", "last_name", "email", "phone"]}
+              show={['first_name', 'last_name', 'email', 'phone']}
             />
           </ClientInformationProvider>
           <PetInformationProvider state={animal} dispatch={animalDispatch}>
-            <PetInformationSection disabled={busy} show={["name", "species"]} />
+            <PetInformationSection disabled={busy} show={['name', 'species']} />
           </PetInformationProvider>
           <ServiceInformationProvider
             state={request}
@@ -163,7 +163,7 @@ function ClientDialog(props: ClientDialogProps) {
           >
             <ServiceInformationSection
               disabled={busy}
-              show={["service_category"]}
+              show={['service_category']}
             />
           </ServiceInformationProvider>
         </div>
