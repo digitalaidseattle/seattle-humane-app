@@ -1,5 +1,7 @@
 import '@testing-library/jest-dom';
-import { render, screen, fireEvent, within, prettyDOM, waitFor } from '@testing-library/react';
+import {
+  render, screen, fireEvent, within, prettyDOM, waitFor,
+} from '@testing-library/react';
 import TicketsTable from '@components/TicketsTable/TicketsTable';
 import type { ServiceRequestSummary } from '@types';
 import { mockServiceRequestSummaries } from '@utils/TestData';
@@ -22,7 +24,7 @@ const useAppConstantsMock = jest.mocked(useAppConstants);
 beforeEach(() => {
   jest.clearAllMocks();
   useAppConstantsMock.mockImplementation((type) => ({
-    data: MockAppConstants[type] || [], isLoading: false
+    data: MockAppConstants[type] || [], isLoading: false,
   }));
 });
 
@@ -38,13 +40,13 @@ describe('TicketsTable', () => {
   const row2 = items[0];
   function loadTable(tableItems = items) {
     render(
-      <TicketsTable items={tableItems} loading={false} />
+      <TicketsTable items={tableItems} loading={false} />,
     );
   }
   const Labels = {
     globalFilterOverlay: 'global filter menu overlay',
     globalFilterMenuButton: 'global filter menu',
-  }
+  };
 
   it('renders table headers correctly', () => {
     loadTable();
@@ -92,7 +94,6 @@ describe('TicketsTable', () => {
     expect(screen.getByText('No data found.')).toBeInTheDocument();
   });
 
-
   it('renders urgent tickets correctly', () => {
     loadTable([{ ...row, urgent: true }]);
     const urgentIcon = screen.getByLabelText('urgent');
@@ -122,7 +123,7 @@ describe('TicketsTable', () => {
 
     it('sorts the service category alphabetically', () => {
       let customItems = JSON.parse(JSON.stringify(items));
-      customItems = customItems.map(i => {
+      customItems = customItems.map((i) => {
         i.service_category = 'Vaccination';
         return i;
       });
@@ -130,7 +131,7 @@ describe('TicketsTable', () => {
       render(<TicketsTable items={customItems} />);
       const categoryHeader = screen.getByText('Category');
       fireEvent.click(categoryHeader);
-      
+
       const rows = screen.getAllByRole('row');
       const categories = rows.slice(3).map((row) => (row as HTMLTableRowElement).cells[1].textContent);
 
@@ -184,8 +185,8 @@ describe('TicketsTable', () => {
       const filterButton = screen.getByLabelText(Labels.globalFilterMenuButton);
       expect(filterButton).toBeInTheDocument();
       fireEvent.click(filterButton);
-      const globalFilters = ['Urgent', ...MockAppConstants.species.map(i => i.label)];
-      globalFilters.forEach(option => {
+      const globalFilters = ['Urgent', ...MockAppConstants.species.map((i) => i.label)];
+      globalFilters.forEach((option) => {
         expect(screen.getAllByLabelText(option)[0]).toBeInTheDocument();
       });
     });
@@ -220,9 +221,7 @@ describe('TicketsTable', () => {
     });
 
     it('should filter category (internal)', async () => {
-      const modifiedItems = items.map(item => {
-        return { ...item, service_category: MockAppConstants.category[0].label };
-      });
+      const modifiedItems = items.map((item) => ({ ...item, service_category: MockAppConstants.category[0].label }));
       const expectedCategory = MockAppConstants.category[1];
       const unexpectedCategory = MockAppConstants.category[0];
       modifiedItems[0].service_category = expectedCategory.label;
@@ -239,7 +238,7 @@ describe('TicketsTable', () => {
       // trigger dropdown
       await userEvent.click(dropdownContainer);
       // check dropdown options
-      MockAppConstants.category.forEach(option => {
+      MockAppConstants.category.forEach((option) => {
         const results = screen.getAllByText(new RegExp(option.label, 'i'));
         const dropdownOption = results[results.length - 1];
         expect(dropdownOption).toBeInTheDocument();
@@ -260,7 +259,7 @@ describe('TicketsTable', () => {
       waitFor(() => {
         fireEvent.click(filterMenuButton);
       });
-      // search for other categories 
+      // search for other categories
       // TODO: the test isn't triggering filtering functionality for some reason, but it works exactly right on UI
       const expectedSearchResults = screen.getAllByRole('cell', { name: new RegExp(expectedCategory.label, 'i') });
       // const unexpectedSearchResults = screen.getAllByText(new RegExp(unexpectedCategory.label, 'i'));

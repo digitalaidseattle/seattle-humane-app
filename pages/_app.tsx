@@ -7,6 +7,7 @@ import 'primereact/resources/primereact.css';
 import 'primeflex/primeflex.css';
 import 'primeicons/primeicons.css';
 import '@styles/layout/layout.scss';
+import 'styles/global.css';
 import { UserContext } from '@context/usercontext';
 import authService from '@services/authService';
 
