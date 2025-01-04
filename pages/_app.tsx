@@ -10,7 +10,7 @@ import '@styles/layout/layout.scss';
 import 'styles/global.css';
 import { UserContext } from '@context/usercontext';
 import authService from '@services/authService';
-import { EXTERNAL_ROUTES } from "src/constants";
+import { EXTERNAL_ROUTES } from 'src/constants';
 
 export default function MyApp({ Component, pageProps }) {
   const router = useRouter();
@@ -21,7 +21,7 @@ export default function MyApp({ Component, pageProps }) {
   }), [user]);
 
   useEffect(() => {
-    if(EXTERNAL_ROUTES.includes(pathname)){
+    if (EXTERNAL_ROUTES.includes(pathname)) {
       return;
     }
     authService.getUser()
@@ -49,7 +49,12 @@ export default function MyApp({ Component, pageProps }) {
   return (
     <LayoutProvider>
       <UserContext.Provider value={userContext}>
-        {!user && EXTERNAL_ROUTES.some(route => route === pathname) && <Component {...pageProps} />}
+        {
+        !user
+        && EXTERNAL_ROUTES.some((route) => route === pathname)
+        // eslint-disable-next-line react/jsx-props-no-spreading
+        && <Component {...pageProps} />
+         }
         {user && (
           <Layout>
             {
