@@ -3,7 +3,7 @@ import InputTextArea from '@components/InputTextArea';
 import { ServiceInfoActionType, ServiceInformationContext, ServiceInformationDispatchContext } from '@context/serviceRequest/serviceInformationContext';
 import { EditableServiceRequestType } from '@types';
 import { Dropdown } from 'primereact/dropdown';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import useAppConstants from '@hooks/useAppConstants';
 import { AppConstants } from 'src/constants';
 import useTeamMembers from 'src/hooks/useTeamMembers';
@@ -38,6 +38,8 @@ interface ServiceInformationSectionProps {
   disabled: boolean
   /** Fields to show on the form */
   show?: (keyof EditableServiceRequestType)[]
+  /** Internal or external variant */
+  variant?: 'internal' | 'external'
 }
 
 /**
@@ -49,6 +51,7 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
   const {
     disabled,
     show = ['service_category', 'request_source', 'status', 'description', 'team_member_id'],
+    variant = 'internal',
   } = props;
 
   const visibleFields = new Set<keyof EditableServiceRequestType>(show);
@@ -57,8 +60,8 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
   const formData = useContext(ServiceInformationContext);
   const dispatch = useContext(ServiceInformationDispatchContext);
 
-  const { data: sources } = useAppConstants(AppConstants.Source);
-  const { data: statuses } = useAppConstants(AppConstants.Status);
+  const { data: sources, isLoading: isSourcesLoading } = useAppConstants(AppConstants.Source);
+  const { data: statuses, isLoading: isStatusesLoading } = useAppConstants(AppConstants.Status);
   const { data: categories } = useAppConstants(AppConstants.Category);
   const teamMembers = useTeamMembers();
 
@@ -71,6 +74,18 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
   const setStatus = (status: EditableServiceRequestType['status']) => setFormData({ status });
   const setServiceDescription = (description: EditableServiceRequestType['description']) => setFormData({ description });
   const setAssignedTo = (team_member_id: EditableServiceRequestType['team_member_id']) => setFormData({ team_member_id });
+  const defaultStatus = () => statuses.filter((status) => status.value === 'open')[0].id;
+  const defaultSource = () => sources.filter((source) => source.value === 'web form')[0].id;
+  const defaultTeamMember = () => teamMembers[0].value;
+
+  useEffect(() => {
+    if (isStatusesLoading || isSourcesLoading || teamMembers.length < 1) return;
+    if (variant === 'external') {
+      setStatus(defaultStatus());
+      setSource(defaultSource());
+      setAssignedTo(defaultTeamMember());
+    }
+  }, [variant, isStatusesLoading, isSourcesLoading, teamMembers]);
 
   return (
     <div className="grid">
