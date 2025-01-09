@@ -34,9 +34,11 @@ The website is built using **Next.js**, a React-based framework for server-side 
 ## System Requirements
 
 Install:
+1. [Git](https://git-scm.com/downloads)
 1. [Node.js](https://nodejs.org/en/)
-1. [Docker Desktop](https://www.docker.com/products/docker-desktop/)
-1. [VS Code](https://code.visualstudio.com/download)
+1. [Yarn](https://classic.yarnpkg.com/lang/en/docs/install)
+
+Or, use VS Code Dev Containers to make the installation easy!
 1. [Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
 
 ## Local Environment Setup
