@@ -34,7 +34,7 @@
         "react-transition-group": "^4.4.5",
         "swr": "^2.3.0",
         "ts-jest": "^29.1.2",
-        "uuid": "^9.0.1"
+        "uuid": "^11.0.5"
     },
     "resolutions": {
         "wrap-ansi": "7.0.0",
