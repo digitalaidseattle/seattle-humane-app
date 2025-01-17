@@ -27,7 +27,7 @@
         "next": "^13.5.4",
         "primeflex": "^3.3.0",
         "primeicons": "^7.0.0",
-        "primereact": "^9.2.0",
+        "primereact": "^10.9.1",
         "react": "18.2.0",
         "react-dom": "18.2.0",
         "react-router-dom": "^6.22.3",
