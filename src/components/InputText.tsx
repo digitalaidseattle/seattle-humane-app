@@ -39,13 +39,13 @@ export default function InputText(props: InputTextProps) {
     <div className="flex flex-column gap-2">
       <label
         htmlFor={id}
-        className={invalid && 'p-error'}
+        className={invalid ? 'p-error' : ''}
       >
         {label}
       </label>
       <PrimeReactInputText
         id={id}
-        className={invalid && 'p-invalid'}
+        className={invalid ? 'p-invalid' : ''}
         placeholder={placeholder}
         value={value}
         disabled={disabled}
@@ -59,7 +59,7 @@ export default function InputText(props: InputTextProps) {
       />
       <small
         id="help-text"
-        className={invalid && 'p-error'}
+        className={invalid ? 'p-error' : ''}
       >
         {helpText}
       </small>
@@ -74,7 +74,7 @@ export function InputMask(props: InputMaskProps) {
     <div className="flex flex-column gap-2">
       <label
         htmlFor={id}
-        className={invalid && 'p-error'}
+        className={invalid ? 'p-error' : ''}
       >
         {label}
       </label>
@@ -87,7 +87,7 @@ export function InputMask(props: InputMaskProps) {
         mask={mask}
         onBlur={onBlur}
         onChange={(...args) => !disabled && onChange(...args)}
-        className={invalid && 'p-invalid'}
+        className={invalid ? 'p-invalid' : ''}
         autoClear={false}
       />
     </div>
