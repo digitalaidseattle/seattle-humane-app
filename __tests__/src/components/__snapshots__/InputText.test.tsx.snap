@@ -5,6 +5,7 @@ exports[`InputText should render a text input with the provided value prop 1`] =
   class="flex flex-column gap-2"
 >
   <label
+    class=""
     for="fake-id"
   >
     fake-label
@@ -18,6 +19,7 @@ exports[`InputText should render a text input with the provided value prop 1`] =
     value="fake-value"
   />
   <small
+    class=""
     id="help-text"
   />
 </div>
