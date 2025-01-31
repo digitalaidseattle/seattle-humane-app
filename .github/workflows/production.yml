@@ -9,9 +9,9 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
+    environment: Production – seattle-humane-app
 
     env:
-      env_var: ${{ vars.ENVIRONMENT_STAGE }}
       SUPABASE_ACCESS_TOKEN: ${{ vars.SUPABASE_ACCESS_TOKEN }}
       SUPABASE_DB_PASSWORD: ${{ secrets.PRODUCTION_DB_PASSWORD }}
       SUPABASE_PROJECT_ID: ${{ vars.PRODUCTION_PROJECT_ID }}
