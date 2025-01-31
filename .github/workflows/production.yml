@@ -7,12 +7,11 @@ on:
   workflow_dispatch:
 
 jobs:
-  environment: ${{ vars.ENVIRONMENT_STAGE }}
   deploy:
     runs-on: ubuntu-latest
 
     env:
-      env_var: ${{ vars.ENV_CONTEXT_VAR }}
+      env_var: ${{ vars.ENVIRONMENT_STAGE }}
       SUPABASE_ACCESS_TOKEN: ${{ vars.SUPABASE_ACCESS_TOKEN }}
       SUPABASE_DB_PASSWORD: ${{ secrets.PRODUCTION_DB_PASSWORD }}
       SUPABASE_PROJECT_ID: ${{ vars.PRODUCTION_PROJECT_ID }}
