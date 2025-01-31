@@ -11,7 +11,8 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
-      SUPABASE_ACCESS_TOKEN: $SUPABASE_ACCESS_TOKEN
+      ENV: ${{ github.env}}
+      SUPABASE_ACCESS_TOKEN: ${{ vars.SUPABASE_ACCESS_TOKEN }}
       SUPABASE_DB_PASSWORD: ${{ secrets.PRODUCTION_DB_PASSWORD }}
       SUPABASE_PROJECT_ID: ${{ vars.PRODUCTION_PROJECT_ID }}
       SUPABASE_AUTH_AZURE_CLIENT_ID: ${{ vars.SUPABASE_AUTH_AZURE_CLIENT_ID }}
