@@ -7,6 +7,7 @@ on:
   workflow_dispatch:
 
 jobs:
+  environment: ${{ vars.ENVIRONMENT_STAGE }}
   deploy:
     runs-on: ubuntu-latest
 
