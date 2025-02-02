@@ -71,7 +71,7 @@ enabled = true
 # in emails.
 site_url = "http://127.0.0.1:3000"
 # A list of *exact* URLs that auth providers are permitted to redirect to post authentication.
-additional_redirect_urls = ["env(SUPABASE_AUTH_AZURE_REDIRECT_URI)"]
+additional_redirect_urls = ["env(SUPABASE_AUTH_GOOGLE_REDIRECT_URI)", "env(SUPABASE_AUTH_AZURE_REDIRECT_URI)"]
 # How long tokens are valid for, in seconds. Defaults to 3600 (1 hour), maximum 604,800 (1 week).
 jwt_expiry = 3600
 # If disabled, the refresh token will never expire.
@@ -123,6 +123,17 @@ account_sid = ""
 message_service_sid = ""
 # DO NOT commit your Twilio auth token to git. Use environment variable substitution instead:
 auth_token = "env(SUPABASE_AUTH_SMS_TWILIO_AUTH_TOKEN)"
+
+# Use an external OAuth provider. The full list of providers are: `apple`, `azure`, `bitbucket`,
+# `discord`, `facebook`, `github`, `gitlab`, `google`, `keycloak`, `linkedin_oidc`, `notion`, `twitch`,
+# `twitter`, `slack`, `spotify`, `workos`, `zoom`.
+# Google Auth is used here
+[auth.external.google]
+enabled = true
+client_id = "env(SUPABASE_AUTH_GOOGLE_CLIENT_ID)"
+# DO NOT commit your OAuth provider secret to git. Use environment variable substitution instead.
+secret = "env(SUPABASE_AUTH_GOOGLE_SECRET)"
+redirect_uri = "env(SUPABASE_AUTH_GOOGLE_REDIRECT_URI)"
 
 # Use Azure OAuth provider
 [auth.external.azure]

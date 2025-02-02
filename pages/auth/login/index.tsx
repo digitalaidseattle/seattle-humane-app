@@ -11,6 +11,7 @@ import AppConfig from '@layout/AppConfig';
 import { LayoutContext } from '@layout/context/layoutcontext';
 import authService from '@services/authService';
 import supabaseClient from '@utils/supabaseClient';
+import GoogleIcon from '@components/GoogleIcon';
 
 function LoginPage() {
   const { layoutConfig } = useContext(LayoutContext);
@@ -64,6 +65,14 @@ function LoginPage() {
               className="flex"
               style={{ position: 'relative', zIndex: '11', bottom: '2rem' }}
             >
+              <Button
+                label="Sign in with Google"
+                icon={<GoogleIcon />}
+                className="w-full text-sm mr-3 bg-white border-gray-900 text-gray-900"
+                onClick={() => {
+                  authService.signInWithGoogle();
+                }}
+              />
               <Button
                 icon={(
                   <img
