@@ -16,7 +16,7 @@ export enum PetInfoActionType {
   Clear = 'clear',
   Update = 'update',
   Remove = 'remove',
-  Add = 'add'
+  Add = 'add',
 }
 
 type AnimalInfoAction =
@@ -26,16 +26,13 @@ type AnimalInfoAction =
   | { type: PetInfoActionType.Update, index: number, partialStateUpdate: Partial<EditableAnimalType> };
 
 export const petInfoReducer = (state: EditableAnimalType[], action: AnimalInfoAction) => {
-  if (action.type === PetInfoActionType.Update)
-    return state.map((pet, idx) =>
-      idx === action.index ? { ...pet, ...action.partialStateUpdate } : pet
-    );
+  if (action.type === PetInfoActionType.Update) {
+    return state.map((pet, idx) => (idx === action.index ? { ...pet, ...action.partialStateUpdate } : pet));
+  }
 
-  if (action.type === PetInfoActionType.Add)
-    return [...state, action.newPet];
+  if (action.type === PetInfoActionType.Add) return [...state, action.newPet];
 
-  if (action.type === PetInfoActionType.Remove)
-    return state.filter((_, idx) => idx !== action.index);
+  if (action.type === PetInfoActionType.Remove) return state.filter((_, idx) => idx !== action.index);
 
   return [{ ...defaultPetInformation }];
 };

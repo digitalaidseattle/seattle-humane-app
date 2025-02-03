@@ -86,8 +86,6 @@ export default function useServiceRequestForm(ticketId: ServiceRequestType['id']
   };
 }
 
-
-
 async function handleTicketCreation(
   request: EditableServiceRequestType,
   client: EditableClientType,

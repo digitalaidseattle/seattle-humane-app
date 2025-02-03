@@ -69,7 +69,9 @@ export default function PetInformationSection(props: PetInformationSectionProps)
   const addNewPet = () => {
     dispatch({
       type: PetInfoActionType.Add,
-      newPet: { name: '', species: '', weight: 0, age: 0 }
+      newPet: {
+        name: '', species: '', weight: 0, age: 0,
+      },
     });
   };
 
@@ -80,11 +82,14 @@ export default function PetInformationSection(props: PetInformationSectionProps)
   return (
 
     <div className="grid">
-      {formData.map((pet, petIndex) => {
-        return <div key={petIndex}>
+      {formData.map((pet, petIndex) => (
+        // eslint-disable-next-line react/no-array-index-key
+        <div key={petIndex}>
           <div className="col-12">
             <h3>
-              {petIndex > 0 && "Additional"} {petInformationLabels.PetInformation}
+              {petIndex > 0 && 'Additional'}
+              {' '}
+              {petInformationLabels.PetInformation}
               :
             </h3>
           </div>
@@ -157,11 +162,11 @@ export default function PetInformationSection(props: PetInformationSectionProps)
                   </div>
                 </div>
               )}
-            {petIndex > 0 && <button onClick={() => removePet(petIndex)}>Remove</button>}
+            {petIndex > 0 && <button type="button" onClick={() => removePet(petIndex)}>Remove</button>}
           </div>
         </div>
-      })}
-      <button onClick={addNewPet}>Add Pet</button>
+      ))}
+      <button type="button" onClick={addNewPet}>Add Pet</button>
     </div>
   );
 }
