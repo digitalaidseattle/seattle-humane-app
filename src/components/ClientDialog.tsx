@@ -40,7 +40,7 @@ function ClientDialog(props: ClientDialogProps) {
   //* Get state and dispatchers for the from sections
   const [request, requestDispatch] = useReducer(serviceInfoReducer, defaultServiceInformation);
   const [client, clientDispatch] = useReducer(clientInfoReducer, defaultClientInformation);
-  const [animal, animalDispatch] = useReducer(petInfoReducer, defaultPetInformation);
+  const [animal, animalDispatch] = useReducer(petInfoReducer, [defaultPetInformation]);
 
   useEffect(() => {
     setClientDialog(props.visible);

@@ -27,23 +27,23 @@ export default function useServiceRequestForm(ticketId: ServiceRequestType['id']
   ] = useReducer(clientInfoReducer, defaultClientInformation);
 
   const [
-    newPet, petInformationDispatch,
-  ] = useReducer(petInfoReducer, defaultPetInformation);
+    newPets, petInformationDispatch,
+  ] = useReducer(petInfoReducer, [defaultPetInformation]);
 
   const [
     newTicket, serviceInformationDispatch,
   ] = useReducer(serviceInfoReducer, defaultServiceInformation);
 
-  const dataState = { client: newClient, pet: newPet, ticket: newTicket };
+  const dataState = { client: newClient, pets: newPets, ticket: newTicket };
   if (ticketId) {
     if (!readOnly) setReadOnly(true);
     dataState.client = savedClient;
-    dataState.pet = savedAnimal;
+    dataState.pets = [savedAnimal];
     dataState.ticket = savedTicket;
   } else {
     if (readOnly) setReadOnly(false);
     dataState.client = newClient;
-    dataState.pet = newPet;
+    dataState.pets = newPets;
     dataState.ticket = newTicket;
   }
 
@@ -62,7 +62,7 @@ export default function useServiceRequestForm(ticketId: ServiceRequestType['id']
       await handleTicketCreation(
         newTicket,
         newClient,
-        newPet,
+        newPets,
       );
       return true;
     } catch (e) {
@@ -86,13 +86,14 @@ export default function useServiceRequestForm(ticketId: ServiceRequestType['id']
   };
 }
 
+
+
 async function handleTicketCreation(
   request: EditableServiceRequestType,
   client: EditableClientType,
-  animal: EditableAnimalType,
+  animals: EditableAnimalType[],
 )
-  : Promise<ServiceRequestType> {
-  let animalId: string;
+  : Promise<ServiceRequestType[]> {
   let clientId: string;
 
   // Check if client exists and create one if not
@@ -104,16 +105,21 @@ async function handleTicketCreation(
     clientId = newClient.id;
   } else clientId = existingClient.id;
 
-  // Check if animal exists and create one if not
-  // TODO: HOW TO IDENTIFY UNIQUE ANIMAL? NAME / SPECIES / CLIENT_ID?
-  const existingAnimal = await DataService.getPetByOwner(clientId, animal.name);
-  if (!existingAnimal) {
-    const newAnimal = await DataService.createAnimal(animal, clientId);
-    animalId = newAnimal.id;
-  } else animalId = existingAnimal.id;
+  const ticketPromises = animals.map(async (animal) => {
+    let animalId: string;
 
-  // Create new ticket
-  const ticket = await DataService.createTicket(request, clientId, animalId);
-  return ticket;
+    // Check if animal exists and create one if not
+    const existingAnimal = await DataService.getPetByOwner(clientId, animal.name);
+    if (!existingAnimal) {
+      const newAnimal = await DataService.createAnimal(animal, clientId);
+      animalId = newAnimal.id;
+    } else {
+      animalId = existingAnimal.id;
+    }
+
+    // Create and return new ticket
+    return DataService.createTicket(request, clientId, animalId);
+  });
+  return Promise.all(ticketPromises);
   // TODO: ChangeLog not currently implemented
 }

@@ -21,7 +21,7 @@ export default function Page() {
   const ticketId = searchParams.get('ticket');
   const submitted = searchParams.get('submitted') === 'true';
   const {
-    disabled, clearForm, save, message, client, pet, ticket,
+    disabled, clearForm, save, message, client, pets: pet, ticket,
     clientInformationDispatch, petInformationDispatch, serviceInformationDispatch,
   } = useServiceRequestForm(ticketId);
 
@@ -48,43 +48,43 @@ export default function Page() {
       {submitted && <h3 className="text-center" style={{ margin: 'auto' }}>Your request has been submitted, thank you!</h3>}
       {!submitted
         && (
-        <>
-          <div
-            className="card border-none"
-            style={{
-              height: '100%',
-              overflowY: 'scroll',
-            }}
-          >
-            {message && (
-            <h3 className="text-red-500">
-              {message}
-            </h3>
-            )}
-            <ClientInformationProvider
-              state={client}
-              dispatch={clientInformationDispatch}
+          <>
+            <div
+              className="card border-none"
+              style={{
+                height: '100%',
+                overflowY: 'scroll',
+              }}
             >
-              <ClientInformationSection disabled={disabled} />
-            </ClientInformationProvider>
-            <PetInformationProvider state={pet} dispatch={petInformationDispatch}>
-              <PetInformationSection disabled={disabled} />
-            </PetInformationProvider>
-            <ServiceInformationProvider
-              state={ticket}
-              dispatch={serviceInformationDispatch}
-            >
-              <ServiceInformationSection
-                show={['service_category', 'description']}
-                disabled={disabled}
-                variant="external"
-              />
-            </ServiceInformationProvider>
-          </div>
-          <footer className="footer" style={{ alignSelf: 'flex-end', marginTop: '-20px' }}>
-            <Button label={Labels.submit} disabled={disabled} icon="pi pi-check" className="p-button-text" loading={disabled} onClick={handleSubmit} />
-          </footer>
-        </>
+              {message && (
+                <h3 className="text-red-500">
+                  {message}
+                </h3>
+              )}
+              <ClientInformationProvider
+                state={client}
+                dispatch={clientInformationDispatch}
+              >
+                <ClientInformationSection disabled={disabled} />
+              </ClientInformationProvider>
+              <PetInformationProvider state={pet} dispatch={petInformationDispatch}>
+                <PetInformationSection disabled={disabled} />
+              </PetInformationProvider>
+              <ServiceInformationProvider
+                state={ticket}
+                dispatch={serviceInformationDispatch}
+              >
+                <ServiceInformationSection
+                  show={['service_category', 'description']}
+                  disabled={disabled}
+                  variant="external"
+                />
+              </ServiceInformationProvider>
+            </div>
+            <footer className="footer" style={{ alignSelf: 'flex-end', marginTop: '-20px' }}>
+              <Button label={Labels.submit} disabled={disabled} icon="pi pi-check" className="p-button-text" loading={disabled} onClick={handleSubmit} />
+            </footer>
+          </>
         )}
     </div>
   );

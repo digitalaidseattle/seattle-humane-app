@@ -38,7 +38,7 @@ export interface ServiceRequestDialogProps {
  */
 function ServiceRequestDialog({ visible, onClose, ticketId }: ServiceRequestDialogProps) {
   const {
-    disabled, readOnly, clearForm, save, message, client, pet, ticket,
+    disabled, readOnly, clearForm, save, message, client, pets: pet, ticket,
     clientInformationDispatch, petInformationDispatch, serviceInformationDispatch,
   } = useServiceRequestForm(ticketId);
 
