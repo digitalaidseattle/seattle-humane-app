@@ -1,8 +1,8 @@
 import React, { useContext, useState } from 'react';
 import InputRadio from '@components/InputRadio';
 import InputText from '@components/InputText';
-import { PetInfoActionType, PetInformationContext, PetInformationDispatchContext } from '@context/serviceRequest/petInformationContext';
-import { AnimalType, EditableAnimalType } from '@types';
+import { defaultPetInformation, PetInfoActionType, PetInformationContext, PetInformationDispatchContext } from '@context/serviceRequest/petInformationContext';
+import { PetType, EditablePetType } from '@types';
 import useAppConstants from '@hooks/useAppConstants';
 import { AppConstants } from 'src/constants';
 
@@ -24,7 +24,7 @@ interface PetInformationSectionProps {
   /** Flag to disable/enable the controls */
   disabled: boolean
   /** Fields to show on the form */
-  show?: (keyof EditableAnimalType)[]
+  show?: (keyof EditablePetType)[]
 }
 
 /**
@@ -38,30 +38,30 @@ export default function PetInformationSection(props: PetInformationSectionProps)
     show = ['name', 'species', 'age', 'weight'],
   } = props;
 
-  const visibleFields = new Set<keyof EditableAnimalType>(show);
+  const visibleFields = new Set<keyof EditablePetType>(show);
 
   //* Retrieve form state from the context
-  const formData = useContext(PetInformationContext);
+  const pets = useContext(PetInformationContext);
   const dispatch = useContext(PetInformationDispatchContext);
   //* Options for multi-choice controls
   const { data: speciesOptions } = useAppConstants(AppConstants.Species);
-  const [errors, setErrors] = useState<{ [key in keyof AnimalType]?: boolean }>({});
+  const [errors, setErrors] = useState<{ [key in keyof PetType]?: boolean }>({});
   const setError = (field: string, error: boolean) => {
     setErrors((p) => ({ ...p, [field]: error }));
   };
 
   //* Map onChange handlers to dispatch
-  const updatePet = (partialStateUpdate: Partial<EditableAnimalType>, petIndex: number) => dispatch(
-    { type: PetInfoActionType.Update, index: petIndex, partialStateUpdate },
+  const updatePet = (partialStateUpdate: Partial<EditablePetType>, index: number) => dispatch(
+    { type: PetInfoActionType.Update, index: index, partialStateUpdate },
   );
-  const setName = (name: EditableAnimalType['name'], petIndex: number) => updatePet({ name }, petIndex);
-  const setSpecies = (species: EditableAnimalType['species'], petIndex: number) => updatePet({ species }, petIndex);
-  const setAge = (age: EditableAnimalType['age'], petIndex: number) => updatePet({ age }, petIndex);
-  const setWeight = (weight: EditableAnimalType['weight'], petIndex: number) => updatePet({ weight }, petIndex);
-  const validate = (fieldName: string, petIndex: number) => {
+  const setName = (name: EditablePetType['name'], index: number) => updatePet({ name }, index);
+  const setSpecies = (species: EditablePetType['species'], index: number) => updatePet({ species }, index);
+  const setAge = (age: EditablePetType['age'], index: number) => updatePet({ age }, index);
+  const setWeight = (weight: EditablePetType['weight'], index: number) => updatePet({ weight }, index);
+  const validate = (fieldName: string, index: number) => {
     // empty field check
     if (fieldName === 'name') {
-      const name = formData[petIndex][fieldName];
+      const name = pets[index][fieldName];
       setError(fieldName, !name);
     }
   };
@@ -69,9 +69,7 @@ export default function PetInformationSection(props: PetInformationSectionProps)
   const addNewPet = () => {
     dispatch({
       type: PetInfoActionType.Add,
-      newPet: {
-        name: '', species: '', weight: 0, age: 0,
-      },
+      newPet: defaultPetInformation
     });
   };
 
@@ -82,12 +80,12 @@ export default function PetInformationSection(props: PetInformationSectionProps)
   return (
 
     <div className="grid">
-      {formData.map((pet, petIndex) => (
+      {pets.map((pet, index) => (
         // eslint-disable-next-line react/no-array-index-key
-        <div key={petIndex}>
+        <div key={index}>
           <div className="col-12">
             <h3>
-              {petIndex > 0 && 'Additional'}
+              {index > 0 && 'Additional'}
               {' '}
               {petInformationLabels.PetInformation}
               :
@@ -103,8 +101,8 @@ export default function PetInformationSection(props: PetInformationSectionProps)
                     disabled={disabled}
                     label={petInformationLabels.Name}
                     placeholder={petInformationLabels.Name}
-                    onChange={(e) => setName(e.target.value, petIndex)}
-                    onBlur={() => validate('name', petIndex)}
+                    onChange={(e) => setName(e.target.value, index)}
+                    onBlur={() => validate('name', index)}
                     invalid={errors.name}
                   />
                 </div>
@@ -122,7 +120,7 @@ export default function PetInformationSection(props: PetInformationSectionProps)
                         value={spec.id}
                         disabled={disabled}
                         name={`species-${spec.value}`}
-                        onChange={(e) => setSpecies(e.target.value, petIndex)}
+                        onChange={(e) => setSpecies(e.target.value, index)}
                         checked={spec.id && pet.species === spec.id}
                       />
                     ))
@@ -141,7 +139,7 @@ export default function PetInformationSection(props: PetInformationSectionProps)
                       disabled={disabled}
                       label={petInformationLabels.Age}
                       placeholder={petInformationLabels.AgePlaceholder}
-                      onChange={(e) => setAge(+e.target.value, petIndex)}
+                      onChange={(e) => setAge(+e.target.value, index)}
                     />
                   </div>
                 </div>
@@ -157,12 +155,12 @@ export default function PetInformationSection(props: PetInformationSectionProps)
                       disabled={disabled}
                       label={petInformationLabels.Weight}
                       placeholder={petInformationLabels.WeightPlaceholder}
-                      onChange={(e) => setWeight(+e.target.value, petIndex)}
+                      onChange={(e) => setWeight(+e.target.value, index)}
                     />
                   </div>
                 </div>
               )}
-            {petIndex > 0 && <button type="button" onClick={() => removePet(petIndex)}>Remove</button>}
+            {index > 0 && <button type="button" onClick={() => removePet(index)}>Remove</button>}
           </div>
         </div>
       ))}

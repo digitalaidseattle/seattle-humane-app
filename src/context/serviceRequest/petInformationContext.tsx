@@ -3,9 +3,9 @@
  */
 /* eslint-disable max-len */
 import React, { createContext } from 'react';
-import { EditableAnimalType } from '@types';
+import { EditablePetType } from '@types';
 
-export const defaultPetInformation: EditableAnimalType = {
+export const defaultPetInformation: EditablePetType = {
   name: '',
   species: '',
   weight: 0,
@@ -19,13 +19,13 @@ export enum PetInfoActionType {
   Add = 'add',
 }
 
-type AnimalInfoAction =
+type PetInfoAction =
   | { type: PetInfoActionType.Clear }
-  | { type: PetInfoActionType.Add, newPet: EditableAnimalType }
+  | { type: PetInfoActionType.Add, newPet: EditablePetType }
   | { type: PetInfoActionType.Remove, index: number }
-  | { type: PetInfoActionType.Update, index: number, partialStateUpdate: Partial<EditableAnimalType> };
+  | { type: PetInfoActionType.Update, index: number, partialStateUpdate: Partial<EditablePetType> };
 
-export const petInfoReducer = (state: EditableAnimalType[], action: AnimalInfoAction) => {
+export const petInfoReducer = (state: EditablePetType[], action: PetInfoAction) => {
   if (action.type === PetInfoActionType.Update) {
     return state.map((pet, idx) => (idx === action.index ? { ...pet, ...action.partialStateUpdate } : pet));
   }
@@ -37,10 +37,15 @@ export const petInfoReducer = (state: EditableAnimalType[], action: AnimalInfoAc
   return [{ ...defaultPetInformation }];
 };
 
-export const PetInformationContext = createContext<EditableAnimalType[]>(null);
-export const PetInformationDispatchContext = createContext<React.Dispatch<AnimalInfoAction>>(null);
+export const PetInformationContext = createContext<EditablePetType[]>(null);
+export const PetInformationDispatchContext = createContext<React.Dispatch<PetInfoAction>>(null);
 
-export function PetInformationProvider({ children, state, dispatch }) {
+interface PetInformationProviderProps extends React.PropsWithChildren {
+  state: EditablePetType[],
+  dispatch: React.Dispatch<PetInfoAction>
+}
+
+export function PetInformationProvider({ children, state, dispatch }: PetInformationProviderProps) {
   return (
     <PetInformationContext.Provider value={state}>
       <PetInformationDispatchContext.Provider value={dispatch}>

@@ -3,7 +3,7 @@ import { fireEvent, render, screen } from '@testing-library/react';
 import { createContext, useReducer } from 'react';
 import PetInformationSection, { petInformationLabels as labels } from '@components/serviceRequest/PetInformationSection';
 import { PetInformationProvider, petInfoReducer, defaultPetInformation } from '@context/serviceRequest/petInformationContext';
-import { EditableAnimalType } from '@types';
+import { EditablePetType } from '@types';
 import { MockAppConstants } from '@hooks/__mocks__/useAppConstants';
 
 const { species } = MockAppConstants;
@@ -13,7 +13,7 @@ jest.mock('@context/serviceRequest/petInformationContext', () => {
   const PetInformationDispatchContext = createContext(null);
   //* Using type annotation here to force this test to break if the contract changes
   // eslint-disable-next-line @typescript-eslint/no-shadow
-  const defaultPetInformation: EditableAnimalType = {
+  const defaultPetInformation: EditablePetType = {
     name: '',
     species: '',
     age: 0,
@@ -32,7 +32,7 @@ jest.mock('@context/serviceRequest/petInformationContext', () => {
     ),
     PetInfoActionType: { Update: 'Update' },
     petInfoReducer: jest.fn()
-      .mockImplementation((state, action) => ({ ...state, ...action.partialStateUpdate })),
+      .mockImplementation((state, action) => ([{ ...state, ...action.partialStateUpdate }])),
   };
 });
 
@@ -67,7 +67,7 @@ describe('PetInformationSection', () => {
 
   //* Renders the component and captures the elements for later assertions
   function setup({
-    defaultState = defaultPetInformation,
+    defaultState = [defaultPetInformation],
     fields = undefined,
     disabled = false,
   } = {}) {
@@ -143,6 +143,7 @@ describe('PetInformationSection', () => {
         expect.anything(), // We are only concerned with the action, not the previous state
         expect.objectContaining({
           type: 'Update',
+          index: 0,
           partialStateUpdate: { [field.id]: defaultPetInformation[field.id] + i },
         }),
       );

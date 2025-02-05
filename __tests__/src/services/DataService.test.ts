@@ -9,15 +9,19 @@
 import { AppConstants } from 'src/constants';
 import {
   AppConstantType,
-  EditableAnimalType,
+  EditablePetType,
   EditableClientType,
   EditableServiceRequestType,
 } from '@types';
 import * as DataService from '@services/DataService';
 import supabaseClient from '@utils/supabaseClient';
 import {
-  mockClient, mockPet, mockTicket, mockTickets,
-  mockTicketsThisWeek, mockTeamMember1,
+  mockClient,
+  mockPet,
+  mockTicket,
+  mockTickets,
+  mockTicketsThisWeek,
+  mockTeamMember1,
 } from '@utils/TestData';
 import { getWeekStartDate } from '@utils/timeUtils';
 
@@ -57,13 +61,15 @@ jest.mock('@supabase/supabase-js', () => ({
  * that we use for testing purposes.
  * However Jest infers the type based on the original module.
  * So we need to manually cast the type to match our mock.
-*/
-const mockSupabaseClient = jest.mocked(supabaseClient as typeof supabaseClient & {
-  setTestData(newData): void
-  setTestError(errorText): void
-});
+ */
+const mockSupabaseClient = jest.mocked(
+  supabaseClient as typeof supabaseClient & {
+    setTestData(newData): void;
+    setTestError(errorText): void;
+  }
+);
 
-jest.spyOn(global.console, 'log').mockImplementation(() => { });
+jest.spyOn(global.console, 'log').mockImplementation(() => {});
 
 afterEach(() => {
   // Reset the call counts for mocks
@@ -77,28 +83,25 @@ describe('DataService', () => {
   describe('createClient()', () => {
     const ticket = {} as EditableServiceRequestType;
     const client = {} as EditableClientType;
-    const animal = {} as EditableAnimalType;
+    const animal = {} as EditablePetType;
 
     it('should throw error if client information is missing', async () => {
       // arrange
       mockSupabaseClient.setTestData(null);
       // act & assert
-      await expect(DataService.createClient(client))
-        .rejects.toThrow();
+      await expect(DataService.createClient(client)).rejects.toThrow();
     });
     it('should throw error if animal information is missing', async () => {
       // arrange
       mockSupabaseClient.setTestData(null);
       // act & assert
-      await expect(DataService.createAnimal(animal, ''))
-        .rejects.toThrow();
+      await expect(DataService.createAnimal(animal, '')).rejects.toThrow();
     });
     it('should throw error if ticket information is missing', async () => {
       // arrange
       mockSupabaseClient.setTestData(null);
       // act & assert
-      await expect(DataService.createTicket(ticket, '', ''))
-        .rejects.toThrow();
+      await expect(DataService.createTicket(ticket, '', '')).rejects.toThrow();
     });
   });
   describe('static getTicket()', () => {
@@ -116,7 +119,9 @@ describe('DataService', () => {
       const expectedErrorMessage = 'Internal DB Error';
       mockSupabaseClient.setTestError(new Error(expectedErrorMessage));
       // Act & Assert
-      await expect(DataService.getTicket('')).rejects.toThrow(expectedErrorMessage);
+      await expect(DataService.getTicket('')).rejects.toThrow(
+        expectedErrorMessage
+      );
     });
   });
   describe('static getServiceRequestSummary()', () => {
@@ -151,10 +156,7 @@ describe('DataService', () => {
       }));
       mockSupabaseClient.setTestData(expectedQueryResults);
       const expectedServiceRequestSummary = expectedQueryResults.map((data) => {
-        const {
-
-          clients, pets, team_members, id, label, ...ticket
-        } = data;
+        const { clients, pets, team_members, id, label, ...ticket } = data;
         return {
           id,
           client: {
@@ -188,7 +190,9 @@ describe('DataService', () => {
       const expectedErrorMessage = 'Internal DB Error';
       mockSupabaseClient.setTestError(new Error(expectedErrorMessage));
       // Act & Assert
-      await expect(DataService.getServiceRequestSummary()).rejects.toThrow(expectedErrorMessage);
+      await expect(DataService.getServiceRequestSummary()).rejects.toThrow(
+        expectedErrorMessage
+      );
     });
   });
   it.each([
@@ -201,12 +205,18 @@ describe('DataService', () => {
     mockSupabaseClient.setTestData(expectedAppConstants);
 
     // Act
-    const returnedAppConstants = await DataService.getAppConstants(appConstantType);
+    const returnedAppConstants = await DataService.getAppConstants(
+      appConstantType
+    );
 
     // Assert
     expect(mockSupabaseClient.from).toHaveBeenCalledWith('app_constants');
-    expect(mockSupabaseClient.from('app_constants').select).toHaveBeenCalledWith('*');
-    expect(mockSupabaseClient.from('app_constants').select('').eq).toHaveBeenCalledWith('type', appConstantType);
+    expect(
+      mockSupabaseClient.from('app_constants').select
+    ).toHaveBeenCalledWith('*');
+    expect(
+      mockSupabaseClient.from('app_constants').select('').eq
+    ).toHaveBeenCalledWith('type', appConstantType);
     /**
      * 'toBe' checks for reference equality to ensure
      * getAppConstants function returns the exact
@@ -226,7 +236,9 @@ describe('DataService', () => {
       //* Assert
       expect(mockSupabaseClient.from).toHaveBeenCalledWith('team_members');
       expect(mockSupabaseClient.from).toHaveBeenCalledTimes(1);
-      expect(mockSupabaseClient.from('team_members').select).toHaveBeenCalledTimes(1);
+      expect(
+        mockSupabaseClient.from('team_members').select
+      ).toHaveBeenCalledTimes(1);
       /**
        * getTeamMembers isn't concerned with the shape of the data
        * returned by the database. So we only check that the function returns
@@ -259,8 +271,12 @@ describe('DataService', () => {
       // Assert
       expect(mockSupabaseClient.from).toHaveBeenCalledWith('service_requests');
       expect(mockSupabaseClient.from).toHaveBeenCalledTimes(1);
-      expect(mockSupabaseClient.from('service_requests').select).toHaveBeenCalledTimes(1);
-      expect(mockSupabaseClient.from('service_requests').select().gte).toHaveBeenCalledWith('created_at', weekStartDate);
+      expect(
+        mockSupabaseClient.from('service_requests').select
+      ).toHaveBeenCalledTimes(1);
+      expect(
+        mockSupabaseClient.from('service_requests').select().gte
+      ).toHaveBeenCalledWith('created_at', weekStartDate);
       /**
        * we aren't checking for shape of data returned by getTicketsThisWeek, just need to know it can filter based on created_at column
        */
@@ -272,7 +288,9 @@ describe('DataService', () => {
       mockSupabaseClient.setTestError(error);
 
       // Act & Assert
-      await expect(DataService.getTicketsThisWeek()).rejects.toThrow(error.message);
+      await expect(DataService.getTicketsThisWeek()).rejects.toThrow(
+        error.message
+      );
     });
   });
 });

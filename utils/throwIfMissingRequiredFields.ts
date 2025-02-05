@@ -1,13 +1,9 @@
-import {
-  ClientType,
-  ServiceRequestType,
-  AnimalType,
-} from '@types';
+import { ClientType, ServiceRequestType, PetType } from '@types';
 
 const requiredInputFields: {
-  client: (keyof ClientType)[],
-  animal: (keyof AnimalType)[],
-  ticket: (keyof ServiceRequestType)[]
+  client: (keyof ClientType)[];
+  animal: (keyof PetType)[];
+  ticket: (keyof ServiceRequestType)[];
 } = {
   client: ['first_name', 'last_name', 'email', 'phone'],
   animal: ['name', 'age', 'weight', 'species'],

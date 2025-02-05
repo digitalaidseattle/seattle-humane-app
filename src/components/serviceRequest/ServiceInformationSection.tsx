@@ -1,6 +1,8 @@
 import InputRadio from '@components/InputRadio';
 import InputTextArea from '@components/InputTextArea';
-import { ServiceInfoActionType, ServiceInformationContext, ServiceInformationDispatchContext } from '@context/serviceRequest/serviceInformationContext';
+import { customServiceRequestType, defaultServiceInformation, ServiceInfoActionType, ServiceInformationContext, ServiceInformationDispatchContext } from '@context/serviceRequest/serviceInformationContext';
+import { PetInformationContext } from '@context/serviceRequest/petInformationContext';
+
 import { EditableServiceRequestType } from '@types';
 import { Dropdown } from 'primereact/dropdown';
 import { useContext, useEffect } from 'react';
@@ -51,13 +53,14 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
   const {
     disabled,
     show = ['service_category', 'request_source', 'status', 'description', 'team_member_id'],
-    variant = 'internal',
+    variant: formVariant = 'internal',
   } = props;
 
   const visibleFields = new Set<keyof EditableServiceRequestType>(show);
 
   //* Retrieve form state from the context
-  const formData = useContext(ServiceInformationContext);
+  const serviceRequests = useContext(ServiceInformationContext);
+  const pets = useContext(PetInformationContext);
   const dispatch = useContext(ServiceInformationDispatchContext);
 
   const { data: sources, isLoading: isSourcesLoading } = useAppConstants(AppConstants.Source);
@@ -66,34 +69,81 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
   const teamMembers = useTeamMembers();
 
   //* Map onChange handlers to dispatch
-  const setFormData = (partialStateUpdate: Partial<EditableServiceRequestType>) => dispatch(
-    { type: ServiceInfoActionType.Update, partialStateUpdate },
-  );
-  const setCategory = (service_category: EditableServiceRequestType['service_category']) => setFormData({ service_category });
-  const setSource = (request_source: EditableServiceRequestType['request_source']) => setFormData({ request_source });
-  const setStatus = (status: EditableServiceRequestType['status']) => setFormData({ status });
-  const setServiceDescription = (description: EditableServiceRequestType['description']) => setFormData({ description });
-  const setAssignedTo = (team_member_id: EditableServiceRequestType['team_member_id']) => setFormData({ team_member_id });
+  const updateServiceRequest = (partialStateUpdate: Partial<customServiceRequestType>, index: number) => {
+    dispatch(
+      { type: ServiceInfoActionType.Update, index: index, partialStateUpdate },
+    );
+  }
+  const setCategory = (service_category: EditableServiceRequestType['service_category'],index:number) => updateServiceRequest({ service_category}, index);
+  const setSource = (request_source: EditableServiceRequestType['request_source'],index:number) => updateServiceRequest({ request_source}, index);
+  const setStatus = (status: EditableServiceRequestType['status'],index:number) => updateServiceRequest({ status}, index);
+  const setServiceDescription = (description: EditableServiceRequestType['description'],index:number) => updateServiceRequest({ description}, index);
+  const setAssignedTo = (team_member_id: EditableServiceRequestType['team_member_id'],index:number) => updateServiceRequest({ team_member_id}, index);
+  const setSelectedPets = (selected_pets: number[], serviceRequestIndex:number) => updateServiceRequest({ selected_pets }, serviceRequestIndex);
   const defaultStatus = () => statuses.filter((status) => status.value === 'open')[0].id;
   const defaultSource = () => sources.filter((source) => source.value === 'web form')[0].id;
   const defaultTeamMember = () => teamMembers[0].value;
 
+  const togglePetSelection = (petIdx: number, svcReqIndex: number) => {
+    const svcReq = serviceRequests[svcReqIndex];
+    if (svcReq.selected_pets.includes(petIdx)) {
+      setSelectedPets(svcReq.selected_pets.filter((i) => i !== petIdx), svcReqIndex)
+    } else {
+      setSelectedPets([...svcReq.selected_pets, petIdx], svcReqIndex)
+    }
+  }
+
   useEffect(() => {
     if (isStatusesLoading || isSourcesLoading || teamMembers.length < 1) return;
-    if (variant === 'external') {
-      setStatus(defaultStatus());
-      setSource(defaultSource());
-      setAssignedTo(defaultTeamMember());
+    if (formVariant === 'external') {
+      setStatus(defaultStatus(), 0);
+      setSource(defaultSource(), 0);
+      setAssignedTo(defaultTeamMember(), 0);
     }
-  }, [variant, isStatusesLoading, isSourcesLoading, teamMembers]);
+  }, [formVariant, isStatusesLoading, isSourcesLoading, teamMembers]);
+
+  const addNewServiceRequest = () => {
+    dispatch({
+      type: ServiceInfoActionType.Add,
+      newService: defaultServiceInformation
+    });
+  };
+
+  const removeServiceRequest = (index: number) => {
+    dispatch({ type: ServiceInfoActionType.Remove, index });
+  };
+
 
   return (
     <div className="grid">
-      <div className="col-12">
+      {serviceRequests.map((serviceRequest, index) => (
+             // eslint-disable-next-line react/no-array-index-key
+             <div key={index}>
+              <div className="col-12">
         <h3>
-          {serviceInformationLabels.ServiceDetails}
+        {index > 0 && 'Additional'}
+        {' '}{serviceInformationLabels.ServiceDetails}
           :
         </h3>
+      </div>
+      <div className="col-12 grid row-gap-3 pl-5">
+            {pets.length 
+            && <>
+            <label>Select Pet(s):</label>
+              {pets.map((pet, petIndex) => (
+                <div key={petIndex}>
+                  <input // FIXME use component from component library
+                    id={pet.name}
+                    type="checkbox"
+                    checked={serviceRequest.selected_pets.includes(petIndex)}
+                    value={pet.name}
+                    onChange={() => togglePetSelection(petIndex, index)}
+                  />
+                  <label htmlFor={pet.name}>{pet.name}</label>
+                </div>
+              ))}
+            </>
+            }
       </div>
       <div className="col-12 grid row-gap-3 pl-5">
         {visibleFields.has('service_category')
@@ -102,10 +152,10 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
               <div className="col-fixed mr-3">{serviceInformationLabels.Category}</div>
               <Dropdown
                 id="service_category"
-                value={formData.service_category}
+                value={serviceRequest.service_category}
                 title={serviceInformationLabels.Category}
                 className="w-full md:w-14rem"
-                onChange={(e) => setCategory(e.target.value)}
+                onChange={(e) => setCategory(e.target.value, index)}
                 options={categories.map((opt) => ({ label: opt.label, value: opt.id }))}
                 disabled={disabled}
               />
@@ -124,8 +174,8 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
                     value={opt.id}
                     disabled={disabled}
                     name={`request_source-${opt.value}`}
-                    onChange={(e) => setSource(e.target.value)}
-                    checked={opt.id && formData.request_source === opt.id}
+                    onChange={(e) => setSource(e.target.value, index)}
+                    checked={opt.id && serviceRequest.request_source === opt.id}
                   />
                 ))
                   : null}
@@ -145,8 +195,8 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
                     value={opt.id}
                     disabled={disabled}
                     name={`staus-${opt.value}`}
-                    onChange={(e) => setStatus(e.target.value)}
-                    checked={opt.id && formData.status === opt.id}
+                    onChange={(e) => setStatus(e.target.value, index)}
+                    checked={opt.id && serviceRequest.status === opt.id}
                   />
                 ))
                   : null}
@@ -158,32 +208,36 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
             <div className="col-12">
               <InputTextArea
                 id="description"
-                value={formData.description}
+                value={serviceRequest.description}
                 disabled={disabled}
                 label={serviceInformationLabels.ServiceDescription}
                 placeholder={serviceInformationLabels.ServiceDescription}
-                onChange={(e) => setServiceDescription(e.target.value)}
+                onChange={(e) => setServiceDescription(e.target.value, index)}
                 rows={5}
               />
             </div>
           )}
         {visibleFields.has('team_member_id')
           && (
-            <div className="col-6">
+            <div className="col-12">
               <div className="col-fixed mr-3">{serviceInformationLabels.AssignTo}</div>
 
               <Dropdown
                 id="team_member_id"
-                value={formData.team_member_id}
+                value={serviceRequest.team_member_id}
                 title={serviceInformationLabels.AssignTo}
                 className="w-full md:w-14rem"
-                onChange={(e) => setAssignedTo(e.target.value)}
+                onChange={(e) => setAssignedTo(e.target.value, index)}
                 options={teamMembers}
                 disabled={disabled}
               />
             </div>
           )}
+       {index > 0 && <button type="button" onClick={() => removeServiceRequest(index)}>Remove</button>}
+          </div>
       </div>
-    </div>
+      ))}
+      <button type="button" onClick={addNewServiceRequest}>Add Service Request</button>
+      </div>
   );
 }

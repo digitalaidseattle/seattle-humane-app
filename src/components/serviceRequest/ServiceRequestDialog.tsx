@@ -38,7 +38,7 @@ export interface ServiceRequestDialogProps {
  */
 function ServiceRequestDialog({ visible, onClose, ticketId }: ServiceRequestDialogProps) {
   const {
-    disabled, readOnly, clearForm, save, message, client, pets: pet, ticket,
+    disabled, readOnly, clearForm, save, message, client, pets, tickets,
     clientInformationDispatch, petInformationDispatch, serviceInformationDispatch,
   } = useServiceRequestForm(ticketId);
 
@@ -93,15 +93,15 @@ function ServiceRequestDialog({ visible, onClose, ticketId }: ServiceRequestDial
           >
             <ClientInformationSection disabled={disabled} />
           </ClientInformationProvider>
-          <PetInformationProvider state={pet} dispatch={petInformationDispatch}>
+          <PetInformationProvider state={pets} dispatch={petInformationDispatch}>
             <PetInformationSection disabled={disabled} />
+            <ServiceInformationProvider
+              state={tickets}
+              dispatch={serviceInformationDispatch}
+            >
+              <ServiceInformationSection disabled={disabled} />
+            </ServiceInformationProvider>
           </PetInformationProvider>
-          <ServiceInformationProvider
-            state={ticket}
-            dispatch={serviceInformationDispatch}
-          >
-            <ServiceInformationSection disabled={disabled} />
-          </ServiceInformationProvider>
         </div>
 
       </div>

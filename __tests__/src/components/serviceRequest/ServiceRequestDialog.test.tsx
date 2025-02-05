@@ -9,7 +9,7 @@ import {
   fireEvent, render, screen, waitFor,
 } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { mockClient, mockPet as mockAnimal, mockTicket } from '@utils/TestData';
+import { mockClient, mockPet, mockTicket } from '@utils/TestData';
 import { useState } from 'react';
 import * as DataService from '@services/DataService';
 
@@ -86,7 +86,7 @@ describe('ServiceRequestDialog', () => {
     // Type the pet name
     await userEvent.type(
       screen.queryByLabelText(petInformationLabels.Name),
-      mockAnimal.name,
+      mockPet.name,
     );
     // Type the ticket description
     await userEvent.type(
@@ -101,12 +101,12 @@ describe('ServiceRequestDialog', () => {
     expect(mockedDataService.getClientByIdOrEmail)
       .toHaveBeenNthCalledWith(1, 'email', mockClient.email);
     expect(mockedDataService.getPetByOwner)
-      .toHaveBeenNthCalledWith(1, mockClient.id, mockAnimal.name);
+      .toHaveBeenNthCalledWith(1, mockClient.id, mockPet.name);
     expect(mockedDataService.createTicket).toHaveBeenNthCalledWith(
       1,
       { ...defaultServiceInformation, description: mockTicket.description },
       mockClient.id,
-      mockAnimal.id,
+      mockPet.id,
     );
   });
 
@@ -182,7 +182,7 @@ describe('ServiceRequestDialog', () => {
     });
     const getFields = async () => {
       const firstName = await screen.findByDisplayValue(mockClient.first_name);
-      const petName = await screen.findByDisplayValue(mockAnimal.name);
+      const petName = await screen.findByDisplayValue(mockPet.name);
       const description = await screen.findByDisplayValue(mockTicket.description);
       return [firstName, petName, description];
     };

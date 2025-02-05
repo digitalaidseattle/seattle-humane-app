@@ -46,7 +46,7 @@ jest.mock('@context/serviceRequest/serviceInformationContext', () => {
     ),
     ServiceInfoActionType: { Update: 'Update' },
     serviceInfoReducer: jest.fn()
-      .mockImplementation((state, action) => ({ ...state, ...action.partialStateUpdate })),
+      .mockImplementation((state, action) => ([{ ...state, ...action.partialStateUpdate }])),
   };
 });
 
@@ -75,7 +75,7 @@ describe('ServiceInformationSection', () => {
   let dropdowns = [];
 
   //* The Section requires a context, so wrap it in a context provider to test
-  function SereviceInfoSectionConsumer({ defaultState, disabled, show }) {
+  function ServiceInfoSectionConsumer({ defaultState, disabled, show }) {
     const [state, dispatch] = useReducer(serviceInfoReducer, defaultState);
     return (
       <ServiceInformationProvider state={state} dispatch={dispatch}>
@@ -86,11 +86,11 @@ describe('ServiceInformationSection', () => {
 
   //* Renders the component and captures the elements for later assertions
   function setup({
-    defaultState = defaultServiceInformation,
+    defaultState = [defaultServiceInformation],
     show = undefined,
     disabled = false,
   } = {}) {
-    render(<SereviceInfoSectionConsumer
+    render(<ServiceInfoSectionConsumer
       defaultState={defaultState}
       disabled={disabled}
       show={show}
