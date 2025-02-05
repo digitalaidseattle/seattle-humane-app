@@ -87,7 +87,7 @@ function ServiceRequestDialog({
 
       // save form & close window
       onSaveClicked();
-      console.log(client);
+      // console.log(client);
     } else {
       setEditMode(true);
     }
