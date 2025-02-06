@@ -12,13 +12,31 @@ export const defaultClientInformation: EditableClientInfo = {
   phone: '',
   zip_code: '',
 };
+export const previousClientInformation: EditableClientInfo = {
+  first_name: 'test',
+  last_name: 'test',
+  email: 'test@test.com',
+  phone: '1112223333',
+  zip_code: '99999',
+};
 
-export enum ClientInfoActionType { Clear = 'clear', Update = 'update' }
+export enum ClientInfoActionType {
+  Clear = 'clear',
+  Update = 'update',
+}
 export type ClientInfoAction =
-  { type: ClientInfoActionType.Clear }
-  | { type: ClientInfoActionType.Update, partialStateUpdate: Partial<EditableClientInfo> };
+  | { type: ClientInfoActionType.Clear }
+  | {
+      type: ClientInfoActionType.Update;
+      partialStateUpdate: Partial<EditableClientInfo>;
+    };
 
-export const clientInfoReducer = (state: EditableClientInfo, action: ClientInfoAction) => {
+//? TODO: add a check for existing data, if so, return the previousClientInformation
+
+export const clientInfoReducer = (
+  state: EditableClientInfo,
+  action: ClientInfoAction
+) => {
   if (action.type === ClientInfoActionType.Update) {
     return { ...state, ...action.partialStateUpdate };
   }
@@ -26,13 +44,16 @@ export const clientInfoReducer = (state: EditableClientInfo, action: ClientInfoA
 };
 
 export const ClientInformationContext = createContext<EditableClientInfo>(null);
-export const ClientInformationDispatchContext = createContext<React.Dispatch<ClientInfoAction>>(null);
+export const ClientInformationDispatchContext =
+  createContext<React.Dispatch<ClientInfoAction>>(null);
 interface ClientInformationProviderProps extends React.PropsWithChildren {
-  state: EditableClientInfo,
-  dispatch: React.Dispatch<ClientInfoAction>
+  state: EditableClientInfo;
+  dispatch: React.Dispatch<ClientInfoAction>;
 }
 export function ClientInformationProvider({
-  children, state, dispatch,
+  children,
+  state,
+  dispatch,
 }: ClientInformationProviderProps) {
   return (
     <ClientInformationContext.Provider value={state}>

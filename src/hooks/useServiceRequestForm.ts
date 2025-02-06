@@ -110,15 +110,25 @@ async function handleTicketCreation(
 
   // Check if client exists and create one if not
   // No Upsert operations currently in the supabaseClient library AFAIK
+
   const existingClient = await DataService.getClientByIdOrEmail(
     'email',
     client.email
   );
+
+  console.log(existingClient);
+
   // TODO: Deal with modifying client information if it already exists
-  if (!existingClient) {
+  if (existingClient === null) {
+    alert('new client');
     const newClient = await DataService.createClient(client);
     clientId = newClient.id;
-  } else clientId = existingClient.id;
+  } else {
+    alert('existing client');
+
+    client.first_name = existingClient.first_name;
+    clientId = existingClient.id;
+  }
 
   // Check if animal exists and create one if not
   // TODO: HOW TO IDENTIFY UNIQUE ANIMAL? NAME / SPECIES / CLIENT_ID?

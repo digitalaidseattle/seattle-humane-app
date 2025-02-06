@@ -2,6 +2,7 @@
 /* eslint-disable @typescript-eslint/comma-dangle */
 /* eslint-disable implicit-arrow-linebreak */
 /* eslint-disable jsx-quotes */
+
 import React, { useContext, useState, useEffect } from 'react';
 import InputText from '@components//InputText';
 import {
@@ -11,6 +12,8 @@ import {
 } from '@context/serviceRequest/clientInformationContext';
 import { ClientType, EditableClientType } from '@types';
 import emailIsValid from '@utils/dataValidationUtils';
+
+console.clear();
 
 // TODO externalize to localization file
 export const clientInformationLabels = {
@@ -42,6 +45,19 @@ interface ClientInformationSectionProps {
  * @param props {@link ClientInformationSectionProps}
  * @returns A controlled form for creating a service request.
  */
+
+export const handleInputEdit = (
+  field: string,
+  updater: any,
+  setter: any,
+  eventValue: string | number = undefined
+): string | number => {
+  updater(eventValue);
+  // TODO: setter needs to handle updates when a preexisting value exists in formData
+  setter(eventValue);
+  return eventValue;
+};
+
 export default function ClientInformationSection(
   props: ClientInformationSectionProps
 ) {
@@ -50,6 +66,26 @@ export default function ClientInformationSection(
   const [updatedEmail, setUpdatedEmail] = useState(null);
   const [updatedPhone, setUpdatedPhone] = useState(null);
   const [updatedZipCode, setUpdatedZipCode] = useState(null);
+
+  interface EditedClient {
+    first_name: string;
+    last_name: string;
+    email: string;
+    phone: number;
+    zip_code: number;
+  }
+
+  // holds edited/updated form values for client,
+  // will later be dispatched to the context and saved to database
+  const updatedClient: EditedClient = {
+    first_name: updatedFirstName,
+    last_name: updatedLastName,
+    email: updatedEmail,
+    phone: updatedPhone,
+    zip_code: updatedZipCode,
+  };
+  // ^ display edited values
+  console.log(updatedClient);
 
   const {
     disabled,
@@ -81,6 +117,7 @@ export default function ClientInformationSection(
   //* Map onChange handlers to dispatch
   const setFormData = (partialStateUpdate: Partial<EditableClientType>) =>
     dispatch({ type: ClientInfoActionType.Update, partialStateUpdate });
+
   const setFirstName = (first_name: EditableClientType['first_name']) =>
     setFormData({ first_name });
   const setLastName = (last_name: EditableClientType['last_name']) =>
@@ -91,6 +128,7 @@ export default function ClientInformationSection(
     setFormData({ phone });
   const setZipCode = (zip_code: EditableClientType['zip_code']) =>
     setFormData({ zip_code });
+
   const validate = (fieldName: string) => {
     if (fieldName === 'email') {
       const { email } = formData;
@@ -109,28 +147,6 @@ export default function ClientInformationSection(
       const { phone } = formData;
       setError(fieldName, phone.length < 9);
     }
-  };
-
-  const handleInputUpdate = (
-    field,
-    updater,
-    setter,
-    eventValue = undefined
-  ) => {
-    console.log(eventValue);
-    // first check if an updated value has been provided
-    if (eventValue || eventValue === '') {
-      updater(eventValue);
-      setter(eventValue);
-
-      // console.log('formData: ', formData[field]);
-      return eventValue;
-    }
-
-    //! this func triggers onChange, it never get to the below code. It never needs to
-    // return existing previous data to the form value property
-    console.log(formData[field]);
-    return formData[field];
   };
 
   useEffect(() => {
@@ -156,7 +172,7 @@ export default function ClientInformationSection(
               label={clientInformationLabels.FirstName}
               placeholder={clientInformationLabels.FirstName}
               onChange={(e) =>
-                handleInputUpdate(
+                handleInputEdit(
                   'first_name',
                   setUpdatedFirstName,
                   setFirstName,
@@ -177,7 +193,7 @@ export default function ClientInformationSection(
               label={clientInformationLabels.LastName}
               placeholder={clientInformationLabels.LastName}
               onChange={(e) =>
-                handleInputUpdate(
+                handleInputEdit(
                   'last_name',
                   setUpdatedLastName,
                   setLastName,
@@ -198,7 +214,7 @@ export default function ClientInformationSection(
               label={clientInformationLabels.Email}
               placeholder={clientInformationLabels.EmailPlaceholder}
               onChange={(e) =>
-                handleInputUpdate(
+                handleInputEdit(
                   'email',
                   setUpdatedEmail,
                   setEmail,
@@ -222,7 +238,7 @@ export default function ClientInformationSection(
               placeholder={clientInformationLabels.PhoneNumberPlaceholder}
               keyfilter='pint'
               onChange={(e) =>
-                handleInputUpdate(
+                handleInputEdit(
                   'phone',
                   setUpdatedPhone,
                   setPhone,
@@ -244,7 +260,7 @@ export default function ClientInformationSection(
               label={clientInformationLabels.ZipCode}
               placeholder={clientInformationLabels.ZipCodePlaceholder}
               onChange={(e) =>
-                handleInputUpdate(
+                handleInputEdit(
                   'zip_code',
                   setUpdatedZipCode,
                   setZipCode,

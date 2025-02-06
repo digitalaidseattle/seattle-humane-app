@@ -71,12 +71,15 @@ function ServiceRequestDialog({
   };
 
   const onSaveClicked = async () => {
+    console.log(client);
     const success = await save();
     if (success) {
       mutate('dataservice/alltickets');
-      hideDialog();
+
       // if save successful, exit edit mode
       setEditMode(false);
+
+      hideDialog();
     }
   };
 
