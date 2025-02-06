@@ -15,6 +15,7 @@ import { useContext, useEffect } from 'react';
 import useAppConstants from '@hooks/useAppConstants';
 import { AppConstants } from 'src/constants';
 import useTeamMembers from 'src/hooks/useTeamMembers';
+import { Button } from 'primereact/button';
 
 // TODO externalize to localization file
 export const serviceInformationLabels = {
@@ -32,6 +33,8 @@ export const serviceInformationLabels = {
   InProgress: 'In-Progress',
   Others: 'Others?',
   AssignTo: 'Assign to',
+  RemoveButton: 'Remove',
+  AddButton: 'Add Service',
 };
 
 //* Options for multi-choice controls
@@ -135,8 +138,17 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
               {index > 0 && 'Additional'}
               {' '}
               {serviceInformationLabels.ServiceDetails}
-              :
             </h3>
+            <span>
+              {index > 0
+              && (
+              <Button
+                label={serviceInformationLabels.RemoveButton}
+                onClick={() => removeServiceRequest(index)}
+                outlined
+              />
+              )}
+            </span>
           </div>
           <div className="col-12 grid row-gap-5 pl-5">
             {pets.length
@@ -249,11 +261,10 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
                   />
                 </div>
               )}
-            {index > 0 && <button type="button" onClick={() => removeServiceRequest(index)}>Remove</button>}
           </div>
         </div>
       ))}
-      <button type="button" onClick={addNewServiceRequest}>Add Service Request</button>
+      <Button label={serviceInformationLabels.AddButton} onClick={addNewServiceRequest} outlined />
     </div>
   );
 }

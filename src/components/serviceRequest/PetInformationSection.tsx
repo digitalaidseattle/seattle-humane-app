@@ -7,6 +7,7 @@ import {
 import { PetType, EditablePetType } from '@types';
 import useAppConstants from '@hooks/useAppConstants';
 import { AppConstants } from 'src/constants';
+import { Button } from 'primereact/button';
 
 // TODO externalize to localization file
 export const petInformationLabels = {
@@ -19,6 +20,8 @@ export const petInformationLabels = {
   AgePlaceholder: 'Age in years',
   Weight: 'Pet Weight',
   WeightPlaceholder: 'lbs',
+  RemoveButton: 'Remove',
+  AddButton: 'Add Pet',
 };
 
 /** Props for the PetInformationSection */
@@ -86,12 +89,12 @@ export default function PetInformationSection(props: PetInformationSectionProps)
         // eslint-disable-next-line react/no-array-index-key
         <div key={index}>
           <div className="col-12">
-            <h3>
+            <h3 className="">
               {index > 0 && 'Additional'}
               {' '}
               {petInformationLabels.PetInformation}
-              :
             </h3>
+            <span className="">{index > 0 && <Button label={petInformationLabels.RemoveButton} icon="pi pi-times" onClick={() => removePet(index)} outlined />}</span>
           </div>
           <div className="col-12 grid row-gap-3 pl-5">
             {visibleFields.has('name')
@@ -162,11 +165,10 @@ export default function PetInformationSection(props: PetInformationSectionProps)
                   </div>
                 </div>
               )}
-            {index > 0 && <button type="button" onClick={() => removePet(index)}>Remove</button>}
           </div>
         </div>
       ))}
-      <button type="button" onClick={addNewPet}>Add Pet</button>
+      <Button label={petInformationLabels.AddButton} onClick={addNewPet} outlined />
     </div>
   );
 }
