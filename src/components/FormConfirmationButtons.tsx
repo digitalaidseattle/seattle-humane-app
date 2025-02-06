@@ -15,6 +15,10 @@ interface FormConfirmationButtonsProps {
   editLabel?: string;
   /** The handler for the Edit button press */
   onEditClicked: () => void;
+  /** The label for the Close button */
+  closeLabel?: string;
+  /** The handler for the Close button press */
+  onCloseClicked: () => void;
   /** Flag to enable/disable the buttons */
   disabled: boolean;
   /** Whether to show the save button loading state */
@@ -24,6 +28,7 @@ interface FormConfirmationButtonsProps {
     cancel?: boolean;
     save?: boolean;
     edit?: boolean;
+    close?: boolean;
   };
 }
 
@@ -42,6 +47,7 @@ export default function FormConfirmationButtons(
     Cancel: 'Cancel',
     Save: 'Save',
     Edit: 'Edit',
+    Close: 'Close',
   };
 
   const {
@@ -51,9 +57,11 @@ export default function FormConfirmationButtons(
     onSaveClicked,
     editLabel = Labels.Edit,
     onEditClicked,
+    closeLabel = Labels.Close,
+    onCloseClicked,
     disabled,
     saving,
-    showButtons = { cancel: true, save: true, edit: true },
+    showButtons = { cancel: true, save: true, edit: true, close: true },
   } = props;
 
   return (
@@ -62,26 +70,37 @@ export default function FormConfirmationButtons(
         <Button
           label={cancelLabel}
           disabled={disabled}
-          icon='pi pi-times'
-          className='p-button-text'
+          // icon='pi pi-times'
+          outlined
+          // className='p-button-text'
           onClick={onCancelClicked}
         />
       )}
       {showButtons.save && (
         <Button
           label={saveLabel}
-          disabled={disabled}
-          icon='pi pi-check'
-          className='p-button-text'
+          // icon='pi pi-check'
+          outlined
+          // className='p-button-text'
           loading={saving}
           onClick={onSaveClicked}
+        />
+      )}
+      {showButtons.close && (
+        <Button
+          label={closeLabel}
+          disabled={disabled}
+          outlined
+          // className='p-button-text'
+          onClick={onCloseClicked}
         />
       )}
       {showButtons.edit && (
         <Button
           label={editLabel}
           disabled={disabled}
-          className='p-button-text'
+          outlined
+          // className='p-button-text'
           onClick={onEditClicked}
         />
       )}

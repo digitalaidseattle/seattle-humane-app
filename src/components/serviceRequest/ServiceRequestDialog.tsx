@@ -86,6 +86,10 @@ function ServiceRequestDialog({
     }
   };
 
+  const onCloseClicked = () => {
+    hideDialog();
+  };
+
   /* Check for client.id, this differentiates
     an open case from a new request */
   const isNewRequest = (obj: any): boolean => !obj.id;
@@ -97,10 +101,12 @@ function ServiceRequestDialog({
       onCancelClicked={hideDialog}
       onSaveClicked={onSaveClicked}
       onEditClicked={onEditClicked}
+      onCloseClicked={onCloseClicked}
       showButtons={{
-        cancel: isNewRequest(client),
+        cancel: isNewRequest(client) || editMode,
         save: isNewRequest(client),
         edit: !isNewRequest(client),
+        close: !isNewRequest(client) && !editMode,
       }}
       editLabel={editMode ? 'Save' : 'Edit'}
     />
