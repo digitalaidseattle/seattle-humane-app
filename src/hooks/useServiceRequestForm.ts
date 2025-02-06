@@ -14,19 +14,18 @@ import {
   serviceInfoReducer,
   defaultServiceInformation,
   ServiceInfoActionType,
-  customServiceRequestType,
+  CustomServiceRequestType,
 } from '@context/serviceRequest/serviceInformationContext';
 import useTicketById from '@hooks/useTicketById';
 import * as DataService from '@services/DataService';
 import {
   EditablePetType,
   EditableClientType,
-  EditableServiceRequestType,
   ServiceRequestType,
 } from '@types';
 
 export default function useServiceRequestForm(
-  ticketId: ServiceRequestType['id']
+  ticketId: ServiceRequestType['id'],
 ) {
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState('');
@@ -40,7 +39,7 @@ export default function useServiceRequestForm(
   //* Get state and dispatchers for the from sections
   const [newClient, clientInformationDispatch] = useReducer(
     clientInfoReducer,
-    defaultClientInformation
+    defaultClientInformation,
   );
 
   const [newPets, petInformationDispatch] = useReducer(petInfoReducer, [
@@ -49,7 +48,7 @@ export default function useServiceRequestForm(
 
   const [newTicket, serviceInformationDispatch] = useReducer(
     serviceInfoReducer,
-    [defaultServiceInformation]
+    [defaultServiceInformation],
   );
 
   const dataState = { client: newClient, pets: newPets, tickets: newTicket };
@@ -101,9 +100,9 @@ export default function useServiceRequestForm(
 }
 
 async function handleTicketCreation(
-  requests: customServiceRequestType[],
+  requests: CustomServiceRequestType[],
   client: EditableClientType,
-  pets: EditablePetType[]
+  pets: EditablePetType[],
 ): Promise<ServiceRequestType[]> {
   let clientId: string;
 
@@ -111,7 +110,7 @@ async function handleTicketCreation(
   // No Upsert operations currently in the supabaseClient library AFAIK
   const existingClient = await DataService.getClientByIdOrEmail(
     'email',
-    client.email
+    client.email,
   );
   // TODO: Deal with modifying client information if it already exists
   if (!existingClient) {
@@ -124,19 +123,20 @@ async function handleTicketCreation(
 
   requests.forEach((request) => {
     // Create tickets for this pet
-    pets.filter((_, petIndex) => request.selected_pets.includes(petIndex))
+    pets
+      .filter((_, petIndex) => request.selected_pets.includes(petIndex))
       .forEach(async (pet) => {
-      let petId: string;
-      // Check if pet exists and create one if not
-      const existingPet = await DataService.getPetByOwner(clientId, pet.name);
-      if (!existingPet) {
-        const newPet = await DataService.createAnimal(pet, clientId);
-        petId = newPet.id;
-      } else {
-        petId = existingPet.id;
-      }
-      ticketPromises.push(DataService.createTicket(request, clientId, petId));
-    })
+        let petId: string;
+        // Check if pet exists and create one if not
+        const existingPet = await DataService.getPetByOwner(clientId, pet.name);
+        if (!existingPet) {
+          const newPet = await DataService.createAnimal(pet, clientId);
+          petId = newPet.id;
+        } else {
+          petId = existingPet.id;
+        }
+        ticketPromises.push(DataService.createTicket(request, clientId, petId));
+      });
   });
   return Promise.all(ticketPromises);
   // TODO: ChangeLog not currently implemented

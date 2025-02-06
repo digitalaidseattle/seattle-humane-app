@@ -23,13 +23,13 @@ export type EditablePetType = Omit<PetType, 'id' | 'client_id'>;
 export type ServiceRequestType = Tables<'service_requests'>;
 
 export type EditableServiceRequestType = Omit<
-  ServiceRequestType,
-  'id' | 'created_at'
+ServiceRequestType,
+'id' | 'created_at'
 >;
 
 export type ServiceRequestSummary = Pick<
-  ServiceRequestType,
-  'id' | 'service_category' | 'created_at' | 'urgent' | 'status' | 'modified_at'
+ServiceRequestType,
+'id' | 'service_category' | 'created_at' | 'urgent' | 'status' | 'modified_at'
 > & { client: Pick<ClientType, 'first_name' | 'last_name'> } & {
   pet: Pick<PetType, 'name' | 'species'>;
 } & { team_member: Pick<TeamMemberType, 'first_name' | 'last_name' | 'email'> };

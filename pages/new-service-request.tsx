@@ -69,17 +69,17 @@ export default function Page() {
               </ClientInformationProvider>
               <PetInformationProvider state={pets} dispatch={petInformationDispatch}>
                 <PetInformationSection disabled={disabled} />
+                <ServiceInformationProvider
+                  state={tickets}
+                  dispatch={serviceInformationDispatch}
+                >
+                  <ServiceInformationSection
+                    show={['service_category', 'description']}
+                    disabled={disabled}
+                    variant="external"
+                  />
+                </ServiceInformationProvider>
               </PetInformationProvider>
-              <ServiceInformationProvider
-                state={tickets}
-                dispatch={serviceInformationDispatch}
-              >
-                <ServiceInformationSection
-                  show={['service_category', 'description']}
-                  disabled={disabled}
-                  variant="external"
-                />
-              </ServiceInformationProvider>
             </div>
             <footer className="footer" style={{ alignSelf: 'flex-end', marginTop: '-20px' }}>
               <Button label={Labels.submit} disabled={disabled} icon="pi pi-check" className="p-button-text" loading={disabled} onClick={handleSubmit} />

@@ -1,7 +1,9 @@
 import React, { useContext, useState } from 'react';
 import InputRadio from '@components/InputRadio';
 import InputText from '@components/InputText';
-import { defaultPetInformation, PetInfoActionType, PetInformationContext, PetInformationDispatchContext } from '@context/serviceRequest/petInformationContext';
+import {
+  defaultPetInformation, PetInfoActionType, PetInformationContext, PetInformationDispatchContext,
+} from '@context/serviceRequest/petInformationContext';
 import { PetType, EditablePetType } from '@types';
 import useAppConstants from '@hooks/useAppConstants';
 import { AppConstants } from 'src/constants';
@@ -52,7 +54,7 @@ export default function PetInformationSection(props: PetInformationSectionProps)
 
   //* Map onChange handlers to dispatch
   const updatePet = (partialStateUpdate: Partial<EditablePetType>, index: number) => dispatch(
-    { type: PetInfoActionType.Update, index: index, partialStateUpdate },
+    { type: PetInfoActionType.Update, index, partialStateUpdate },
   );
   const setName = (name: EditablePetType['name'], index: number) => updatePet({ name }, index);
   const setSpecies = (species: EditablePetType['species'], index: number) => updatePet({ species }, index);
@@ -69,7 +71,7 @@ export default function PetInformationSection(props: PetInformationSectionProps)
   const addNewPet = () => {
     dispatch({
       type: PetInfoActionType.Add,
-      newPet: defaultPetInformation
+      newPet: defaultPetInformation,
     });
   };
 

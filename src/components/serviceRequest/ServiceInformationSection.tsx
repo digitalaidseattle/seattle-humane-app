@@ -1,7 +1,7 @@
 import InputRadio from '@components/InputRadio';
 import InputTextArea from '@components/InputTextArea';
 import {
-  customServiceRequestType,
+  CustomServiceRequestType,
   defaultServiceInformation,
   ServiceInfoActionType,
   ServiceInformationContext,
@@ -76,7 +76,7 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
 
   //* Map onChange handlers to dispatch
   const updateServiceRequest = (
-    partialStateUpdate: Partial<customServiceRequestType>,
+    partialStateUpdate: Partial<CustomServiceRequestType>,
     index: number,
   ) => {
     dispatch(

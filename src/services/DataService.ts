@@ -41,7 +41,7 @@ export async function createClient(client: EditableClientType) {
 
 export async function createAnimal(
   animal: EditablePetType,
-  clientId: ClientType['id']
+  clientId: ClientType['id'],
 ) {
   throwIfMissingRequiredFields('animal', animal);
   const { data: newAnimal, error } = await supabaseClient
@@ -64,7 +64,7 @@ export async function createAnimal(
 export async function createTicket(
   ticket: EditableServiceRequestType,
   clientId: ClientType['id'],
-  petId: PetType['id']
+  petId: PetType['id'],
 ) {
   throwIfMissingRequiredFields('ticket', ticket);
   const { data: newTicket, error } = await supabaseClient
@@ -107,7 +107,7 @@ export async function getTicketsThisWeek(): Promise<ServiceRequestType[]> {
 }
 
 export async function getServiceRequestSummary(): Promise<
-  ServiceRequestSummary[]
+ServiceRequestSummary[]
 > {
   const { data, error } = await supabaseClient
     .from('service_requests')
@@ -124,7 +124,7 @@ export async function getServiceRequestSummary(): Promise<
     urgent,
     status,
     modified_at
-    `
+    `,
     )
     .order('created_at', { ascending: false });
 
@@ -135,11 +135,13 @@ export async function getServiceRequestSummary(): Promise<
     .in('type', ['species', 'category']);
   if (categoryError) throw new Error(categoryError.message);
   const constantsMap = new Map(
-    constants.map((constant) => [constant.id, constant.label])
+    constants.map((constant) => [constant.id, constant.label]),
   );
 
   const summaries = data.map(
-    ({ clients, pets, team_members, service_category, id, ...ticket }) => ({
+    ({
+      clients, pets, team_members, service_category, id, ...ticket
+    }) => ({
       id,
       client: { first_name: clients.first_name, last_name: clients.last_name },
       pet: { name: pets.name, species: constantsMap.get(pets.species) },
@@ -154,13 +156,13 @@ export async function getServiceRequestSummary(): Promise<
       urgent: ticket.urgent,
       status: ticket.status,
       modified_at: ticket.modified_at,
-    })
+    }),
   );
   return summaries;
 }
 
 export async function getClientByIdOrEmail<
-  T extends keyof Pick<ClientType, 'id' | 'email'>
+  T extends keyof Pick<ClientType, 'id' | 'email'>,
 >(key: T, value: ClientType[T]): Promise<ClientType> {
   const { data, error } = await supabaseClient
     .from('clients')
@@ -183,7 +185,7 @@ export async function getPetById(id: PetType['id']): Promise<PetType> {
 
 export async function getPetByOwner(
   clientId: ClientType['id'],
-  petName: PetType['name']
+  petName: PetType['name'],
 ): Promise<PetType> {
   const { data, error } = await supabaseClient
     .from('pets')
