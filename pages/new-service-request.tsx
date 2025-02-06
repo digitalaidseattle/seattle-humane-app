@@ -21,7 +21,7 @@ export default function Page() {
   const ticketId = searchParams.get('ticket');
   const submitted = searchParams.get('submitted') === 'true';
   const {
-    disabled, clearForm, save, message, client, pets: pet, ticket,
+    disabled, clearForm, save, message, client, pets, tickets,
     clientInformationDispatch, petInformationDispatch, serviceInformationDispatch,
   } = useServiceRequestForm(ticketId);
 
@@ -67,11 +67,11 @@ export default function Page() {
               >
                 <ClientInformationSection disabled={disabled} />
               </ClientInformationProvider>
-              <PetInformationProvider state={pet} dispatch={petInformationDispatch}>
+              <PetInformationProvider state={pets} dispatch={petInformationDispatch}>
                 <PetInformationSection disabled={disabled} />
               </PetInformationProvider>
               <ServiceInformationProvider
-                state={ticket}
+                state={tickets}
                 dispatch={serviceInformationDispatch}
               >
                 <ServiceInformationSection
