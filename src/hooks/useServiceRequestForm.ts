@@ -75,6 +75,7 @@ export default function useServiceRequestForm(
   const save = async () => {
     if (busy) return false;
     setBusy(true);
+
     // TODO add error handling scenario
     try {
       await handleTicketCreation(newTicket, newClient, newPet);
@@ -116,17 +117,11 @@ async function handleTicketCreation(
     client.email
   );
 
-  console.log(existingClient);
-
   // TODO: Deal with modifying client information if it already exists
   if (existingClient === null) {
-    alert('new client');
     const newClient = await DataService.createClient(client);
     clientId = newClient.id;
   } else {
-    alert('existing client');
-
-    client.first_name = existingClient.first_name;
     clientId = existingClient.id;
   }
 

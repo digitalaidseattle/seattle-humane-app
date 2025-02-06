@@ -67,8 +67,6 @@ export default function PetInformationSection(
     age: updatedAge,
     weight: updatedWeight,
   };
-  // ^ display edited values
-  console.log(updatedPet);
 
   const visibleFields = new Set<keyof EditableAnimalType>(show);
 
@@ -170,12 +168,7 @@ export default function PetInformationSection(
                 label={petInformationLabels.Age}
                 placeholder={petInformationLabels.AgePlaceholder}
                 onChange={(e) =>
-                  handleInputEdit(
-                    'age',
-                    setUpdatedAge,
-                    setAge,
-                    Number(e.target.value)
-                  )
+                  handleInputEdit('age', setUpdatedAge, setAge, e.target.value)
                 }
               />
             </div>
@@ -196,7 +189,7 @@ export default function PetInformationSection(
                     'weight',
                     setUpdatedWeight,
                     setWeight,
-                    Number(e.target.value)
+                    e.target.value
                   )
                 }
               />

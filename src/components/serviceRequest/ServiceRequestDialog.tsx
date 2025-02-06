@@ -12,6 +12,8 @@ import PetInformationSection from '@components/serviceRequest/PetInformationSect
 import ServiceInformationSection from '@components/serviceRequest/ServiceInformationSection';
 import { mutate } from 'swr';
 
+console.clear();
+
 // TODO externalize to localization file
 export const serviceRequestLabels = {
   FormHeader: 'SPS Internal Form',
@@ -52,12 +54,6 @@ function ServiceRequestDialog({
 
   const [editMode, setEditMode] = useState(false);
 
-  // TODO delete console log
-  // console.log('disabled value: ' + disabled);
-  // console.log(client);
-  // console.log(pet);
-  // console.log(ticket);
-
   const [showDialog, setShowDialog] = useState(false);
 
   useEffect(() => {
@@ -71,40 +67,28 @@ function ServiceRequestDialog({
   };
 
   const onSaveClicked = async () => {
-    console.log(client);
     const success = await save();
     if (success) {
       mutate('dataservice/alltickets');
-
-      // if save successful, exit edit mode
       setEditMode(false);
-
       hideDialog();
     }
+    console.log('Client: ', client);
+    console.log('Pet: ', pet);
+    console.log('Service Details: ', ticket);
   };
 
   const onEditClicked = () => {
     if (editMode) {
-      // set readOnly to false?
-      // add logic for updating form inputs...
-
-      // save form & close window
       onSaveClicked();
-      // console.log(client);
     } else {
       setEditMode(true);
     }
   };
 
-  const isNewRequest = (obj: any): boolean => {
-    /* Check for client.id, this differentiates
+  /* Check for client.id, this differentiates
     an open case from a new request */
-
-    if (obj.id) {
-      return false;
-    }
-    return true;
-  };
+  const isNewRequest = (obj: any): boolean => !obj.id;
 
   const dialogFooter = (
     <FormConfirmationButtons

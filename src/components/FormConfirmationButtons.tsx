@@ -1,6 +1,6 @@
 /* eslint-disable jsx-quotes */
 /* eslint-disable @typescript-eslint/quotes */
-import { Button } from "primereact/button";
+import { Button } from 'primereact/button';
 
 interface FormConfirmationButtonsProps {
   /** The label for the Cancel button */
@@ -39,9 +39,9 @@ export default function FormConfirmationButtons(
   // TODO localize
   // FIXME: isEditing should be a prop and only change when btn is pressed and or successfully saved
   const Labels = {
-    Cancel: "Cancel",
-    Save: "Save",
-    Edit: "Edit",
+    Cancel: 'Cancel',
+    Save: 'Save',
+    Edit: 'Edit',
   };
 
   const {

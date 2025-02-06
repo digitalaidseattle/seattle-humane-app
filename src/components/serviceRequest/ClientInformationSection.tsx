@@ -13,8 +13,6 @@ import {
 import { ClientType, EditableClientType } from '@types';
 import emailIsValid from '@utils/dataValidationUtils';
 
-console.clear();
-
 // TODO externalize to localization file
 export const clientInformationLabels = {
   ClientInformation: 'Client Information',
@@ -75,7 +73,7 @@ export default function ClientInformationSection(
     zip_code: number;
   }
 
-  // holds edited/updated form values for client,
+  // holds edited/updated form values for client info,
   // will later be dispatched to the context and saved to database
   const updatedClient: EditedClient = {
     first_name: updatedFirstName,
@@ -84,8 +82,6 @@ export default function ClientInformationSection(
     phone: updatedPhone,
     zip_code: updatedZipCode,
   };
-  // ^ display edited values
-  console.log(updatedClient);
 
   const {
     disabled,
