@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
 import {
-  customServiceRequestType,
+  CustomServiceRequestType,
 } from '@context/serviceRequest/serviceInformationContext';
 import * as DataService from '@services/DataService';
 import {
@@ -11,7 +11,7 @@ import {
 
 
 export default async function handleTicketCreation(
-  requests: customServiceRequestType[],
+  requests: CustomServiceRequestType[],
   client: EditableClientType,
   pets: EditablePetType[]
 ): Promise<ServiceRequestType[]> {

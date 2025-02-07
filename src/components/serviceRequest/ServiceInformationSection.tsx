@@ -152,6 +152,13 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
                     outlined
                   />
                 )}
+              && (
+              <Button
+                label={serviceInformationLabels.RemoveButton}
+                onClick={() => removeServiceRequest(index)}
+                outlined
+              />
+                )}
             </span>
           </div>
           {showAddTicket && pets.length
@@ -279,5 +286,5 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
         className="p-button-text"
         onClick={addNewServiceRequest} />}
     </div>
-  );
+  )
 }
