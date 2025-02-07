@@ -142,23 +142,6 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
               {' '}
               {serviceInformationLabels.ServiceDetails}
             </h3>
-            <span>
-              {index > 0
-                && (
-                  <Button
-                    label={serviceInformationLabels.RemoveButton}
-                    onClick={() => removeServiceRequest(index)}
-                    outlined
-                  />
-                )}
-              && (
-              <Button
-                label={serviceInformationLabels.RemoveButton}
-                onClick={() => removeServiceRequest(index)}
-                outlined
-              />
-                )}
-            </span>
           </div>
           {showAddTicket && pets.length
             && (

@@ -97,7 +97,6 @@ export default function PetInformationSection(props: PetInformationSectionProps)
               {' '}
               {petInformationLabels.PetInformation}
             </h3>
-            <span className="">{index > 0 && <Button label={petInformationLabels.RemoveButton} icon="pi pi-times" onClick={() => removePet(index)} outlined />}</span>
           </div>
           <div className="col-12 grid row-gap-3 pl-5">
             {visibleFields.has('name')
