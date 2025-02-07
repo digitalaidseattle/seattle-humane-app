@@ -21,7 +21,7 @@ export default function useTicketById(ticketId: string) {
     ticket: defaultServiceInformation,
   });
 
-  const [dataLoaded, setDataLoaded] = useState(false)
+  const [dataLoaded, setDataLoaded] = useState(false);
 
   useEffect(() => {
     const getTicket = async () => {
@@ -37,7 +37,7 @@ export default function useTicketById(ticketId: string) {
         DataService.getPetById(ticket.pet_id),
       ]);
       setState({ ticket, client, pet: animal });
-      setDataLoaded(true)
+      setDataLoaded(true);
     };
     if (ticketId) getTicket();
   }, [ticketId]);

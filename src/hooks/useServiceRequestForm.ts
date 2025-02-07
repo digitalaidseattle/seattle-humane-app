@@ -26,7 +26,7 @@ import handleTicketCreation from '@utils/handleTicketCreation';
 
 export default function useServiceRequestForm(
   ticketId: ServiceRequestType['id'],
-  visible: boolean
+  visible: boolean,
 ) {
   const [showDialog, setShowDialog] = useState(visible);
 
@@ -35,14 +35,14 @@ export default function useServiceRequestForm(
   }, [visible]);
 
   const [busy, setBusy] = useState(false);
-  const [isReadOnly, setIsReadOnly] = useState(true)
+  const [isReadOnly, setIsReadOnly] = useState(true);
   const [message, setMessage] = useState('');
   const [isNewTicket, setIsNewTicket] = useState(true);
 
   useEffect(() => {
     async function getTicket() {
-      setBusy(true)
-      setIsReadOnly(true)
+      setBusy(true);
+      setIsReadOnly(true);
       const ticket = await DataService.getTicket(ticketId);
       /**
        * TODO consider using Promise.allSettled
@@ -54,18 +54,24 @@ export default function useServiceRequestForm(
         DataService.getClientByIdOrEmail('id', ticket.client_id),
         DataService.getPetById(ticket.pet_id),
       ]);
-      clientInformationDispatch({ type: ClientInfoActionType.Update, partialStateUpdate: client })
-      petInformationDispatch({ type: PetInfoActionType.Update, partialStateUpdate: animal, index: 0 })
-      serviceInformationDispatch({ type: ServiceInfoActionType.Update, partialStateUpdate: ticket, index: 0 })
-      setBusy(false)
-    };
+      clientInformationDispatch({
+        type: ClientInfoActionType.Update, partialStateUpdate: client,
+      });
+      petInformationDispatch({
+        type: PetInfoActionType.Update, partialStateUpdate: animal, index: 0,
+      });
+      serviceInformationDispatch({
+        type: ServiceInfoActionType.Update, partialStateUpdate: ticket, index: 0,
+      });
+      setBusy(false);
+    }
     if (ticketId) {
-      setIsNewTicket(false)
-      getTicket()
+      setIsNewTicket(false);
+      getTicket();
     } else {
-      setIsReadOnly(false)
-      setIsNewTicket(true)
-      clearForm()
+      setIsReadOnly(false);
+      setIsNewTicket(true);
+      clearForm();
     }
   }, [ticketId]);
 
@@ -81,7 +87,7 @@ export default function useServiceRequestForm(
 
   const [tickets, serviceInformationDispatch] = useReducer(
     serviceInfoReducer,
-    [{ ...defaultServiceInformation, selected_pets: [] }]
+    [{ ...defaultServiceInformation, selected_pets: [] }],
   );
 
   const dataState = { client, pets, tickets };
@@ -99,13 +105,12 @@ export default function useServiceRequestForm(
     // TODO add error handling scenario
     try {
       if (ticketId) {
-        handleTicketUpdate
-          (tickets as unknown as ServiceRequestType[],
-            client as unknown as ClientType,
-            pets as unknown as PetType[]
-          )
-      }
-      else await handleTicketCreation(tickets, client, pets);
+        handleTicketUpdate(
+          tickets as unknown as ServiceRequestType[],
+          client as unknown as ClientType,
+          pets as unknown as PetType[],
+        );
+      } else await handleTicketCreation(tickets, client, pets);
       return true;
     } catch (e) {
       setMessage(e.message);

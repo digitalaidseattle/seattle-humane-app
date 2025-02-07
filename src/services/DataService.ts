@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/naming-convention */
 /**
  *  DataService.ts
  *
@@ -42,14 +43,18 @@ export async function createClient(client: EditableClientType) {
 export async function updateClient(clientInput: ClientType) {
   throwIfMissingRequiredFields('client', clientInput);
   // update all fields except the ID
-  const { email, first_name, last_name, phone, zip_code } = clientInput
+  const {
+    email, first_name, last_name, phone, zip_code,
+  } = clientInput;
   const { error, data: client } = await supabaseClient.from('clients')
-    .update({ email, first_name, last_name, phone, zip_code })
+    .update({
+      email, first_name, last_name, phone, zip_code,
+    })
     .eq('id', clientInput.id)
     .select()
-    .single()
+    .single();
 
-  if (error) throw new Error(error.message)
+  if (error) throw new Error(error.message);
   return client;
 }
 
@@ -77,19 +82,24 @@ export async function createAnimal(
 
 export async function updateAnimal(clientInput: ClientType, petInput: PetType) {
   throwIfMissingRequiredFields('animal', petInput);
-  const client = await getClientByIdOrEmail('email', clientInput.email)
-  if (!client) throw new Error(`Failed to updat the pet because the client with email ${clientInput.email} could not be found`)
+  // eslint-disable-next-line @typescript-eslint/no-use-before-define
+  const client = await getClientByIdOrEmail('email', clientInput.email);
+  if (!client) throw new Error(`Failed to updat the pet because the client with email ${clientInput.email} could not be found`);
 
   // update all fields except the ID
-  const { age, name, species, weight } = petInput
+  const {
+    age, name, species, weight,
+  } = petInput;
   const { error, data: pet } = await supabaseClient.from('pets')
-    .update({ age, name, species, weight })
+    .update({
+      age, name, species, weight,
+    })
     .eq('client_id', client.id)
     .eq('id', petInput.id)
     .select()
-    .single()
+    .single();
 
-  if (error) throw new Error(error.message)
+  if (error) throw new Error(error.message);
   return pet;
 }
 
@@ -119,18 +129,28 @@ export async function createTicket(
 }
 
 export async function updateTicket(
-  ticketInput: ServiceRequestType
+  ticketInput: ServiceRequestType,
 ) {
   throwIfMissingRequiredFields('ticket', ticketInput);
   // allow changing all fields except some of the IDs
-  const { description, request_source, service_category, status, team_member_id, urgent } = ticketInput
+  const {
+    description, request_source, service_category, status, team_member_id, urgent,
+  } = ticketInput;
   const { data: ticket, error } = await supabaseClient.from('service_requests')
-    .update({ description, request_source, service_category, status, team_member_id, urgent, modified_at: new Date().toISOString() })
+    .update({
+      description,
+      request_source,
+      service_category,
+      status,
+      team_member_id,
+      urgent,
+      modified_at: new Date().toISOString(),
+    })
     .eq('id', ticketInput.id)
     .select()
-    .single()
-  if (error) throw new Error(error.message)
-  return ticket
+    .single();
+  if (error) throw new Error(error.message);
+  return ticket;
 }
 
 export async function getTicket(ticketId: ServiceRequestType['id']) {

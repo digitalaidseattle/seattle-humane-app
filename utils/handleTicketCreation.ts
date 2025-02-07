@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-use-before-define */
 import {
   CustomServiceRequestType,
 } from '@context/serviceRequest/serviceInformationContext';
@@ -9,11 +8,10 @@ import {
   ServiceRequestType,
 } from '@types';
 
-
 export default async function handleTicketCreation(
   requests: CustomServiceRequestType[],
   client: EditableClientType,
-  pets: EditablePetType[]
+  pets: EditablePetType[],
 ): Promise<ServiceRequestType[]> {
   let clientId: string;
 
@@ -21,7 +19,7 @@ export default async function handleTicketCreation(
   // No Upsert operations currently in the supabaseClient library AFAIK
   const existingClient = await DataService.getClientByIdOrEmail(
     'email',
-    client.email
+    client.email,
   );
   // TODO: Deal with modifying client information if it already exists
   if (!existingClient) {
@@ -46,7 +44,7 @@ export default async function handleTicketCreation(
           petId = existingPet.id;
         }
         ticketPromises.push(DataService.createTicket(request, clientId, petId));
-      })
+      });
   });
   return Promise.all(ticketPromises);
   // TODO: ChangeLog not currently implemented

@@ -11,7 +11,6 @@ import {
 } from '@context/serviceRequest/serviceInformationContext';
 import useServiceRequestForm from '@hooks/useServiceRequestForm';
 import type { ServiceRequestType } from '@types';
-import { useState, useEffect } from 'react';
 import ClientInformationSection from '@components/serviceRequest/ClientInformationSection';
 import PetInformationSection from '@components/serviceRequest/PetInformationSection';
 import ServiceInformationSection from '@components/serviceRequest/ServiceInformationSection';
@@ -42,7 +41,7 @@ function ServiceRequestDialog({ visible, onClose, ticketId }: ServiceRequestDial
     clientInformationDispatch, petInformationDispatch, serviceInformationDispatch,
     showDialog,
   } = useServiceRequestForm(ticketId, visible);
-  const disabled = busy || isReadOnly
+  const disabled = busy || isReadOnly;
   const hideDialog = () => {
     onClose();
   };
@@ -51,14 +50,14 @@ function ServiceRequestDialog({ visible, onClose, ticketId }: ServiceRequestDial
     const success = await save();
     if (success) {
       mutate('dataservice/alltickets');
-      setIsReadOnly(true)
+      setIsReadOnly(true);
       if (isNewTicket) hideDialog();
     }
   };
 
   const onEditClicked = () => {
-    setIsReadOnly(false)
-  }
+    setIsReadOnly(false);
+  };
 
   const dialogFooter = (
     <FormConfirmationButtons

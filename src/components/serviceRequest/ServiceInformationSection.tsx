@@ -270,21 +270,26 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
                   />
                 </div>
               )}
-            {index > 0 && <Button
+            {index > 0 && (
+            <Button
               label="Remove"
-              icon='pi pi-minus-circle'
+              icon="pi pi-minus-circle"
               className="p-button-text"
               type="button"
               onClick={() => removeServiceRequest(index)}
-            />}
+            />
+            )}
           </div>
         </div>
       ))}
-      {showAddTicket && <Button
-        label='Add Service Request'
-        icon='pi pi-plus-circle'
+      {showAddTicket && (
+      <Button
+        label="Add Service Request"
+        icon="pi pi-plus-circle"
         className="p-button-text"
-        onClick={addNewServiceRequest} />}
+        onClick={addNewServiceRequest}
+      />
+      )}
     </div>
-  )
+  );
 }

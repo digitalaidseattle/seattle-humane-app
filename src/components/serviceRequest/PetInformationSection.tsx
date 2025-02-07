@@ -169,20 +169,26 @@ export default function PetInformationSection(props: PetInformationSectionProps)
                   </div>
                 </div>
               )}
-            {index > 0 && <Button
-              label="Remove"
-              icon='pi pi-minus-circle'
-              className="p-button-text"
-              onClick={() => removePet(index)}
-            />}
+            {index > 0 && (
+              <Button
+                label="Remove"
+                icon="pi pi-minus-circle"
+                className="p-button-text"
+                onClick={() => removePet(index)}
+              />
+            )}
           </div>
         </div>
       ))}
-      {showAddPet && <Button
-        label='Add Pet'
-        icon='pi pi-plus-circle'
-        className="p-button-text"
-        onClick={addNewPet} />}
+      {showAddPet && (
+        <Button
+          label={petInformationLabels.AddButton}
+          icon="pi pi-plus-circle"
+          className="p-button-text"
+          outlined
+          onClick={addNewPet}
+        />
+      )}
     </div>
   );
 }

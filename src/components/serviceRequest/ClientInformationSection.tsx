@@ -65,7 +65,7 @@ export default function ClientInformationSection(props: ClientInformationSection
     { type: ClientInfoActionType.Update, partialStateUpdate },
   );
   const setFirstName = (first_name: EditableClientType['first_name']) => {
-    setFormData({ first_name })
+    setFormData({ first_name });
   };
   const setLastName = (last_name: EditableClientType['last_name']) => (setFormData({ last_name }));
   const setEmail = (email: EditableClientType['email']) => (setFormData({ email }));

@@ -25,7 +25,7 @@ interface FormConfirmationButtonsProps {
 const Labels = {
   Cancel: 'Cancel',
   Save: 'Save',
-  Edit: 'Edit'
+  Edit: 'Edit',
 };
 
 /**
@@ -42,14 +42,13 @@ export default function FormConfirmationButtons(props: FormConfirmationButtonsPr
     disabled, saving,
   } = props;
   return (
-    <>
-      {editing
-        ? <>
+    editing
+      ? (
+        <>
           <Button label={cancelLabel} disabled={disabled} icon="pi pi-times" className="p-button-text" onClick={onCancelClicked} />
           <Button label={saveLabel} disabled={disabled} icon="pi pi-check" className="p-button-text" loading={saving} onClick={onSaveClicked} />
         </>
-        : <Button label={editLabel} icon="pi pi-pen-to-square" className="p-button-text" onClick={onEditClicked} />
-      }
-    </>
+      )
+      : <Button label={editLabel} icon="pi pi-pen-to-square" className="p-button-text" onClick={onEditClicked} />
   );
 }
