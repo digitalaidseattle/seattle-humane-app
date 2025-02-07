@@ -143,7 +143,7 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
               {serviceInformationLabels.ServiceDetails}
             </h3>
           </div>
-          {showAddTicket && pets.length
+          {(showAddTicket && pets.length)
             && (
               <div className="col-12 grid row-gap-5 pl-5">
                 <span>Select Pet(s):</span>
