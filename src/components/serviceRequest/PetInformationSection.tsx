@@ -8,7 +8,6 @@ import { PetType, EditablePetType } from '@types';
 import useAppConstants from '@hooks/useAppConstants';
 import { AppConstants } from 'src/constants';
 import { Button } from 'primereact/button';
-import { Button } from 'primereact/button';
 
 // TODO externalize to localization file
 export const petInformationLabels = {

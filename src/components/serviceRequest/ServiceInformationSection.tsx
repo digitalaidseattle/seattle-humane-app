@@ -16,7 +16,6 @@ import useAppConstants from '@hooks/useAppConstants';
 import { AppConstants } from 'src/constants';
 import useTeamMembers from 'src/hooks/useTeamMembers';
 import { Button } from 'primereact/button';
-import { Button } from 'primereact/button';
 
 // TODO externalize to localization file
 export const serviceInformationLabels = {
@@ -271,24 +270,24 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
                 </div>
               )}
             {index > 0 && (
-            <Button
-              label="Remove"
-              icon="pi pi-minus-circle"
-              className="p-button-text"
-              type="button"
-              onClick={() => removeServiceRequest(index)}
-            />
+              <Button
+                label="Remove"
+                icon="pi pi-minus-circle"
+                className="p-button-text"
+                type="button"
+                onClick={() => removeServiceRequest(index)}
+              />
             )}
           </div>
         </div>
       ))}
       {showAddTicket && (
-      <Button
-        label="Add Service Request"
-        icon="pi pi-plus-circle"
-        className="p-button-text"
-        onClick={addNewServiceRequest}
-      />
+        <Button
+          label="Add Service Request"
+          icon="pi pi-plus-circle"
+          className="p-button-text"
+          onClick={addNewServiceRequest}
+        />
       )}
     </div>
   );
