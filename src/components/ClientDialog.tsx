@@ -21,7 +21,7 @@ import {
 } from '@context/serviceRequest/serviceInformationContext';
 import * as DataService from '@services/DataService';
 import {
-  EditableAnimalType, EditableClientType, EditableServiceRequestType, ServiceRequestType,
+  EditablePetType, EditableClientType, EditableServiceRequestType, ServiceRequestType,
 } from '@types';
 import FormConfirmationButtons from '@components/FormConfirmationButtons';
 import ClientInformationSection from '@components/serviceRequest/ClientInformationSection';
@@ -38,9 +38,9 @@ function ClientDialog(props: ClientDialogProps) {
   const [clientDialog, setClientDialog] = useState(false);
 
   //* Get state and dispatchers for the from sections
-  const [request, requestDispatch] = useReducer(serviceInfoReducer, defaultServiceInformation);
+  const [request, requestDispatch] = useReducer(serviceInfoReducer, [defaultServiceInformation]);
   const [client, clientDispatch] = useReducer(clientInfoReducer, defaultClientInformation);
-  const [animal, animalDispatch] = useReducer(petInfoReducer, defaultPetInformation);
+  const [animal, animalDispatch] = useReducer(petInfoReducer, [defaultPetInformation]);
 
   useEffect(() => {
     setClientDialog(props.visible);

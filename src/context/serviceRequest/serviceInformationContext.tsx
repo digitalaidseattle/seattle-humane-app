@@ -6,7 +6,10 @@
 import React, { createContext } from 'react';
 import { EditableServiceRequestType } from '@types';
 
-export const defaultServiceInformation: EditableServiceRequestType = {
+export type CustomServiceRequestType = EditableServiceRequestType & { selected_pets : number[] };
+
+export const defaultServiceInformation: CustomServiceRequestType = {
+  selected_pets: [],
   client_id: '',
   pet_id: '',
   service_category: '',
@@ -18,23 +21,38 @@ export const defaultServiceInformation: EditableServiceRequestType = {
   modified_at: '',
 };
 
-export enum ServiceInfoActionType { Clear = 'clear', Update = 'update' }
-type ServiceInfoAction = { type: ServiceInfoActionType.Clear } | { type: ServiceInfoActionType.Update, partialStateUpdate: Partial<EditableServiceRequestType> };
+export enum ServiceInfoActionType {
+  Clear = 'clear',
+  Update = 'update',
+  Add = 'add',
+  Remove = 'remove',
+}
+
+type ServiceInfoAction =
+| { type: ServiceInfoActionType.Clear }
+| { type: ServiceInfoActionType.Update, index: number, partialStateUpdate: Partial<CustomServiceRequestType> }
+| { type: ServiceInfoActionType.Add, newService: CustomServiceRequestType }
+| { type: ServiceInfoActionType.Remove, index: number };
 
 export const serviceInfoReducer = (
-  state: EditableServiceRequestType,
+  state: CustomServiceRequestType[],
   action: ServiceInfoAction,
 ) => {
   if (action.type === ServiceInfoActionType.Update) {
-    return { ...state, ...action.partialStateUpdate };
+    return state.map((serviceRequest, idx) => (idx === action.index ? { ...serviceRequest, ...action.partialStateUpdate } : serviceRequest));
   }
-  return { ...defaultServiceInformation };
+
+  if (action.type === ServiceInfoActionType.Add) return [...state, action.newService];
+
+  if (action.type === ServiceInfoActionType.Remove) return state.filter((_, idx) => idx !== action.index);
+
+  return [{ ...defaultServiceInformation }];
 };
 
-export const ServiceInformationContext = createContext<EditableServiceRequestType>(null);
+export const ServiceInformationContext = createContext<CustomServiceRequestType[]>(null);
 export const ServiceInformationDispatchContext = createContext<React.Dispatch<ServiceInfoAction>>(null);
 interface ServiceInformationProviderProps extends React.PropsWithChildren {
-  state: EditableServiceRequestType,
+  state: CustomServiceRequestType[],
   dispatch: React.Dispatch<ServiceInfoAction>
 }
 export function ServiceInformationProvider({

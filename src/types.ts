@@ -15,19 +15,24 @@ export type ClientType = Tables<'clients'>;
 export type EditableClientType = Omit<ClientType, 'id'>;
 
 // INCOMPLETE: more fields to be added when confirmed as required
-export type AnimalType = Tables<'pets'>;
+export type PetType = Tables<'pets'>;
 
-export type EditableAnimalType = Omit<AnimalType, 'id' | 'client_id'>;
+export type EditablePetType = Omit<PetType, 'id' | 'client_id'>;
 
 // INCOMPLETE: more fields to be added when confirmed as required
 export type ServiceRequestType = Tables<'service_requests'>;
 
-export type EditableServiceRequestType = Omit<ServiceRequestType, 'id' | 'created_at'>;
+export type EditableServiceRequestType = Omit<
+ServiceRequestType,
+'id' | 'created_at'
+>;
 
-export type ServiceRequestSummary = Pick<ServiceRequestType, 'id' | 'service_category' | 'created_at' | 'urgent' | 'status' | 'modified_at'> &
-{ client: Pick<ClientType, 'first_name' | 'last_name'> } &
-{ pet: Pick<AnimalType, 'name' | 'species'> } &
-{ team_member: Pick<TeamMemberType, 'first_name' | 'last_name' | 'email'> };
+export type ServiceRequestSummary = Pick<
+ServiceRequestType,
+'id' | 'service_category' | 'created_at' | 'urgent' | 'status' | 'modified_at'
+> & { client: Pick<ClientType, 'first_name' | 'last_name'> } & {
+  pet: Pick<PetType, 'name' | 'species'>;
+} & { team_member: Pick<TeamMemberType, 'first_name' | 'last_name' | 'email'> };
 
 export type AppConstantType = Tables<'app_constants'>;
 

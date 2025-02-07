@@ -1,21 +1,27 @@
 import { defaultClientInformation } from '@context/serviceRequest/clientInformationContext';
 import { defaultPetInformation } from '@context/serviceRequest/petInformationContext';
 import { defaultServiceInformation } from '@context/serviceRequest/serviceInformationContext';
-import { EditableAnimalType, EditableClientType, EditableServiceRequestType } from '@types';
+import {
+  EditablePetType,
+  EditableClientType,
+  EditableServiceRequestType,
+} from '@types';
 import { useEffect, useState } from 'react';
 import * as DataService from '@services/DataService';
 
 export type UseTicketByIdState = {
-  client: EditableClientType,
-  animal: EditableAnimalType,
-  ticket: EditableServiceRequestType
+  client: EditableClientType;
+  pet: EditablePetType;
+  ticket: EditableServiceRequestType;
 };
 export default function useTicketById(ticketId: string) {
   const [state, setState] = useState<UseTicketByIdState>({
     client: defaultClientInformation,
-    animal: defaultPetInformation,
+    pet: defaultPetInformation,
     ticket: defaultServiceInformation,
   });
+
+  const [dataLoaded, setDataLoaded] = useState(false);
 
   useEffect(() => {
     const getTicket = async () => {
@@ -30,10 +36,11 @@ export default function useTicketById(ticketId: string) {
         DataService.getClientByIdOrEmail('id', ticket.client_id),
         DataService.getPetById(ticket.pet_id),
       ]);
-      setState({ ticket, client, animal });
+      setState({ ticket, client, pet: animal });
+      setDataLoaded(true);
     };
     if (ticketId) getTicket();
   }, [ticketId]);
 
-  return state;
+  return { state, dataLoaded };
 }

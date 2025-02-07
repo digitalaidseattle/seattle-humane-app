@@ -3,27 +3,49 @@
  */
 /* eslint-disable max-len */
 import React, { createContext } from 'react';
-import { EditableAnimalType } from '@types';
+import { EditablePetType } from '@types';
 
-export const defaultPetInformation: EditableAnimalType = {
+export const defaultPetInformation: EditablePetType = {
   name: '',
   species: '',
   weight: 0,
   age: 0,
 };
 
-export enum PetInfoActionType { Clear = 'clear', Update = 'update' }
-type AnimalInfoAction = { type: PetInfoActionType.Clear } | { type: PetInfoActionType.Update, partialStateUpdate: Partial<EditableAnimalType> };
+export enum PetInfoActionType {
+  Clear = 'clear',
+  Update = 'update',
+  Remove = 'remove',
+  Add = 'add',
+}
 
-export const petInfoReducer = (state: EditableAnimalType, action: AnimalInfoAction) => {
-  if (action.type === PetInfoActionType.Update) return { ...state, ...action.partialStateUpdate };
-  return { ...defaultPetInformation };
+type PetInfoAction =
+  | { type: PetInfoActionType.Clear }
+  | { type: PetInfoActionType.Add, newPet: EditablePetType }
+  | { type: PetInfoActionType.Remove, index: number }
+  | { type: PetInfoActionType.Update, index: number, partialStateUpdate: Partial<EditablePetType> };
+
+export const petInfoReducer = (state: EditablePetType[], action: PetInfoAction) => {
+  if (action.type === PetInfoActionType.Update) {
+    return state.map((pet, idx) => (idx === action.index ? { ...pet, ...action.partialStateUpdate } : pet));
+  }
+
+  if (action.type === PetInfoActionType.Add) return [...state, action.newPet];
+
+  if (action.type === PetInfoActionType.Remove) return state.filter((_, idx) => idx !== action.index);
+
+  return [{ ...defaultPetInformation }];
 };
 
-export const PetInformationContext = createContext<EditableAnimalType>(null);
-export const PetInformationDispatchContext = createContext<React.Dispatch<AnimalInfoAction>>(null);
+export const PetInformationContext = createContext<EditablePetType[]>(null);
+export const PetInformationDispatchContext = createContext<React.Dispatch<PetInfoAction>>(null);
 
-export function PetInformationProvider({ children, state, dispatch }) {
+interface PetInformationProviderProps extends React.PropsWithChildren {
+  state: EditablePetType[],
+  dispatch: React.Dispatch<PetInfoAction>
+}
+
+export function PetInformationProvider({ children, state, dispatch }: PetInformationProviderProps) {
   return (
     <PetInformationContext.Provider value={state}>
       <PetInformationDispatchContext.Provider value={dispatch}>

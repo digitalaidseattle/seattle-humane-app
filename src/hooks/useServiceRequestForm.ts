@@ -1,51 +1,96 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
-import { useReducer, useState } from 'react';
+import { useEffect, useReducer, useState } from 'react';
 import {
-  ClientInfoActionType, clientInfoReducer, defaultClientInformation,
+  ClientInfoActionType,
+  clientInfoReducer,
+  defaultClientInformation,
 } from '@context/serviceRequest/clientInformationContext';
 import {
-  petInfoReducer, defaultPetInformation, PetInfoActionType,
+  petInfoReducer,
+  defaultPetInformation,
+  PetInfoActionType,
 } from '@context/serviceRequest/petInformationContext';
 import {
-  serviceInfoReducer, defaultServiceInformation, ServiceInfoActionType,
+  serviceInfoReducer,
+  defaultServiceInformation,
+  ServiceInfoActionType,
 } from '@context/serviceRequest/serviceInformationContext';
-import useTicketById from '@hooks/useTicketById';
 import * as DataService from '@services/DataService';
 import {
-  EditableAnimalType, EditableClientType, EditableServiceRequestType, ServiceRequestType,
+  ServiceRequestType,
+  ClientType,
+  PetType,
 } from '@types';
+import handleTicketUpdate from '@utils/handleTicketUpdate';
+import handleTicketCreation from '@utils/handleTicketCreation';
 
-export default function useServiceRequestForm(ticketId: ServiceRequestType['id']) {
+export default function useServiceRequestForm(
+  ticketId: ServiceRequestType['id'],
+  visible: boolean,
+) {
+  const [showDialog, setShowDialog] = useState(visible);
+
+  useEffect(() => {
+    setShowDialog(visible);
+  }, [visible]);
+
   const [busy, setBusy] = useState(false);
+  const [isReadOnly, setIsReadOnly] = useState(true);
   const [message, setMessage] = useState('');
-  const [readOnly, setReadOnly] = useState(false);
-  const { client: savedClient, animal: savedAnimal, ticket: savedTicket } = useTicketById(ticketId);
+  const [isNewTicket, setIsNewTicket] = useState(true);
+
+  useEffect(() => {
+    async function getTicket() {
+      setBusy(true);
+      setIsReadOnly(true);
+      const ticket = await DataService.getTicket(ticketId);
+      /**
+       * TODO consider using Promise.allSettled
+       * If one of the promises passed to Promise.all() fails,
+       * then all in-progress promises are stopped and an error is thrown.
+       * However using .allSettled() would allow us to gracefully handle individual query failures.
+       */
+      const [client, animal] = await Promise.all([
+        DataService.getClientByIdOrEmail('id', ticket.client_id),
+        DataService.getPetById(ticket.pet_id),
+      ]);
+      clientInformationDispatch({
+        type: ClientInfoActionType.Update, partialStateUpdate: client,
+      });
+      petInformationDispatch({
+        type: PetInfoActionType.Update, partialStateUpdate: animal, index: 0,
+      });
+      serviceInformationDispatch({
+        type: ServiceInfoActionType.Update, partialStateUpdate: ticket, index: 0,
+      });
+      setBusy(false);
+    }
+    if (ticketId) {
+      setIsNewTicket(false);
+      getTicket();
+    } else {
+      setIsReadOnly(false);
+      setIsNewTicket(true);
+      clearForm();
+    }
+  }, [ticketId]);
 
   //* Get state and dispatchers for the from sections
-  const [
-    newClient, clientInformationDispatch,
-  ] = useReducer(clientInfoReducer, defaultClientInformation);
+  const [client, clientInformationDispatch] = useReducer(
+    clientInfoReducer,
+    defaultClientInformation,
+  );
 
-  const [
-    newPet, petInformationDispatch,
-  ] = useReducer(petInfoReducer, defaultPetInformation);
+  const [pets, petInformationDispatch] = useReducer(petInfoReducer, [
+    defaultPetInformation,
+  ]);
 
-  const [
-    newTicket, serviceInformationDispatch,
-  ] = useReducer(serviceInfoReducer, defaultServiceInformation);
+  const [tickets, serviceInformationDispatch] = useReducer(
+    serviceInfoReducer,
+    [{ ...defaultServiceInformation, selected_pets: [] }],
+  );
 
-  const dataState = { client: newClient, pet: newPet, ticket: newTicket };
-  if (ticketId) {
-    if (!readOnly) setReadOnly(true);
-    dataState.client = savedClient;
-    dataState.pet = savedAnimal;
-    dataState.ticket = savedTicket;
-  } else {
-    if (readOnly) setReadOnly(false);
-    dataState.client = newClient;
-    dataState.pet = newPet;
-    dataState.ticket = newTicket;
-  }
+  const dataState = { client, pets, tickets };
 
   const clearForm = () => {
     clientInformationDispatch({ type: ClientInfoActionType.Clear });
@@ -59,11 +104,13 @@ export default function useServiceRequestForm(ticketId: ServiceRequestType['id']
     setBusy(true);
     // TODO add error handling scenario
     try {
-      await handleTicketCreation(
-        newTicket,
-        newClient,
-        newPet,
-      );
+      if (ticketId) {
+        handleTicketUpdate(
+          tickets as unknown as ServiceRequestType[],
+          client as unknown as ClientType,
+          pets as unknown as PetType[],
+        );
+      } else await handleTicketCreation(tickets, client, pets);
       return true;
     } catch (e) {
       setMessage(e.message);
@@ -74,46 +121,16 @@ export default function useServiceRequestForm(ticketId: ServiceRequestType['id']
   };
 
   return {
-    readOnly,
-    disabled: readOnly || busy,
-    clearForm,
+    showDialog,
+    isNewTicket,
+    isReadOnly,
+    setIsReadOnly,
     save,
+    busy,
     message,
     clientInformationDispatch,
     petInformationDispatch,
     serviceInformationDispatch,
     ...dataState,
   };
-}
-
-async function handleTicketCreation(
-  request: EditableServiceRequestType,
-  client: EditableClientType,
-  animal: EditableAnimalType,
-)
-  : Promise<ServiceRequestType> {
-  let animalId: string;
-  let clientId: string;
-
-  // Check if client exists and create one if not
-  // No Upsert operations currently in the supabaseClient library AFAIK
-  const existingClient = await DataService.getClientByIdOrEmail('email', client.email);
-  // TODO: Deal with modifying client information if it already exists
-  if (!existingClient) {
-    const newClient = await DataService.createClient(client);
-    clientId = newClient.id;
-  } else clientId = existingClient.id;
-
-  // Check if animal exists and create one if not
-  // TODO: HOW TO IDENTIFY UNIQUE ANIMAL? NAME / SPECIES / CLIENT_ID?
-  const existingAnimal = await DataService.getPetByOwner(clientId, animal.name);
-  if (!existingAnimal) {
-    const newAnimal = await DataService.createAnimal(animal, clientId);
-    animalId = newAnimal.id;
-  } else animalId = existingAnimal.id;
-
-  // Create new ticket
-  const ticket = await DataService.createTicket(request, clientId, animalId);
-  return ticket;
-  // TODO: ChangeLog not currently implemented
 }

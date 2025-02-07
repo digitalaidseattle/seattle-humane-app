@@ -1,7 +1,10 @@
 import { faker } from '@faker-js/faker';
 import { MockAppConstants } from '@hooks/__mocks__/useAppConstants';
 import {
-  TeamMemberType, ClientType, AnimalType, ServiceRequestType,
+  TeamMemberType,
+  ClientType,
+  PetType,
+  ServiceRequestType,
   ServiceRequestSummary,
 } from '@types';
 
@@ -35,7 +38,7 @@ const genMockClient: () => ClientType = () => ({
 export const mockClients = Array(5).fill(null).map(() => genMockClient());
 export const [mockClient, mockClient2, mockClient3] = mockClients;
 
-const genMockPet: () => AnimalType = () => ({
+const genMockPet: () => PetType = () => ({
   id: string.uuid(),
   client_id: mockClient.id,
   name: person.fullName(),
@@ -43,7 +46,9 @@ const genMockPet: () => AnimalType = () => ({
   weight: number.int({ min: 1, max: 200 }),
   species: animal.type(),
 });
-export const mockPets = Array(5).fill(null).map(() => genMockPet());
+export const mockPets = Array(5)
+  .fill(null)
+  .map(() => genMockPet());
 export const [mockPet, mockPet2, mockPet3] = mockPets;
 
 const genMockTicket: (idx: number) => ServiceRequestType = (idx: number) => ({
@@ -59,14 +64,16 @@ const genMockTicket: (idx: number) => ServiceRequestType = (idx: number) => ({
   urgent: boolean({ probability: 0.5 }),
   modified_at: date.recent().toISOString(),
 });
-export const mockTickets = Array(5).fill(null).map((_, idx) => genMockTicket(idx));
+export const mockTickets = Array(5)
+  .fill(null)
+  .map((_, idx) => genMockTicket(idx));
 export const [mockTicket] = mockTickets;
 // #endregion
 
 const clientIdMap = new Map<string, ClientType>();
 mockClients.forEach((client) => clientIdMap.set(client.id, client));
 
-const animalIdMap = new Map<string, AnimalType>();
+const animalIdMap = new Map<string, PetType>();
 mockPets.forEach((pet) => animalIdMap.set(pet.id, pet));
 
 const teamMemberIdMap = new Map<string, TeamMemberType>();
