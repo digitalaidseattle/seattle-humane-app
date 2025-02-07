@@ -38,18 +38,12 @@ export interface ServiceRequestDialogProps {
  */
 function ServiceRequestDialog({ visible, onClose, ticketId }: ServiceRequestDialogProps) {
   const {
-    disabled, readOnly, clearForm, save, message, client, pets, tickets,
+    busy, isNewTicket, isReadOnly, setIsReadOnly, save, message, client, pets, tickets,
     clientInformationDispatch, petInformationDispatch, serviceInformationDispatch,
-  } = useServiceRequestForm(ticketId);
-
-  const [showDialog, setShowDialog] = useState(false);
-
-  useEffect(() => {
-    setShowDialog(visible);
-  }, [visible]);
-
+    showDialog,
+  } = useServiceRequestForm(ticketId, visible);
+  const disabled = busy || isReadOnly
   const hideDialog = () => {
-    clearForm();
     onClose();
   };
 
@@ -57,16 +51,23 @@ function ServiceRequestDialog({ visible, onClose, ticketId }: ServiceRequestDial
     const success = await save();
     if (success) {
       mutate('dataservice/alltickets');
-      hideDialog();
+      setIsReadOnly(true)
+      if (isNewTicket) hideDialog();
     }
   };
+
+  const onEditClicked = () => {
+    setIsReadOnly(false)
+  }
 
   const dialogFooter = (
     <FormConfirmationButtons
       disabled={disabled}
       onCancelClicked={hideDialog}
       onSaveClicked={onSaveClicked}
-      saving={disabled}
+      onEditClicked={onEditClicked}
+      editing={!isReadOnly}
+      saving={busy}
     />
   );
 
@@ -77,7 +78,7 @@ function ServiceRequestDialog({ visible, onClose, ticketId }: ServiceRequestDial
       style={{ width: '850px' }}
       header={serviceRequestLabels.FormHeader}
       modal
-      footer={!readOnly && dialogFooter}
+      footer={dialogFooter}
       onHide={hideDialog}
     >
       <div className="col-12 md:col-12">
@@ -92,18 +93,19 @@ function ServiceRequestDialog({ visible, onClose, ticketId }: ServiceRequestDial
             dispatch={clientInformationDispatch}
           >
             <ClientInformationSection disabled={disabled} />
+            <hr />
           </ClientInformationProvider>
           <PetInformationProvider state={pets} dispatch={petInformationDispatch}>
-            <PetInformationSection disabled={disabled} />
+            <PetInformationSection disabled={disabled} showAddPet={isNewTicket} />
+            <hr />
             <ServiceInformationProvider
               state={tickets}
               dispatch={serviceInformationDispatch}
             >
-              <ServiceInformationSection disabled={disabled} />
+              <ServiceInformationSection disabled={disabled} showAddTicket={isNewTicket} />
             </ServiceInformationProvider>
           </PetInformationProvider>
         </div>
-
       </div>
     </Dialog>
   );

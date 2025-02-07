@@ -1,5 +1,5 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
-import { useReducer, useState } from 'react';
+import { useEffect, useReducer, useState } from 'react';
 import {
   ClientInfoActionType,
   clientInfoReducer,
@@ -14,55 +14,77 @@ import {
   serviceInfoReducer,
   defaultServiceInformation,
   ServiceInfoActionType,
-  CustomServiceRequestType,
 } from '@context/serviceRequest/serviceInformationContext';
-import useTicketById from '@hooks/useTicketById';
 import * as DataService from '@services/DataService';
 import {
-  EditablePetType,
-  EditableClientType,
   ServiceRequestType,
+  ClientType,
+  PetType,
 } from '@types';
+import handleTicketUpdate from '@utils/handleTicketUpdate';
+import handleTicketCreation from '@utils/handleTicketCreation';
 
 export default function useServiceRequestForm(
   ticketId: ServiceRequestType['id'],
+  visible: boolean
 ) {
+  const [showDialog, setShowDialog] = useState(visible);
+
+  useEffect(() => {
+    setShowDialog(visible);
+  }, [visible]);
+
   const [busy, setBusy] = useState(false);
+  const [isReadOnly, setIsReadOnly] = useState(true)
   const [message, setMessage] = useState('');
-  const [readOnly, setReadOnly] = useState(false);
-  const {
-    client: savedClient,
-    pet: savedPet,
-    ticket: savedTicket,
-  } = useTicketById(ticketId);
+  const [isNewTicket, setIsNewTicket] = useState(true);
+
+  useEffect(() => {
+    async function getTicket() {
+      setBusy(true)
+      setIsReadOnly(true)
+      const ticket = await DataService.getTicket(ticketId);
+      /**
+       * TODO consider using Promise.allSettled
+       * If one of the promises passed to Promise.all() fails,
+       * then all in-progress promises are stopped and an error is thrown.
+       * However using .allSettled() would allow us to gracefully handle individual query failures.
+       */
+      const [client, animal] = await Promise.all([
+        DataService.getClientByIdOrEmail('id', ticket.client_id),
+        DataService.getPetById(ticket.pet_id),
+      ]);
+      clientInformationDispatch({ type: ClientInfoActionType.Update, partialStateUpdate: client })
+      petInformationDispatch({ type: PetInfoActionType.Update, partialStateUpdate: animal, index: 0 })
+      serviceInformationDispatch({ type: ServiceInfoActionType.Update, partialStateUpdate: ticket, index: 0 })
+      setBusy(false)
+    };
+    if (ticketId) {
+      setIsNewTicket(false)
+      getTicket()
+    } else {
+      setIsReadOnly(false)
+      setIsNewTicket(true)
+      clearForm()
+    }
+  }, [ticketId]);
 
   //* Get state and dispatchers for the from sections
-  const [newClient, clientInformationDispatch] = useReducer(
+  const [client, clientInformationDispatch] = useReducer(
     clientInfoReducer,
     defaultClientInformation,
   );
 
-  const [newPets, petInformationDispatch] = useReducer(petInfoReducer, [
+  const [pets, petInformationDispatch] = useReducer(petInfoReducer, [
     defaultPetInformation,
   ]);
 
-  const [newTicket, serviceInformationDispatch] = useReducer(
+  const [tickets, serviceInformationDispatch] = useReducer(
     serviceInfoReducer,
-    [defaultServiceInformation],
+    [{ ...defaultServiceInformation, selected_pets: [] }]
   );
 
-  const dataState = { client: newClient, pets: newPets, tickets: newTicket };
-  if (ticketId) {
-    if (!readOnly) setReadOnly(true);
-    dataState.client = savedClient;
-    dataState.pets = [savedPet];
-    dataState.tickets = [{ ...savedTicket, selected_pets: [] }];
-  } else {
-    if (readOnly) setReadOnly(false);
-    dataState.client = newClient;
-    dataState.pets = newPets;
-    dataState.tickets = newTicket;
-  }
+  const dataState = { client, pets, tickets };
 
   const clearForm = () => {
     clientInformationDispatch({ type: ClientInfoActionType.Clear });
@@ -76,7 +98,14 @@ export default function useServiceRequestForm(
     setBusy(true);
     // TODO add error handling scenario
     try {
-      await handleTicketCreation(newTicket, newClient, newPets);
+      if (ticketId) {
+        handleTicketUpdate
+          (tickets as unknown as ServiceRequestType[],
+            client as unknown as ClientType,
+            pets as unknown as PetType[]
+          )
+      }
+      else await handleTicketCreation(tickets, client, pets);
       return true;
     } catch (e) {
       setMessage(e.message);
@@ -87,57 +116,16 @@ export default function useServiceRequestForm(
   };
 
   return {
-    readOnly,
-    disabled: readOnly || busy,
-    clearForm,
+    showDialog,
+    isNewTicket,
+    isReadOnly,
+    setIsReadOnly,
     save,
+    busy,
     message,
     clientInformationDispatch,
     petInformationDispatch,
     serviceInformationDispatch,
     ...dataState,
   };
-}
-
-async function handleTicketCreation(
-  requests: CustomServiceRequestType[],
-  client: EditableClientType,
-  pets: EditablePetType[],
-): Promise<ServiceRequestType[]> {
-  let clientId: string;
-
-  // Check if client exists and create one if not
-  // No Upsert operations currently in the supabaseClient library AFAIK
-  const existingClient = await DataService.getClientByIdOrEmail(
-    'email',
-    client.email,
-  );
-  // TODO: Deal with modifying client information if it already exists
-  if (!existingClient) {
-    const newClient = await DataService.createClient(client);
-    clientId = newClient.id;
-  } else clientId = existingClient.id;
-
-  // Collect all ticket promises in a flat array
-  const ticketPromises: Promise<ServiceRequestType>[] = [];
-
-  requests.forEach((request) => {
-    // Create tickets for this pet
-    pets
-      .filter((_, petIndex) => request.selected_pets.includes(petIndex))
-      .forEach(async (pet) => {
-        let petId: string;
-        // Check if pet exists and create one if not
-        const existingPet = await DataService.getPetByOwner(clientId, pet.name);
-        if (!existingPet) {
-          const newPet = await DataService.createAnimal(pet, clientId);
-          petId = newPet.id;
-        } else {
-          petId = existingPet.id;
-        }
-        ticketPromises.push(DataService.createTicket(request, clientId, petId));
-      });
-  });
-  return Promise.all(ticketPromises);
-  // TODO: ChangeLog not currently implemented
 }

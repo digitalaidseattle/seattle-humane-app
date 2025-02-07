@@ -8,6 +8,7 @@ import { PetType, EditablePetType } from '@types';
 import useAppConstants from '@hooks/useAppConstants';
 import { AppConstants } from 'src/constants';
 import { Button } from 'primereact/button';
+import { Button } from 'primereact/button';
 
 // TODO externalize to localization file
 export const petInformationLabels = {
@@ -28,6 +29,8 @@ export const petInformationLabels = {
 interface PetInformationSectionProps {
   /** Flag to disable/enable the controls */
   disabled: boolean
+  /** Flag to show/hide the option to create multiple pets */
+  showAddPet?: boolean
   /** Fields to show on the form */
   show?: (keyof EditablePetType)[]
 }
@@ -40,6 +43,7 @@ interface PetInformationSectionProps {
 export default function PetInformationSection(props: PetInformationSectionProps) {
   const {
     disabled,
+    showAddPet = true,
     show = ['name', 'species', 'age', 'weight'],
   } = props;
 
@@ -165,10 +169,20 @@ export default function PetInformationSection(props: PetInformationSectionProps)
                   </div>
                 </div>
               )}
+            {index > 0 && <Button
+              label="Remove"
+              icon='pi pi-minus-circle'
+              className="p-button-text"
+              onClick={() => removePet(index)}
+            />}
           </div>
         </div>
       ))}
-      <Button label={petInformationLabels.AddButton} onClick={addNewPet} outlined />
+      {showAddPet && <Button
+        label='Add Pet'
+        icon='pi pi-plus-circle'
+        className="p-button-text"
+        onClick={addNewPet} />}
     </div>
   );
 }

@@ -64,7 +64,9 @@ export default function ClientInformationSection(props: ClientInformationSection
   const setFormData = (partialStateUpdate: Partial<EditableClientType>) => dispatch(
     { type: ClientInfoActionType.Update, partialStateUpdate },
   );
-  const setFirstName = (first_name: EditableClientType['first_name']) => (setFormData({ first_name }));
+  const setFirstName = (first_name: EditableClientType['first_name']) => {
+    setFormData({ first_name })
+  };
   const setLastName = (last_name: EditableClientType['last_name']) => (setFormData({ last_name }));
   const setEmail = (email: EditableClientType['email']) => (setFormData({ email }));
   const setPhone = (phone: EditableClientType['phone']) => (setFormData({ phone }));
