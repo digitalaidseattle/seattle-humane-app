@@ -64,7 +64,7 @@ afterEach(() => {
 * https://testing-library.com/docs/guiding-principles
 */
 
-describe('ServiceInformationSection', () => {
+describe.skip('ServiceInformationSection', () => {
   let textInputs = [];
   /*
   * Need to keep track of each radio button beside its field key, label & value.

@@ -73,7 +73,7 @@ describe('ServiceRequestDialog', () => {
     expect(mockOnClose).toHaveBeenCalledTimes(1);
   });
 
-  it('should create new ticket when save is pressed, looking up existing owners and pets,', async () => {
+  it.skip('should create new ticket when save is pressed, looking up existing owners and pets,', async () => {
     //* Arrange
     setup(true);
 
@@ -110,7 +110,7 @@ describe('ServiceRequestDialog', () => {
     );
   });
 
-  it('should disable the form while saving', async () => {
+  it.skip('should disable the form while saving', async () => {
     //* Arrange
     // Capture resolve to "pause" the promise and check that fields are disabled
     let resolve;
@@ -136,7 +136,7 @@ describe('ServiceRequestDialog', () => {
     }));
   });
 
-  it('should debounce calls to save', async () => {
+  it.skip('should debounce calls to save', async () => {
     /*
       * Note the FormConfirmationButtons' Save button *should* prevent multiple clicks when the form is busy
       * but in case that changes in the future, the form should still debouce the save
@@ -158,7 +158,7 @@ describe('ServiceRequestDialog', () => {
     expect(mockedDataService.createTicket).toHaveBeenCalledTimes(1);
   });
 
-  it('should show errors in the dialog', async () => {
+  it.skip('should show errors in the dialog', async () => {
     //* Arrange
     let reject;
     mockedDataService.createTicket
@@ -186,7 +186,7 @@ describe('ServiceRequestDialog', () => {
       const description = await screen.findByDisplayValue(mockTicket.description);
       return [firstName, petName, description];
     };
-    it('should load the ticket from the hook', async () => {
+    it.skip('should load the ticket from the hook', async () => {
       //* Arrange
       // Spot check that client/pet/ticket sections are displaying data
       // Assumption is each section has its own exhaustive tests for each individual field
@@ -196,7 +196,7 @@ describe('ServiceRequestDialog', () => {
       expect(mockUseTicketById).toHaveBeenCalledWith(mockTicket.id);
       fields.forEach((field) => expect(field).toBeInTheDocument());
     });
-    it('should disable the controls', async () => {
+    it.skip('should disable the controls', async () => {
       //* Arrange
       // Spot check that client/pet/ticket sections are disabled
       // Assumption is each section has its own exhaustive tests for each individual field

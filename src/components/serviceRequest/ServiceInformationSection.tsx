@@ -47,6 +47,8 @@ export const priorityOptions = [
 interface ServiceInformationSectionProps {
   /** Flag to disable/enable the controls */
   disabled: boolean
+  /** Flage to show/hide the option to add multiple tickets */
+  showAddTicket?: boolean
   /** Fields to show on the form */
   show?: (keyof EditableServiceRequestType)[]
   /** Internal or external variant */
@@ -61,6 +63,7 @@ interface ServiceInformationSectionProps {
 export default function ServiceInformationSection(props: ServiceInformationSectionProps) {
   const {
     disabled,
+    showAddTicket = true,
     show = ['service_category', 'request_source', 'status', 'description', 'team_member_id'],
     variant: formVariant = 'internal',
   } = props;
@@ -139,40 +142,28 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
               {' '}
               {serviceInformationLabels.ServiceDetails}
             </h3>
-            <span>
-              {index > 0
-              && (
-              <Button
-                label={serviceInformationLabels.RemoveButton}
-                onClick={() => removeServiceRequest(index)}
-                outlined
-              />
-              )}
-            </span>
           </div>
-          <div className="col-12 grid row-gap-5 pl-5">
-            {pets.length
-              && (
-                <>
-                  <span>Select Pet(s):</span>
-                  {pets
-                    .filter(({ name }) => !!name)
-                    .map((pet, petIndex) => (
-                      /* eslint-disable-next-line react/no-array-index-key */
-                      <div key={petIndex}>
-                        <input // FIXME use component from component library
-                          id={pet.name}
-                          type="checkbox"
-                          checked={serviceRequest.selected_pets.includes(petIndex)}
-                          value={pet.name}
-                          onChange={() => togglePetSelection(petIndex, index)}
-                        />
-                        <label htmlFor={pet.name}>{pet.name}</label>
-                      </div>
-                    ))}
-                </>
-              )}
-          </div>
+          {(showAddTicket && pets.length)
+            && (
+              <div className="col-12 grid row-gap-5 pl-5">
+                <span>Select Pet(s):</span>
+                {pets
+                  .filter(({ name }) => !!name)
+                  .map((pet, petIndex) => (
+                    /* eslint-disable-next-line react/no-array-index-key */
+                    <div key={petIndex}>
+                      <input // FIXME use component from component library
+                        id={pet.name}
+                        type="checkbox"
+                        checked={serviceRequest.selected_pets.includes(petIndex)}
+                        value={pet.name}
+                        onChange={() => togglePetSelection(petIndex, index)}
+                      />
+                      <label htmlFor={pet.name}>{pet.name}</label>
+                    </div>
+                  ))}
+              </div>
+            )}
           <div className="col-12 grid row-gap-3 pl-5">
             {visibleFields.has('service_category')
               && (
@@ -261,10 +252,26 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
                   />
                 </div>
               )}
+            {index > 0 && (
+              <Button
+                label="Remove"
+                icon="pi pi-minus-circle"
+                className="p-button-text"
+                type="button"
+                onClick={() => removeServiceRequest(index)}
+              />
+            )}
           </div>
         </div>
       ))}
-      <Button label={serviceInformationLabels.AddButton} onClick={addNewServiceRequest} outlined />
+      {showAddTicket && (
+        <Button
+          label="Add Service Request"
+          icon="pi pi-plus-circle"
+          className="p-button-text"
+          onClick={addNewServiceRequest}
+        />
+      )}
     </div>
   );
 }

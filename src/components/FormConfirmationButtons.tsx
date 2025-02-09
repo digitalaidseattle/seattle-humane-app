@@ -9,6 +9,12 @@ interface FormConfirmationButtonsProps {
   saveLabel?: string
   /** The handler for the Save button press */
   onSaveClicked: () => void
+  /** The label for the Edit button */
+  editLabel?: string
+  /** The handler for the Edit button press */
+  onEditClicked?: () => void
+  /** Flag to show the edit button */
+  editing?: boolean
   /** Flag to enable/disable the buttons */
   disabled: boolean
   /** Whether to show the save button loading state */
@@ -19,6 +25,7 @@ interface FormConfirmationButtonsProps {
 const Labels = {
   Cancel: 'Cancel',
   Save: 'Save',
+  Edit: 'Edit',
 };
 
 /**
@@ -30,12 +37,18 @@ export default function FormConfirmationButtons(props: FormConfirmationButtonsPr
   const {
     cancelLabel = Labels.Cancel, onCancelClicked,
     saveLabel = Labels.Save, onSaveClicked,
+    editLabel = Labels.Edit, onEditClicked,
+    editing = true,
     disabled, saving,
   } = props;
   return (
-    <>
-      <Button label={cancelLabel} disabled={disabled} icon="pi pi-times" className="p-button-text" onClick={onCancelClicked} />
-      <Button label={saveLabel} disabled={disabled} icon="pi pi-check" className="p-button-text" loading={saving} onClick={onSaveClicked} />
-    </>
+    editing
+      ? (
+        <>
+          <Button label={cancelLabel} disabled={disabled} icon="pi pi-times" className="p-button-text" onClick={onCancelClicked} />
+          <Button label={saveLabel} disabled={disabled} icon="pi pi-check" className="p-button-text" loading={saving} onClick={onSaveClicked} />
+        </>
+      )
+      : <Button label={editLabel} icon="pi pi-pen-to-square" className="p-button-text" onClick={onEditClicked} />
   );
 }

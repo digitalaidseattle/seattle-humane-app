@@ -28,6 +28,8 @@ export const petInformationLabels = {
 interface PetInformationSectionProps {
   /** Flag to disable/enable the controls */
   disabled: boolean
+  /** Flag to show/hide the option to create multiple pets */
+  showAddPet?: boolean
   /** Fields to show on the form */
   show?: (keyof EditablePetType)[]
 }
@@ -40,6 +42,7 @@ interface PetInformationSectionProps {
 export default function PetInformationSection(props: PetInformationSectionProps) {
   const {
     disabled,
+    showAddPet = true,
     show = ['name', 'species', 'age', 'weight'],
   } = props;
 
@@ -94,7 +97,6 @@ export default function PetInformationSection(props: PetInformationSectionProps)
               {' '}
               {petInformationLabels.PetInformation}
             </h3>
-            <span className="">{index > 0 && <Button label={petInformationLabels.RemoveButton} icon="pi pi-times" onClick={() => removePet(index)} outlined />}</span>
           </div>
           <div className="col-12 grid row-gap-3 pl-5">
             {visibleFields.has('name')
@@ -165,10 +167,26 @@ export default function PetInformationSection(props: PetInformationSectionProps)
                   </div>
                 </div>
               )}
+            {index > 0 && (
+              <Button
+                label="Remove"
+                icon="pi pi-minus-circle"
+                className="p-button-text"
+                onClick={() => removePet(index)}
+              />
+            )}
           </div>
         </div>
       ))}
-      <Button label={petInformationLabels.AddButton} onClick={addNewPet} outlined />
+      {showAddPet && (
+        <Button
+          label={petInformationLabels.AddButton}
+          icon="pi pi-plus-circle"
+          className="p-button-text"
+          outlined
+          onClick={addNewPet}
+        />
+      )}
     </div>
   );
 }
