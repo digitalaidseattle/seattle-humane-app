@@ -1,6 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react';
 import { User } from '@supabase/supabase-js';
 import { usePathname, useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { LayoutProvider } from '@layout/context/layoutcontext';
 import Layout from '@layout/layout';
 import 'primereact/resources/primereact.css';
@@ -14,6 +15,7 @@ import { EXTERNAL_ROUTES } from 'src/constants';
 
 export default function MyApp({ Component, pageProps }) {
   const router = useRouter();
+  const pathname = usePathname();
   const pathname = usePathname();
   const [user, setUser] = useState<User | null>();
   const userContext = useMemo(() => ({
