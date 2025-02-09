@@ -128,6 +128,7 @@ export default function useServiceRequestForm(
     save,
     busy,
     message,
+    clearForm,
     clientInformationDispatch,
     petInformationDispatch,
     serviceInformationDispatch,

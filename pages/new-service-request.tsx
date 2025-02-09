@@ -21,9 +21,9 @@ export default function Page() {
   const ticketId = searchParams.get('ticket');
   const submitted = searchParams.get('submitted') === 'true';
   const {
-    disabled, clearForm, save, message, client, pets, tickets,
+    busy, clearForm, save, message, client, pets, tickets,
     clientInformationDispatch, petInformationDispatch, serviceInformationDispatch,
-  } = useServiceRequestForm(ticketId);
+  } = useServiceRequestForm(ticketId, true);
 
   const handleSubmit = async () => {
     const success = await save();
@@ -65,24 +65,24 @@ export default function Page() {
                 state={client}
                 dispatch={clientInformationDispatch}
               >
-                <ClientInformationSection disabled={disabled} />
+                <ClientInformationSection disabled={busy} />
               </ClientInformationProvider>
               <PetInformationProvider state={pets} dispatch={petInformationDispatch}>
-                <PetInformationSection disabled={disabled} />
+                <PetInformationSection disabled={busy} />
                 <ServiceInformationProvider
                   state={tickets}
                   dispatch={serviceInformationDispatch}
                 >
                   <ServiceInformationSection
                     show={['service_category', 'description']}
-                    disabled={disabled}
+                    disabled={busy}
                     variant="external"
                   />
                 </ServiceInformationProvider>
               </PetInformationProvider>
             </div>
             <footer className="footer" style={{ alignSelf: 'flex-end', marginTop: '-20px' }}>
-              <Button label={Labels.submit} disabled={disabled} icon="pi pi-check" className="p-button-text" loading={disabled} onClick={handleSubmit} />
+              <Button label={Labels.submit} disabled={busy} icon="pi pi-check" className="p-button-text" loading={busy} onClick={handleSubmit} />
             </footer>
           </>
         )}
