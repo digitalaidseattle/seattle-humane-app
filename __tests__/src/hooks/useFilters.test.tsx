@@ -1,18 +1,20 @@
-import useFilters, { defaultExternalFilters, defaultInternalFilters, filterByCreatedAt, passThroughFilter } from '@hooks/useFilters';
+import useFilters, {
+  defaultExternalFilters, defaultInternalFilters, filterByCreatedAt, passThroughFilter,
+} from '@hooks/useFilters';
 import { renderHook } from '@testing-library/react';
 import { mockServiceRequestSummaries } from '@utils/TestData';
 
 describe('useFilter hook', () => {
   const dates = ['1/1/2000', '1/2/2000', '3/1/2000', '1/1/2020', '12/12/2010'];
   const items = mockServiceRequestSummaries;
-  
+
   it('should filter by urgent', () => {
-    const noUrgents = items.map(element => {
+    const noUrgents = items.map((element) => {
       const item = { ...element, urgent: false };
       return item;
     });
-    const expected = noUrgents.map(e => ({ ...e }))
-    const client = { first_name: 'jonathan', last_name: 'jostar' }
+    const expected = noUrgents.map((e) => ({ ...e }));
+    const client = { first_name: 'jonathan', last_name: 'jostar' };
     expected[0].client = client;
     expected[0].urgent = true;
 
@@ -28,12 +30,12 @@ describe('useFilter hook', () => {
   });
 
   it('should filter by species', () => {
-    const notPerry = items.map(element => {
+    const notPerry = items.map((element) => {
       const item = { ...element, pet: { name: 'notPerry', species: 'snail' } };
       return item;
     });
-    const expected = notPerry.map(e => ({ ...e }))
-    const client = { first_name: 'Phineas', last_name: 'Fletcher' }
+    const expected = notPerry.map((e) => ({ ...e }));
+    const client = { first_name: 'Phineas', last_name: 'Fletcher' };
     expected[0].client = client;
     expected[0].pet = { name: 'PERRY', species: 'platypus' };
 
@@ -48,18 +50,18 @@ describe('useFilter hook', () => {
   });
 
   it('should filter by firstname/lastname/petname', () => {
-    const notNeo = items.map(element => {
+    const notNeo = items.map((element) => {
       const item = {
         ...element,
         client: { first_name: 'agent', last_name: 'smith' },
-        pet: { ...element.pet, name: "bobby" }
+        pet: { ...element.pet, name: 'bobby' },
       };
       return item;
     });
-    const expected = notNeo.map(e => ({ ...e }))
+    const expected = notNeo.map((e) => ({ ...e }));
     let client = { first_name: 'neo', last_name: 'smith' };
     expected[0].client = client;
-    client = { first_name: 'agent', last_name: 'the-one' }
+    client = { first_name: 'agent', last_name: 'the-one' };
     expected[1].client = client;
     expected[2].pet.name = 'white-rabbit';
 
@@ -93,7 +95,7 @@ describe('useFilter hook', () => {
     setFilters.external({
       owner_and_pet: 'billy bob joe',
       global_species: ['cat'],
-      global_urgent: true
+      global_urgent: true,
     });
     setFilters.internal({
       global: { ...filters.internal.global, value: 'hello' },
@@ -127,7 +129,7 @@ describe('useFilter hook', () => {
   it('dates after filter', () => {
     const expected = ['3/1/2000', '1/1/2020', '12/12/2010'];
     const filter = { sign: '>', filterDate: '2/20/2000' };
-    const actual = dates.filter(d => filterByCreatedAt(d, filter));
+    const actual = dates.filter((d) => filterByCreatedAt(d, filter));
     expect(actual.length).toBe(3);
     expect(actual).toEqual(expected);
   });
@@ -135,7 +137,7 @@ describe('useFilter hook', () => {
   it('dates before filter', () => {
     const expected = ['1/1/2000', '1/2/2000', '3/1/2000'];
     const filter = { sign: '<', filterDate: '1/1/2005' };
-    const actual = dates.filter(d => filterByCreatedAt(d, filter));
+    const actual = dates.filter((d) => filterByCreatedAt(d, filter));
     expect(actual.length).toBe(3);
     expect(actual).toEqual(expected);
   });
@@ -143,10 +145,10 @@ describe('useFilter hook', () => {
   it('return empty array when no dates match filter', () => {
     const beforeFilter = { sign: '<', filterDate: '1/1/1000' };
     const afterFilter = { sign: '>', filterDate: '1/1/3000' };
-    const exactFilter  = { sign: '=', filterDate: '1/1/1000' };
-    const actualBefore = dates.filter(d => filterByCreatedAt(d, beforeFilter));
-    const actualExact = dates.filter(d => filterByCreatedAt(d, exactFilter));
-    const actualAfter = dates.filter(d => filterByCreatedAt(d, afterFilter));
+    const exactFilter = { sign: '=', filterDate: '1/1/1000' };
+    const actualBefore = dates.filter((d) => filterByCreatedAt(d, beforeFilter));
+    const actualExact = dates.filter((d) => filterByCreatedAt(d, exactFilter));
+    const actualAfter = dates.filter((d) => filterByCreatedAt(d, afterFilter));
     const expected = [];
     expect(actualBefore).toEqual(expected);
     expect(actualExact).toEqual(expected);
