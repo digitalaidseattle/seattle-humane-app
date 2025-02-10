@@ -266,13 +266,13 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
       ))}
       {showAddTicket && (
         <div className="col-12">
-        <Button
-          label="Add Service Request"
-          icon="pi pi-plus-circle"
-          className="p-button-text"
-          onClick={addNewServiceRequest}
-        />
-    </div>
+          <Button
+            label="Add Service Request"
+            icon="pi pi-plus-circle"
+            className="p-button-text"
+            onClick={addNewServiceRequest}
+          />
+        </div>
       )}
     </div>
   );
