@@ -13,6 +13,11 @@ export default async function handleTicketCreation(
   client: EditableClientType,
   pets: EditablePetType[],
 ): Promise<ServiceRequestType[]> {
+  // If every request doesn't have at least 1 pet associated
+  if (!requests.every((req) => pets.some((_, i) => req.selected_pets.includes(i)))) {
+    throw new Error('Cannot create request without associating a pet');
+  }
+
   let clientId: string;
 
   // Check if client exists and create one if not
