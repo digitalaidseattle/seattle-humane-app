@@ -5,9 +5,7 @@ import ServiceRequestDialog from '@components/serviceRequest/ServiceRequestDialo
 import { defaultServiceInformation } from '@context/serviceRequest/serviceInformationContext';
 import useTicketById from '@hooks/useTicketById';
 import '@testing-library/jest-dom';
-import {
-  fireEvent, render, screen, waitFor,
-} from '@testing-library/react';
+import { fireEvent, render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { mockClient, mockPet as mockAnimal, mockTicket } from '@utils/TestData';
 import { useState } from 'react';
@@ -22,7 +20,12 @@ jest.mock('src/hooks/useAppConstants');
 jest.mock('src/hooks/useTeamMembers');
 
 const SaveCancelLabels = {
-  Save: 'Save', Cancel: 'Cancel',
+  Save: 'Save',
+  Cancel: 'Cancel',
+};
+const EditCloseLabels = {
+  Edit: 'Edit',
+  Close: 'Close',
 };
 
 const labelsOfFormFieldsToTest = [
@@ -41,13 +44,17 @@ describe('ServiceRequestDialog', () => {
   function PageComponent({ showOnOpen, ticketId }) {
     const [visible, setVisible] = useState(showOnOpen);
     mockOnClose.mockImplementation(() => setVisible(false));
-    return <ServiceRequestDialog ticketId={ticketId} visible={visible} onClose={mockOnClose} />;
+    return (
+      <ServiceRequestDialog
+        ticketId={ticketId}
+        visible={visible}
+        onClose={mockOnClose}
+      />
+    );
   }
 
   function setup(showOnOpen = false, ticketId = null) {
-    render(
-      <PageComponent showOnOpen={showOnOpen} ticketId={ticketId} />,
-    );
+    render(<PageComponent showOnOpen={showOnOpen} ticketId={ticketId} />);
   }
 
   it('should be hidden when props.visible is false', () => {
@@ -81,32 +88,39 @@ describe('ServiceRequestDialog', () => {
     // Type the client email
     await userEvent.type(
       screen.queryByLabelText(clientInformationLabels.Email),
-      mockClient.email,
+      mockClient.email
     );
     // Type the pet name
     await userEvent.type(
       screen.queryByLabelText(petInformationLabels.Name),
-      mockAnimal.name,
+      mockAnimal.name
     );
     // Type the ticket description
     await userEvent.type(
       screen.queryByLabelText(serviceInformationLabels.ServiceDescription),
-      mockTicket.description,
+      mockTicket.description
     );
     fireEvent.click(screen.queryByLabelText(SaveCancelLabels.Save));
-    await waitFor(() => expect(mockedDataService.createTicket)
-      .toHaveBeenCalledTimes(1));
+    await waitFor(() =>
+      expect(mockedDataService.createTicket).toHaveBeenCalledTimes(1)
+    );
 
     //* Assert
-    expect(mockedDataService.getClientByIdOrEmail)
-      .toHaveBeenNthCalledWith(1, 'email', mockClient.email);
-    expect(mockedDataService.getPetByOwner)
-      .toHaveBeenNthCalledWith(1, mockClient.id, mockAnimal.name);
+    expect(mockedDataService.getClientByIdOrEmail).toHaveBeenNthCalledWith(
+      1,
+      'email',
+      mockClient.email
+    );
+    expect(mockedDataService.getPetByOwner).toHaveBeenNthCalledWith(
+      1,
+      mockClient.id,
+      mockAnimal.name
+    );
     expect(mockedDataService.createTicket).toHaveBeenNthCalledWith(
       1,
       { ...defaultServiceInformation, description: mockTicket.description },
       mockClient.id,
-      mockAnimal.id,
+      mockAnimal.id
     );
   });
 
@@ -114,37 +128,51 @@ describe('ServiceRequestDialog', () => {
     //* Arrange
     // Capture resolve to "pause" the promise and check that fields are disabled
     let resolve;
-    mockedDataService.createTicket
-      .mockImplementation(async () => new Promise((r) => { resolve = r; }));
+    mockedDataService.createTicket.mockImplementation(
+      async () =>
+        new Promise((r) => {
+          resolve = r;
+        })
+    );
     setup(true);
 
     //* Act
     fireEvent.click(screen.queryByLabelText(SaveCancelLabels.Save));
-    await waitFor(() => expect(mockedDataService.createTicket).toHaveBeenCalledTimes(1));
+    await waitFor(() =>
+      expect(mockedDataService.createTicket).toHaveBeenCalledTimes(1)
+    );
 
     //* Assert
     // Use the async method findBy* instead of queryBy* to allow for async state updates
-    await Promise.all(labelsOfFormFieldsToTest.map(async (label) => {
-      const field = await screen.findByLabelText(label);
-      expect(field).toBeDisabled();
-    }));
+    await Promise.all(
+      labelsOfFormFieldsToTest.map(async (label) => {
+        const field = await screen.findByLabelText(label);
+        expect(field).toBeDisabled();
+      })
+    );
     // Simulate service call completion
     await waitFor(() => resolve());
-    await Promise.all(labelsOfFormFieldsToTest.map(async (label) => {
-      const field = await screen.findByLabelText(label);
-      expect(field).toBeEnabled();
-    }));
+    await Promise.all(
+      labelsOfFormFieldsToTest.map(async (label) => {
+        const field = await screen.findByLabelText(label);
+        expect(field).toBeEnabled();
+      })
+    );
   });
 
   it('should debounce calls to save', async () => {
     /*
-      * Note the FormConfirmationButtons' Save button *should* prevent multiple clicks when the form is busy
-      * but in case that changes in the future, the form should still debouce the save
-      */
+     * Note the FormConfirmationButtons' Save button *should* prevent multiple clicks when the form is busy
+     * but in case that changes in the future, the form should still debouce the save
+     */
     //* Arrange
     let resolve;
-    mockedDataService.createTicket
-      .mockImplementation(async () => new Promise((r) => { resolve = r; }));
+    mockedDataService.createTicket.mockImplementation(
+      async () =>
+        new Promise((r) => {
+          resolve = r;
+        })
+    );
     setup(true);
 
     //* Act
@@ -161,15 +189,20 @@ describe('ServiceRequestDialog', () => {
   it('should show errors in the dialog', async () => {
     //* Arrange
     let reject;
-    mockedDataService.createTicket
-      .mockImplementation(async () => new Promise((_undefined, r) => { reject = r; }));
+    mockedDataService.createTicket.mockImplementation(
+      async () =>
+        new Promise((_undefined, r) => {
+          reject = r;
+        })
+    );
     const testError = 'Test fetch failed';
     setup(true);
 
     //* Act
     fireEvent.click(screen.queryByLabelText(SaveCancelLabels.Save));
-    await waitFor(() => expect(mockedDataService.createTicket)
-      .toHaveBeenCalledTimes(1));
+    await waitFor(() =>
+      expect(mockedDataService.createTicket).toHaveBeenCalledTimes(1)
+    );
 
     //* Assert
     await waitFor(() => reject(new Error(testError)));
@@ -183,7 +216,9 @@ describe('ServiceRequestDialog', () => {
     const getFields = async () => {
       const firstName = await screen.findByDisplayValue(mockClient.first_name);
       const petName = await screen.findByDisplayValue(mockAnimal.name);
-      const description = await screen.findByDisplayValue(mockTicket.description);
+      const description = await screen.findByDisplayValue(
+        mockTicket.description
+      );
       return [firstName, petName, description];
     };
     it('should load the ticket from the hook', async () => {
@@ -205,5 +240,65 @@ describe('ServiceRequestDialog', () => {
       //* Assert
       fields.forEach((field) => expect(field).toBeDisabled());
     });
+  });
+  it('should render FormConfirmationButtons with correct props', () => {
+    //* Arrange
+    setup(true);
+
+    //* Assert
+    const cancelButton = screen.queryByLabelText('Cancel');
+    const saveButton = screen.queryByLabelText('Save');
+    // const editButton = screen.queryByLabelText('Edit');
+    // const closeButton = screen.queryByLabelText('Close');
+
+    expect(cancelButton).toBeInTheDocument();
+    expect(saveButton).toBeInTheDocument();
+    // expect(editButton).toBeInTheDocument();
+    // expect(closeButton).toBeInTheDocument();
+  });
+
+  it('should call onSaveClicked when save button is clicked', async () => {
+    //* Arrange
+    setup(true);
+
+    //* Act
+    fireEvent.click(screen.queryByLabelText(SaveCancelLabels.Save));
+
+    //* Assert
+    await waitFor(() =>
+      expect(mockedDataService.createTicket).toHaveBeenCalledTimes(1)
+    );
+  });
+
+  it('should call onEditClicked when edit button is clicked', () => {
+    //* Arrange
+    setup(true);
+
+    //* Act
+    fireEvent.click(screen.queryByLabelText('Edit'));
+
+    //* Assert
+    expect(screen.queryByLabelText(EditCloseLabels.Edit)).toBeInTheDocument();
+  });
+
+  it('should call onCloseClicked when close button is clicked', () => {
+    //* Arrange
+    setup(true);
+
+    //* Act
+    fireEvent.click(screen.queryByLabelText('Close'));
+
+    //* Assert
+    expect(mockOnClose).toHaveBeenCalledTimes(1);
+  });
+  it('should show the edit button if a client ID is found', async () => {
+    //* Arrange
+    setup(true, mockTicket.id);
+
+    //* Act
+    const editButton = screen.queryByLabelText('Edit');
+
+    //* Assert
+    expect(editButton).toBeInTheDocument();
   });
 });

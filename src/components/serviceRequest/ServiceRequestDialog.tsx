@@ -127,7 +127,6 @@ function ServiceRequestDialog({
         <div className='card'>
           {message && <h3 className='text-red-500'>{message}</h3>}
 
-          {/* // ^ Here is where you will toggle form inputs to editable */}
           <ClientInformationProvider
             state={client}
             dispatch={clientInformationDispatch}

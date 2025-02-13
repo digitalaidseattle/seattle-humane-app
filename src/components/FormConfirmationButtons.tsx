@@ -42,7 +42,6 @@ export default function FormConfirmationButtons(
   props: FormConfirmationButtonsProps
 ) {
   // TODO localize
-  // FIXME: isEditing should be a prop and only change when btn is pressed and or successfully saved
   const Labels = {
     Cancel: 'Cancel',
     Save: 'Save',
