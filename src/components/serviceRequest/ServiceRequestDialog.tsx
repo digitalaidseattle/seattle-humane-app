@@ -37,13 +37,19 @@ export interface ServiceRequestDialogProps {
  */
 function ServiceRequestDialog({ visible, onClose, ticketId }: ServiceRequestDialogProps) {
   const {
-    busy, isNewTicket, isReadOnly, setIsReadOnly, save, message, client, pets, tickets,
+    busy, isNewTicket, isReadOnly, setIsReadOnly, save, reset, message, client, pets, tickets,
     clientInformationDispatch, petInformationDispatch, serviceInformationDispatch,
     showDialog,
   } = useServiceRequestForm(ticketId, visible);
   const disabled = busy || isReadOnly;
   const hideDialog = () => {
     onClose();
+  };
+
+  const onCancelClicked = () => {
+    setIsReadOnly(true);
+    if (!isNewTicket) reset();
+    else hideDialog();
   };
 
   const onSaveClicked = async () => {
@@ -62,7 +68,7 @@ function ServiceRequestDialog({ visible, onClose, ticketId }: ServiceRequestDial
   const dialogFooter = (
     <FormConfirmationButtons
       disabled={disabled}
-      onCancelClicked={hideDialog}
+      onCancelClicked={onCancelClicked}
       onSaveClicked={onSaveClicked}
       onEditClicked={onEditClicked}
       editing={!isReadOnly}

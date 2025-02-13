@@ -1,5 +1,7 @@
 /* eslint-disable @typescript-eslint/no-use-before-define */
-import { useEffect, useReducer, useState } from 'react';
+import {
+  useCallback, useEffect, useReducer, useState,
+} from 'react';
 import {
   ClientInfoActionType,
   clientInfoReducer,
@@ -41,41 +43,43 @@ export default function useServiceRequestForm(
   const [message, setMessage] = useState('');
   const [isNewTicket, setIsNewTicket] = useState(true);
 
+  /** Loads the ticket from the API and hydrates the contexts with the ticket data */
+  const hydrateForm = useCallback(async () => {
+    setBusy(true);
+    const ticket = await DataService.getTicket(ticketId);
+    /**
+     * TODO consider using Promise.allSettled
+     * If one of the promises passed to Promise.all() fails,
+     * then all in-progress promises are stopped and an error is thrown.
+     * However using .allSettled() would allow us to gracefully handle individual query failures.
+     */
+    const [client, animal] = await Promise.all([
+      DataService.getClientByIdOrEmail('id', ticket.client_id),
+      DataService.getPetById(ticket.pet_id),
+    ]);
+    clientInformationDispatch({
+      type: ClientInfoActionType.Update, partialStateUpdate: client,
+    });
+    petInformationDispatch({
+      type: PetInfoActionType.Update, partialStateUpdate: animal, index: 0,
+    });
+    serviceInformationDispatch({
+      type: ServiceInfoActionType.Update, partialStateUpdate: ticket, index: 0,
+    });
+    setBusy(false);
+  }, [ticketId]);
+
   useEffect(() => {
-    async function getTicket() {
-      setBusy(true);
-      setIsReadOnly(true);
-      const ticket = await DataService.getTicket(ticketId);
-      /**
-       * TODO consider using Promise.allSettled
-       * If one of the promises passed to Promise.all() fails,
-       * then all in-progress promises are stopped and an error is thrown.
-       * However using .allSettled() would allow us to gracefully handle individual query failures.
-       */
-      const [client, animal] = await Promise.all([
-        DataService.getClientByIdOrEmail('id', ticket.client_id),
-        DataService.getPetById(ticket.pet_id),
-      ]);
-      clientInformationDispatch({
-        type: ClientInfoActionType.Update, partialStateUpdate: client,
-      });
-      petInformationDispatch({
-        type: PetInfoActionType.Update, partialStateUpdate: animal, index: 0,
-      });
-      serviceInformationDispatch({
-        type: ServiceInfoActionType.Update, partialStateUpdate: ticket, index: 0,
-      });
-      setBusy(false);
-    }
     if (ticketId) {
+      setIsReadOnly(true);
       setIsNewTicket(false);
-      getTicket();
+      hydrateForm();
     } else {
       setIsReadOnly(false);
       setIsNewTicket(true);
       clearForm();
     }
-  }, [ticketId]);
+  }, [ticketId, hydrateForm]);
 
   //* Get state and dispatchers for the from sections
   const [client, clientInformationDispatch] = useReducer(
@@ -129,6 +133,7 @@ export default function useServiceRequestForm(
     isReadOnly,
     setIsReadOnly,
     save,
+    reset: hydrateForm,
     busy,
     message,
     clientInformationDispatch,
