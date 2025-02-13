@@ -23,6 +23,8 @@ import {
 } from '@types';
 import handleTicketUpdate from '@utils/handleTicketUpdate';
 import handleTicketCreation from '@utils/handleTicketCreation';
+import { mutate } from 'swr';
+import { ALL_TICKETS_SWR_KEY } from 'src/constants';
 
 export default function useServiceRequestForm(
   ticketId: ServiceRequestType['id'],
@@ -111,6 +113,7 @@ export default function useServiceRequestForm(
           pets as unknown as PetType[],
         );
       } else await handleTicketCreation(tickets, client, pets);
+      await mutate(ALL_TICKETS_SWR_KEY);
       return true;
     } catch (e) {
       setMessage(e.message);
