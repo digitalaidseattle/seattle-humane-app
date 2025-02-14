@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 import {
   CustomServiceRequestType,
 } from '@context/serviceRequest/serviceInformationContext';
@@ -38,11 +39,12 @@ export default async function handleTicketCreation(
 
   // Check if each pet exists and create one if not
   const savedPetData = new Map<number, PetType>();
-  await Promise.all(pets.map(async (petInput, petIndex) => {
+  for (let petIndex = 0; petIndex < pets.length; petIndex += 1) {
+    const petInput = pets[petIndex];
     let savedPet = await DataService.getPetByOwner(clientId, petInput.name);
     if (!savedPet) savedPet = await DataService.createAnimal(petInput, clientId);
     savedPetData.set(petIndex, savedPet);
-  }));
+  }
 
   requests.forEach((request) => {
     // Create tickets for this pet
