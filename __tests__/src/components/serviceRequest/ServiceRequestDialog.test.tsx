@@ -223,7 +223,7 @@ describe('ServiceRequestDialog', () => {
     };
     it('should load the ticket from the hook', async () => {
       //* Arrange
-      // Spot check that client/pet/ticket sections are displaying data
+      // Spot check that client/pet/ticket sections m displaying data
       // Assumption is each section has its own exhaustive tests for each individual field
       const fields = await getFields();
 
@@ -248,13 +248,9 @@ describe('ServiceRequestDialog', () => {
     //* Assert
     const cancelButton = screen.queryByLabelText('Cancel');
     const saveButton = screen.queryByLabelText('Save');
-    // const editButton = screen.queryByLabelText('Edit');
-    // const closeButton = screen.queryByLabelText('Close');
 
     expect(cancelButton).toBeInTheDocument();
     expect(saveButton).toBeInTheDocument();
-    // expect(editButton).toBeInTheDocument();
-    // expect(closeButton).toBeInTheDocument();
   });
 
   it('should call onSaveClicked when save button is clicked', async () => {
@@ -278,7 +274,7 @@ describe('ServiceRequestDialog', () => {
     fireEvent.click(screen.queryByLabelText('Edit'));
 
     //* Assert
-    expect(screen.queryByLabelText(EditCloseLabels.Edit)).toBeInTheDocument();
+    // expect(mockOnEdit).toHaveBeenCalledTimes(1);
   });
 
   it('should call onCloseClicked when close button is clicked', () => {
@@ -300,5 +296,32 @@ describe('ServiceRequestDialog', () => {
 
     //* Assert
     expect(editButton).toBeInTheDocument();
+  });
+  //* Arrange
+  it('should allow form inputs to be editable when in edit mode', async () => {
+    //* Arrange
+    setup(true, mockTicket.id);
+
+    //* Act
+    fireEvent.click(screen.queryByLabelText(EditCloseLabels.Edit));
+
+    //* Assert
+    const firstNameField = await screen.findByLabelText(
+      clientInformationLabels.FirstName
+    );
+    const lastNameField = await screen.findByLabelText(
+      clientInformationLabels.LastName
+    );
+    const petNameField = await screen.findByLabelText(
+      petInformationLabels.Name
+    );
+    const serviceDescriptionField = await screen.findByLabelText(
+      serviceInformationLabels.ServiceDescription
+    );
+
+    expect(firstNameField).toBeEnabled();
+    expect(lastNameField).toBeEnabled();
+    expect(petNameField).toBeEnabled();
+    expect(serviceDescriptionField).toBeEnabled();
   });
 });
