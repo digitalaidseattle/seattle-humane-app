@@ -18,8 +18,13 @@ describe('useRecentlyClosedTickets', () => {
       .filter((t) => t.status === closedTicketId)
       .sort((a, b) => new Date(b.created_at).valueOf() - new Date(a.created_at).valueOf()); // Ensure sorting
 
-    (useSWR as jest.Mock).mockReturnValue({
+    (useSWR as jest.Mock).mockReturnValueOnce({
       data: mockClosedTickets,
+      isLoading: false,
+    });
+
+    (useSWR as jest.Mock).mockReturnValueOnce({
+      data: Object.values(MockAppConstants).flatMap((type) => type),
       isLoading: false,
     });
 
@@ -31,9 +36,9 @@ describe('useRecentlyClosedTickets', () => {
 
     // Assert
     expect(mockServiceRequestSummaries.length).toBeGreaterThan(0);
-    expect(mockClosedTickets.length).toBeGreaterThan(0);
-    expect(mockClosedTickets.length).toBeLessThan(mockServiceRequestSummaries.length);
-    mockClosedTickets.forEach((ticket) => { expect(result.current.data).toContainEqual(ticket); });
+    expect(result.current.data.length).toBeGreaterThan(0);
+    expect(result.current.data.length).toBeLessThan(mockServiceRequestSummaries.length);
+    result.current.data.forEach((ticket) => { expect(mockClosedTickets).toContainEqual(ticket); });
 
     // Ensure sorting
     const firstTicket = result.current.data[0];

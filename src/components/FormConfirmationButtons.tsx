@@ -49,6 +49,6 @@ export default function FormConfirmationButtons(props: FormConfirmationButtonsPr
           <Button label={saveLabel} disabled={disabled} icon="pi pi-check" className="p-button-text" loading={saving} onClick={onSaveClicked} />
         </>
       )
-      : <Button label={editLabel} icon="pi pi-pen-to-square" className="p-button-text" onClick={onEditClicked} />
+      : <Button label={editLabel} icon="pi pi-pencil" className="p-button-text" onClick={onEditClicked} />
   );
 }

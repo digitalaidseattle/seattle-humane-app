@@ -1,20 +1,15 @@
 import { useUser } from '@context/usercontext';
 import useAllTickets from '@hooks/useAllTickets';
-import useSWR from 'swr';
 
 export default function useMyTickets() {
   const {
-    data: tickets, isLoading: loadingAllTickets, isValidating,
+    data: tickets, isLoading: loadingAllTickets,
   } = useAllTickets();
   const { user } = useUser();
+  const data = tickets.filter((ticket) => ticket.team_member.email === user.email);
 
-  const { data, isLoading: loadingMyTickets } = useSWR(
-    () => (!loadingAllTickets && !isValidating) && 'dataservice/mytickets',
-    async () => tickets
-      .filter((ticket) => ticket.team_member.email === user.email),
-  );
   return {
     data: data ?? [],
-    isLoading: loadingAllTickets || loadingMyTickets,
+    isLoading: loadingAllTickets,
   };
 }

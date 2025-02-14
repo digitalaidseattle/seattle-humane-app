@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 import {
   CustomServiceRequestType,
 } from '@context/serviceRequest/serviceInformationContext';
@@ -6,6 +7,7 @@ import {
   EditablePetType,
   EditableClientType,
   ServiceRequestType,
+  PetType,
 } from '@types';
 
 export default async function handleTicketCreation(
@@ -13,6 +15,11 @@ export default async function handleTicketCreation(
   client: EditableClientType,
   pets: EditablePetType[],
 ): Promise<ServiceRequestType[]> {
+  // If every request doesn't have at least 1 pet associated
+  if (!requests.every((req) => pets.some((_, i) => req.selected_pets.includes(i)))) {
+    throw new Error('Cannot create request without associating a pet');
+  }
+
   let clientId: string;
 
   // Check if client exists and create one if not
@@ -30,21 +37,24 @@ export default async function handleTicketCreation(
   // Collect all ticket promises in a flat array
   const ticketPromises: Promise<ServiceRequestType>[] = [];
 
+  // Check if each pet exists and create one if not
+  const savedPetData = new Map<number, PetType>();
+  for (let petIndex = 0; petIndex < pets.length; petIndex += 1) {
+    const petInput = pets[petIndex];
+    let savedPet = await DataService.getPetByOwner(clientId, petInput.name);
+    if (!savedPet) savedPet = await DataService.createAnimal(petInput, clientId);
+    savedPetData.set(petIndex, savedPet);
+  }
+
   requests.forEach((request) => {
     // Create tickets for this pet
-    pets.filter((_, petIndex) => request.selected_pets.includes(petIndex))
-      .forEach(async (pet) => {
-        let petId: string;
-        // Check if pet exists and create one if not
-        const existingPet = await DataService.getPetByOwner(clientId, pet.name);
-        if (!existingPet) {
-          const newPet = await DataService.createAnimal(pet, clientId);
-          petId = newPet.id;
-        } else {
-          petId = existingPet.id;
-        }
-        ticketPromises.push(DataService.createTicket(request, clientId, petId));
-      });
+    pets.forEach(async (pet, petIndex) => {
+      if (!request.selected_pets.includes(petIndex)) return;
+      const savedPet = savedPetData.get(petIndex);
+      if (!savedPet) throw new Error(`Error while creating the "${request.service_category}" request for pet "ø${pet.name}": Unable to find or save the pet information.`);
+      const petId = savedPet.id;
+      ticketPromises.push(DataService.createTicket(request, clientId, petId));
+    });
   });
   return Promise.all(ticketPromises);
   // TODO: ChangeLog not currently implemented

@@ -17,8 +17,13 @@ describe('useOpenTickets', () => {
     const mockOpenTickets = mockServiceRequestSummaries
       .filter((t) => t.status === openTicketId);
 
-    (useSWR as jest.Mock).mockReturnValue({
+    (useSWR as jest.Mock).mockReturnValueOnce({
       data: mockOpenTickets,
+      isLoading: false,
+    });
+
+    (useSWR as jest.Mock).mockReturnValueOnce({
+      data: Object.values(MockAppConstants).flatMap((type) => type),
       isLoading: false,
     });
 
@@ -31,9 +36,9 @@ describe('useOpenTickets', () => {
     // Assert
     /** Ensure there is actually enough mock test data to filter closed tickets from the rest */
     expect(mockServiceRequestSummaries.length).toBeGreaterThan(0);
-    expect(mockOpenTickets.length).toBeGreaterThan(0);
-    expect(mockOpenTickets.length).toBeLessThan(mockServiceRequestSummaries.length);
-    mockOpenTickets.forEach((ticket) => { expect(result.current.data).toContainEqual(ticket); });
+    expect(result.current.data.length).toBeGreaterThan(0);
+    expect(result.current.data.length).toBeLessThan(mockServiceRequestSummaries.length);
+    result.current.data.forEach((ticket) => { expect(mockOpenTickets).toContainEqual(ticket); });
 
     /** Sanity check for sort */
     const firstTicket = result.current.data[0];

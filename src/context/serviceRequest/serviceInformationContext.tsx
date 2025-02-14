@@ -6,10 +6,10 @@
 import React, { createContext } from 'react';
 import { EditableServiceRequestType } from '@types';
 
-export type CustomServiceRequestType = EditableServiceRequestType & { selected_pets : number[] };
+export type CustomServiceRequestType = EditableServiceRequestType & { selected_pets: number[] };
 
 export const defaultServiceInformation: CustomServiceRequestType = {
-  selected_pets: [],
+  selected_pets: [0],
   client_id: '',
   pet_id: '',
   service_category: '',
@@ -29,17 +29,24 @@ export enum ServiceInfoActionType {
 }
 
 type ServiceInfoAction =
-| { type: ServiceInfoActionType.Clear }
-| { type: ServiceInfoActionType.Update, index: number, partialStateUpdate: Partial<CustomServiceRequestType> }
-| { type: ServiceInfoActionType.Add, newService: CustomServiceRequestType }
-| { type: ServiceInfoActionType.Remove, index: number };
+  | { type: ServiceInfoActionType.Clear }
+  | { type: ServiceInfoActionType.Update, index: number, partialStateUpdate: Partial<CustomServiceRequestType> }
+  | { type: ServiceInfoActionType.Add, newService: CustomServiceRequestType }
+  | { type: ServiceInfoActionType.Remove, index: number };
 
 export const serviceInfoReducer = (
   state: CustomServiceRequestType[],
   action: ServiceInfoAction,
 ) => {
   if (action.type === ServiceInfoActionType.Update) {
-    return state.map((serviceRequest, idx) => (idx === action.index ? { ...serviceRequest, ...action.partialStateUpdate } : serviceRequest));
+    return state.map((serviceRequest, idx) => {
+      if (idx === action.index) {
+        // ensure at least 1 pet is selected
+        if (action.partialStateUpdate.selected_pets.length < 1) action.partialStateUpdate.selected_pets.push(0);
+        return ({ ...serviceRequest, ...action.partialStateUpdate });
+      }
+      return serviceRequest;
+    });
   }
 
   if (action.type === ServiceInfoActionType.Add) return [...state, action.newService];
