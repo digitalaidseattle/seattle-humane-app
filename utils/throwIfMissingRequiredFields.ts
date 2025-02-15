@@ -7,7 +7,7 @@ const requiredInputFields: {
 } = {
   client: ['first_name', 'last_name', 'email', 'phone'],
   animal: ['name', 'age', 'weight', 'species'],
-  ticket: ['service_category', 'request_source', 'team_member_id'],
+  ticket: ['service_category', 'request_source', 'status', 'team_member_id'],
 };
 
 export default function throwIfMissingRequiredFields(

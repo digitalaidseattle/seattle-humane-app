@@ -42,7 +42,7 @@ export const serviceInfoReducer = (
     return state.map((serviceRequest, idx) => {
       if (idx === action.index) {
         // ensure at least 1 pet is selected
-        if (action.partialStateUpdate.selected_pets.length < 1) action.partialStateUpdate.selected_pets.push(0);
+        if (action.partialStateUpdate.selected_pets?.length < 1) action.partialStateUpdate.selected_pets.push(0);
         return ({ ...serviceRequest, ...action.partialStateUpdate });
       }
       return serviceRequest;
