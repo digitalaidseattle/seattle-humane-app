@@ -9,6 +9,7 @@ import {
   ServiceRequestType,
   PetType,
 } from '@types';
+import throwIfMissingRequiredFields from '@utils/throwIfMissingRequiredFields';
 
 export default async function handleTicketCreation(
   requests: CustomServiceRequestType[],
@@ -22,6 +23,7 @@ export default async function handleTicketCreation(
 
   let clientId: string;
 
+  throwIfMissingRequiredFields('client', client);
   // Check if client exists and create one if not
   // No Upsert operations currently in the supabaseClient library AFAIK
   const existingClient = await DataService.getClientByIdOrEmail(
@@ -41,14 +43,16 @@ export default async function handleTicketCreation(
   const savedPetData = new Map<number, PetType>();
   for (let petIndex = 0; petIndex < pets.length; petIndex += 1) {
     const petInput = pets[petIndex];
+    throwIfMissingRequiredFields('animal', petInput);
     let savedPet = await DataService.getPetByOwner(clientId, petInput.name);
     if (!savedPet) savedPet = await DataService.createAnimal(petInput, clientId);
     savedPetData.set(petIndex, savedPet);
   }
 
   requests.forEach((request) => {
+    throwIfMissingRequiredFields('ticket', request);
     // Create tickets for this pet
-    pets.forEach(async (pet, petIndex) => {
+    pets.forEach((pet, petIndex) => {
       if (!request.selected_pets.includes(petIndex)) return;
       const savedPet = savedPetData.get(petIndex);
       if (!savedPet) throw new Error(`Error while creating the "${request.service_category}" request for pet "ø${pet.name}": Unable to find or save the pet information.`);
