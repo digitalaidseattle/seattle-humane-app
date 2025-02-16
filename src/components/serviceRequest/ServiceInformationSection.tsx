@@ -113,8 +113,8 @@ export default function ServiceInformationSection(props: ServiceInformationSecti
 
   useEffect(() => {
     if (isStatusesLoading || isSourcesLoading || teamMembers.length < 1) return;
+    setStatus(defaultStatus(), 0);
     if (formVariant === 'external') {
-      setStatus(defaultStatus(), 0);
       setSource(defaultSource(), 0);
       setAssignedTo(defaultTeamMember(), 0);
     }
