@@ -84,11 +84,13 @@ export default function useFilters(items: ServiceRequestSummary[]) {
 
 export function filterByCreatedAt(value, filter) {
   if (!filter || !filter.filterDate) return true;
-  const filterDate = Date.parse(filter.filterDate);
-  const date = Date.parse(value);
   const { sign } = filter;
-  if (sign === '>') return date >= filterDate;
-  if (sign === '<') return date <= filterDate;
-  if (sign === '=') return date === filterDate;
+  const date = new Date(value);
+  const filterDate = new Date(filter.filterDate);
+  date.setHours(0, 0, 0, 0);
+  filterDate.setHours(0, 0, 0, 0);
+  if (sign === '>') return date.getTime() >= filterDate.getTime();
+  if (sign === '<') return date.getTime() <= filterDate.getTime();
+  if (sign === '=') return date.getTime() === filterDate.getTime();
   throw new Error("invalid 'sign' in filters object at custom_date filter");
 }
