@@ -158,7 +158,10 @@ export function HeaderTemplate({
         outlined={!areFiltersActive}
         icon="pi pi-filter"
         aria-label="global filter menu"
-      />
+      >
+        {' '}
+        More Filters
+      </Button>
       <OverlayPanel aria-label="global filter menu overlay" ref={op} showCloseIcon>
         <div className="flex justify-content-end align-items-center gap-2">
           <div className="flex gap-2">
