@@ -42,7 +42,7 @@
         "eslint-plugin-react-hooks": "5.1.0"
     },
     "devDependencies": {
-        "@next/eslint-plugin-next": "^14.1.2",
+        "@next/eslint-plugin-next": "^15.1.7",
         "@testing-library/jest-dom": "^6.4.2",
         "@testing-library/react": "^15.0.5",
         "@testing-library/user-event": "^14.6.0",
