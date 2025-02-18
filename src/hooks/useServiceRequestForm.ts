@@ -136,6 +136,7 @@ export default function useServiceRequestForm(
     reset: hydrateForm,
     busy,
     message,
+    clearForm,
     clientInformationDispatch,
     petInformationDispatch,
     serviceInformationDispatch,
